@@ -73,7 +73,7 @@ return {
       })
 
       require("mason-null-ls").setup({
-        ensure_installed = { "stylua", "prettier", "goimports", "gofumpt", "yamlfmt" },
+        ensure_installed = { "sqlfmt", "stylua", "prettier", "goimports", "gofumpt", "yamlfmt" },
       })
 
       require("null-ls").setup({})

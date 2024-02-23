@@ -16,6 +16,7 @@ return {
         markdown = { "prettier" },
         go = { "goimports", "gofumpt" },
         yaml = { "yamlfmt" },
+        sql = { "sqlfmt" }
       },
       format_on_save = {
         lsp_fallback = true,
