@@ -4,5 +4,7 @@ brew "yadm"
 brew "neovim"
 brew "tmux"
 brew "go"
+brew "zoxide"
+brew "fzf"
 
 cask "wezterm"
