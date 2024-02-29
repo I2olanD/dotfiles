@@ -8,3 +8,4 @@ brew "zoxide"
 brew "fzf"
 
 cask "wezterm"
+cask "docker"
