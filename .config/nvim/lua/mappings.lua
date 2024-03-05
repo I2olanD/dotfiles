@@ -7,7 +7,7 @@ map("n", "<c-j>", "<cmd> TmuxNavigationDown<CR>", { desc = "window down" })
 map("n", "<c-k>", "<cmd> TmuxNavigationUp<CR>", { desc = "window up" })
 
 -- Diagnostic
-map("n", "<leader>d", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
+-- map("n", "<leader>d", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
 
 -- Windows
 map("n", "<C-m>", ":WindowsMaximize<CR>", { silent = true, desc = "[M]aximize current buffer" })

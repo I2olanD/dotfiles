@@ -1,5 +1,34 @@
 return {
   {
+    "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+    init = function()
+      vim.diagnostic.config({
+        severity_sort = true,
+
+        virtual_lines = false,
+        virtual_text = true,
+      })
+    end,
+    keys = {
+      {
+        "<leader>d",
+        function()
+          local virtual_lines = vim.diagnostic.config().virtual_lines
+          local virtual_text = vim.diagnostic.config().virtual_text
+
+          vim.diagnostic.config({
+            virtual_lines = not virtual_lines,
+            virtual_text = not virtual_text,
+          })
+        end,
+        desc = "Toggle LSP [L]ines",
+      },
+    },
+    config = function()
+      require("lsp_lines").setup()
+    end,
+  },
+  {
     "neovim/nvim-lspconfig",
     dependencies = {
       "williamboman/mason.nvim",
@@ -25,9 +54,9 @@ return {
           vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc })
         end
 
-        nmap("<leader>fn", vim.lsp.buf.rename, "[R]e[n]ame")
-        nmap("<leader>fd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-        nmap("<leader>fr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+        nmap("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
+        nmap("<leader>gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+        nmap("<leader>gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
 
         vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
           vim.lsp.buf.format()
