@@ -12,7 +12,7 @@ config.window_close_confirmation = "NeverPrompt"
 config.adjust_window_size_when_changing_font_size = false
 config.window_decorations = "RESIZE"
 config.window_background_opacity = 0.85
-config.macos_window_background_blur = 12
+config.macos_window_background_blur = 20
 
 -- Font
 --
