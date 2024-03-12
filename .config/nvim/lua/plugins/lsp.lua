@@ -67,6 +67,7 @@ return {
       local servers = {
         sqls = {},
         gopls = {},
+        omnisharp = {},
         eslint = {
           packageManager = "yarn",
           workingDirectories = {

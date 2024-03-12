@@ -9,3 +9,4 @@ brew "fzf"
 
 cask "wezterm"
 cask "docker"
+cask "dotnet-sdk"
