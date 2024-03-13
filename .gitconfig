@@ -4,5 +4,5 @@
 	diffFilter = diff-so-fancy --patch
 [color]
 	ui = true
-[inclue]
+[include]
 	path = .gitconfig.user
