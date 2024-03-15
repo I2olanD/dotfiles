@@ -21,3 +21,7 @@ map("n", "<leader>fe", "<CMD> Telescope file_browser <CR>", { silent = true, des
 -- Neotree
 map("n", "<leader>e", "<CMD>Neotree reveal<CR>", { silent = true, desc = "File [E]xplorer" })
 map("n", "<leader>q", "<CMD>Neotree toggle<CR>", { silent = true, desc = "File [E]xplorer toggle" })
+
+-- Shift lines
+map("v", "J", ":m '>+1<CR>gv-gv")
+map("v", "K", ":m '<-2<CR>gv-gv")
