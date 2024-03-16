@@ -8,5 +8,6 @@ brew "zoxide"
 brew "fzf"
 
 cask "wezterm"
+cask "logseq"
 cask "docker"
 cask "dotnet-sdk"
