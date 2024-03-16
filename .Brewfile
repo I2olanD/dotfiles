@@ -6,6 +6,7 @@ brew "tmux"
 brew "go"
 brew "zoxide"
 brew "fzf"
+brew "fd"
 
 cask "wezterm"
 cask "logseq"

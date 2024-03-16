@@ -11,13 +11,14 @@ config.enable_tab_bar = false
 config.window_close_confirmation = "NeverPrompt"
 config.adjust_window_size_when_changing_font_size = false
 config.window_decorations = "RESIZE"
+
 -- config.window_background_opacity = 0.85
 -- config.macos_window_background_blur = 20
 
 -- Font
 --
 -- @see https://wezfurlong.org/wezterm/config/lua/config/font_rules.html
-config.font = wezterm.font({ family = "Hack Nerd Font", scale = 1.2 })
+config.font = wezterm.font({ family = "Hack Nerd Font", scale = 1.6 })
 
 -- Colorscheme
 --
