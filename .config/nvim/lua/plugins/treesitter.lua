@@ -15,6 +15,7 @@ return {
         ensure_installed = {
           "bash",
           "css",
+          "c_sharp",
           "dockerfile",
           "gitignore",
           "go",
@@ -30,7 +31,6 @@ return {
           "scss",
           "toml",
           "typescript",
-          "vue",
           "yaml",
         },
         ignore_install = { "javascript" },

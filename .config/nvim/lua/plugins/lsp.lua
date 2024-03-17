@@ -2,6 +2,7 @@ local servers = {
   omnisharp = {},
   tsserver = { filetypes = { "typescript", "typescriptreact", "typescript.tsx" } },
   gopls = {},
+  vimls = {},
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
@@ -9,6 +10,24 @@ local servers = {
       diagnostics = { globals = { "vim" } }
     }
   }
+}
+
+local on_attach = function(_, bufnr)
+  vim.keymap.set("n", "<leader>gD", function() vim.lsp.buf.declaration() end, { buffer = bufnr })
+  vim.keymap.set("n", "<leader>gd", function() vim.lsp.buf.definition() end, { buffer = bufnr })
+  vim.keymap.set("n", "<leader>gi", function() vim.lsp.buf.implementation() end, { buffer = bufnr })
+  vim.keymap.set("n", "<leader>h", function() vim.lsp.buf.hover() end, { buffer = bufnr })
+
+  vim.api.nvim_buf_create_user_command(
+    bufnr,
+    "Format",
+    function(_) vim.lsp.buf.format() end,
+    { desc = "Format current buffer with LSP" })
+end
+
+local handlers = {
+  ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" }),
+  ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" }),
 }
 
 return {
@@ -33,6 +52,8 @@ return {
               capabilities = capabilities,
               settings = servers[server_name],
               filetypes = (servers[server_name] or {}).filetypes,
+              on_attach = on_attach,
+              handlers = handlers
             })
           end
         }
