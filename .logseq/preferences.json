@@ -7,12 +7,13 @@
       "url": "assets:///Users/rolandolah/.logseq/plugins/logseq-catppuccin/ctp-latte.css",
       "description": "Catppuccin Latte",
       "mode": "light",
-      "pid": "logseq-catppuccin"
+      "pid": "logseq-catppuccin",
+      "selected": false
     },
     "dark": {
-      "name": "Catppuccin Mocha",
-      "url": "assets:///Users/rolandolah/.logseq/plugins/logseq-catppuccin/ctp-mocha.css",
-      "description": "Catppuccin Mocha",
+      "name": "Catppuccin Frappé",
+      "url": "assets:///Users/rolandolah/.logseq/plugins/logseq-catppuccin/ctp-frappe.css",
+      "description": "Catppuccin Frappé",
       "mode": "dark",
       "pid": "logseq-catppuccin",
       "selected": false
