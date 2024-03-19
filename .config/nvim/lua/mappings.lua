@@ -25,3 +25,9 @@ map("n", "<leader>tt", "<cmd>TroubleToggle<CR>", { desc = "[T]oggle [T]rouble" }
 
 -- Replace in place
 map("x", "<leader>p", [["_dP]], { desc = "Replace in word" })
+
+-- Noice
+--
+map("n", "<leader>ne", "<CMD>Noice errors<CR>", { desc = "[N]oice [E]errors" })
+map("n", "<leader>nl", "<CMD>Noice last<CR>", { desc = "[N]oice [L]ast" })
+map("n", "<leader>nh", "<CMD>Noice history<CR>", { desc = "[N]oice [H]istory" })
