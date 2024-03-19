@@ -13,10 +13,13 @@ local servers = {
 }
 
 local on_attach = function(_, bufnr)
-  vim.keymap.set("n", "<leader>gD", function() vim.lsp.buf.declaration() end, { buffer = bufnr })
-  vim.keymap.set("n", "<leader>gd", function() vim.lsp.buf.definition() end, { buffer = bufnr })
-  vim.keymap.set("n", "<leader>gi", function() vim.lsp.buf.implementation() end, { buffer = bufnr })
-  vim.keymap.set("n", "<leader>h", function() vim.lsp.buf.hover() end, { buffer = bufnr })
+  vim.keymap.set("n", "<leader>gD", function() vim.lsp.buf.declaration() end,
+    { buffer = bufnr, desc = "[G]o to [D]eclaration" })
+  vim.keymap.set("n", "<leader>gd", function() vim.lsp.buf.definition() end,
+    { buffer = bufnr, desc = "[G]o to [D]efinition" })
+  vim.keymap.set("n", "<leader>gi", function() vim.lsp.buf.implementation() end,
+    { buffer = bufnr, desc = "[G]o to [I]mplementation" })
+  vim.keymap.set("n", "<leader>h", function() vim.lsp.buf.hover() end, { buffer = bufnr, desc = "[H]over" })
 
   vim.api.nvim_buf_create_user_command(
     bufnr,

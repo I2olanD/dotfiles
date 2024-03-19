@@ -31,6 +31,6 @@ return {
         async = true,
         timeout = 500,
       })
-    end)
+    end, { desc = "Format file" })
   end,
 }
