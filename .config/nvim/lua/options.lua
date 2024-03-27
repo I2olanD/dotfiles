@@ -34,4 +34,4 @@ vim.opt.termguicolors = true
 vim.opt.winblend = 0
 vim.opt.background = "dark"
 
-vim.wo.fillchars = "eob: "
+vim.opt.fillchars = "eob: "
