@@ -1,4 +1,6 @@
 local map = vim.keymap.set
+-- VIM
+map("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
 -- TMUX window navigation
 map("n", "<c-h>", "<cmd> TmuxNavigationLeft <CR>", { desc = "window left" })
