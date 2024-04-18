@@ -3,6 +3,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     dependencies = {
       "nvim-treesitter/nvim-treesitter-textobjects",
+      "jlcrochet/vim-razor",
     },
     build = ":TSUpdate",
     event = { "BufReadPre", "BufNewFile" },
