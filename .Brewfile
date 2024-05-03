@@ -8,6 +8,7 @@ brew "go"
 brew "zoxide"
 brew "fzf"
 brew "fd"
+brew "ripgrep"
 
 cask "wezterm"
 cask "docker"

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 system_type=$(uname -s)
 
@@ -15,18 +15,19 @@ if [ "$system_type" = "Darwin" ]; then
 
   if [ ! -d ~/.tmux/plugins/tpm ]; then
     git clone --depth 1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-    echo "~/.tmux/plugins/tpm/scripts/install_plugins.sh"
+    (exec "~/.tmux/plugins/tpm/scripts/install_plugins.sh")
   fi
 
   if [ -d ~/.tmux/plugins/tpm ]; then
     echo "Installing tmux plugins"
-    echo "~/.tmux/plugins/tpm/scripts/install_plugins.sh"
+    (exec "~/.tmux/plugins/tpm/scripts/install_plugins.sh")
 
-    echo "Setup tmux"
     tmux source ~/.config/tmux/tmux.conf
   fi
 
-  if [ -d "$HOME/Applications/WezTerm.app" ]; then
+  if which WezTerm | grep -q "/opt/homebrew/bin/WezTerm"; then
+    echo "Set terminal"
+
     tempfile=$(mktemp) \
     && curl -o $tempfile https://raw.githubusercontent.com/wez/wezterm/main/termwiz/data/wezterm.terminfo \
     && tic -x -o ~/.terminfo $tempfile \
