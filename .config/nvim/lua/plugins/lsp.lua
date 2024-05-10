@@ -2,7 +2,6 @@ local servers = {
   omnisharp = {},
   tsserver = { filetypes = { "typescript", "typescriptreact", "typescript.tsx" } },
   gopls = {},
-  vimls = {},
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
@@ -55,6 +54,12 @@ return {
               capabilities = capabilities,
               settings = servers[server_name],
               filetypes = (servers[server_name] or {}).filetypes,
+              on_attach = on_attach,
+              handlers = handlers
+            })
+
+            require("lspconfig").dartls.setup({
+              capabilities = capabilities,
               on_attach = on_attach,
               handlers = handlers
             })

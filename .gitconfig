@@ -2,6 +2,19 @@
 	pager = diff-so-fancy | less --tabs=4 -RF
 [interactive]
 	diffFilter = diff-so-fancy --patch
+[alias]
+	# status
+  st = status
+
+  # log
+  l = log --all --decorate --oneline --graph
+
+  pulls = log --pretty=format:\"%h, %ci\"
+
+  changes = log --oneline --name-status
+
+  graph = log --graph --abbrev-commit --date=relative --pretty=format:'%C(yellow)%h%Creset%C(blue)%d%Creset %s %C(green)<%an>%Creset %C(blue)%ci%Creset'
+
 [color]
 	ui = true
 [include]

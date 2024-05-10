@@ -10,14 +10,14 @@ brew "fzf"
 brew "fd"
 brew "ripgrep"
 
+brew "pyenv"
+
 cask "wezterm"
 cask "docker"
 cask "postman"
 cask "dbeaver-community"
 
 cask "figma"
-
-cask "dotnet-sdk"
 
 cask "logseq"
 cask "spotify"
