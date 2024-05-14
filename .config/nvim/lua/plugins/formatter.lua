@@ -18,10 +18,12 @@ return {
         yaml = { "yamlfmt" },
         sql = { "sqlfmt" }
       },
+      format_after_save = {
+        lsp_fallback = true,
+      },
       format_on_save = {
         lsp_fallback = true,
-        async = true,
-        timeout = 500,
+        timeout_ms = 500,
       },
     })
 

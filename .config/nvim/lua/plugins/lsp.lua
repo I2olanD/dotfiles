@@ -19,6 +19,8 @@ local on_attach = function(_, bufnr)
   vim.keymap.set("n", "<leader>gi", function() vim.lsp.buf.implementation() end,
     { buffer = bufnr, desc = "[G]o to [I]mplementation" })
   vim.keymap.set("n", "<leader>h", function() vim.lsp.buf.hover() end, { buffer = bufnr, desc = "[H]over" })
+  vim.keymap.set("n", "<leader>k", function() vim.lsp.buf.code_action() end,
+    { buffer = bufnr, desc = "[C]ode action" })
 
   vim.api.nvim_buf_create_user_command(
     bufnr,
