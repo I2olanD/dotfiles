@@ -148,3 +148,4 @@ eval "$(zoxide init zsh)"
 [[ -f /Users/rolandolah/.dart-cli-completion/zsh-config.zsh ]] && . /Users/rolandolah/.dart-cli-completion/zsh-config.zsh || true
 ## [/Completion]
 
+eval "$(starship init zsh)"

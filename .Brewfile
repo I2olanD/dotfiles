@@ -9,6 +9,7 @@ brew "zoxide"
 brew "fzf"
 brew "fd"
 brew "ripgrep"
+brew "starship"
 
 brew "pyenv"
 
