@@ -141,11 +141,11 @@ source /opt/homebrew/opt/nvm/nvm.sh
   [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
   [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
-eval "$(zoxide init zsh)"
-
 ## [Completion]
 ## Completion scripts setup. Remove the following line to uninstall
 [[ -f /Users/rolandolah/.dart-cli-completion/zsh-config.zsh ]] && . /Users/rolandolah/.dart-cli-completion/zsh-config.zsh || true
 ## [/Completion]
 
+eval "$(zoxide init zsh)"
+eval "$(fzf --zsh)"
 eval "$(starship init zsh)"
