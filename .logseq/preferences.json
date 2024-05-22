@@ -11,12 +11,13 @@
       "selected": false
     },
     "dark": {
-      "name": "Catppuccin Frappé",
-      "url": "assets:///Users/rolandolah/.logseq/plugins/logseq-catppuccin/ctp-frappe.css",
-      "description": "Catppuccin Frappé",
+      "name": "Default Dark Theme",
+      "url": null,
+      "description": "Logseq default dark theme.",
       "mode": "dark",
-      "pid": "logseq-catppuccin",
-      "selected": false
+      "selected": true,
+      "group-first": true,
+      "group-desc": "dark themes"
     }
   },
   "externals": []
