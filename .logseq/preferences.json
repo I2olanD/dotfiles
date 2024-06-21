@@ -11,13 +11,12 @@
       "selected": false
     },
     "dark": {
-      "name": "Default Dark Theme",
-      "url": null,
-      "description": "Logseq default dark theme.",
+      "name": "Catppuccin Mocha",
+      "url": "assets:///Users/rolandolah/.logseq/plugins/logseq-catppuccin/ctp-mocha.css",
+      "description": "Catppuccin Mocha",
       "mode": "dark",
-      "selected": true,
-      "group-first": true,
-      "group-desc": "dark themes"
+      "pid": "logseq-catppuccin",
+      "selected": false
     }
   },
   "externals": []

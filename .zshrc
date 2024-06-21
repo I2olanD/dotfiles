@@ -132,6 +132,11 @@ alias vim="nvim"
 alias vi="nvim"
 alias v="nvim"
 
+alias cxc-latest="sudo xcode-select -s /Applications/Xcode.app"
+alias cxc-14="sudo xcode-select -s /Applications/Xcode_14.3.1.app"
+alias open_xcode_14="/Applications/Xcode_14.3.1.app/Contents/MacOS/Xcode"
+alias list_ios_booted="xcrun simctl list devices | grep "Booted""
+
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
