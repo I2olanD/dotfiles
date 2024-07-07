@@ -26,7 +26,7 @@ map("v", "J", ":m '>+1<CR>gv-gv", { desc = "Move selected line(s) up" })
 map("v", "K", ":m '<-2<CR>gv-gv", { desc = "Move selected line(s) down" })
 
 -- Trouble
-map("n", "<leader>tt", "<cmd>TroubleToggle<CR>", { desc = "[T]oggle [T]rouble" })
+map("n", "<leader>tt", "<cmd>Trouble diagnostics toggle<CR>", { desc = "[T]oggle [T]rouble" })
 
 -- Replace in place
 map("x", "<leader>p", [["_dP]], { desc = "Replace in word" })
