@@ -152,5 +152,4 @@ source /opt/homebrew/opt/nvm/nvm.sh
 ## [/Completion]
 
 eval "$(zoxide init zsh)"
-eval "$(fzf --zsh)"
 eval "$(starship init zsh)"
