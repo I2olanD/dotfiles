@@ -18,6 +18,9 @@ map("n", "<leader>fc", "<CMD> Telescope file_browser path=%:p:h <CR>", { silent 
 map("n", "<leader>fg", "<CMD> Telescope live_grep <CR>", { silent = true, desc = "[F]find by [G]rep" })
 map("n", "<leader>lb", "<CMD> Telescope buffers <CR>", { silent = true, desc = "[L]ist [B]uffers" })
 
+-- NeoTree
+map("n", "<leader>e", ":Neotree toggle<CR>", { silent = true, desc = "[E]xplore" })
+
 -- Shift lines
 map("v", "J", ":m '>+1<CR>gv-gv", { desc = "Move selected line(s) up" })
 map("v", "K", ":m '<-2<CR>gv-gv", { desc = "Move selected line(s) down" })
