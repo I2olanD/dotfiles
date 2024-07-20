@@ -17,6 +17,7 @@ return {
           "bash",
           "css",
           "c_sharp",
+          "dart",
           "dockerfile",
           "gitignore",
           "go",
