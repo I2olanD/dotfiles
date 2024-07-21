@@ -49,7 +49,7 @@
   --ctp-block-bullet-color: rgb(var(--ctp-accent, var(--ctp-sky)));
   --ctp-block-highlight-color: var(--color-base-30);
   --ctp-selection-background-color: rgba(var(--ctp-yellow, 0.9));
-  --ctp-selection-text-color: rgb(var(--color-base-00));
+  --ctp-selection-text-color: var(--color-base-00);
   --ctp-page-checkbox-color: rgb(var(--ctp-accent, var(--ctp-blue)));
   --ctp-page-checkbox-border-color: var(--ctp-primary-background-color);
   --ctp-page-blockquote-color: var(--ctp-primary-text-color);
@@ -121,8 +121,6 @@
   --ctp-marker-size: 16px;
 }
 
-.light-theme,
-.dark-theme,
 html:not(html[data-color]),
 html[data-theme=dark][data-color=logseq],
 html[data-theme=light][data-color=logseq],
@@ -210,7 +208,6 @@ html[data-color=none] {
   --ls-error-color: var(--ctp-error-color);
   --ls-warning-color: var(--ctp-warning-color);
   --ls-success-color: var(--ctp-success-color);
-  --ls-text-on-accent: rgb(var(--ctp-text));
 }
 
 @media (prefers-color-scheme: dark) {
@@ -235,11 +232,22 @@ html[data-color=none] {
   --muted: 192 100% 13%;
   --card: 192 100% 10%;
   --card-foreground: 0 0% 95%;
-  --popover: 192 100% 11%;
   --input: 203 35% 25%;
   */
+  --popover: var(--ctp-mantle-hsl);
   --border: var(--ctp-surface0-hsl);
   --lx-popover-bg: var(--ctp-secondary-background-color);
+}
+
+:root:not([data-color]) .light-theme,
+:root:not([data-color]) .white-theme, :root[data-color=none] .light-theme,
+:root[data-color=none] .white-theme {
+  --color-level-1: var(--color-base-10);
+  --color-level-2: var(--color-base-20);
+  --color-level-3: var(--color-base-30);
+  --color-level-4: var(--color-base-40);
+  --color-level-5: var(--color-base-50);
+  --color-level-6: var(--color-base-60);
 }
 
 html[data-color=logseq][data-theme=light] {
@@ -279,6 +287,14 @@ html[data-color=logseq] {
   --lx-accent-12: initial;
 }
 
+html:not(html[data-color]),
+html[data-theme=light][data-color=logseq],
+html[data-theme=dark][data-color=logseq],
+html[data-color=none] {
+  /* #35 make bold+italics text color same as italics */
+  /* #35 make plugin icons in header consistent with other icons in header */
+  /* #32 theme search modal */
+}
 html:not(html[data-color]) #left-sidebar,
 html[data-theme=light][data-color=logseq] #left-sidebar,
 html[data-theme=dark][data-color=logseq] #left-sidebar,
@@ -335,12 +351,18 @@ html[data-color=none] button.ui__button[intent=logseq]:hover:not(.active) {
   color: var(--ctp-button-text);
   background-color: rgb(var(--ctp-button-background));
 }
-html:not(html[data-color]) a.ui__button:hover, html:not(html[data-color]) button.ui__button:hover,
+html:not(html[data-color]) a.ui__button.as-ghost:hover, html:not(html[data-color]) a.ui__button:hover, html:not(html[data-color]) button.ui__button.as-ghost:hover, html:not(html[data-color]) button.ui__button:hover,
+html[data-theme=light][data-color=logseq] a.ui__button.as-ghost:hover,
 html[data-theme=light][data-color=logseq] a.ui__button:hover,
+html[data-theme=light][data-color=logseq] button.ui__button.as-ghost:hover,
 html[data-theme=light][data-color=logseq] button.ui__button:hover,
+html[data-theme=dark][data-color=logseq] a.ui__button.as-ghost:hover,
 html[data-theme=dark][data-color=logseq] a.ui__button:hover,
+html[data-theme=dark][data-color=logseq] button.ui__button.as-ghost:hover,
 html[data-theme=dark][data-color=logseq] button.ui__button:hover,
+html[data-color=none] a.ui__button.as-ghost:hover,
 html[data-color=none] a.ui__button:hover,
+html[data-color=none] button.ui__button.as-ghost:hover,
 html[data-color=none] button.ui__button:hover {
   background-color: rgb(var(--ctp-button-background));
 }
@@ -532,12 +554,6 @@ html[data-color=none] html[data-theme=dark] .cp__header button.button,
 html[data-color=none] html[data-theme=dark] .cp__right-sidebar-topbar button {
   opacity: 1;
 }
-html:not(html[data-color]) ::selection,
-html[data-theme=light][data-color=logseq] ::selection,
-html[data-theme=dark][data-color=logseq] ::selection,
-html[data-color=none] ::selection {
-  color: var(--ls-text-on-accent);
-}
 html:not(html[data-color]) .inline.with-bg-color,
 html[data-theme=light][data-color=logseq] .inline.with-bg-color,
 html[data-theme=dark][data-color=logseq] .inline.with-bg-color,
@@ -605,6 +621,12 @@ html[data-theme=light][data-color=logseq] .menu-link:hover,
 html[data-theme=dark][data-color=logseq] .menu-link:hover,
 html[data-color=none] .menu-link:hover {
   background-color: var(--ctp-menu-hover-color);
+}
+html:not(html[data-color]) .menu-link.chosen,
+html[data-theme=light][data-color=logseq] .menu-link.chosen,
+html[data-theme=dark][data-color=logseq] .menu-link.chosen,
+html[data-color=none] .menu-link.chosen {
+  background-color: var(--ls-menu-hover-color);
 }
 html:not(html[data-color]) .cp__settings-inner > aside ul > li > a > strong,
 html[data-theme=light][data-color=logseq] .cp__settings-inner > aside ul > li > a > strong,
@@ -904,6 +926,21 @@ html[data-color=none] div.favorites button.ui__button,
 html[data-color=none] div.recent button.ui__button {
   background: transparent;
 }
+html:not(html[data-color]) div.favorites button.ui__button.as-ghost:hover, html:not(html[data-color]) div.favorites button.ui__button:hover, html:not(html[data-color]) div.recent button.ui__button.as-ghost:hover, html:not(html[data-color]) div.recent button.ui__button:hover,
+html[data-theme=light][data-color=logseq] div.favorites button.ui__button.as-ghost:hover,
+html[data-theme=light][data-color=logseq] div.favorites button.ui__button:hover,
+html[data-theme=light][data-color=logseq] div.recent button.ui__button.as-ghost:hover,
+html[data-theme=light][data-color=logseq] div.recent button.ui__button:hover,
+html[data-theme=dark][data-color=logseq] div.favorites button.ui__button.as-ghost:hover,
+html[data-theme=dark][data-color=logseq] div.favorites button.ui__button:hover,
+html[data-theme=dark][data-color=logseq] div.recent button.ui__button.as-ghost:hover,
+html[data-theme=dark][data-color=logseq] div.recent button.ui__button:hover,
+html[data-color=none] div.favorites button.ui__button.as-ghost:hover,
+html[data-color=none] div.favorites button.ui__button:hover,
+html[data-color=none] div.recent button.ui__button.as-ghost:hover,
+html[data-color=none] div.recent button.ui__button:hover {
+  background: transparent;
+}
 html:not(html[data-color]) div.favorites span.ui__icon, html:not(html[data-color]) div.recent span.ui__icon,
 html[data-theme=light][data-color=logseq] div.favorites span.ui__icon,
 html[data-theme=light][data-color=logseq] div.recent span.ui__icon,
@@ -1052,7 +1089,108 @@ html:not(html[data-color]) .search-results .text-gray-12,
 html[data-theme=light][data-color=logseq] .search-results .text-gray-12,
 html[data-theme=dark][data-color=logseq] .search-results .text-gray-12,
 html[data-color=none] .search-results .text-gray-12 {
-  color: var(--ctp-text-primary-color);
+  color: var(--ctp-primary-text-color);
+}
+html:not(html[data-color]) .input-wrap > input,
+html[data-theme=light][data-color=logseq] .input-wrap > input,
+html[data-theme=dark][data-color=logseq] .input-wrap > input,
+html[data-color=none] .input-wrap > input {
+  background-color: var(--ls-primary-background-color);
+  border-color: var(--ls-border-color);
+  color: var(--ls-primary-text-color);
+}
+html:not(html[data-color]) i b,
+html[data-theme=light][data-color=logseq] i b,
+html[data-theme=dark][data-color=logseq] i b,
+html[data-color=none] i b {
+  color: rgb(var(--ctp-text-italics));
+}
+html:not(html[data-color]) .ui-items-container .button,
+html:not(html[data-color]) .toolbar-plugin-manager .button,
+html[data-theme=light][data-color=logseq] .ui-items-container .button,
+html[data-theme=light][data-color=logseq] .toolbar-plugin-manager .button,
+html[data-theme=dark][data-color=logseq] .ui-items-container .button,
+html[data-theme=dark][data-color=logseq] .toolbar-plugin-manager .button,
+html[data-color=none] .ui-items-container .button,
+html[data-color=none] .toolbar-plugin-manager .button {
+  color: var(--ls-header-button-background);
+}
+html:not(html[data-color]) .ui-items-container .button i,
+html:not(html[data-color]) .toolbar-plugin-manager .button i,
+html[data-theme=light][data-color=logseq] .ui-items-container .button i,
+html[data-theme=light][data-color=logseq] .toolbar-plugin-manager .button i,
+html[data-theme=dark][data-color=logseq] .ui-items-container .button i,
+html[data-theme=dark][data-color=logseq] .toolbar-plugin-manager .button i,
+html[data-color=none] .ui-items-container .button i,
+html[data-color=none] .toolbar-plugin-manager .button i {
+  color: var(--ls-header-button-background);
+}
+html:not(html[data-color]) .ui-items-container .button:hover,
+html:not(html[data-color]) .toolbar-plugin-manager .button:hover,
+html[data-theme=light][data-color=logseq] .ui-items-container .button:hover,
+html[data-theme=light][data-color=logseq] .toolbar-plugin-manager .button:hover,
+html[data-theme=dark][data-color=logseq] .ui-items-container .button:hover,
+html[data-theme=dark][data-color=logseq] .toolbar-plugin-manager .button:hover,
+html[data-color=none] .ui-items-container .button:hover,
+html[data-color=none] .toolbar-plugin-manager .button:hover {
+  color: rgb(var(--ctp-accent, var(--ctp-pink)));
+  background-color: var(--ctp-header-icon-background);
+}
+html:not(html[data-color]) .ui-items-container .button:hover i, html:not(html[data-color]) .ui-items-container .button:hover span.ui__icon,
+html:not(html[data-color]) .toolbar-plugin-manager .button:hover i,
+html:not(html[data-color]) .toolbar-plugin-manager .button:hover span.ui__icon,
+html[data-theme=light][data-color=logseq] .ui-items-container .button:hover i,
+html[data-theme=light][data-color=logseq] .ui-items-container .button:hover span.ui__icon,
+html[data-theme=light][data-color=logseq] .toolbar-plugin-manager .button:hover i,
+html[data-theme=light][data-color=logseq] .toolbar-plugin-manager .button:hover span.ui__icon,
+html[data-theme=dark][data-color=logseq] .ui-items-container .button:hover i,
+html[data-theme=dark][data-color=logseq] .ui-items-container .button:hover span.ui__icon,
+html[data-theme=dark][data-color=logseq] .toolbar-plugin-manager .button:hover i,
+html[data-theme=dark][data-color=logseq] .toolbar-plugin-manager .button:hover span.ui__icon,
+html[data-color=none] .ui-items-container .button:hover i,
+html[data-color=none] .ui-items-container .button:hover span.ui__icon,
+html[data-color=none] .toolbar-plugin-manager .button:hover i,
+html[data-color=none] .toolbar-plugin-manager .button:hover span.ui__icon {
+  color: rgb(var(--ctp-accent, var(--ctp-pink)));
+}
+html:not(html[data-color]) .ui__modal[label=ls-modal-search],
+html[data-theme=light][data-color=logseq] .ui__modal[label=ls-modal-search],
+html[data-theme=dark][data-color=logseq] .ui__modal[label=ls-modal-search],
+html[data-color=none] .ui__modal[label=ls-modal-search] {
+  color: var(--ctp-primary-text-color);
+}
+html:not(html[data-color]) .ui__modal[label=ls-modal-search] .text-gray-12, html:not(html[data-color]) .ui__modal[label=ls-modal-search] .text-gray-11, html:not(html[data-color]) .ui__modal[label=ls-modal-search] input,
+html[data-theme=light][data-color=logseq] .ui__modal[label=ls-modal-search] .text-gray-12,
+html[data-theme=light][data-color=logseq] .ui__modal[label=ls-modal-search] .text-gray-11,
+html[data-theme=light][data-color=logseq] .ui__modal[label=ls-modal-search] input,
+html[data-theme=dark][data-color=logseq] .ui__modal[label=ls-modal-search] .text-gray-12,
+html[data-theme=dark][data-color=logseq] .ui__modal[label=ls-modal-search] .text-gray-11,
+html[data-theme=dark][data-color=logseq] .ui__modal[label=ls-modal-search] input,
+html[data-color=none] .ui__modal[label=ls-modal-search] .text-gray-12,
+html[data-color=none] .ui__modal[label=ls-modal-search] .text-gray-11,
+html[data-color=none] .ui__modal[label=ls-modal-search] input {
+  color: var(--ctp-primary-text-color);
+}
+html:not(html[data-color]) .ui__modal[label=ls-modal-search] input::placeholder,
+html[data-theme=light][data-color=logseq] .ui__modal[label=ls-modal-search] input::placeholder,
+html[data-theme=dark][data-color=logseq] .ui__modal[label=ls-modal-search] input::placeholder,
+html[data-color=none] .ui__modal[label=ls-modal-search] input::placeholder {
+  color: var(--ctp-primary-text-color);
+  opacity: 0.75;
+}
+html:not(html[data-color]) .cp__settings-inner,
+html[data-theme=light][data-color=logseq] .cp__settings-inner,
+html[data-theme=dark][data-color=logseq] .cp__settings-inner,
+html[data-color=none] .cp__settings-inner {
+  min-height: 70dvh;
+  max-height: 70dvh;
+}
+html:not(html[data-color]) ::selection,
+html[data-theme=light][data-color=logseq] ::selection,
+html[data-theme=dark][data-color=logseq] ::selection,
+html[data-color=none] ::selection {
+  background-color: var(--ls-selection-background-color);
+  color: var(--ls-selection-text-color);
 }
 
 div.cm-s-solarized.CodeMirror, div.cm-s-lsradix.CodeMirror {
@@ -1422,7 +1560,7 @@ html.whiteboard-latte div.dashboard-card, html.whiteboard-latte div.whiteboard-p
   --ctp-block-bullet-color: rgb(var(--ctp-accent, var(--ctp-sky)));
   --ctp-block-highlight-color: var(--color-base-30);
   --ctp-selection-background-color: rgba(var(--ctp-yellow, 0.9));
-  --ctp-selection-text-color: rgb(var(--color-base-00));
+  --ctp-selection-text-color: var(--color-base-00);
   --ctp-page-checkbox-color: rgb(var(--ctp-accent, var(--ctp-blue)));
   --ctp-page-checkbox-border-color: var(--ctp-primary-background-color);
   --ctp-page-blockquote-color: var(--ctp-primary-text-color);
@@ -1758,7 +1896,7 @@ html.whiteboard-latte .tl-select-input-content {
   --ctp-block-bullet-color: rgb(var(--ctp-accent, var(--ctp-sky)));
   --ctp-block-highlight-color: var(--color-base-30);
   --ctp-selection-background-color: rgba(var(--ctp-yellow, 0.9));
-  --ctp-selection-text-color: rgb(var(--color-base-00));
+  --ctp-selection-text-color: var(--color-base-00);
   --ctp-page-checkbox-color: rgb(var(--ctp-accent, var(--ctp-blue)));
   --ctp-page-checkbox-border-color: var(--ctp-primary-background-color);
   --ctp-page-blockquote-color: var(--ctp-primary-text-color);
@@ -2086,7 +2224,7 @@ html.whiteboard-latte .tl-tooltip-content {
   --ctp-block-bullet-color: rgb(var(--ctp-accent, var(--ctp-sky)));
   --ctp-block-highlight-color: var(--color-base-30);
   --ctp-selection-background-color: rgba(var(--ctp-yellow, 0.9));
-  --ctp-selection-text-color: rgb(var(--color-base-00));
+  --ctp-selection-text-color: var(--color-base-00);
   --ctp-page-checkbox-color: rgb(var(--ctp-accent, var(--ctp-blue)));
   --ctp-page-checkbox-border-color: var(--ctp-primary-background-color);
   --ctp-page-blockquote-color: var(--ctp-primary-text-color);
