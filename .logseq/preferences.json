@@ -1,5 +1,10 @@
 {
-  "theme": null,
+  "theme": {
+    "name": "Bonofix Theme",
+    "url": "assets:///Users/rolandolah/.logseq/plugins/logseq-bonofix-theme/custom.css",
+    "description": "A clean theme",
+    "pid": "logseq-bonofix-theme"
+  },
   "themes": {
     "mode": "dark",
     "light": {
@@ -11,9 +16,9 @@
       "selected": false
     },
     "dark": {
-      "name": "Catppuccin Mocha",
-      "url": "assets:///Users/rolandolah/.logseq/plugins/logseq-catppuccin/ctp-mocha.css",
-      "description": "Catppuccin Mocha",
+      "name": "Oledppuccin",
+      "url": "assets:///Users/rolandolah/.logseq/plugins/logseq-catppuccin/ctp-oled.css",
+      "description": "Oledppuccin",
       "mode": "dark",
       "pid": "logseq-catppuccin",
       "selected": false
