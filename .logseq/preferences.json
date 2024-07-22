@@ -16,13 +16,14 @@
       "selected": false
     },
     "dark": {
-      "name": "Oledppuccin",
-      "url": "assets:///Users/rolandolah/.logseq/plugins/logseq-catppuccin/ctp-oled.css",
-      "description": "Oledppuccin",
+      "name": "Awesome Styler Dark",
+      "url": "lsp://logseq.io/logseq-awesome-styler/dist/assets/awesomeStylerExt.css",
+      "description": "Dark customizable theme theme with extra stuff",
       "mode": "dark",
-      "pid": "logseq-catppuccin",
+      "pid": "logseq-awesome-styler",
       "selected": false
     }
   },
-  "externals": []
+  "externals": [],
+  "pinnedToolbarItems": []
 }
