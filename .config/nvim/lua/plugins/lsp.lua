@@ -1,6 +1,6 @@
 local servers = {
   omnisharp = {},
-  tsserver = { filetypes = { "typescript", "typescriptreact", "typescript.tsx" } },
+  ts_ls = { filetypes = { "typescript", "typescriptreact", "typescript.tsx" } },
   gopls = {},
   lua_ls = {
     Lua = {
