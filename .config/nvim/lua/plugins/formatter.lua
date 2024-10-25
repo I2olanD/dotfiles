@@ -5,7 +5,7 @@ return {
     local conform = require("conform")
 
     conform.setup({
-      formatters_by_fit = {
+      formatters_by_ft = {
         lua = { "stylua" },
         javascript = { "prettier" },
         typescript = { "prettier" },
@@ -16,7 +16,8 @@ return {
         markdown = { "prettier" },
         go = { "goimports", "gofumpt" },
         yaml = { "yamlfmt" },
-        sql = { "sqlfmt" }
+        sql = { "sqlfmt" },
+        cs = { "csharpier" }
       },
       format_after_save = {
         lsp_fallback = true,
