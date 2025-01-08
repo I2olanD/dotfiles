@@ -35,7 +35,6 @@ return {
           "typescript",
           "yaml",
         },
-        ignore_install = { "javascript" },
         incremental_selection = {
           enable = true,
           keymaps = {
