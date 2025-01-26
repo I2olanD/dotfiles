@@ -12,7 +12,7 @@ config.window_close_confirmation = "NeverPrompt"
 config.adjust_window_size_when_changing_font_size = false
 config.window_decorations = "RESIZE"
 
-config.window_background_opacity = 0.9
+-- config.window_background_opacity = 0.9
 config.macos_window_background_blur = 10
 
 -- Font
@@ -25,7 +25,7 @@ config.font = wezterm.font({ family = "Hack Nerd Font", scale = 1.6 })
 -- @see https://wezfurlong.org/wezterm/config/lua/wezterm.gui/get_appearance.html
 local function scheme_for_appearance(appearance)
   if appearance:find("Dark") then
-    return "Catppuccin Frappe"
+    return "Catppuccin Mocha"
   else
     return "Catppuccin Latte"
   end

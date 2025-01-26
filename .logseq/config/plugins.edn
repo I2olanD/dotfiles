@@ -1,4 +1,4 @@
-{:logseq-catppuccin {:version "v0.6.3", :repo "catppuccin/logseq", :effect false, :theme true}
+{:logseq-catppuccin {:version "v0.6.4", :repo "catppuccin/logseq", :effect false, :theme true}
  :logseq-plugin-heading-level-shortcuts {:version "v0.0.6", :repo "vipzhicheng/logseq-plugin-heading-level-shortcuts", :effect false, :theme false}
  :logseq-tabs {:version "v1.19.4", :repo "pengx17/logseq-plugin-tabs", :effect true, :theme false}
  :logseq-bullet-threading {:version "v1.1.4", :repo "pengx17/logseq-plugin-bullet-threading", :effect false, :theme false}

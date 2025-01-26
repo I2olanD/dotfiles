@@ -13,7 +13,6 @@ brew "starship"
 brew "pyenv"
 
 cask "wezterm"
-cask "docker"
 cask "postman"
 cask "dbeaver-community"
 

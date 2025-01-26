@@ -16,11 +16,11 @@
       "selected": false
     },
     "dark": {
-      "name": "Awesome Styler Dark",
-      "url": "lsp://logseq.io/logseq-awesome-styler/dist/assets/awesomeStylerExt.css",
-      "description": "Dark customizable theme theme with extra stuff",
+      "name": "Catppuccin Mocha",
+      "url": "assets:///Users/rolandolah/.logseq/plugins/logseq-catppuccin/ctp-mocha.css",
+      "description": "Catppuccin Mocha",
       "mode": "dark",
-      "pid": "logseq-awesome-styler",
+      "pid": "logseq-catppuccin",
       "selected": false
     }
   },
