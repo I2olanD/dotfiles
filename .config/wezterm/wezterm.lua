@@ -12,9 +12,6 @@ config.window_close_confirmation = "NeverPrompt"
 config.adjust_window_size_when_changing_font_size = false
 config.window_decorations = "RESIZE"
 
--- config.window_background_opacity = 0.9
--- config.macos_window_background_blur = 10
-
 -- Font
 --
 -- @see https://wezfurlong.org/wezterm/config/lua/config/font_rules.html
@@ -30,6 +27,16 @@ local function scheme_for_appearance(appearance)
     return "Catppuccin Latte"
   end
 end
+
+-- Terminal
+--
+-- @see https://wezterm.org/config/lua/config/window_padding.html
+config.window_padding = {
+  left = 10,
+  right = 0,
+  top = 0,
+  bottom = 0,
+}
 
 wezterm.on("window-config-reloaded", function(window, pane)
   local overrides = window:get_config_overrides() or {}
