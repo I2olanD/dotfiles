@@ -33,6 +33,7 @@ return {
           "scss",
           "toml",
           "typescript",
+          "terraform",
           "yaml",
         },
         incremental_selection = {

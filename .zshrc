@@ -1,10 +1,11 @@
-# If you come from bash you might have to change your $PATH.
+#export JAVA_HOME=$(/usr/libexec/java_home -v 17) If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 export PATH="$HOME/flutter/bin:$PATH"
 export TERM="wezterm"
+export JAVA_HOME=$(/usr/libexec/java_home -v 17)
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -154,3 +155,4 @@ source /opt/homebrew/opt/nvm/nvm.sh
 
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
+export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
