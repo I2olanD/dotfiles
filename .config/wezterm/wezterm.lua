@@ -31,12 +31,12 @@ end
 -- Terminal
 --
 -- @see https://wezterm.org/config/lua/config/window_padding.html
-config.window_padding = {
-  left = 10,
-  right = 0,
-  top = 0,
-  bottom = 0,
-}
+-- config.window_padding = {
+--   left = 0,
+--   right = 0,
+--   top = 0,
+--   bottom = 0,
+-- }
 
 wezterm.on("window-config-reloaded", function(window, pane)
   local overrides = window:get_config_overrides() or {}
