@@ -7,6 +7,9 @@ export PATH="$HOME/flutter/bin:$PATH"
 export TERM="wezterm"
 export JAVA_HOME=$(/usr/libexec/java_home -v 17)
 
+# Activate python local en
+source ~/.config/pyenv/bin/activate
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
