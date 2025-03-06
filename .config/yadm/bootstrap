@@ -8,9 +8,9 @@ if [ "$system_type" = "Darwin" ]; then
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
   fi
 
-  if [ -f "$HOME/.Brewfile" ]; then
+  if [ -f "$HOME/.config/homebrew/.Brewfile" ]; then
     echo "Updating homebrew bundle"
-    brew bundle --global
+    brew bundle --global --file="$HOME/.config/homebrew/.Brewfile"
   fi
 
   if [ ! -d ~/.config/.tmux/plugins/tpm ]; then
