@@ -158,4 +158,4 @@ source /opt/homebrew/opt/nvm/nvm.sh
 
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
-export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
+# export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
