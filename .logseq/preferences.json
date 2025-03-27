@@ -7,23 +7,19 @@
   },
   "themes": {
     "mode": "dark",
-    "light": {
-      "name": "Catppuccin Latte",
-      "url": "assets:///Users/rolandolah/.logseq/plugins/logseq-catppuccin/ctp-latte.css",
-      "description": "Catppuccin Latte",
-      "mode": "light",
-      "pid": "logseq-catppuccin",
-      "selected": false
-    },
+    "light": null,
     "dark": {
-      "name": "Catppuccin Mocha",
-      "url": "assets:///Users/rolandolah/.logseq/plugins/logseq-catppuccin/ctp-mocha.css",
-      "description": "Catppuccin Mocha",
+      "name": "Awesome Styler Dark",
+      "url": "lsp://logseq.io/logseq-awesome-styler/dist/assets/awesomeStylerExt.css",
+      "description": "Dark customizable theme theme with extra stuff",
       "mode": "dark",
-      "pid": "logseq-catppuccin",
+      "pid": "logseq-awesome-styler",
       "selected": false
     }
   },
   "externals": [],
-  "pinnedToolbarItems": []
+  "pinnedToolbarItems": [
+    "logseq-awesome-props:AwesomeProps",
+    "logseq-awesome-styler:AwesomeStyler"
+  ]
 }
