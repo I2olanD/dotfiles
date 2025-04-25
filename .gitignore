@@ -50,3 +50,7 @@ Session.vim
 # Vimspector Configurations for debugging
 # ----------------------------------------------------------------------------------------------
 .vimspector.json
+
+Claude.md
+memory-bank/
+.clinerules
