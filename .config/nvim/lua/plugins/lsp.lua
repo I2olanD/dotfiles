@@ -1,6 +1,6 @@
 local servers = {
   omnisharp = {},
-  ts_ls = { filetypes = { "javascriptreact", "typescript", "typescriptreact", "typescript.tsx" } },
+  -- ts_ls = { filetypes = { "javascriptreact", "typescript", "typescriptreact", "typescript.tsx" } },
   gopls = {},
   lua_ls = {
     Lua = {
@@ -49,10 +49,11 @@ return {
         ensure_installed = vim.tbl_keys(servers),
         handlers = {
           function(server_name)
+            local nvim_lsp = require('lspconfig')
             local capabilities = vim.lsp.protocol.make_client_capabilities()
             capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
-            require("lspconfig")[server_name].setup({
+            nvim_lsp[server_name].setup({
               capabilities = capabilities,
               settings = servers[server_name],
               filetypes = (servers[server_name] or {}).filetypes,
@@ -60,11 +61,21 @@ return {
               handlers = handlers,
             })
 
-            require("lspconfig").dartls.setup({
+            nvim_lsp.dartls.setup({
               capabilities = capabilities,
               on_attach = on_attach,
               handlers = handlers,
             })
+
+            nvim_lsp.denols.setup({
+              on_attach = on_attach,
+              root_dir = nvim_lsp.util.root_pattern("deno.json", "deno.jsonc"),
+            })
+
+            -- nvim_lsp.ts_ls.setup {
+            --   on_attach = on_attach,
+            --   root_dir = nvim_lsp.util.root_pattern("package.json"),
+            -- }
           end,
         },
       })
