@@ -15,22 +15,37 @@ return {
         indent = { enable = true },
         ensure_installed = {
           "bash",
-          "css",
-          "dart",
-          "dockerfile",
+
+          "git_config",
+          "git_rebase",
+          "gitattributes",
+          "gitcommit",
           "gitignore",
-          "go",
+
+          "css",
+          "scss",
+
           "html",
           "javascript",
+          "typescript",
+
           "json",
+
+          "python",
+
+          "dockerfile",
+
+          "go",
+
           "lua",
+
           "markdown",
           "markdown_inline",
-          "python",
-          "scss",
+
           "toml",
-          "typescript",
+
           "terraform",
+
           "yaml",
         },
         incremental_selection = {

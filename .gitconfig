@@ -5,19 +5,24 @@
 [interactive]
 	diffFilter = diff-so-fancy --patch
 
-[alias]
-  st = status
-
-  l = log --all --decorate --oneline --graph
-
-  pulls = log --pretty=format:\"%h, %ci\"
-
-  changes = log --oneline --name-status
-
-  graph = log --graph --abbrev-commit --date=relative --pretty=format:'%C(yellow)%h%Creset%C(blue)%d%Creset %s %C(green)<%an>%Creset %C(blue)%ci%Creset'
-
 [color]
 	ui = true
 
-[include]
-	path = .gitconfig.user
+[includeIf "gitdir:~/DEV/"]
+	path = ~/DEV/.gitconfig
+
+[includeIf "gitdir:~/ORCA/"]
+	path = ~/ORCA/.gitconfig
+
+[alias]
+	st = status
+
+	l = log --all --decorate --oneline --graph
+
+	gfpl = git push --force-with-lease
+
+	pulls = log --pretty=format:\"%h, %ci\"
+
+	changes = log --oneline --name-status
+
+	graph = log --graph --abbrev-commit --date=relative --pretty=format:'%C(yellow)%h%Creset%C(blue)%d%Creset %s %C(green)<%an>%Creset %C(blue)%ci%Creset'
