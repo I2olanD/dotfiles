@@ -8,6 +8,11 @@
 [color]
 	ui = true
 
+[user]
+	name = Roland Wallner
+	email = rolandolah@icloud.com
+	username = I2olanD
+
 [includeIf "gitdir:~/DEV/"]
 	path = ~/DEV/.gitconfig
 
