@@ -1,13 +1,13 @@
 [core]
 	pager = diff-so-fancy | less --tabs=4 -RF
 	excludesFile = ~/.gitignore
+
 [interactive]
 	diffFilter = diff-so-fancy --patch
+
 [alias]
-	# status
   st = status
 
-  # log
   l = log --all --decorate --oneline --graph
 
   pulls = log --pretty=format:\"%h, %ci\"
@@ -18,5 +18,6 @@
 
 [color]
 	ui = true
+
 [include]
 	path = .gitconfig.user
