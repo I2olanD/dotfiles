@@ -138,6 +138,9 @@ alias vim="nvim"
 alias vi="nvim"
 alias v="nvim"
 
+alias yst="yadm status"
+alias yaa="yadm add ."
+
 alias cxc-latest="sudo xcode-select -s /Applications/Xcode.app"
 alias cxc-14="sudo xcode-select -s /Applications/Xcode_14.3.1.app"
 alias open_xcode_14="/Applications/Xcode_14.3.1.app/Contents/MacOS/Xcode"
