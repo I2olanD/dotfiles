@@ -163,3 +163,12 @@ source /opt/homebrew/opt/nvm/nvm.sh
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
 # export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
+
+# Added by Windsurf
+export PATH="/Users/rolandolah/.codeium/windsurf/bin:$PATH"
+
+# Added by Windsurf
+export PATH="/Users/rolandolah/.codeium/windsurf/bin:$PATH"
+
+# Added by Windsurf
+export PATH="/Users/rolandolah/.codeium/windsurf/bin:$PATH"

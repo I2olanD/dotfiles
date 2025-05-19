@@ -1,3 +1,4 @@
+brew "bash"
 brew "git"
 brew "diff-so-fancy"
 brew "neovim"
