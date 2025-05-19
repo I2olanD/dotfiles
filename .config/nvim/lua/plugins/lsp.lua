@@ -1,7 +1,6 @@
 local servers = {
   ts_ls = { filetypes = { "javascriptreact", "typescript", "typescriptreact", "typescript.tsx" } },
   gopls = {},
-  -- denols = {},
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
@@ -11,7 +10,7 @@ local servers = {
   },
 }
 
-local on_attach = function(_, bufnr)
+local on_attach = function(client, bufnr)
   vim.keymap.set("n", "<leader>gD", function()
     vim.lsp.buf.declaration()
   end, { buffer = bufnr, desc = "[G]o to [D]eclaration" })
@@ -60,26 +59,6 @@ return {
               on_attach = on_attach,
               handlers = handlers,
             })
-
-            -- nvim_lsp.dartls.setup({
-            --   capabilities = capabilities,
-            --   on_attach = on_attach,
-            --   handlers = handlers,
-            -- })
-
-            -- nvim_lsp.denols.setup({
-            --   on_attach = on_attach,
-            --   root_dir = nvim_lsp.util.root_pattern("deno.json", "deno.jsonc"),
-            --   single_file_support = false,
-            --   settings = {},
-            -- })
-
-            nvim_lsp.ts_ls.setup {
-              on_attach = on_attach,
-              root_dir = nvim_lsp.util.root_pattern("package.json"),
-              single_file_support = false,
-              settings = {},
-            }
           end,
         },
       })
