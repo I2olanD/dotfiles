@@ -10,30 +10,6 @@ local servers = {
   },
 }
 
--- Create a special setup function for dart_ls that uses FVM
-local setup_dart_ls = function(server_name, config)
-  local util = require("lspconfig.util")
-  local project_root = util.find_git_ancestor(vim.fn.getcwd()) or vim.fn.getcwd()
-  local fvm_dart_path = project_root .. "/.fvm/flutter_sdk/bin/dart"
-
-  -- Check if FVM Dart exists
-  if vim.fn.filereadable(fvm_dart_path) == 1 then
-    config.cmd = {
-      fvm_dart_path,
-      "language-server",
-      "--protocol=lsp"
-    }
-  else
-    vim.notify("FVM Dart SDK not found at: " .. fvm_dart_path, vim.log.levels.WARN)
-    -- Fallback to system Dart if available
-    if vim.fn.executable("dart") == 1 then
-      config.cmd = { "dart", "language-server", "--protocol=lsp" }
-    end
-  end
-
-  require('lspconfig')[server_name].setup(config)
-end
-
 local on_attach = function(client, bufnr)
   vim.keymap.set("n", "<leader>gd", function()
     vim.lsp.buf.declaration()
