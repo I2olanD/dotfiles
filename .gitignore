@@ -52,5 +52,6 @@ Session.vim
 .vimspector.json
 
 Claude.md
+.claude/
 memory-bank/
 .clinerules

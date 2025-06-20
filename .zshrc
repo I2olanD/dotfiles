@@ -7,6 +7,7 @@ export PATH="$HOME/flutter/bin:$PATH"
 export TERM="wezterm"
 export JAVA_HOME=$(/usr/libexec/java_home -v 17)
 export STARSHIP_CONFIG="$HOME/.config/starship/config.toml"
+export PATH="$PATH:$(go env GOPATH)/bin"
 
 # Activate python local en
 source ~/.config/pyenv/bin/activate
