@@ -138,6 +138,8 @@ source $ZSH/oh-my-zsh.sh
 alias vim="nvim"
 alias vi="nvim"
 alias v="nvim"
+alias ccusage="npx ccusage@latest"
+alias claude-monitor="uv tool run claude-monitor"
 
 alias yst="yadm status"
 alias yaa="yadm add ."

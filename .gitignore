@@ -50,11 +50,3 @@ Session.vim
 # Vimspector Configurations for debugging
 # ----------------------------------------------------------------------------------------------
 .vimspector.json
-
-
-# AI Assistants
-# ----------------------------------------------------------------------------------------------
-Claude.md
-.claude/
-memory-bank/
-.clinerules
