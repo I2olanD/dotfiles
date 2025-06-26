@@ -8,7 +8,7 @@ if [ "$system_type" = "Darwin" ]; then
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
   fi
 
-  if [ -f "$HOME/.config/homebrew/.Brewfile" ]; then
+  if [ -f "~/.config/homebrew/.Brewfile" ]; then
     echo "Updating homebrew bundle"
     brew bundle --global --file="$HOME/.config/homebrew/.Brewfile"
   fi
@@ -33,6 +33,11 @@ if [ "$system_type" = "Darwin" ]; then
     && tic -x -o ~/.terminfo $tempfile \
     && rm $tempfile
   fi
+
+  nvm install --lts
+  npm install -g @anthropic-ai/claude-code
+  npm install -g @google/gemini-cli
+
 fi
 
 
