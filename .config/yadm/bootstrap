@@ -34,10 +34,6 @@ if [ "$system_type" = "Darwin" ]; then
     && rm $tempfile
   fi
 
-  nvm install --lts
-  npm install -g @anthropic-ai/claude-code
-  npm install -g @google/gemini-cli
-
 fi
 
 
