@@ -46,6 +46,8 @@ return {
 
           "terraform",
 
+          "vue",
+
           "yaml",
         },
         incremental_selection = {
