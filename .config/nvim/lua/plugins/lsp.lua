@@ -55,6 +55,7 @@ return {
     "mason-org/mason.nvim",
     dependencies = {
       "mason-org/mason-lspconfig.nvim",
+      "WhoIsSethDaniel/mason-tool-installer.nvim",
       "neovim/nvim-lspconfig",
       "hrsh7th/cmp-nvim-lsp",
     },
@@ -77,6 +78,11 @@ return {
       require("mason").setup()
       require("mason-lspconfig").setup({
         ensure_installed = vim.tbl_keys(servers),
+      })
+      require("mason-tool-installer").setup({
+        ensure_installed = {
+          "prettier",
+        },
       })
     end,
   },
