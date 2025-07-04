@@ -9,6 +9,8 @@ brew "fd"
 brew "ripgrep"
 brew "starship"
 
+cask "claude"
+
 cask "wezterm"
 cask "postman"
 
