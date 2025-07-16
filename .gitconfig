@@ -16,8 +16,8 @@
 [includeIf "gitdir:~/DEV/"]
 	path = ~/DEV/.gitconfig
 
-[includeIf "gitdir:~/ORCA/"]
-	path = ~/ORCA/.gitconfig
+[includeIf "gitdir:~/innFactory/"]
+	path = ~/innFactory/.gitconfig
 
 [alias]
 	st = status

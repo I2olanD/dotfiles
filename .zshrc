@@ -33,7 +33,6 @@ else
   export EDITOR='nvim'
 fi
 
-source ~/.config/pyenv/bin/activate
 source $ZSH/oh-my-zsh.sh
 source /opt/homebrew/opt/nvm/nvm.sh
 
