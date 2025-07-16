@@ -10,7 +10,7 @@ if [ "$system_type" = "Darwin" ]; then
 
   if [ -f "~/.config/homebrew/.Brewfile" ]; then
     echo "Updating homebrew bundle"
-    brew bundle --global --file="$HOME/.config/homebrew/.Brewfile"
+    brew bundle --global --file="$HOME/.config/homebrew/Brewfile"
   fi
 
   if [ ! -d ~/.tmux/plugins/tpm ]; then
