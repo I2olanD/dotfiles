@@ -13,11 +13,8 @@
 	email = rolandolah@icloud.com
 	username = I2olanD
 
-[includeIf "gitdir:~/DEV/"]
-	path = ~/DEV/.gitconfig
-
-[includeIf "gitdir:~/innFactory/"]
-	path = ~/innFactory/.gitconfig
+[include]
+  path = ~/.gitconfig.user
 
 [alias]
 	st = status
