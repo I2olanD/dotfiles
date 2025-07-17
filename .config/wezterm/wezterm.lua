@@ -11,6 +11,12 @@ config.enable_tab_bar = false
 config.window_close_confirmation = "NeverPrompt"
 config.adjust_window_size_when_changing_font_size = false
 config.window_decorations = "RESIZE"
+config.window_frame = {
+  border_left_width = "5px",
+  border_right_width = "5px",
+  border_bottom_height = "5px",
+  border_top_height = "5px",
+}
 
 -- Font
 --
@@ -28,16 +34,6 @@ local function scheme_for_appearance(appearance)
     return "Catppuccin Latte"
   end
 end
-
--- Terminal
---
--- @see https://wezterm.org/config/lua/config/window_padding.html
--- config.window_padding = {
---   left = 0,
---   right = 0,
---   top = 0,
---   bottom = 0,
--- }
 
 wezterm.on("window-config-reloaded", function(window, pane)
   local overrides = window:get_config_overrides() or {}
