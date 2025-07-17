@@ -8,13 +8,8 @@
 [color]
 	ui = true
 
-[user]
-	name = Roland Wallner
-	email = rolandolah@icloud.com
-	username = I2olanD
-
-[include]
-  path = ~/.gitconfig.user
+[init]
+	defaultBranch = main
 
 [alias]
 	st = status
@@ -28,3 +23,6 @@
 	changes = log --oneline --name-status
 
 	graph = log --graph --abbrev-commit --date=relative --pretty=format:'%C(yellow)%h%Creset%C(blue)%d%Creset %s %C(green)<%an>%Creset %C(blue)%ci%Creset'
+
+[include]
+  path = ~/.gitconfig.user
