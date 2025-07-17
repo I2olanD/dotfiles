@@ -5,6 +5,11 @@ map("n", "<Esc>", "<cmd>nohlsearch<CR>")
 -- Windows
 map("n", "<C-m>", ":WindowsMaximize<CR>", { silent = true, desc = "[M]aximize current buffer" })
 
+-- Buffers
+map("n", "<left>", "<CMD> BufferLineCyclePrev <CR>", { desc = "Goto left buffer", silent = true })
+map("n", "<right>", "<CMD> BufferLineCycleNext <CR>", { desc = "Goto right buffer", silent = true })
+map("n", "<up>", "<CMD> BufferLineCloseOthers <CR>", { desc = "Close all other buffers", silent = true })
+
 -- Telescope
 map("n", "<leader>ff", "<CMD> Telescope find_files <CR>", { silent = true, desc = "[F]ind [F]iles" })
 map("n", "<leader>fb", "<CMD> Telescope file_browser <CR>", { silent = true, desc = "[F]File [B]rowser" })
