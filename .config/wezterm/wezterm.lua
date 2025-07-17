@@ -48,6 +48,4 @@ wezterm.on("window-config-reloaded", function(window, pane)
   end
 end)
 
-config.color_scheme = scheme_for_appearance(wezterm.gui.get_appearance())
-
 return config
