@@ -28,7 +28,6 @@ config.font = wezterm.font({ family = "Hack Nerd Font", scale = 1.6 })
 -- @see https://wezfurlong.org/wezterm/config/lua/wezterm.gui/get_appearance.html
 local function scheme_for_appearance(appearance)
   if appearance:find("Dark") then
-    -- return "Tokyo Night"
     return "Catppuccin Mocha"
   else
     return "Catppuccin Latte"
