@@ -17,7 +17,6 @@ return {
         go = { "goimports", "gofumpt" },
         yaml = { "yamlfmt" },
         sql = { "sqlfmt" },
-        cs = { "csharpier" }
       },
       format_after_save = {
         lsp_fallback = true,
