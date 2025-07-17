@@ -1,37 +1,36 @@
+-- leader
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-vim.scriptencoding = "utf-8"
-vim.opt.fileencoding = "utf-8"
-vim.opt.encoding = "utf-8"
-
-vim.opt.autoindent = true
-vim.opt.smartindent = true
-
-vim.wo.relativenumber = true
-vim.opt.swapfile = false
-vim.o.hlsearch = false
-vim.wo.number = true
-vim.o.mouse = "a"
-vim.o.clipboard = "unnamedplus"
-vim.o.breakindent = true
-vim.o.undofile = true
-vim.o.ignorecase = true
-vim.o.smartcase = true
-vim.wo.signcolumn = "yes"
-vim.o.updatetime = 250
-vim.o.timeoutlen = 500
-vim.opt.ttimeoutlen = 0
-vim.o.completeopt = "menuone,noselect"
-
-vim.o.expandtab = true
-vim.o.tabstop = 2
-vim.o.shiftwidth = 2
-
-vim.opt.cursorline = true
+vim.opt.number = true
+vim.opt.relativenumber = true
 
 vim.opt.termguicolors = true
-vim.opt.winblend = 0
--- vim.opt.background = "dark"
 
-vim.opt.fillchars = "eob: "
+vim.opt.completeopt = { "menuone", "noselect" }
+vim.opt.clipboard = "unnamedplus"
+vim.opt.mouse = "a"
+
+vim.opt.signcolumn = "yes"
+vim.opt.cursorline = true
+vim.opt.timeoutlen = 500
+vim.opt.fileencoding = "utf-8"
+
+-- line wrap
+vim.opt.wrap = true
+vim.opt.linebreak = true
+vim.opt.breakindent = true
+
+-- search
+vim.opt.hlsearch = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+
+-- autowrite
+vim.opt.autowrite = true
+vim.opt.updatetime = 500
+
+-- turn of swapfiles
+vim.opt.backup = false
+vim.opt.swapfile = false
+vim.opt.writebackup = false

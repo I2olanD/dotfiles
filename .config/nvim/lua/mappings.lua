@@ -2,12 +2,6 @@ local map = vim.keymap.set
 -- VIM
 map("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
--- TMUX window navigation
-map("n", "<c-h>", "<cmd> TmuxNavigationLeft <CR>", { desc = "window left" })
-map("n", "<c-l>", "<cmd> TmuxNavigationRight <CR>", { desc = "window right" })
-map("n", "<c-j>", "<cmd> TmuxNavigationDown <CR>", { desc = "window down" })
-map("n", "<c-k>", "<cmd> TmuxNavigationUp <CR>", { desc = "window up" })
-
 -- Windows
 map("n", "<C-m>", ":WindowsMaximize<CR>", { silent = true, desc = "[M]aximize current buffer" })
 
