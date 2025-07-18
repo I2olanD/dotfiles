@@ -1,5 +1,6 @@
 brew "bash"
 brew "git"
+brew "yarn"
 brew "diff-so-fancy"
 brew "neovim"
 brew "nvm"
