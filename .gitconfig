@@ -1,0 +1,40 @@
+[core]
+  editor = nvim
+	pager = delta
+	excludesFile = ~/.gitignore
+
+[interactive]
+	diffFilter = delta --color-only
+
+[color]
+	ui = true
+
+[init]
+	defaultBranch = main
+
+[alias]
+	st = status
+
+	l = log --all --decorate --oneline --graph
+
+	gfpl = git push --force-with-lease
+
+	pulls = log --pretty=format:\"%h, %ci\"
+
+	changes = log --oneline --name-status
+
+	graph = log --graph --abbrev-commit --date=relative --pretty=format:'%C(yellow)%h%Creset%C(blue)%d%Creset %s %C(green)<%an>%Creset %C(blue)%ci%Creset'
+
+[include]
+  path = ~/.gitconfig.user
+[merge]
+	conflictStyle = zdiff3
+
+[delta]
+	navigate = true
+  side-by-side = true
+  line-numbers = true
+
+[delta "dark-mode"]
+  dark = true
+  syntax-theme = tokyonight_moon
