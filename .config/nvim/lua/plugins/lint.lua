@@ -1,10 +1,8 @@
 return {
   "mfussenegger/nvim-lint",
   event = { "BufWritePost", "BufReadPost", "InsertLeave" },
-  config = function(_, opts)
-    local lint = require("lint")
-
-    local linters = {
+  config = function()
+    require("lint").linters_by_ft = {
       lua = { "luacheck" },
       json = { "jsonlint" },
       javascript = { "eslint" },
@@ -12,9 +10,7 @@ return {
       javascriptreact = { "eslint" },
       typescriptreact = { "eslint" },
       sql = { "sqlfluff" },
-      svelte = { "eslint" }
+      svelte = { "eslint" },
     }
-
-    lint.linters_by_ft = vim.tbl_deep_extend("force", linters, opts.linters_by_ft or {})
   end,
 }

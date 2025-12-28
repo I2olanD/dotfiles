@@ -1,4 +1,3 @@
--- local linter_utils = require("utils.linter")
 local lint_group = vim.api.nvim_create_augroup("Lint", { clear = true })
 local yank_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
 
@@ -12,11 +11,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 
 -- Linting
--- vim.api.nvim_create_autocmd({ "BufEnter" }, {
---   callback = linter_utils.notify_linter_status,
---   group = lint_group
--- })
-
 vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
   callback = function()
     require("lint").try_lint()

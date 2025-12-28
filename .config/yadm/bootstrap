@@ -1,0 +1,40 @@
+#!/bin/bash
+
+DIVIDER="----------------------------------------------------------------------------"
+
+if ! which brew > /dev/null; then
+  echo "${DIVIDER}"
+  echo "[YADM] Homebrew is not insalled, exiting..."
+  exit 1
+fi
+
+if [ -f ~/.config/homebrew/Brewfile ]; then
+  echo "${DIVIDER}"
+  echo "[YADM] Updating homebrew bundle"
+  brew bundle --file="$HOME/.config/homebrew/Brewfile"
+fi
+
+if [ ! -d ~/.tmux/plugins/tpm ]; then
+  echo "${DIVIDER}"
+  echo "[YADM] Tmux setup"
+  git clone --depth 1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+  (exec "~/.tmux/plugins/tpm/scripts/install_plugins.sh")
+fi
+
+if [ -d ~/.tmux/plugins/tpm ]; then
+  echo "${DIVIDER}"
+  echo "[YADM] Tmux installation"
+  tmux source ~/.config/tmux/tmux.conf
+fi
+
+if which WezTerm | grep -q "/opt/homebrew/bin/WezTerm"; then
+  echo "${DIVIDER}"
+  echo "[YADM] Set terminal"
+
+  tempfile=$(mktemp) \
+  && curl -o $tempfile https://raw.githubusercontent.com/wez/wezterm/main/termwiz/data/wezterm.terminfo \
+  && tic -x -o ~/.terminfo $tempfile \
+  && rm $tempfile
+fi
+
+echo "[YADM] done."

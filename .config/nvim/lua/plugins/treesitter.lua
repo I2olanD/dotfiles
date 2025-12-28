@@ -24,7 +24,6 @@ return {
           "toml",
           "tsx",
           "typescript",
-          "typescript"
         },
         ignore_install = { "javascript" },
         incremental_selection = {

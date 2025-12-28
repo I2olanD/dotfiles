@@ -28,10 +28,6 @@ return {
         sql = { "sqlfmt" },
       },
 
-      format_after_save = {
-        lsp_fallback = true,
-      },
-
       format_on_save = {
         lsp_fallback = true,
         timeout_ms = 500,
