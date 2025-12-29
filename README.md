@@ -51,7 +51,8 @@ Check `~/.zshrc` for more details
 - [`tmux`](https://github.com/tmux/tmux/wiki) terminal multiplexer to switch easily between several programs
 - [`tokei"`](https://docs.rs/tokei/latest/tokei/) utility to count code in directories
 - [`zoxide`](https://github.com/ajeetdsouza/zoxide) smarter cd command, inspired by z and autojump
-- [`zsh`](https://www.zsh.org/) shell designed for interactive use (using [`zplug`](https://github.com/zplug/zplug) and [`powerlevel10k`](https://github.com/romkatv/powerlevel10k))
+- [`zsh`](https://www.zsh.org/) shell designed for interactive use
+- [`yazi`](https://github.com/sxyazi/yazi) terminal file manager
 
 ## Installation
 
