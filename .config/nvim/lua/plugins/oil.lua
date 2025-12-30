@@ -2,7 +2,16 @@ return {
   'stevearc/oil.nvim',
   ---@module 'oil'
   ---@type oil.SetupOpts
-  opts = {},
+  opts = {
+    keymaps = {
+      ["q"] = "actions.close",
+      ["<Esc>"] = "actions.close",
+    },
+  },
+  keys = {
+    { "<leader>e", "<CMD>Oil .<CR>", desc = "Open Oil at cwd" },
+    { "<leader>E", "<CMD>Oil<CR>",   desc = "Open Oil at current file" },
+  },
   -- Optional dependencies
   dependencies = { { "nvim-mini/mini.icons", opts = {} } },
   -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
