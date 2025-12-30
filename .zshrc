@@ -1,4 +1,9 @@
 # ============================================================================
+# Homebrew (must be early for tools installed via brew)
+# ============================================================================
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# ============================================================================
 # Options
 # ============================================================================
 setopt autocd
@@ -27,6 +32,9 @@ source "${ZINIT_HOME}/zinit.zsh"
 # # ============================================================================
 # # Plugins (optimized loading with turbo mode)
 # # ============================================================================
+# Load compinit early for plugins that need compdef
+autoload -Uz compinit && compinit
+
 # # Load immediately (required for prompt)
 zinit light-mode for \
     OMZL::git.zsh \
@@ -48,8 +56,6 @@ zinit ice depth=1; zinit light zsh-users/zsh-history-substring-search
 
 zinit ice wait lucid
 zinit light Aloxaf/fzf-tab
-
-autoload -U compinit && compinit
 
 zinit cdreplay -q
 
