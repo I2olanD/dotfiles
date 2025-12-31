@@ -1,7 +1,6 @@
 [tools]
 go = "latest"
 node = "22"
-pnpm = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = ["java"]
