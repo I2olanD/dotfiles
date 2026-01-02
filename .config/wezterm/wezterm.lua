@@ -7,7 +7,9 @@ config.enable_tab_bar = false
 config.window_close_confirmation = "NeverPrompt"
 config.adjust_window_size_when_changing_font_size = false
 config.window_decorations = "RESIZE"
-config.font = wezterm.font({ family = "Hack Nerd Font", scale = 1.6 })
+config.font = wezterm.font({ family = "Hack Nerd Font" })
+config.font_size = 13.0
+config.dpi = 192.0
 config.window_padding = {
   left = '0cell',
   right = '0cell',
