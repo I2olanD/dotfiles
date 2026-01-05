@@ -9,7 +9,7 @@ config.adjust_window_size_when_changing_font_size = false
 config.window_decorations = "RESIZE"
 config.font = wezterm.font({ family = "Hack Nerd Font" })
 config.font_size = 13.0
-config.dpi = 192.0
+config.dpi = 144.0
 config.window_padding = {
   left = '0cell',
   right = '0cell',
