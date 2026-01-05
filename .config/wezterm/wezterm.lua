@@ -19,7 +19,7 @@ config.window_padding = {
 
 local function scheme_for_appearance(appearance)
   if appearance:find("Dark") then
-    return "Tokyo Night"
+    return "Catppuccin Mocha"
   else
     return "Catppuccin Latte"
   end
