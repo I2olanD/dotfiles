@@ -106,10 +106,16 @@ return {
         },
 
         window = {
-          completion = { border = "rounded", side_padding = 1, winhighlight = "CursorLine:Visual" },
-          documentation = { border = "rounded" },
-          -- completion = cmp.config.window.bordered(),
-          -- documentation = cmp.config.window.bordered(),
+          completion = {
+            border = "none",
+            side_padding = 0,
+            scrollbar = false,
+            winhighlight = "Normal:Pmenu,CursorLine:PmenuSel",
+          },
+          documentation = {
+            border = "none",
+            winhighlight = "Normal:Pmenu",
+          },
         },
 
         experimental = {
