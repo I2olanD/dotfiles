@@ -16,7 +16,4 @@ return {
       },
     })
   end,
-  keys = {
-    { "<C-m>", ":WindowsMaximize<CR>", desc = "Maximize Window" },
-  }
 }

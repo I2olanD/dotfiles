@@ -1,3 +1,5 @@
+local keymaps = require("keymaps")
+
 local servers = {
   html = {},
 
@@ -42,24 +44,6 @@ local servers = {
   gopls = {}
 }
 
-local on_attach = function(_, bufnr)
-  vim.keymap.set("n", "<leader>gd", function()
-    vim.lsp.buf.declaration()
-  end, { buffer = bufnr, desc = "[g]o to [d]eclaration" })
-  vim.keymap.set("n", "<leader>gd", function()
-    vim.lsp.buf.definition()
-  end, { buffer = bufnr, desc = "[g]o to [d]efinition" })
-  vim.keymap.set("n", "<leader>gi", function()
-    vim.lsp.buf.implementation()
-  end, { buffer = bufnr, desc = "[g]o to [i]mplementation" })
-  vim.keymap.set("n", "<leader>k", function()
-    vim.lsp.buf.code_action()
-  end, { buffer = bufnr, desc = "[c]ode action" })
-  vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
-    vim.lsp.buf.format()
-  end, { desc = "format current buffer with lsp" })
-end
-
 return {
   {
     "mason-org/mason.nvim",
@@ -76,7 +60,7 @@ return {
 
       for server_name, server_config in pairs(servers) do
         local config = vim.tbl_deep_extend("force", {
-          on_attach = on_attach,
+          on_attach = keymaps.on_attach,
           capabilities = capabilities,
           settings = servers[server_name].settings or {},
           filetypes = servers[server_name].filetypes or {},

@@ -35,13 +35,5 @@ return {
         timeout_ms = 500,
       },
     })
-
-    vim.keymap.set({ "n", "v" }, "<leader>mp", function()
-      conform.format({
-        lsp_fallback = true,
-        async = true,
-        timeout = 500,
-      })
-    end, { desc = "Format file" })
   end,
 }
