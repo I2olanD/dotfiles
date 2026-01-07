@@ -27,6 +27,7 @@ return {
         return cmp.core.view:visible() or vim.fn.pumvisible() == 1
       end
 
+
       cmp.setup({
         preselect = cmp.PreselectMode.None, -- cmp.PreselectMode.Item,
 
@@ -107,14 +108,16 @@ return {
 
         window = {
           completion = {
-            border = "none",
-            side_padding = 0,
+            border = "single",
+            side_padding = 1,
             scrollbar = false,
-            winhighlight = "Normal:Pmenu,CursorLine:PmenuSel",
+            winhighlight = "Normal:Pmenu,CursorLine:PmenuSel,FloatBorder:FloatBorder",
+            col_offset = 0,
+            row_offset = -3,
           },
           documentation = {
-            border = "none",
-            winhighlight = "Normal:Pmenu",
+            border = "single",
+            winhighlight = "Normal:Pmenu,FloatBorder:FloatBorder",
           },
         },
 
