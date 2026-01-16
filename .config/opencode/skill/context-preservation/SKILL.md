@@ -9,6 +9,7 @@ You are a context preservation specialist that captures and restores important s
 ## When to Activate
 
 Activate this skill when:
+
 - **Completing significant work** - Capture context before session ends
 - **Switching contexts** - Moving to different task/project
 - **Hitting a blocker** - Document state before pausing
@@ -19,14 +20,14 @@ Activate this skill when:
 
 ### What to Preserve
 
-| Category | Examples | Priority |
-|----------|----------|----------|
-| **Decisions** | Architectural choices, trade-offs, rejected alternatives | HIGH |
-| **Progress** | Completed tasks, current state, next steps | HIGH |
-| **Blockers** | What's blocking, what was tried, potential solutions | HIGH |
-| **Discoveries** | Patterns found, gotchas, undocumented behaviors | MEDIUM |
-| **Context** | Files modified, dependencies, related specs | MEDIUM |
-| **References** | Relevant docs, external resources, code locations | LOW |
+| Category        | Examples                                                 | Priority |
+| --------------- | -------------------------------------------------------- | -------- |
+| **Decisions**   | Architectural choices, trade-offs, rejected alternatives | HIGH     |
+| **Progress**    | Completed tasks, current state, next steps               | HIGH     |
+| **Blockers**    | What's blocking, what was tried, potential solutions     | HIGH     |
+| **Discoveries** | Patterns found, gotchas, undocumented behaviors          | MEDIUM   |
+| **Context**     | Files modified, dependencies, related specs              | MEDIUM   |
+| **References**  | Relevant docs, external resources, code locations        | LOW      |
 
 ### What NOT to Preserve
 
@@ -41,10 +42,10 @@ Activate this skill when:
 
 ### Location
 
-Context files are stored in `.claude/context/`:
+Context files are stored in `.config/opencode/context/`:
 
 ```
-.claude/
+.config/opencode/
 └── context/
     ├── session-2024-01-15-auth-implementation.md
     ├── session-2024-01-16-api-refactor.md
@@ -74,24 +75,29 @@ Context files are stored in `.claude/context/`:
 **Impact**: [What this affects]
 
 ### [Decision 2 Title]
+
 ...
 
 ## Progress
 
 ### Completed
+
 - [x] [Task 1]
 - [x] [Task 2]
 
 ### In Progress
+
 - [ ] [Current task] - [Current state]
 
 ### Next Steps
+
 1. [Next action 1]
 2. [Next action 2]
 
 ## Blockers
 
 ### [Blocker 1]
+
 **Issue**: [What's blocking]
 **Attempted**: [What was tried]
 **Potential Solutions**: [Ideas to explore]
@@ -99,16 +105,17 @@ Context files are stored in `.claude/context/`:
 ## Key Discoveries
 
 ### [Discovery 1]
+
 **Finding**: [What was discovered]
 **Location**: [File:line or general area]
 **Implication**: [How this affects work]
 
 ## Files Modified
 
-| File | Changes | Status |
-|------|---------|--------|
-| src/auth.ts | Added login validation | Complete |
-| src/users.ts | Started refactor | In progress |
+| File         | Changes                | Status      |
+| ------------ | ---------------------- | ----------- |
+| src/auth.ts  | Added login validation | Complete    |
+| src/users.ts | Started refactor       | In progress |
 
 ## References
 
@@ -119,6 +126,7 @@ Context files are stored in `.claude/context/`:
 ## Resume Instructions
 
 When resuming this work:
+
 1. [Specific action to take first]
 2. [Context to load]
 3. [Things to verify]
@@ -135,6 +143,7 @@ When significant work is being completed or session is ending:
 #### Step 1: Identify Key Context
 
 Ask yourself:
+
 - What decisions were made that someone else (or future me) needs to know?
 - What is the current state of the work?
 - What are the next logical steps?
@@ -145,15 +154,16 @@ Ask yourself:
 
 ```bash
 # Create context directory if needed
-mkdir -p .claude/context
+mkdir -p .config/opencode/context
 
 # Generate timestamped filename
-filename=".claude/context/session-$(date +%Y-%m-%d)-[task-slug].md"
+filename=".config/opencode/context/session-$(date +%Y-%m-%d)-[task-slug].md"
 ```
 
 #### Step 3: Write Context
 
 Use the file structure template above, focusing on:
+
 - **Be specific** - Include file paths, line numbers, exact values
 - **Be concise** - Bullet points over paragraphs
 - **Be actionable** - Next steps should be clear enough to execute
@@ -167,6 +177,7 @@ When an important decision is made during the session:
 
 **Context**: [Why this decision came up]
 **Options Evaluated**:
+
 1. [Option A] - [Pros/Cons]
 2. [Option B] - [Pros/Cons]
 3. [Option C] - [Pros/Cons]
@@ -189,6 +200,7 @@ When encountering a blocker:
 **Root Cause**: [If known] / **Suspected**: [If unknown]
 
 **Investigation Log**:
+
 1. Tried [X] → Result: [Y]
 2. Tried [A] → Result: [B]
 
@@ -209,10 +221,10 @@ When resuming previous work:
 
 ```bash
 # Find recent context files
-ls -la .claude/context/*.md
+ls -la .config/opencode/context/*.md
 
 # Check for active context
-cat .claude/context/active-context.md
+cat .config/opencode/context/active-context.md
 ```
 
 #### Step 2: Load Context
@@ -241,6 +253,7 @@ Would you like to:
 #### Step 3: Apply Context
 
 When continuing:
+
 - Load relevant files mentioned in context
 - Verify assumptions still hold (code hasn't changed)
 - Pick up from documented next steps
@@ -267,8 +280,8 @@ When context accumulates over multiple sessions:
 
 ## Key Decisions (All Sessions)
 
-| Date | Decision | Rationale |
-|------|----------|-----------|
+| Date   | Decision   | Rationale         |
+| ------ | ---------- | ----------------- |
 | [Date] | [Decision] | [Brief rationale] |
 
 ## Current State
@@ -291,8 +304,9 @@ When context accumulates over multiple sessions:
 #### Archival
 
 Old context files should be:
+
 1. Merged into consolidated context
-2. Moved to `.claude/context/archive/`
+2. Moved to `.config/opencode/context/archive/`
 3. Retained for reference but not auto-loaded
 
 ---
@@ -310,11 +324,13 @@ Spec: [ID] - [Name]
 Location: docs/specs/[ID]-[name]/
 
 Progress vs Spec:
+
 - PRD: [Status]
 - SDD: [Status]
 - PLAN: [Phase X of Y]
 
 Deviations from Spec:
+
 - [Any changes made from original plan]
 ```
 
@@ -334,6 +350,7 @@ Files in Progress:
 | [path] | [state] | [N]% |
 
 Tests:
+
 - [N] passing
 - [N] failing
 - [N] pending
@@ -350,11 +367,13 @@ PR/Branch: [identifier]
 Review State: [In progress / Feedback given / Awaiting response]
 
 Findings So Far:
+
 - Critical: [N]
 - High: [N]
 - Medium: [N]
 
 Outstanding Questions:
+
 - [Question 1]
 - [Question 2]
 ```
@@ -380,7 +399,7 @@ The skill should be triggered automatically when:
 
 ### Context Restoration Triggers
 
-- 🔵 Starting session in directory with `.claude/context/`
+- 🔵 Starting session in directory with `.config/opencode/context/`
 - 🔵 User mentions "continue", "resume", "where were we"
 - 🔵 Detecting in-progress work (uncommitted changes + context file)
 
@@ -394,7 +413,7 @@ The skill should be triggered automatically when:
 💾 Context Preserved
 
 Session: [Title]
-Saved to: .claude/context/[filename].md
+Saved to: .config/opencode/context/[filename].md
 
 Captured:
 - [N] decisions
