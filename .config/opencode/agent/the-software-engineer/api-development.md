@@ -1,7 +1,6 @@
 ---
 description: Design and document REST/GraphQL APIs with comprehensive specifications, interactive documentation, and excellent developer experience
 mode: subagent
-model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, error-recovery, documentation-extraction, api-contract-design, technical-writing
 ---
 

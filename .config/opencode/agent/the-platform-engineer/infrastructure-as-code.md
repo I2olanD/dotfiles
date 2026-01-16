@@ -1,7 +1,6 @@
 ---
 description: Write infrastructure as code, design cloud architectures, create reusable infrastructure modules, and implement infrastructure automation
 mode: subagent
-model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, error-recovery, documentation-extraction, deployment-pipeline-design, security-assessment
 ---
 

@@ -1,7 +1,6 @@
 ---
 description: Create architectural documentation, design decision records, system diagrams, integration guides, and operational runbooks
 mode: subagent
-model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, documentation-extraction, technical-writing
 ---
 

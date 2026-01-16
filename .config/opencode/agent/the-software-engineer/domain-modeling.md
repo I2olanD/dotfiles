@@ -1,7 +1,6 @@
 ---
 description: Model business domains with proper entities, business rules, and persistence design including domain-driven design patterns and data consistency management
 mode: subagent
-model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, error-recovery, documentation-extraction, data-modeling, domain-driven-design
 ---
 

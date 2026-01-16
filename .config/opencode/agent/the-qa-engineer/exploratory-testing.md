@@ -1,7 +1,6 @@
 ---
 description: Discover defects through creative exploration and user journey validation that automated tests cannot catch
 mode: subagent
-model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, documentation-extraction, test-design, exploratory-testing
 ---
 

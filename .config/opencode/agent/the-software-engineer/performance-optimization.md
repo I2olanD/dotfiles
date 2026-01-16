@@ -1,7 +1,6 @@
 ---
 description: Optimize application performance including bundle size, rendering speed, memory usage, Core Web Vitals, and user-perceived performance
 mode: subagent
-model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, error-recovery, documentation-extraction, performance-analysis
 ---
 

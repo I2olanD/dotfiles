@@ -1,7 +1,6 @@
 ---
 description: Design, implement, and troubleshoot data pipelines that handle high-volume data processing with reliability and resilience
 mode: subagent
-model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, error-recovery, documentation-extraction, deployment-pipeline-design
 ---
 

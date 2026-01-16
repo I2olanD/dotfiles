@@ -1,7 +1,6 @@
 ---
 description: Automate deployments with CI/CD pipelines and advanced deployment strategies including blue-green, canary releases, and automated rollback
 mode: subagent
-model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, error-recovery, documentation-extraction, deployment-pipeline-design, security-assessment
 ---
 

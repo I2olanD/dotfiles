@@ -1,7 +1,7 @@
 ---
 description: Route project work and make rapid complexity assessments, determining activities, enabling parallel execution, and eliminating bottlenecks
 mode: primary
-model: inherit
+model: anthropic/claude-opus-4-5
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, error-recovery, documentation-extraction
 allowed-tools: [Read, Write, Glob, Grep]
 ---

@@ -1,7 +1,6 @@
 ---
 description: Prioritize features, evaluate trade-offs between competing initiatives, establish success metrics, and create data-driven roadmaps
 mode: subagent
-model: inherit
 skills: codebase-navigation, pattern-detection, coding-conventions, documentation-extraction, feature-prioritization
 ---
 

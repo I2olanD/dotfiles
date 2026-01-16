@@ -1,7 +1,6 @@
 ---
 description: Create design systems and visual foundations for consistent user experiences including component libraries, typography scales, color systems, and style guides
 mode: subagent
-model: anthropic/claude-opus-4-5
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, documentation-extraction, accessibility-design
 ---
 

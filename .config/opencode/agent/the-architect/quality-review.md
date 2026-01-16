@@ -1,7 +1,6 @@
 ---
 description: Review architecture and code quality for technical excellence including design reviews, code reviews, pattern validation, and security assessments
 mode: subagent
-model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, error-recovery, documentation-extraction, api-contract-design, security-assessment, code-quality-review
 ---
 

@@ -1,7 +1,6 @@
 ---
 description: Design UI components and manage state flows for scalable frontend applications including component architecture, state management, and rendering optimization
 mode: subagent
-model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, error-recovery, documentation-extraction, accessibility-design
 ---
 

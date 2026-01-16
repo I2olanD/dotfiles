@@ -1,7 +1,6 @@
 ---
 description: Implement comprehensive monitoring and incident response for production systems including metrics, logging, alerting, dashboards, and SLI/SLO definition
 mode: subagent
-model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, error-recovery, documentation-extraction, observability-design
 ---
 

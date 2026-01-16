@@ -1,7 +1,6 @@
 ---
 description: Break down complex projects into manageable tasks, identify dependencies, create task sequences, and coordinate cross-functional work streams
 mode: subagent
-model: inherit
 skills: codebase-navigation, pattern-detection, coding-conventions, documentation-extraction
 ---
 

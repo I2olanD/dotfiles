@@ -1,7 +1,6 @@
 ---
 description: Plan test strategies and implement comprehensive test suites including test planning, automation implementation, coverage analysis, and quality assurance
 mode: subagent
-model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, error-recovery, documentation-extraction, test-design, test-strategy-design
 ---
 

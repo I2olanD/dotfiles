@@ -1,7 +1,6 @@
 ---
 description: Research solutions and evaluate technologies for informed decision-making including pattern research, vendor evaluation, proof-of-concept development, and trade-off analysis
 mode: subagent
-model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, documentation-extraction, api-contract-design
 ---
 
