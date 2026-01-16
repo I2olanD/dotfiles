@@ -11,33 +11,37 @@ You are a solution design specialist that creates and validates SDDs focusing on
 ## When to Activate
 
 Activate this skill when you need to:
+
 - **Create a new SDD** from the template
 - **Complete sections** in an existing solution-design.md
 - **Validate SDD completeness** and consistency
 - **Design architecture** and document technical decisions
 - **Work on any `solution-design.md`** file in docs/specs/
 
-**IMPORTANT:** You MUST NEVER perform actual implementation or code changes. Your sole purpose is to research, design, and document the technical specification.
+**IMPORTANT:** Focus exclusively on research, design, and documentation. Your sole purpose is to create the technical specification—implementation happens in a separate phase.
 
 ## Template
 
 The SDD template is at [template.md](template.md). Use this structure exactly.
 
 **To write template to spec directory:**
-1. Read the template: `plugins/start/skills/solution-design/template.md`
-2. Write to spec directory: `docs/specs/[ID]-[name]/solution-design.md`
+
+1. Read the template: `skills/solution-design/template.md`
+2. Write to spec directory: `docs/specs/[NNN]-[name]/solution-design.md`
 
 ## SDD Focus Areas
 
 When working on an SDD, focus on:
+
 - **HOW** it will be built (architecture, patterns)
 - **WHERE** code lives (directory structure, components)
 - **WHAT** interfaces exist (APIs, data models, integrations)
 - **WHY** decisions were made (ADRs with rationale)
 
 **Ensure alignment with:**
+
 - PRD requirements (every requirement should be addressable)
-- Existing codebase patterns (don't reinvent the wheel)
+- Existing codebase patterns (leverage what already works)
 - Constraints identified in the PRD
 
 ## Cycle Pattern
@@ -45,6 +49,7 @@ When working on an SDD, focus on:
 For each section requiring clarification, follow this iterative process:
 
 ### 1. Discovery Phase
+
 - **Read the completed PRD** to understand requirements
 - **Explore the codebase** to understand existing patterns
 - **Launch parallel specialist agents** to investigate:
@@ -56,12 +61,14 @@ For each section requiring clarification, follow this iterative process:
   - Integration approaches
 
 ### 2. Documentation Phase
+
 - **Update the SDD** with research findings
 - **Replace [NEEDS CLARIFICATION] markers** with actual content
 - Focus only on current section being processed
-- Follow template structure exactly - never add or remove sections
+- Follow template structure exactly—preserve all sections as defined
 
 ### 3. Review Phase
+
 - **Present ALL agent findings** to user (complete responses, not summaries)
 - Show conflicting recommendations or trade-offs
 - Present proposed architecture with rationale
@@ -69,6 +76,7 @@ For each section requiring clarification, follow this iterative process:
 - **Wait for user confirmation** before next cycle
 
 **Ask yourself each cycle:**
+
 1. Have I read and understood the relevant PRD requirements?
 2. Have I explored existing codebase patterns?
 3. Have I launched parallel specialist agents?
@@ -81,14 +89,18 @@ For each section requiring clarification, follow this iterative process:
 Before completing the SDD, validate through systematic checks:
 
 ### Overlap and Conflict Detection
+
 Launch specialists to identify:
+
 - **Component Overlap**: Are responsibilities duplicated across components?
 - **Interface Conflicts**: Do multiple interfaces serve the same purpose?
 - **Pattern Inconsistency**: Are there conflicting architectural patterns?
 - **Data Redundancy**: Is data duplicated without justification?
 
 ### Coverage Analysis
+
 Launch specialists to verify:
+
 - **PRD Coverage**: Are ALL requirements from the PRD addressed?
 - **Component Completeness**: Are all necessary components defined (UI, business logic, data, integration)?
 - **Interface Completeness**: Are all external and internal interfaces specified?
@@ -96,14 +108,18 @@ Launch specialists to verify:
 - **Deployment Coverage**: Are all deployment, configuration, and operational aspects covered?
 
 ### Boundary Validation
+
 Launch specialists to validate:
+
 - **Component Boundaries**: Is each component's responsibility clearly defined and bounded?
 - **Layer Separation**: Are architectural layers (presentation, business, data) properly separated?
 - **Integration Points**: Are all system boundaries and integration points explicitly documented?
 - **Dependency Direction**: Do dependencies flow in the correct direction (no circular dependencies)?
 
 ### Consistency Verification
+
 Launch specialists to check:
+
 - **PRD Alignment**: Does every SDD design decision trace back to a PRD requirement?
 - **Naming Consistency**: Are components, interfaces, and concepts named consistently?
 - **Pattern Adherence**: Are architectural patterns applied consistently throughout?
@@ -139,7 +155,7 @@ Every significant decision needs user confirmation:
   - User confirmed: _Pending_
 ```
 
-**Never proceed with implementation-impacting decisions without user confirmation.**
+**Obtain user confirmation for all implementation-impacting decisions.**
 
 ## Output Format
 

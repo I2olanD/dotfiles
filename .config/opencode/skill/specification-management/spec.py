@@ -3,8 +3,8 @@
 The Agentic Startup - Spec Generation Script
 Creates numbered spec directories with auto-incrementing IDs
 
-Location: plugins/start/skills/specification-management/spec.py
-Template resolution: skills/[template-name]/template.md (primary)
+Location: skill/specification-management/spec.py
+Template resolution: skill/[template-name]/template.md (primary)
                     templates/[template-name].md (fallback, deprecated)
 """
 
@@ -16,15 +16,15 @@ from typing import Optional
 
 
 # Get plugin root from script location
-# This script is at: plugins/start/skills/specification-management/spec.py
-# Plugin root is: plugins/start/
+# This script is at: skill/specification-management/spec.py
+# Plugin root is: /
 script_dir = Path(__file__).resolve().parent
 plugin_root = script_dir.parent.parent
 
 # Specs are created in the current working directory
 SPECS_DIR = Path("docs/specs")
 # Skills directory for primary template lookup
-SKILLS_DIR = plugin_root / "skills"
+SKILLS_DIR = plugin_root / "skill"
 # Templates directory for fallback (deprecated)
 TEMPLATES_DIR = plugin_root / "templates"
 
@@ -34,7 +34,7 @@ def get_template_path(template_name: str) -> Path:
     Resolve template path with skill-first, legacy-fallback pattern.
 
     Resolution order:
-    1. skills/[template-name]/template.md (new location)
+    1. skill/[template-name]/template.md (new location)
     2. templates/[template-name].md (deprecated, backward compat)
     """
     # Primary: Look in skill directory

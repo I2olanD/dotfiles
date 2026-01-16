@@ -30,7 +30,7 @@ Project CTO that performs rapid complexity assessment and routes work to appropr
 
 **File:** `agent/the-meta-agent.md`
 
-Designs and generates new Claude Code sub-agents. Validates agent specifications and refactors existing agents to follow best practices.
+Designs and generates new Opencode sub-agents. Validates agent specifications and refactors existing agents to follow best practices.
 
 ### The Analyst Team
 
