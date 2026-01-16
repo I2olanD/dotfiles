@@ -1,7 +1,7 @@
 ---
 description: Clarify ambiguous requirements and document comprehensive specifications including stakeholder analysis, requirement gathering, and acceptance criteria
 mode: subagent
-model: anthropic/claude-opus-4-5-20251101
+model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, documentation-extraction, user-insight-synthesis, requirements-elicitation
 ---
 

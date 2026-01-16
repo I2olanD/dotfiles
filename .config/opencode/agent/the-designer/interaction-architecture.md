@@ -1,7 +1,7 @@
 ---
 description: Design information architecture and user interactions for intuitive experiences including navigation systems, user flows, wireframes, and interaction patterns
 mode: subagent
-model: anthropic/claude-opus-4-5-20251101
+model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, documentation-extraction, accessibility-design, user-insight-synthesis
 ---
 

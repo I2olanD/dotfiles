@@ -1,7 +1,7 @@
 ---
 description: Prioritize features, evaluate trade-offs between competing initiatives, establish success metrics, and create data-driven roadmaps
 mode: subagent
-model: anthropic/claude-opus-4-5-20251101
+model: inherit
 skills: codebase-navigation, pattern-detection, coding-conventions, documentation-extraction, feature-prioritization
 ---
 

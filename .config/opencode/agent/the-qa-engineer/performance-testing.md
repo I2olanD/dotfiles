@@ -1,7 +1,7 @@
 ---
 description: Identify performance bottlenecks, validate system behavior under load, and ensure applications can handle production traffic patterns
 mode: subagent
-model: anthropic/claude-opus-4-5-20251101
+model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, documentation-extraction, test-design, performance-analysis
 ---
 

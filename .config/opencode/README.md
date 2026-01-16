@@ -2,7 +2,7 @@
 
 > This is a copy of repo [https://github.com/rsmdt/the-startup]
 
-A comprehensive Claude Code configuration providing specialized agents, reusable skills, and workflow commands for software development.
+A comprehensive AI Agent configuration providing specialized agents, reusable skills, and workflow commands for software development.
 
 ## Structure
 

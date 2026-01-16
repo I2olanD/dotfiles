@@ -1,7 +1,7 @@
 ---
 description: Design UI components and manage state flows for scalable frontend applications including component architecture, state management, and rendering optimization
 mode: subagent
-model: anthropic/claude-opus-4-5-20251101
+model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, error-recovery, documentation-extraction, accessibility-design
 ---
 

@@ -1,7 +1,7 @@
 ---
 description: Design scalable system architectures including service design, technology selection, scalability patterns, deployment architecture, and evolutionary roadmaps
 mode: subagent
-model: anthropic/claude-opus-4-5-20251101
+model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, error-recovery, documentation-extraction, api-contract-design, security-assessment, data-modeling, observability-design, architecture-selection
 ---
 

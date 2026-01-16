@@ -1,7 +1,7 @@
 ---
 description: Conduct user interviews, perform usability testing, create personas, synthesize research findings, and develop user insights that drive design decisions
 mode: subagent
-model: anthropic/claude-opus-4-5-20251101
+model: inherit
 skills: codebase-navigation, pattern-detection, coding-conventions, documentation-extraction, user-insight-synthesis, user-research
 ---
 

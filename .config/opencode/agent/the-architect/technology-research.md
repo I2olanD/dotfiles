@@ -1,7 +1,7 @@
 ---
 description: Research solutions and evaluate technologies for informed decision-making including pattern research, vendor evaluation, proof-of-concept development, and trade-off analysis
 mode: subagent
-model: anthropic/claude-opus-4-5-20251101
+model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, documentation-extraction, api-contract-design
 ---
 

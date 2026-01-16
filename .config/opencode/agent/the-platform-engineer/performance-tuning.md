@@ -1,7 +1,7 @@
 ---
 description: Optimize system and database performance through profiling, tuning, and capacity planning including application profiling, query optimization, and caching strategies
 mode: subagent
-model: anthropic/claude-opus-4-5-20251101
+model: inherit
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, error-recovery, documentation-extraction, performance-analysis, observability-design
 ---
 
