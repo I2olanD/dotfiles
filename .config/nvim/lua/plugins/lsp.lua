@@ -76,13 +76,15 @@ return {
       })
       require("mason-tool-installer").setup({
         ensure_installed = {
+          "biome",
           "prettier",
           "jsonlint",
           "sqlfluff",
           "luacheck",
           "gofumpt",
           "goimports",
-          "htmlhint"
+          "htmlhint",
+          "stylua",
         },
       })
     end,
