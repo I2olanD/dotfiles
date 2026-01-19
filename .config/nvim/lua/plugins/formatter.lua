@@ -1,3 +1,36 @@
+local function find_config_dir(bufnr, config_files)
+  local filepath = vim.api.nvim_buf_get_name(bufnr)
+  if filepath == "" then
+    return nil
+  end
+
+  local dir = vim.fn.fnamemodify(filepath, ":h")
+
+  while dir ~= "/" and dir ~= "" do
+    for _, config_file in ipairs(config_files) do
+      if vim.fn.filereadable(dir .. "/" .. config_file) == 1 then
+        return dir
+      end
+    end
+    local parent = vim.fn.fnamemodify(dir, ":h")
+    if parent == dir then
+      break
+    end
+    dir = parent
+  end
+  return nil
+end
+
+local biome_configs = { "biome.json", "biome.jsonc" }
+
+local function js_formatter(bufnr)
+  local biome_root = find_config_dir(bufnr, biome_configs)
+  if biome_root then
+    return { "biome" }
+  end
+  return { "prettier" }
+end
+
 return {
   "stevearc/conform.nvim",
   event = { "BufReadPre", "BufNewFile" },
@@ -6,28 +39,34 @@ return {
 
     conform.setup({
       formatters_by_ft = {
-        javascript = { "biome", "prettier", stop_after_first = true },
-        typescript = { "biome", "prettier", stop_after_first = true },
-        javascriptreact = { "biome", "prettier", stop_after_first = true },
-        typescriptreact = { "biome", "prettier", stop_after_first = true },
-        json = { "biome", "prettier", stop_after_first = true },
-        jsonc = { "biome", "prettier", stop_after_first = true },
+        javascript = js_formatter,
+        typescript = js_formatter,
+        javascriptreact = js_formatter,
+        typescriptreact = js_formatter,
+        json = js_formatter,
+        jsonc = js_formatter,
+        css = js_formatter,
 
-        css = { "biome", "prettier", stop_after_first = true },
         scss = { "prettier" },
         sass = { "prettier" },
-
         html = { "prettier" },
+        markdown = { "prettier" },
 
         lua = { "stylua" },
-
-        markdown = { "prettier" },
 
         go = { "goimports", "gofumpt" },
 
         yaml = { "yamlfmt" },
 
         sql = { "sqlfmt" },
+      },
+
+      formatters = {
+        biome = {
+          cwd = function(_, ctx)
+            return find_config_dir(ctx.buf, biome_configs) or vim.fn.getcwd()
+          end,
+        },
       },
 
       format_on_save = {

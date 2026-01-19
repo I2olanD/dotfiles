@@ -17,16 +17,6 @@ local servers = {
       "typescript",
       "typescriptreact",
       "typescript.tsx",
-      "vue"
-    },
-    init_options = {
-      plugins = {
-        {
-          name = "@vue/typescript-plugin",
-          location = "/Users/rolandolah/.nvm/versions/node/v20.19.0/lib/node_modules/@vue/language-server",
-          languages = { "typescript", "vue" },
-        },
-      },
     },
   },
 
