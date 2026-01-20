@@ -10,8 +10,7 @@ A comprehensive AI Agent configuration providing specialized agents, reusable sk
 opencode/
 ├── agent/              # Specialized AI agents
 ├── command/            # Workflow commands (/slash commands)
-├── skill/              # Reusable expertise modules
-└── templates/          # Document templates (PRD, SDD, etc.)
+└── skill/              # Reusable expertise modules
 ```
 
 ---
@@ -85,6 +84,7 @@ Designs and generates new Opencode sub-agents. Validates agent specifications an
 | --------------------- | ----------------------------------------------------------- |
 | `exploratory-testing` | Manual testing, edge case discovery, usability validation   |
 | `performance-testing` | Load testing, stress testing, capacity planning             |
+| `quality-assurance`   | Test design, automation, edge case discovery, coverage      |
 | `test-execution`      | Test strategy, automation implementation, coverage analysis |
 
 ---
@@ -93,17 +93,17 @@ Designs and generates new Opencode sub-agents. Validates agent specifications an
 
 Workflow commands invoked via `/command-name`:
 
-| Command      | Description                                                     |
-| ------------ | --------------------------------------------------------------- |
-| `/specify`   | Create specifications (PRD → SDD → PLAN workflow)               |
-| `/implement` | Execute implementation plans phase-by-phase                     |
-| `/review`    | Multi-agent code review (security, performance, quality, tests) |
-| `/analyze`   | Discover business rules, patterns, and interfaces               |
-| `/debug`     | Systematic bug diagnosis through conversation                   |
-| `/refactor`  | Safe code refactoring with behavior preservation                |
-| `/validate`  | Validate specifications or implementations                      |
-| `/document`  | Generate documentation for code and APIs                        |
-| `/init`      | Initialize configuration                                        |
+| Command         | Description                                                     |
+| --------------- | --------------------------------------------------------------- |
+| `/specify`      | Create specifications (PRD → SDD → PLAN workflow)               |
+| `/implement`    | Execute implementation plans phase-by-phase                     |
+| `/review`       | Multi-agent code review (security, performance, quality, tests) |
+| `/analyze`      | Discover business rules, patterns, and interfaces               |
+| `/debug`        | Systematic bug diagnosis through conversation                   |
+| `/refactor`     | Safe code refactoring with behavior preservation                |
+| `/validate`     | Validate specifications or implementations                      |
+| `/document`     | Generate documentation for code and APIs                        |
+| `/constitution` | Create and validate project governance rules                    |
 
 ---
 
@@ -143,7 +143,6 @@ Universal skills available to all agents:
 | `data-modeling`          | Schema design, entity relationships  |
 | `domain-driven-design`   | DDD patterns, bounded contexts       |
 | `technical-writing`      | ADRs, system docs, runbooks          |
-| `test-design`            | Test pyramid, coverage strategies    |
 
 ### Infrastructure Skills
 
@@ -157,23 +156,33 @@ Universal skills available to all agents:
 | Skill                  | Purpose                              |
 | ---------------------- | ------------------------------------ |
 | `code-quality-review`  | Code smells, design patterns         |
-| `exploratory-testing`  | Manual testing methodologies         |
+| `code-review`          | Multi-agent code review coordination |
 | `performance-analysis` | Profiling, bottleneck identification |
 | `security-assessment`  | OWASP patterns, vulnerability review |
-| `test-strategy-design` | Test planning, framework selection   |
+| `test-design`          | Test pyramid, coverage strategies    |
+| `testing`              | Writing and running effective tests  |
 
----
+### Specification & Workflow Skills
 
-## Templates
-
-Document templates in `templates/`:
-
-- `product-requirements.md` - PRD template
-- `solution-design.md` - SDD template
-- `implementation-plan.md` - Implementation plan template
-- `definition-of-done.md` - DoD checklist
-- `definition-of-ready.md` - DoR checklist
-- `task-definition-of-done.md` - Task-level DoD
+| Skill                        | Purpose                                      |
+| ---------------------------- | -------------------------------------------- |
+| `agent-coordination`         | Execute implementation plans phase-by-phase  |
+| `architecture-design`        | Create and validate solution design docs     |
+| `bug-diagnosis`              | Scientific debugging methodology             |
+| `codebase-analysis`          | Discover patterns through iterative analysis |
+| `constitution-validation`    | Create and validate project governance rules |
+| `context-preservation`       | Preserve session context across conversations|
+| `documentation-sync`         | Maintain documentation freshness             |
+| `drift-detection`            | Detect spec/implementation divergence        |
+| `git-workflow`               | Manage git operations for spec development   |
+| `implementation-planning`    | Create and validate implementation plans     |
+| `implementation-verification`| Validate implementation against specs        |
+| `knowledge-capture`          | Document business rules and patterns         |
+| `requirements-analysis`      | Create and validate PRDs                     |
+| `safe-refactoring`           | Systematic code refactoring                  |
+| `specification-management`   | Initialize and manage spec directories       |
+| `specification-validation`   | Validate specs for completeness              |
+| `task-delegation`            | Generate structured agent prompts            |
 
 ---
 
