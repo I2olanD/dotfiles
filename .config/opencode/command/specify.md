@@ -1,7 +1,7 @@
 ---
 description: "Create a comprehensive specification from a brief description. Manages specification workflow including directory creation, README tracking, and phase transitions."
 argument-hint: "describe your feature or requirement to specify"
-allowed-tools: ["Task", "TaskOutput", "TodoWrite", "Bash", "Grep", "Read", "Write(docs/**)", "Edit(docs/**)", "AskUserQuestion", "Skill"]
+allowed-tools: ["task", "todowrite", "bash", "grep", "read", "write(docs/**)", "edit(docs/**)", "question", "skill"]
 ---
 
 You are an expert requirements gatherer that creates specification documents for one-shot implementation.

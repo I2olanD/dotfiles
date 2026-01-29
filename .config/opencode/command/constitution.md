@@ -3,16 +3,16 @@ description: "Create or update a project constitution with governance rules. Use
 argument-hint: "optional focus areas (e.g., 'security and testing', 'architecture patterns for Next.js')"
 allowed-tools:
   [
-    "Task",
-    "TodoWrite",
-    "Bash",
-    "Grep",
-    "Glob",
-    "Read",
-    "Write",
-    "Edit",
-    "AskUserQuestion",
-    "Skill",
+    "task",
+    "todowrite",
+    "bash",
+    "grep",
+    "glob",
+    "read",
+    "write",
+    "edit",
+    "question",
+    "skill",
   ]
 ---
 

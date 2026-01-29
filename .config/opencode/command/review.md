@@ -3,15 +3,14 @@ description: "Multi-agent code review with specialized perspectives (security, p
 argument-hint: "PR number, branch name, file path, or 'staged' for staged changes"
 allowed-tools:
   [
-    "Task",
-    "TaskOutput",
-    "TodoWrite",
-    "Bash",
-    "Read",
-    "Glob",
-    "Grep",
-    "AskUserQuestion",
-    "Skill",
+    "task",
+    "todowrite",
+    "bash",
+    "read",
+    "glob",
+    "grep",
+    "question",
+    "skill",
   ]
 ---
 

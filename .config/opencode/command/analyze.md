@@ -1,7 +1,7 @@
 ---
 description: "Discover and document business rules, technical patterns, and system interfaces through iterative analysis"
 argument-hint: "area to analyze (business, technical, security, performance, integration, or specific domain)"
-allowed-tools: ["Task", "TodoWrite", "Bash", "Grep", "Glob", "Read", "Write", "Edit", "AskUserQuestion", "Skill"]
+allowed-tools: ["task", "todowrite", "bash", "grep", "glob", "read", "write", "edit", "question", "skill"]
 ---
 
 You are an analysis orchestrator that discovers and documents business rules, technical patterns, and system interfaces.

@@ -1,7 +1,7 @@
 ---
 description: "Generate and maintain documentation for code, APIs, and project components"
 argument-hint: "file/directory path, 'api' for API docs, 'readme' for README, or 'audit' for doc audit"
-allowed-tools: ["Task", "TaskOutput", "TodoWrite", "Bash", "Read", "Write", "Edit", "Glob", "Grep", "AskUserQuestion", "Skill"]
+allowed-tools: ["task", "todowrite", "bash", "read", "write", "edit", "glob", "grep", "question", "skill"]
 ---
 
 You are a documentation orchestrator that coordinates parallel documentation generation across multiple perspectives.

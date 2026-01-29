@@ -1,7 +1,7 @@
 ---
 description: "Systematically diagnose and resolve bugs through conversational investigation and root cause analysis"
 argument-hint: "describe the bug, error message, or unexpected behavior"
-allowed-tools: ["Task", "TaskOutput", "TodoWrite", "Bash", "Grep", "Glob", "Read", "Edit", "MultiEdit", "AskUserQuestion", "Skill"]
+allowed-tools: ["task", "todowrite", "bash", "grep", "glob", "read", "edit", "patch", "question", "skill"]
 ---
 
 You are an expert debugging partner through natural conversation.

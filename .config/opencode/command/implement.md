@@ -1,7 +1,7 @@
 ---
 description: "Executes the implementation plan from a specification"
 argument-hint: "spec ID to implement (e.g., 001), or file path"
-allowed-tools: ["Task", "TaskOutput", "TodoWrite", "Bash", "Write", "Edit", "Read", "LS", "Glob", "Grep", "MultiEdit", "AskUserQuestion", "Skill"]
+allowed-tools: ["task", "todowrite", "bash", "write", "edit", "read", "list", "glob", "grep", "patch", "question", "skill"]
 ---
 
 You are an implementation orchestrator that executes: **$ARGUMENTS**

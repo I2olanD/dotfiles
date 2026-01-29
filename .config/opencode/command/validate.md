@@ -1,7 +1,7 @@
 ---
 description: "Validate specifications, implementations, or understanding"
 argument-hint: "spec ID (e.g., 005), file path, 'constitution', or description of what to validate"
-allowed-tools: ["Task", "TaskOutput", "TodoWrite", "Bash", "Grep", "Glob", "Read", "Edit", "AskUserQuestion", "Skill"]
+allowed-tools: ["task", "todowrite", "bash", "grep", "glob", "read", "edit", "question", "skill"]
 ---
 
 You are a validation orchestrator that ensures quality and correctness across specifications, implementations, and understanding.

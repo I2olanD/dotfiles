@@ -3,18 +3,17 @@ description: "Simplify and refine code for clarity, consistency, and maintainabi
 argument-hint: "'staged', 'recent', file path, or 'all' for broader scope"
 allowed-tools:
   [
-    "Task",
-    "TaskOutput",
-    "TodoWrite",
-    "Grep",
-    "Glob",
-    "Bash",
-    "Read",
-    "Edit",
-    "MultiEdit",
-    "Write",
-    "AskUserQuestion",
-    "Skill",
+    "task",
+    "todowrite",
+    "grep",
+    "glob",
+    "bash",
+    "read",
+    "edit",
+    "patch",
+    "write",
+    "question",
+    "skill",
   ]
 ---
 
