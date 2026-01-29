@@ -1,7 +1,7 @@
 ---
 name: requirements-analysis
 description: Create and validate product requirements documents (PRD). Use when writing requirements, defining user stories, specifying acceptance criteria, analyzing user needs, or working on product-requirements.md files in docs/specs/. Includes validation checklist, iterative cycle pattern, and multi-angle review process.
-allowed-tools: Read, Write, Edit, Task, TodoWrite, Grep, Glob
+allowed-tools: read, write, edit, task, todowrite, grep, glob
 ---
 
 # Product Requirements Skill

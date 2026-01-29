@@ -1,7 +1,7 @@
 ---
 name: specification-management
 description: Initialize and manage specification directories with auto-incrementing IDs. Use when creating new specs, checking spec status, tracking user decisions, or managing the docs/specs/ directory structure. Maintains README.md in each spec to record decisions (e.g., PRD skipped), context, and progress. Orchestrates the specification workflow across PRD, SDD, and PLAN phases.
-allowed-tools: Read, Write, Edit, Bash, TodoWrite, Grep, Glob
+allowed-tools: read, write, edit, bash, todowrite, grep, glob
 ---
 
 # Specification Management Skill

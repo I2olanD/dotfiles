@@ -5,7 +5,7 @@ description: |
   Use when analyzing business rules, technical patterns, security, performance,
   integration points, or domain-specific areas. Includes cycle pattern for
   discovery to documentation to review workflow.
-allowed-tools: Task, TodoWrite, Grep, Glob, Read, Write, Edit
+allowed-tools: task, todowrite, grep, glob, read, write, edit
 ---
 
 # Analysis Discovery Skill

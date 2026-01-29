@@ -5,7 +5,7 @@ description: |
   Use when identifying code smells, planning refactoring sequences,
   executing safe structural improvements, or validating behavior preservation.
   Includes code smell catalog (reference.md) and refactoring execution protocol.
-allowed-tools: Task, TodoWrite, Bash, Grep, Glob, Read, Edit
+allowed-tools: task, todowrite, bash, grep, glob, read, edit
 ---
 
 # Refactoring Methodology Skill

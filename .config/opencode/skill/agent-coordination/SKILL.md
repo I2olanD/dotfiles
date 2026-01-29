@@ -6,7 +6,7 @@ description: |
   phase transitions, tracking implementation progress, or handling blocked
   states. Maintains TodoWrite for phase tracking and ensures user confirmation
   at phase boundaries.
-allowed-tools: Task, TodoWrite, Read, Edit, Bash
+allowed-tools: task, todowrite, read, edit, bash
 ---
 
 # Execution Orchestration Skill

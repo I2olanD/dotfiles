@@ -5,7 +5,7 @@ description: |
   verifying specification compliance, checking interface contracts, validating
   architecture decisions, detecting deviations, or ensuring implementations
   match documented requirements. Provides structured compliance reporting.
-allowed-tools: Task, Read, Grep, Glob
+allowed-tools: task, read, grep, glob
 ---
 
 # Specification Compliance Skill

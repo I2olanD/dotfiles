@@ -1,7 +1,7 @@
 ---
 name: implementation-planning
 description: Create and validate implementation plans (PLAN). Use when planning implementation phases, defining tasks, sequencing work, analyzing dependencies, or working on implementation-plan.md files in docs/specs/. Includes TDD phase structure and specification compliance gates.
-allowed-tools: Read, Write, Edit, Task, TodoWrite, Grep, Glob
+allowed-tools: read, write, edit, task, todowrite, grep, glob
 ---
 
 # Implementation Plan Skill

@@ -4,7 +4,7 @@ description: |
   Detect divergence between specifications and implementation during development.
   Use during implementation phases to identify scope creep, missing features,
   contradictions, or extra work not in spec. Logs drift decisions to spec README.
-allowed-tools: Task, Read, Write, Edit, Grep, Glob
+allowed-tools: task, read, write, edit, grep, glob
 ---
 
 # Drift Detection Skill

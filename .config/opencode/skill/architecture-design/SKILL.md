@@ -1,7 +1,7 @@
 ---
 name: architecture-design
 description: Create and validate solution design documents (SDD). Use when designing architecture, defining interfaces, documenting technical decisions, analyzing system components, or working on solution-design.md files in docs/specs/. Includes validation checklist, consistency verification, and overlap detection.
-allowed-tools: Read, Write, Edit, Task, TodoWrite, Grep, Glob
+allowed-tools: read, write, edit, task, todowrite, grep, glob
 ---
 
 # Solution Design Skill

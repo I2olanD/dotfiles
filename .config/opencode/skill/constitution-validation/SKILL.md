@@ -4,7 +4,7 @@ description: |
   Create and validate project constitutions through discovery-based rule generation.
   Use when creating governance rules, validating code against constitutional rules,
   or checking constitution compliance during implementation and review.
-allowed-tools: Task, Read, Write, Edit, Grep, Glob, Bash
+allowed-tools: task, read, write, edit, grep, glob, bash
 ---
 
 # Constitution Validation Skill

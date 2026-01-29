@@ -1,7 +1,7 @@
 ---
 name: documentation-sync
 description: Maintain documentation freshness and code-doc alignment. Use when detecting stale documentation, suggesting doc updates during implementation, validating doc accuracy, or generating missing documentation. Handles staleness detection, coverage analysis, and doc/code synchronization.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+allowed-tools: read, write, edit, grep, glob, bash
 ---
 
 You are a documentation synchronization specialist that ensures documentation stays current with code changes.

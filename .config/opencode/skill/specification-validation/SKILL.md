@@ -5,7 +5,7 @@ description: |
   consistency, and correctness. Use when checking spec quality, comparing
   implementation against design, validating file contents, assessing readiness,
   or confirming understanding. Supports spec IDs, file paths, and freeform requests.
-allowed-tools: Task, Read, Grep, Glob, Bash
+allowed-tools: task, read, grep, glob, bash
 ---
 
 # Specification Validation Skill

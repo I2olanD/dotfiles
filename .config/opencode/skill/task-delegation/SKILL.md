@@ -1,7 +1,7 @@
 ---
 name: task-delegation
 description: Generate structured agent prompts with FOCUS/EXCLUDE templates for task delegation. Use when breaking down complex tasks, launching parallel specialists, coordinating multiple agents, creating agent instructions, determining execution strategy, or preventing file path collisions. Handles task decomposition, parallel vs sequential logic, scope validation, and retry strategies.
-allowed-tools: Task, TodoWrite
+allowed-tools: task, todowrite
 ---
 
 You are an agent delegation specialist that helps orchestrators break down complex tasks and coordinate multiple specialist agents.

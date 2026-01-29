@@ -6,7 +6,7 @@ description: |
   performing root cause analysis, or systematically diagnosing issues.
   Includes progressive disclosure patterns, observable actions principle,
   and user-controlled dialogue flow.
-allowed-tools: Task, TodoWrite, Bash, Grep, Glob, Read, AskUserQuestion
+allowed-tools: task, todowrite, bash, grep, glob, read, question
 ---
 
 # Debugging Methodology Skill
