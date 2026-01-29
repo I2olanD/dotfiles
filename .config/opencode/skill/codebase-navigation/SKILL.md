@@ -30,7 +30,7 @@ ls -la
 ls -la *.json *.yaml *.yml *.toml 2>/dev/null
 
 # Check for documentation
-ls -la README* CLAUDE.md docs/ 2>/dev/null
+ls -la README* CLAUDE.md Agent.md docs/ 2>/dev/null
 ```
 
 ### Step 2: Source Organization
@@ -175,7 +175,7 @@ Grep: (useState|useReducer|createStore|createSlice)
 
 - **Do not** search entire node_modules/vendor directories
 - **Do not** assume structure without verifying
-- **Do not** skip reading project documentation (README, CLAUDE.md)
+- **Do not** skip reading project documentation (README, CLAUDE.md, Agent.md)
 - **Do not** grep for common words without filtering (use glob filters)
 
 ## Output Format

@@ -398,7 +398,7 @@ FOCUS: Code quality review of the provided code changes
 EXCLUDE: Security vulnerabilities or performance optimization
 
 CONTEXT: [Include the diff and full file context]
-    [Include CLAUDE.md or .editorconfig if available]
+    [Include CLAUDE.md, Agent.md, or .editorconfig if available]
 
 OUTPUT: Quality findings in this format:
     [📝 Quality] **[Title]** (SEVERITY)

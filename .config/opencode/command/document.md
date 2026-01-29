@@ -59,7 +59,7 @@ Generate [PERSPECTIVE] documentation:
 CONTEXT:
 - Target: [files/directories to document]
 - Existing docs: [what already exists]
-- Project style: [from existing docs, CLAUDE.md]
+- Project style: [from existing docs, CLAUDE.md, Agent.md]
 
 FOCUS: [What this perspective documents - from table above]
 

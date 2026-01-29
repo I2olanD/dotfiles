@@ -1,7 +1,19 @@
 ---
 description: "Create or update a project constitution with governance rules. Uses discovery-based approach to generate project-specific rules."
 argument-hint: "optional focus areas (e.g., 'security and testing', 'architecture patterns for Next.js')"
-allowed-tools: ["Task", "TodoWrite", "Bash", "Grep", "Glob", "Read", "Write", "Edit", "AskUserQuestion", "Skill"]
+allowed-tools:
+  [
+    "Task",
+    "TodoWrite",
+    "Bash",
+    "Grep",
+    "Glob",
+    "Read",
+    "Write",
+    "Edit",
+    "AskUserQuestion",
+    "Skill",
+  ]
 ---
 
 You are a governance orchestrator that coordinates parallel pattern discovery to create project constitutions.
@@ -20,24 +32,24 @@ You are a governance orchestrator that coordinates parallel pattern discovery to
 
 Pattern discovery should cover these categories. Launch parallel agents for comprehensive analysis.
 
-| Perspective | Intent | What to Discover |
-|-------------|--------|------------------|
-| 🔐 **Security** | Identify security patterns and risks | Authentication methods, secret handling, input validation, injection prevention, CORS |
-| 🏗️ **Architecture** | Understand structural patterns | Layer structure, module boundaries, API patterns, data flow, dependencies |
-| 📝 **Code Quality** | Find coding conventions | Naming conventions, import patterns, error handling, logging, code organization |
-| 🧪 **Testing** | Discover test practices | Test framework, file patterns, coverage requirements, mocking approaches |
+| Perspective         | Intent                               | What to Discover                                                                      |
+| ------------------- | ------------------------------------ | ------------------------------------------------------------------------------------- |
+| 🔐 **Security**     | Identify security patterns and risks | Authentication methods, secret handling, input validation, injection prevention, CORS |
+| 🏗️ **Architecture** | Understand structural patterns       | Layer structure, module boundaries, API patterns, data flow, dependencies             |
+| 📝 **Code Quality** | Find coding conventions              | Naming conventions, import patterns, error handling, logging, code organization       |
+| 🧪 **Testing**      | Discover test practices              | Test framework, file patterns, coverage requirements, mocking approaches              |
 
 ### Focus Area Mapping
 
 When $ARGUMENTS specifies focus areas, select relevant perspectives:
 
-| Input | Discovery Perspectives |
-|-------|----------------------|
-| "security" | 🔐 Security |
-| "testing" | 🧪 Testing |
-| "architecture" | 🏗️ Architecture |
-| "code quality" | 📝 Code Quality |
-| Empty or "all" | All perspectives |
+| Input              | Discovery Perspectives             |
+| ------------------ | ---------------------------------- |
+| "security"         | 🔐 Security                        |
+| "testing"          | 🧪 Testing                         |
+| "architecture"     | 🏗️ Architecture                    |
+| "code quality"     | 📝 Code Quality                    |
+| Empty or "all"     | All perspectives                   |
 | Framework-specific | Relevant subset based on framework |
 
 ## Workflow
@@ -87,12 +99,12 @@ OUTPUT: Findings formatted as:
 
 **Perspective-Specific Discovery:**
 
-| Perspective | Agent Focus |
-|-------------|-------------|
-| 🔐 Security | Find auth patterns, secret handling, validation approaches, generate security rules |
-| 🏗️ Architecture | Identify layer structure, module patterns, API design, generate architecture rules |
-| 📝 Code Quality | Discover naming conventions, imports, error handling, generate quality rules |
-| 🧪 Testing | Find test framework, patterns, coverage setup, generate testing rules |
+| Perspective     | Agent Focus                                                                         |
+| --------------- | ----------------------------------------------------------------------------------- |
+| 🔐 Security     | Find auth patterns, secret handling, validation approaches, generate security rules |
+| 🏗️ Architecture | Identify layer structure, module patterns, API design, generate architecture rules  |
+| 📝 Code Quality | Discover naming conventions, imports, error handling, generate quality rules        |
+| 🧪 Testing      | Find test framework, patterns, coverage setup, generate testing rules               |
 
 **Synthesize Discoveries:**
 
@@ -141,12 +153,14 @@ Context: Constitution exists, updating with new rules.
 - Parse existing rules and categories
 
 **Present options:**
+
 - Add new rules (to existing or new category)
 - Modify existing rules
 - Remove rules
 - View current constitution
 
 If adding rules and focus areas provided:
+
 - Focus discovery on specified areas
 - Generate rules for those areas
 - Merge with existing constitution
@@ -180,6 +194,7 @@ Context: User may want to immediately check codebase compliance.
 - Call: `AskUserQuestion` - Run validation now or skip
 
 If validation requested:
+
 - Call: `Skill(start:constitution-validation)` in validation mode
 - Report compliance findings
 
@@ -187,15 +202,15 @@ If validation requested:
 
 When $ARGUMENTS provides focus areas, interpret them:
 
-| Input | Discovery Focus |
-|-------|-----------------|
-| "security" | Authentication, secrets, injection, XSS |
-| "testing" | Test frameworks, coverage, patterns |
-| "architecture" | Layers, boundaries, patterns |
-| "React" | Hooks, components, state management |
-| "Next.js" | Pages, API routes, SSR patterns |
-| "monorepo" | Package boundaries, shared code |
-| "API" | Endpoints, validation, error handling |
+| Input          | Discovery Focus                         |
+| -------------- | --------------------------------------- |
+| "security"     | Authentication, secrets, injection, XSS |
+| "testing"      | Test frameworks, coverage, patterns     |
+| "architecture" | Layers, boundaries, patterns            |
+| "React"        | Hooks, components, state management     |
+| "Next.js"      | Pages, API routes, SSR patterns         |
+| "monorepo"     | Package boundaries, shared code         |
+| "API"          | Endpoints, validation, error handling   |
 
 ## Examples
 
@@ -204,7 +219,7 @@ When $ARGUMENTS provides focus areas, interpret them:
 ```
 User: /start:constitution
 
-Claude: 📜 Constitution Setup
+Opencode: 📜 Constitution Setup
 
 No CONSTITUTION.md found at project root.
 
@@ -233,7 +248,7 @@ Would you like to:
 ```
 User: /start:constitution "Focus on security and API patterns"
 
-Claude: 📜 Constitution Setup (Focused)
+Opencode: 📜 Constitution Setup (Focused)
 
 Focus areas: Security, API patterns
 
@@ -261,7 +276,7 @@ API Patterns (3 rules):
 ```
 User: /start:constitution "Add testing rules"
 
-Claude: 📜 Constitution Update
+Opencode: 📜 Constitution Update
 
 Found existing CONSTITUTION.md with 8 rules.
 

@@ -9,6 +9,7 @@ You are a git workflow specialist that provides consistent version control opera
 ## When to Activate
 
 Activate this skill when you need to:
+
 - **Check git repository status** before starting work
 - **Create branches** for specifications or implementations
 - **Generate commits** with conventional commit messages
@@ -26,12 +27,12 @@ Activate this skill when you need to:
 
 ### Branch Naming Convention
 
-| Context | Pattern | Example |
-|---------|---------|---------|
-| Specification | `spec/[id]-[name]` | `spec/001-user-auth` |
-| Implementation | `feature/[id]-[name]` | `feature/001-user-auth` |
-| Migration | `migrate/[from]-to-[to]` | `migrate/react-17-to-18` |
-| Refactor | `refactor/[scope]` | `refactor/auth-module` |
+| Context        | Pattern                  | Example                  |
+| -------------- | ------------------------ | ------------------------ |
+| Specification  | `spec/[id]-[name]`       | `spec/001-user-auth`     |
+| Implementation | `feature/[id]-[name]`    | `feature/001-user-auth`  |
+| Migration      | `migrate/[from]-to-[to]` | `migrate/react-17-to-18` |
+| Refactor       | `refactor/[scope]`       | `refactor/auth-module`   |
 
 ### Commit Message Convention
 
@@ -42,10 +43,11 @@ Activate this skill when you need to:
 
 [optional footer]
 
-Co-authored-by: Claude <claude@anthropic.com>
+Co-authored-by: Opencode <claude@anthropic.com>
 ```
 
 **Types:**
+
 - `feat` - New feature
 - `fix` - Bug fix
 - `docs` - Documentation
@@ -76,6 +78,7 @@ git remote -v
 ```
 
 **Output:**
+
 ```
 🔍 Repository Status
 
@@ -92,6 +95,7 @@ Ready for git operations: [Yes/No]
 **When**: Starting new spec or implementation
 
 **Input Required:**
+
 - `context`: "spec" | "feature" | "migrate" | "refactor"
 - `identifier`: Spec ID, feature name, or migration description
 - `name`: Human-readable name (will be slugified)
@@ -129,6 +133,7 @@ git checkout -b "$branch_name"
 ```
 
 **Output:**
+
 ```
 🔀 Branch Created
 
@@ -144,6 +149,7 @@ Ready to proceed.
 **When**: After creating/updating specification documents
 
 **Input Required:**
+
 - `spec_id`: Spec identifier (e.g., "001")
 - `spec_name`: Spec name
 - `phase`: "prd" | "sdd" | "plan" | "all"
@@ -158,7 +164,7 @@ Defines requirements for ${spec_name}.
 
 See: docs/specs/${spec_id}-${spec_name_slug}/product-requirements.md
 
-Co-authored-by: Claude <claude@anthropic.com>"
+Co-authored-by: Opencode <claude@anthropic.com>"
 
 # SDD phase
 git commit -m "docs(spec-${spec_id}): Add solution design
@@ -167,7 +173,7 @@ Architecture and technical design for ${spec_name}.
 
 See: docs/specs/${spec_id}-${spec_name_slug}/solution-design.md
 
-Co-authored-by: Claude <claude@anthropic.com>"
+Co-authored-by: Opencode <claude@anthropic.com>"
 
 # PLAN phase
 git commit -m "docs(spec-${spec_id}): Add implementation plan
@@ -176,7 +182,7 @@ Phased implementation tasks for ${spec_name}.
 
 See: docs/specs/${spec_id}-${spec_name_slug}/implementation-plan.md
 
-Co-authored-by: Claude <claude@anthropic.com>"
+Co-authored-by: Opencode <claude@anthropic.com>"
 
 # All phases (initial spec)
 git commit -m "docs(spec-${spec_id}): Create specification for ${spec_name}
@@ -188,7 +194,7 @@ Complete specification including:
 
 See: docs/specs/${spec_id}-${spec_name_slug}/
 
-Co-authored-by: Claude <claude@anthropic.com>"
+Co-authored-by: Opencode <claude@anthropic.com>"
 ```
 
 ### Operation 4: Implementation Commit
@@ -196,6 +202,7 @@ Co-authored-by: Claude <claude@anthropic.com>"
 **When**: After implementing spec phases
 
 **Input Required:**
+
 - `spec_id`: Spec identifier
 - `spec_name`: Spec name
 - `phase`: Current implementation phase
@@ -210,7 +217,7 @@ Implements phase ${phase} of specification ${spec_id}-${spec_name}.
 
 See: docs/specs/${spec_id}-${spec_name_slug}/
 
-Co-authored-by: Claude <claude@anthropic.com>"
+Co-authored-by: Opencode <claude@anthropic.com>"
 ```
 
 ### Operation 5: Pull Request Creation
@@ -218,6 +225,7 @@ Co-authored-by: Claude <claude@anthropic.com>"
 **When**: After completing spec or implementation
 
 **Input Required:**
+
 - `context`: "spec" | "feature"
 - `spec_id`: Spec identifier
 - `spec_name`: Spec name
@@ -366,6 +374,7 @@ Options:
 ### With /start:specify
 
 Call this skill for:
+
 1. **Branch check** at start → Offer to create `spec/[id]-[name]` branch
 2. **Commit** after each phase → Generate phase-specific commit
 3. **PR creation** at completion → Create spec review PR
@@ -373,6 +382,7 @@ Call this skill for:
 ### With /start:implement
 
 Call this skill for:
+
 1. **Branch check** at start → Offer to create `feature/[id]-[name]` branch
 2. **Commit** after each phase → Generate implementation commit
 3. **PR creation** at completion → Create implementation PR
@@ -380,6 +390,7 @@ Call this skill for:
 ### With /start:refactor
 
 Call this skill for:
+
 1. **Branch check** at start → Offer to create `refactor/[scope]` branch
 2. **Commit** after each refactoring → Generate refactor commit
 3. **Migration branches** → Create `migrate/[from]-to-[to]` for migrations
@@ -423,13 +434,13 @@ Labels: [if auto-added]
 
 ### Common Issues
 
-| Error | Cause | Resolution |
-|-------|-------|------------|
-| "Not a git repository" | Not in git repo | Skip git operations or init |
-| "Branch already exists" | Duplicate name | Offer to checkout or rename |
-| "Uncommitted changes" | Dirty working tree | Stash, commit, or proceed |
-| "No remote configured" | No upstream | Skip push/PR or configure |
-| "gh not installed" | Missing GitHub CLI | Use git push, skip PR |
+| Error                   | Cause              | Resolution                  |
+| ----------------------- | ------------------ | --------------------------- |
+| "Not a git repository"  | Not in git repo    | Skip git operations or init |
+| "Branch already exists" | Duplicate name     | Offer to checkout or rename |
+| "Uncommitted changes"   | Dirty working tree | Stash, commit, or proceed   |
+| "No remote configured"  | No upstream        | Skip push/PR or configure   |
+| "gh not installed"      | Missing GitHub CLI | Use git push, skip PR       |
 
 ### Graceful Degradation
 

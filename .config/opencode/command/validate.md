@@ -38,7 +38,7 @@ Validate [PERSPECTIVE] for [target]:
 CONTEXT:
 - Target: [Spec files, code files, or both]
 - Scope: [What's being validated]
-- Standards: [CLAUDE.md, project conventions]
+- Standards: [CLAUDE.md, Agent.md, project conventions]
 
 FOCUS: [What this perspective validates - from table above]
 

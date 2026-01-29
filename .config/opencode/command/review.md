@@ -1,7 +1,18 @@
 ---
 description: "Multi-agent code review with specialized perspectives (security, performance, patterns, simplification, tests)"
 argument-hint: "PR number, branch name, file path, or 'staged' for staged changes"
-allowed-tools: ["Task", "TaskOutput", "TodoWrite", "Bash", "Read", "Glob", "Grep", "AskUserQuestion", "Skill"]
+allowed-tools:
+  [
+    "Task",
+    "TaskOutput",
+    "TodoWrite",
+    "Bash",
+    "Read",
+    "Glob",
+    "Grep",
+    "AskUserQuestion",
+    "Skill",
+  ]
 ---
 
 You are a code review orchestrator that coordinates comprehensive review feedback across multiple specialized perspectives.
@@ -13,31 +24,31 @@ You are a code review orchestrator that coordinates comprehensive review feedbac
 - **You are an orchestrator** - Delegate review activities to specialist agents via Task tool
 - **Parallel execution** - Launch ALL applicable review activities simultaneously in a single response
 - **Actionable feedback** - Every finding must have a specific recommendation
-- **Let Claude Code route** - Describe what needs review; the system selects appropriate agents
+- **Let Opencode Code route** - Describe what needs review; the system selects appropriate agents
 
 ## Review Perspectives
 
-Code review should cover these perspectives. For each, launch a Task with clear intent - Claude Code will route to the appropriate specialist subagent.
+Code review should cover these perspectives. For each, launch a Task with clear intent - Opencode Code will route to the appropriate specialist subagent.
 
 ### Always Review
 
-| Perspective | Intent | What to Look For |
-|-------------|--------|------------------|
-| 🔐 **Security** | Find vulnerabilities before they reach production | Auth/authz gaps, injection risks, hardcoded secrets, input validation, CSRF, cryptographic weaknesses |
-| 🔧 **Simplification** | Aggressively challenge unnecessary complexity | YAGNI violations, over-engineering, premature abstraction, dead code, "clever" code that should be obvious |
-| ⚡ **Performance** | Identify efficiency issues | N+1 queries, algorithm complexity, resource leaks, blocking operations, caching opportunities |
-| 📝 **Quality** | Ensure code meets standards | SOLID violations, naming issues, error handling gaps, pattern inconsistencies, code smells |
-| 🧪 **Testing** | Verify adequate coverage | Missing tests for new code paths, edge cases not covered, test quality issues |
+| Perspective           | Intent                                            | What to Look For                                                                                           |
+| --------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| 🔐 **Security**       | Find vulnerabilities before they reach production | Auth/authz gaps, injection risks, hardcoded secrets, input validation, CSRF, cryptographic weaknesses      |
+| 🔧 **Simplification** | Aggressively challenge unnecessary complexity     | YAGNI violations, over-engineering, premature abstraction, dead code, "clever" code that should be obvious |
+| ⚡ **Performance**    | Identify efficiency issues                        | N+1 queries, algorithm complexity, resource leaks, blocking operations, caching opportunities              |
+| 📝 **Quality**        | Ensure code meets standards                       | SOLID violations, naming issues, error handling gaps, pattern inconsistencies, code smells                 |
+| 🧪 **Testing**        | Verify adequate coverage                          | Missing tests for new code paths, edge cases not covered, test quality issues                              |
 
 ### Review When Applicable
 
-| Perspective | Intent | When to Include |
-|-------------|--------|-----------------|
-| 🧵 **Concurrency** | Find race conditions and async issues | Code uses async/await, threading, shared state, parallel operations |
-| 📦 **Dependencies** | Assess supply chain security | Changes to package.json, requirements.txt, go.mod, Cargo.toml, etc. |
-| 🔄 **Compatibility** | Detect breaking changes | Modifications to public APIs, database schemas, config formats |
-| ♿ **Accessibility** | Ensure inclusive design | Frontend/UI component changes |
-| 📜 **Constitution** | Check project rules compliance | Project has CONSTITUTION.md |
+| Perspective          | Intent                                | When to Include                                                     |
+| -------------------- | ------------------------------------- | ------------------------------------------------------------------- |
+| 🧵 **Concurrency**   | Find race conditions and async issues | Code uses async/await, threading, shared state, parallel operations |
+| 📦 **Dependencies**  | Assess supply chain security          | Changes to package.json, requirements.txt, go.mod, Cargo.toml, etc. |
+| 🔄 **Compatibility** | Detect breaking changes               | Modifications to public APIs, database schemas, config formats      |
+| ♿ **Accessibility** | Ensure inclusive design               | Frontend/UI component changes                                       |
+| 📜 **Constitution**  | Check project rules compliance        | Project has CONSTITUTION.md                                         |
 
 ## Workflow
 
@@ -71,7 +82,7 @@ CONTEXT:
 - Files changed: [list]
 - Changes: [the diff or code]
 - Full file context: [surrounding code]
-- Project standards: [from CLAUDE.md, .editorconfig, etc.]
+- Project standards: [from CLAUDE.md, Agent.md, .editorconfig, etc.]
 
 FOCUS: [What this perspective looks for - from table above]
 
@@ -99,14 +110,14 @@ Present in this format:
 
 ### Summary
 
-| Category | Critical | High | Medium | Low |
-|----------|----------|------|--------|-----|
-| 🔐 Security | X | X | X | X |
-| 🔧 Simplification | X | X | X | X |
-| ⚡ Performance | X | X | X | X |
-| 📝 Quality | X | X | X | X |
-| 🧪 Testing | X | X | X | X |
-| **Total** | X | X | X | X |
+| Category          | Critical | High | Medium | Low |
+| ----------------- | -------- | ---- | ------ | --- |
+| 🔐 Security       | X        | X    | X      | X   |
+| 🔧 Simplification | X        | X    | X      | X   |
+| ⚡ Performance    | X        | X    | X      | X   |
+| 📝 Quality        | X        | X    | X      | X   |
+| 🧪 Testing        | X        | X    | X      | X   |
+| **Total**         | X        | X    | X      | X   |
 
 ### Critical & High Findings (Must Address)
 
@@ -138,28 +149,31 @@ Present in this format:
 Use `AskUserQuestion` with options based on verdict:
 
 **If REQUEST CHANGES:**
+
 - "Address critical issues first"
 - "Show me fixes for [specific issue]"
 - "Explain [finding] in more detail"
 
 **If APPROVE WITH COMMENTS:**
+
 - "Apply suggested fixes"
 - "Create follow-up issues for medium findings"
 - "Proceed without changes"
 
 **If APPROVE:**
+
 - "Add to PR comments (if PR review)"
 - "Done"
 
 ## Verdict Decision Matrix
 
-| Critical | High | Decision |
-|----------|------|----------|
-| > 0 | Any | 🔴 REQUEST CHANGES |
-| 0 | > 3 | 🔴 REQUEST CHANGES |
-| 0 | 1-3 | 🟡 APPROVE WITH COMMENTS |
-| 0 | 0 (Medium > 0) | 🟡 APPROVE WITH COMMENTS |
-| 0 | 0 (Low only) | ✅ APPROVE |
+| Critical | High           | Decision                 |
+| -------- | -------------- | ------------------------ |
+| > 0      | Any            | 🔴 REQUEST CHANGES       |
+| 0        | > 3            | 🔴 REQUEST CHANGES       |
+| 0        | 1-3            | 🟡 APPROVE WITH COMMENTS |
+| 0        | 0 (Medium > 0) | 🟡 APPROVE WITH COMMENTS |
+| 0        | 0 (Low only)   | ✅ APPROVE               |
 
 ## Important Notes
 

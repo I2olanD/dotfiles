@@ -13,7 +13,7 @@ You have been assigned to work on an unfamiliar codebase. You need to understand
 ```bash
 # Step 1: Read existing documentation first
 Read: README.md
-Read: CLAUDE.md (if exists)
+Read: CLAUDE.md / Agent.md (if exists)
 
 # Step 2: Identify tech stack from config files
 Glob: package.json | requirements.txt | go.mod | Cargo.toml
@@ -30,7 +30,7 @@ Glob: **/*.test.{ts,js} | **/*.spec.{ts,js} | **/test_*.py
 
 ### Explanation
 
-1. **Documentation first** - README and CLAUDE.md often contain project-specific conventions and commands
+1. **Documentation first** - README, CLAUDE.md, and Agent.md often contain project-specific conventions and commands
 2. **Config files reveal stack** - package.json shows Node.js, go.mod shows Go, etc.
 3. **Source mapping** - understand directory organization
 4. **Entry points** - find where execution begins
