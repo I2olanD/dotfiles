@@ -164,25 +164,25 @@ Universal skills available to all agents:
 
 ### Specification & Workflow Skills
 
-| Skill                        | Purpose                                      |
-| ---------------------------- | -------------------------------------------- |
-| `agent-coordination`         | Execute implementation plans phase-by-phase  |
-| `architecture-design`        | Create and validate solution design docs     |
-| `bug-diagnosis`              | Scientific debugging methodology             |
-| `codebase-analysis`          | Discover patterns through iterative analysis |
-| `constitution-validation`    | Create and validate project governance rules |
-| `context-preservation`       | Preserve session context across conversations|
-| `documentation-sync`         | Maintain documentation freshness             |
-| `drift-detection`            | Detect spec/implementation divergence        |
-| `git-workflow`               | Manage git operations for spec development   |
-| `implementation-planning`    | Create and validate implementation plans     |
-| `implementation-verification`| Validate implementation against specs        |
-| `knowledge-capture`          | Document business rules and patterns         |
-| `requirements-analysis`      | Create and validate PRDs                     |
-| `safe-refactoring`           | Systematic code refactoring                  |
-| `specification-management`   | Initialize and manage spec directories       |
-| `specification-validation`   | Validate specs for completeness              |
-| `task-delegation`            | Generate structured agent prompts            |
+| Skill                         | Purpose                                       |
+| ----------------------------- | --------------------------------------------- |
+| `agent-coordination`          | Execute implementation plans phase-by-phase   |
+| `architecture-design`         | Create and validate solution design docs      |
+| `bug-diagnosis`               | Scientific debugging methodology              |
+| `codebase-analysis`           | Discover patterns through iterative analysis  |
+| `constitution-validation`     | Create and validate project governance rules  |
+| `context-preservation`        | Preserve session context across conversations |
+| `documentation-sync`          | Maintain documentation freshness              |
+| `drift-detection`             | Detect spec/implementation divergence         |
+| `git-workflow`                | Manage git operations for spec development    |
+| `implementation-planning`     | Create and validate implementation plans      |
+| `implementation-verification` | Validate implementation against specs         |
+| `knowledge-capture`           | Document business rules and patterns          |
+| `requirements-analysis`       | Create and validate PRDs                      |
+| `safe-refactoring`            | Systematic code refactoring                   |
+| `specification-management`    | Initialize and manage spec directories        |
+| `specification-validation`    | Validate specs for completeness               |
+| `task-delegation`             | Generate structured agent prompts             |
 
 ---
 
@@ -199,7 +199,7 @@ Universal skills available to all agents:
 
 ### Agent Selection
 
-Agents are automatically selected based on task type, or explicitly via the Task tool with `subagent_type`.
+Agents are automatically selected based on task type, or explicitly via the task tool with `subagent_type`.
 
 ### Skill Loading
 

@@ -39,7 +39,7 @@ Context: The user wants to validate a new feature beyond basic automated tests.
 user: "We just shipped a new checkout flow, can you explore it for issues?"
 assistant: "I'll use the exploratory testing agent to systematically explore your checkout flow for usability issues, edge cases, and potential defects."
 <commentary>
-The user needs manual exploration of a feature to find issues that automated tests might miss, so use the Task tool to launch the exploratory testing agent.
+The user needs manual exploration of a feature to find issues that automated tests might miss, so use the task tool to launch the exploratory testing agent.
 </commentary>
 </example>
 

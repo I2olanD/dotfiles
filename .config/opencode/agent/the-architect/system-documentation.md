@@ -54,7 +54,7 @@ Context: The user wants to document their microservices architecture.
 user: "We need to document our microservices architecture for new team members"
 assistant: "I'll use the system-documentation agent to create comprehensive architectural documentation for your microservices system."
 <commentary>
-Since the user needs system documentation created, use the Task tool to launch the system-documentation agent.
+Since the user needs system documentation created, use the task tool to launch the system-documentation agent.
 </commentary>
 </example>
 
@@ -63,7 +63,7 @@ Context: The user needs to capture design decisions.
 user: "I want to document why we chose PostgreSQL over MongoDB for our data layer"
 assistant: "Let me use the system-documentation agent to create a design decision record that captures the rationale behind your database choice."
 <commentary>
-The user needs design decisions documented, so use the Task tool to launch the system-documentation agent.
+The user needs design decisions documented, so use the task tool to launch the system-documentation agent.
 </commentary>
 </example>
 
@@ -72,6 +72,6 @@ Context: After implementing a complex integration, documentation should be creat
 user: "We just finished integrating with the payment gateway API"
 assistant: "Now I'll use the system-documentation agent to create integration documentation for your payment gateway implementation."
 <commentary>
-New integration has been implemented that needs documentation, use the Task tool to launch the system-documentation agent.
+New integration has been implemented that needs documentation, use the task tool to launch the system-documentation agent.
 </commentary>
 </example>

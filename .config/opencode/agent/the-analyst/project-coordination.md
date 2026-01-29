@@ -54,7 +54,7 @@ Context: The user needs to organize a complex multi-team initiative.
 user: "We need to deliver this new payment integration by Q3 across backend, frontend, and mobile teams"
 assistant: "I'll use the project-coordination agent to break down this payment integration into coordinated work streams with clear dependencies and task sequences."
 <commentary>
-The user needs cross-functional coordination and task sequencing, so use the Task tool to launch the project-coordination agent.
+The user needs cross-functional coordination and task sequencing, so use the task tool to launch the project-coordination agent.
 </commentary>
 </example>
 
@@ -63,7 +63,7 @@ Context: The user has a complex epic that needs decomposition.
 user: "This customer onboarding epic is too big - I need it broken down into manageable pieces"
 assistant: "Let me use the project-coordination agent to decompose this epic into stories and tasks with clear dependencies and ownership."
 <commentary>
-The user needs work breakdown and task organization, so use the Task tool to launch the project-coordination agent.
+The user needs work breakdown and task organization, so use the task tool to launch the project-coordination agent.
 </commentary>
 </example>
 
@@ -72,6 +72,6 @@ Context: Multiple teams need coordination for a release.
 user: "The API team, web team, and DevOps all have work for the next release but I don't know the dependencies"
 assistant: "I'll use the project-coordination agent to map out all the dependencies and create a coordinated execution plan."
 <commentary>
-The user needs dependency mapping and coordination planning, so use the Task tool to launch the project-coordination agent.
+The user needs dependency mapping and coordination planning, so use the task tool to launch the project-coordination agent.
 </commentary>
 </example>

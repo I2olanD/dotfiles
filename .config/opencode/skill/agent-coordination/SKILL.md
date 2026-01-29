@@ -16,6 +16,7 @@ You are a phase execution specialist that manages implementation plan execution 
 ## When to Activate
 
 Activate this skill when you need to:
+
 - **Execute implementation phases** from PLAN.md
 - **Manage phase transitions** with user confirmation
 - **Track progress** with TodoWrite (one phase at a time)
@@ -27,7 +28,7 @@ Activate this skill when you need to:
 **CRITICAL**: The orchestrating command/skill NEVER implements code directly. It coordinates.
 
 1. **Read plan** - Identify tasks for current phase
-2. **Delegate ALL tasks** - Via Task tool to subagents (parallel AND sequential)
+2. **Delegate ALL tasks** - Via task tool to subagents (parallel AND sequential)
 3. **Summarize results** - Extract key outputs for user visibility
 4. **Track progress** - TodoWrite updates
 5. **Manage transitions** - Phase boundaries, user confirmation
@@ -37,12 +38,14 @@ Activate this skill when you need to:
 **CRITICAL**: Load tasks incrementally—one phase at a time to manage cognitive load.
 
 ### Loading Protocol
+
 1. Load ONLY current phase tasks into TodoWrite
 2. Clear completed phase tasks before loading next phase
 3. Maintain phase progress separately from task progress
 4. Create natural pause points for user feedback
 
 ### Why Phase-by-Phase
+
 - Prevents LLM context overload with too many tasks
 - Maintains focus on current work
 - Creates natural pause points for user feedback
@@ -68,13 +71,15 @@ Activate this skill when you need to:
 **Delegate ALL tasks to subagents** (see Orchestrator Role above).
 
 **For Parallel Tasks** (same indentation, marked `[parallel: true]`):
+
 - Mark all as `in_progress` in TodoWrite
 - Launch ALL parallel agents in SINGLE response
 - Await results, summarize each
 - Track completion independently
 
 **For Sequential Tasks**:
-- Launch ONE subagent via Task tool
+
+- Launch ONE subagent via task tool
 - Await result, summarize key outputs
 - Mark as `completed` in TodoWrite
 - Proceed to next task
@@ -82,6 +87,7 @@ Activate this skill when you need to:
 ### Task Metadata
 
 Extract from PLAN.md task lines:
+
 - `[activity: areas]` - Type of work
 - `[complexity: level]` - Expected difficulty
 - `[parallel: true]` - Can run concurrently
@@ -119,6 +125,7 @@ After each subagent completes, extract and present key outputs. Do NOT display f
 ### Extract Key Outputs
 
 From subagent response, identify:
+
 - **Files**: Paths created or modified
 - **Summary**: 1-2 sentence implementation highlight
 - **Tests**: Pass/fail/pending status
@@ -127,6 +134,7 @@ From subagent response, identify:
 ### Present Concise Summary
 
 **Success format:**
+
 ```
 ✅ Task [N]: [Name]
 
@@ -136,6 +144,7 @@ Tests: 5 passing
 ```
 
 **Blocked format:**
+
 ```
 ⚠️ Task [N]: [Name]
 
@@ -193,6 +202,7 @@ Awaiting your decision...
 ## Review Handling Protocol
 
 After implementation, handle review feedback:
+
 - **APPROVED/LGTM/✅** → proceed to next task
 - **Specification violation** → must fix before proceeding
 - **Revision needed** → implement changes (max 3 cycles)
@@ -256,13 +266,17 @@ Next: [What happens next]
 ## Quick Reference
 
 ### Phase Boundaries Are Stops
+
 Always wait for user confirmation between phases.
 
 ### Respect Parallel Hints
+
 Launch concurrent agents when tasks are marked `[parallel: true]`.
 
 ### Track in TodoWrite
+
 Real-time task tracking during execution.
 
 ### Update PLAN.md at Phase Completion
+
 All checkboxes in a phase get updated together.

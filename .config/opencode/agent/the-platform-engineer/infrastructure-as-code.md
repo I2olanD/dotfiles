@@ -50,7 +50,7 @@ Context: The user needs to create cloud infrastructure using Terraform.
 user: "I need to set up a production-ready AWS environment with VPC, ECS, and RDS"
 assistant: "I'll use the infrastructure-as-code agent to create a comprehensive Terraform configuration for your production AWS environment."
 <commentary>
-Since the user needs infrastructure code written, use the Task tool to launch the infrastructure-as-code agent.
+Since the user needs infrastructure code written, use the task tool to launch the infrastructure-as-code agent.
 </commentary>
 </example>
 
@@ -59,7 +59,7 @@ Context: The user wants to modularize their existing infrastructure code.
 user: "Our Terraform code is getting messy, can you help refactor it into reusable modules?"
 assistant: "Let me use the infrastructure-as-code agent to analyze your Terraform and create clean, reusable modules."
 <commentary>
-The user needs infrastructure code refactored and modularized, so use the Task tool to launch the infrastructure-as-code agent.
+The user needs infrastructure code refactored and modularized, so use the task tool to launch the infrastructure-as-code agent.
 </commentary>
 </example>
 
@@ -68,6 +68,6 @@ Context: The user needs infrastructure deployment automation.
 user: "We need a CI/CD pipeline that safely deploys our infrastructure changes"
 assistant: "I'll use the infrastructure-as-code agent to design a deployment pipeline with proper validation and approval gates."
 <commentary>
-Infrastructure deployment automation falls under infrastructure-as-code expertise, use the Task tool to launch the agent.
+Infrastructure deployment automation falls under infrastructure-as-code expertise, use the task tool to launch the agent.
 </commentary>
 </example>

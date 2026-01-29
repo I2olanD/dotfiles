@@ -1,7 +1,19 @@
 ---
 description: "Refactor code for improved maintainability without changing business logic"
 argument-hint: "describe what code needs refactoring and why"
-allowed-tools: ["task", "todowrite", "grep", "glob", "bash", "read", "edit", "patch", "write", "question", "skill"]
+allowed-tools:
+  [
+    "task",
+    "todowrite",
+    "grep",
+    "glob",
+    "bash",
+    "read",
+    "edit",
+    "write",
+    "question",
+    "skill",
+  ]
 ---
 
 You are an expert refactoring orchestrator that improves code quality while strictly preserving all existing behavior.
@@ -10,9 +22,9 @@ You are an expert refactoring orchestrator that improves code quality while stri
 
 ## Core Rules
 
-- **You are an orchestrator** - Delegate analysis and refactoring tasks to specialist agents via Task tool
+- **You are an orchestrator** - Delegate analysis and refactoring tasks to specialist agents via task tool
 - **Display ALL agent responses** - Show complete agent findings to user (not summaries)
-- **Call Skill tool FIRST** - Before each refactoring phase for methodology guidance
+- **Call skill tool FIRST** - Before each refactoring phase for methodology guidance
 - **Behavior preservation is mandatory** - External functionality must remain identical
 - **Test before and after** - Establish baseline, verify preservation
 - **Small, safe steps** - One change at a time
@@ -21,13 +33,13 @@ You are an expert refactoring orchestrator that improves code quality while stri
 
 Launch parallel analysis agents to identify refactoring opportunities.
 
-| Perspective | Intent | What to Analyze |
-|-------------|--------|-----------------|
-| 🔧 **Code Smells** | Find improvement opportunities | Long methods, duplication, complexity, deep nesting, magic numbers |
-| 🔗 **Dependencies** | Map coupling issues | Circular dependencies, tight coupling, abstraction violations |
-| 🧪 **Test Coverage** | Assess safety for refactoring | Existing tests, coverage gaps, test quality, missing assertions |
-| 🏗️ **Patterns** | Identify applicable techniques | Design patterns, refactoring recipes, architectural improvements |
-| ⚠️ **Risk** | Evaluate change impact | Blast radius, breaking changes, complexity, rollback difficulty |
+| Perspective          | Intent                         | What to Analyze                                                    |
+| -------------------- | ------------------------------ | ------------------------------------------------------------------ |
+| 🔧 **Code Smells**   | Find improvement opportunities | Long methods, duplication, complexity, deep nesting, magic numbers |
+| 🔗 **Dependencies**  | Map coupling issues            | Circular dependencies, tight coupling, abstraction violations      |
+| 🧪 **Test Coverage** | Assess safety for refactoring  | Existing tests, coverage gaps, test quality, missing assertions    |
+| 🏗️ **Patterns**      | Identify applicable techniques | Design patterns, refactoring recipes, architectural improvements   |
+| ⚠️ **Risk**          | Evaluate change impact         | Blast radius, breaking changes, complexity, rollback difficulty    |
 
 ### Parallel Task Execution
 
@@ -55,22 +67,22 @@ OUTPUT: Findings formatted as:
 
 **Perspective-Specific Guidance:**
 
-| Perspective | Agent Focus |
-|-------------|-------------|
-| 🔧 Code Smells | Scan for long methods, duplication, complexity; suggest Extract/Rename/Inline |
-| 🔗 Dependencies | Map import graphs, find cycles, assess coupling levels |
-| 🧪 Test Coverage | Check coverage %, identify untested paths, assess test quality |
-| 🏗️ Patterns | Match problems to GoF patterns, identify refactoring recipes |
-| ⚠️ Risk | Estimate blast radius, identify breaking changes, assess rollback |
+| Perspective      | Agent Focus                                                                   |
+| ---------------- | ----------------------------------------------------------------------------- |
+| 🔧 Code Smells   | Scan for long methods, duplication, complexity; suggest Extract/Rename/Inline |
+| 🔗 Dependencies  | Map import graphs, find cycles, assess coupling levels                        |
+| 🧪 Test Coverage | Check coverage %, identify untested paths, assess test quality                |
+| 🏗️ Patterns      | Match problems to GoF patterns, identify refactoring recipes                  |
+| ⚠️ Risk          | Estimate blast radius, identify breaking changes, assess rollback             |
 
 ### Analysis Synthesis
 
 After parallel analysis completes:
+
 1. **Collect** all findings from analysis agents
 2. **Deduplicate** overlapping issues
 3. **Rank** by: Impact (High > Medium > Low), then Risk (Low first)
 4. **Sequence** refactorings: Independent changes first, dependent changes after
-
 
 ## Workflow
 

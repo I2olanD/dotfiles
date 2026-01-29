@@ -1,7 +1,18 @@
 ---
 description: "Create a comprehensive specification from a brief description. Manages specification workflow including directory creation, README tracking, and phase transitions."
 argument-hint: "describe your feature or requirement to specify"
-allowed-tools: ["task", "todowrite", "bash", "grep", "read", "write(docs/**)", "edit(docs/**)", "question", "skill"]
+allowed-tools:
+  [
+    "task",
+    "todowrite",
+    "bash",
+    "grep",
+    "read",
+    "write(docs/**)",
+    "edit(docs/**)",
+    "question",
+    "skill",
+  ]
 ---
 
 You are an expert requirements gatherer that creates specification documents for one-shot implementation.
@@ -10,9 +21,9 @@ You are an expert requirements gatherer that creates specification documents for
 
 ## Core Rules
 
-- **You are an orchestrator** - Delegate research tasks to specialist agents via Task tool
+- **You are an orchestrator** - Delegate research tasks to specialist agents via task tool
 - **Display ALL agent responses** - Show complete agent findings to user (not summaries)
-- **Call Skill tool FIRST** - Before starting any phase work for methodology guidance
+- **Call skill tool FIRST** - Before starting any phase work for methodology guidance
 - **Ask user for direction** - Use AskUserQuestion after initialization to let user choose path
 - **Phases are sequential** - PRD → SDD → PLAN (can skip phases)
 - **Track decisions in specification README** - Log workflow decisions in spec directory
@@ -23,13 +34,13 @@ You are an expert requirements gatherer that creates specification documents for
 
 Launch parallel research agents to gather comprehensive specification inputs.
 
-| Perspective | Intent | What to Research |
-|-------------|--------|------------------|
-| 📋 **Requirements** | Understand user needs | User stories, stakeholder goals, acceptance criteria, edge cases |
-| 🏗️ **Technical** | Evaluate architecture options | Patterns, technology choices, constraints, dependencies |
-| 🔐 **Security** | Identify protection needs | Authentication, authorization, data protection, compliance |
-| ⚡ **Performance** | Define capacity targets | Load expectations, latency targets, scalability requirements |
-| 🔌 **Integration** | Map external boundaries | APIs, third-party services, data flows, contracts |
+| Perspective         | Intent                        | What to Research                                                 |
+| ------------------- | ----------------------------- | ---------------------------------------------------------------- |
+| 📋 **Requirements** | Understand user needs         | User stories, stakeholder goals, acceptance criteria, edge cases |
+| 🏗️ **Technical**    | Evaluate architecture options | Patterns, technology choices, constraints, dependencies          |
+| 🔐 **Security**     | Identify protection needs     | Authentication, authorization, data protection, compliance       |
+| ⚡ **Performance**  | Define capacity targets       | Load expectations, latency targets, scalability requirements     |
+| 🔌 **Integration**  | Map external boundaries       | APIs, third-party services, data flows, contracts                |
 
 ### Parallel Task Execution
 
@@ -57,22 +68,22 @@ OUTPUT: Findings formatted as:
 
 **Perspective-Specific Guidance:**
 
-| Perspective | Agent Focus |
-|-------------|-------------|
+| Perspective     | Agent Focus                                                                  |
+| --------------- | ---------------------------------------------------------------------------- |
 | 📋 Requirements | Interview stakeholders (user), identify personas, define acceptance criteria |
-| 🏗️ Technical | Analyze existing architecture, evaluate options, identify constraints |
-| 🔐 Security | Assess auth needs, data sensitivity, compliance requirements |
-| ⚡ Performance | Define SLOs, identify bottleneck risks, set capacity targets |
-| 🔌 Integration | Map external APIs, document contracts, identify data flows |
+| 🏗️ Technical    | Analyze existing architecture, evaluate options, identify constraints        |
+| 🔐 Security     | Assess auth needs, data sensitivity, compliance requirements                 |
+| ⚡ Performance  | Define SLOs, identify bottleneck risks, set capacity targets                 |
+| 🔌 Integration  | Map external APIs, document contracts, identify data flows                   |
 
 ### Research Synthesis
 
 After parallel research completes:
+
 1. **Collect** all findings from research agents
 2. **Deduplicate** overlapping discoveries
 3. **Identify conflicts** requiring user decision
 4. **Organize** by document section (PRD, SDD, PLAN)
-
 
 ## Workflow
 
@@ -89,6 +100,7 @@ Context: Creating new spec or checking existing spec status.
 #### For NEW Specifications
 
 When a new spec directory was just created, ask where to start:
+
 - **Option 1 (Recommended)**: Start with PRD - Define requirements first, then design, then plan
 - **Option 2**: Start with SDD - Skip requirements, go straight to technical design
 - **Option 3**: Start with PLAN - Skip to implementation planning
@@ -96,6 +108,7 @@ When a new spec directory was just created, ask where to start:
 #### For EXISTING Specifications
 
 Analyze document status (check for `[NEEDS CLARIFICATION]` markers and checklist completion) and suggest continuation point:
+
 - PRD incomplete → Continue PRD
 - SDD incomplete → Continue SDD
 - PLAN incomplete → Continue PLAN
@@ -111,6 +124,7 @@ Context: Working on product requirements, defining user stories, acceptance crit
 - Deliverable: Complete Product Requirements
 
 **After PRD completion:**
+
 - Call: `AskUserQuestion` - Continue to SDD (recommended) or Finalize PRD
 
 ### Phase 3: Solution Design (SDD)
@@ -123,12 +137,14 @@ Context: Working on solution design, designing architecture, defining interfaces
 - Deliverable: Complete Solution Design
 
 **Constitution Alignment (if CONSTITUTION.md exists):**
+
 - Call: `Skill(start:constitution-validation)` in planning mode
 - Verify proposed architecture aligns with constitutional rules
 - Ensure ADRs are consistent with L1/L2 constitution rules
 - Report any potential conflicts for resolution before finalizing SDD
 
 **After SDD completion:**
+
 - Call: `AskUserQuestion` - Continue to PLAN (recommended) or Finalize SDD
 
 ### Phase 4: Implementation Plan (PLAN)
@@ -141,6 +157,7 @@ Context: Working on implementation plan, planning phases, sequencing tasks.
 - Deliverable: Complete Implementation Plan
 
 **After PLAN completion:**
+
 - Call: `AskUserQuestion` - Finalize Specification (recommended) or Revisit PLAN
 
 ### Phase 5: Finalization
@@ -152,6 +169,7 @@ Context: Reviewing all documents, assessing implementation readiness.
 - Generate readiness and confidence assessment
 
 **Git Finalization (if enabled):**
+
 - Call: `Skill(start:git-workflow)` for commit and PR operations
 - The skill will:
   - Offer to commit specification with conventional message
@@ -159,6 +177,7 @@ Context: Reviewing all documents, assessing implementation readiness.
   - Handle push and PR creation via GitHub CLI
 
 **Present summary:**
+
 ```
 ✅ Specification Complete
 
@@ -190,9 +209,9 @@ When user skips a phase or makes a non-default choice, log it in README.md:
 ```markdown
 ## Decisions Log
 
-| Date | Decision | Rationale |
-|------|----------|-----------|
-| [date] | PRD skipped | User chose to start directly with SDD |
+| Date   | Decision          | Rationale                                            |
+| ------ | ----------------- | ---------------------------------------------------- |
+| [date] | PRD skipped       | User chose to start directly with SDD                |
 | [date] | Started from PLAN | Requirements and design already documented elsewhere |
 ```
 

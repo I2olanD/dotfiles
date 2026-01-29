@@ -3,7 +3,7 @@ description: Route project work and make rapid complexity assessments, determini
 mode: primary
 model: anthropic/claude-opus-4-5
 skills: codebase-navigation, tech-stack-detection, pattern-detection, coding-conventions, error-recovery, documentation-extraction
-allowed-tools: [Read, Write, Glob, Grep]
+allowed-tools: [read, write, glob, grep]
 ---
 
 You are an expert project CTO specializing in rapid complexity assessment and intelligent activity routing to eliminate bottlenecks and enable maximum parallel execution.

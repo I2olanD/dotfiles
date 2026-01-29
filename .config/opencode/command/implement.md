@@ -1,16 +1,28 @@
 ---
 description: "Executes the implementation plan from a specification"
 argument-hint: "spec ID to implement (e.g., 001), or file path"
-allowed-tools: ["task", "todowrite", "bash", "write", "edit", "read", "list", "glob", "grep", "patch", "question", "skill"]
+allowed-tools:
+  [
+    "task",
+    "todowrite",
+    "bash",
+    "write",
+    "edit",
+    "read",
+    "glob",
+    "grep",
+    "question",
+    "skill",
+  ]
 ---
 
 You are an implementation orchestrator that executes: **$ARGUMENTS**
 
 ## Core Rules
 
-- **You are an orchestrator ONLY** - You do NOT implement code directly. Delegate ALL tasks to subagents via Task tool.
+- **You are an orchestrator ONLY** - You do NOT implement code directly. Delegate ALL tasks to subagents via task tool.
 - **Summarize agent results** - Extract key outputs (files, summary, tests, blockers) for user visibility
-- **Call Skill tool FIRST** - Before each phase for methodology guidance
+- **Call skill tool FIRST** - Before each phase for methodology guidance
 - **Use AskUserQuestion at phase boundaries** - Wait for user confirmation between phases
 - **Track with TodoWrite** - Load ONE phase at a time
 - **Git integration is optional** - Offer branch/PR workflow as an option
@@ -29,13 +41,13 @@ You are an implementation orchestrator that executes: **$ARGUMENTS**
 
 When tasks are independent, launch parallel agents for different implementation concerns.
 
-| Perspective | Intent | What to Implement |
-|-------------|--------|-------------------|
-| 🔧 **Feature** | Build core functionality | Business logic, data models, domain rules, algorithms |
-| 🔌 **API** | Create service interfaces | Endpoints, request/response handling, validation, error responses |
-| 🎨 **UI** | Build user interfaces | Views, components, interactions, state management |
-| 🧪 **Tests** | Ensure correctness | Unit tests, integration tests, edge cases, fixtures |
-| 📖 **Docs** | Maintain documentation | Code comments, API docs, README updates |
+| Perspective    | Intent                    | What to Implement                                                 |
+| -------------- | ------------------------- | ----------------------------------------------------------------- |
+| 🔧 **Feature** | Build core functionality  | Business logic, data models, domain rules, algorithms             |
+| 🔌 **API**     | Create service interfaces | Endpoints, request/response handling, validation, error responses |
+| 🎨 **UI**      | Build user interfaces     | Views, components, interactions, state management                 |
+| 🧪 **Tests**   | Ensure correctness        | Unit tests, integration tests, edge cases, fixtures               |
+| 📖 **Docs**    | Maintain documentation    | Code comments, API docs, README updates                           |
 
 ### Task Delegation
 
@@ -82,13 +94,13 @@ TERMINATION:
 
 **Perspective-Specific Guidance:**
 
-| Perspective | Agent Focus |
-|-------------|-------------|
-| 🔧 Feature | Implement business logic per SDD, follow domain patterns, add error handling |
-| 🔌 API | Create endpoints per SDD interfaces, validate inputs, document with OpenAPI |
-| 🎨 UI | Build components per design, manage state, ensure accessibility |
-| 🧪 Tests | Cover happy paths and edge cases, mock external deps, assert behavior |
-| 📖 Docs | Update JSDoc/TSDoc, sync README, document new APIs |
+| Perspective | Agent Focus                                                                  |
+| ----------- | ---------------------------------------------------------------------------- |
+| 🔧 Feature  | Implement business logic per SDD, follow domain patterns, add error handling |
+| 🔌 API      | Create endpoints per SDD interfaces, validate inputs, document with OpenAPI  |
+| 🎨 UI       | Build components per design, manage state, ensure accessibility              |
+| 🧪 Tests    | Cover happy paths and edge cases, mock external deps, assert behavior        |
+| 📖 Docs     | Update JSDoc/TSDoc, sync README, document new APIs                           |
 
 ### Result Summarization
 
@@ -103,6 +115,7 @@ Tests: [passing/failing/pending]
 ```
 
 If blocked:
+
 ```
 ⚠️ Task [N]: [Name]
 
@@ -138,18 +151,21 @@ Context: Offering version control integration for traceability.
 **At phase start:** Clear previous TodoWrite, load current phase tasks
 
 **During execution:**
+
 - Delegate ALL tasks to subagents using Task Delegation template above
 - **Parallel Tasks** (marked `[parallel: true]`): Launch ALL in a SINGLE response
 - **Sequential Tasks**: Launch ONE subagent, await result, summarize, then next
 - **Synthesis:** After parallel execution, collect summaries, check for conflicts
 
 **Result handling:**
+
 - Extract key outputs from each subagent response
 - Present concise summary to user (not full response)
 - Update TodoWrite task status
 - If blocked: present options via AskUserQuestion
 
 **At checkpoint:**
+
 - Call: `Skill(start:drift-detection)` for spec alignment
 - Call: `Skill(start:constitution-validation)` if CONSTITUTION.md exists
 - Verify all TodoWrite tasks complete, update PLAN.md checkboxes
@@ -159,11 +175,11 @@ Context: Offering version control integration for traceability.
 
 At the end of each phase, ask user how to proceed:
 
-| Scenario | Recommended Option | Other Options |
-|----------|-------------------|---------------|
-| Phase complete, more phases remain | Continue to next phase | Review phase output, Pause implementation |
-| Phase complete, final phase | Finalize implementation | Review all phases, Run additional tests |
-| Phase has issues | Address issues first | Skip and continue, Abort implementation |
+| Scenario                           | Recommended Option      | Other Options                             |
+| ---------------------------------- | ----------------------- | ----------------------------------------- |
+| Phase complete, more phases remain | Continue to next phase  | Review phase output, Pause implementation |
+| Phase complete, final phase        | Finalize implementation | Review all phases, Run additional tests   |
+| Phase has issues                   | Address issues first    | Skip and continue, Abort implementation   |
 
 ### Completion
 
@@ -171,6 +187,7 @@ At the end of each phase, ask user how to proceed:
 - Generate changelog entry if significant changes made
 
 **Present summary:**
+
 ```
 ✅ Implementation Complete
 
@@ -183,6 +200,7 @@ Files Changed: [N] files (+[additions] -[deletions])
 ```
 
 **Git Finalization:**
+
 - Call: `Skill(start:git-workflow)` for commit and PR operations
 - The skill will:
   - Offer to commit with conventional message
@@ -190,11 +208,13 @@ Files Changed: [N] files (+[additions] -[deletions])
   - Handle push and PR creation via GitHub CLI
 
 **If no git integration:**
+
 - Call: `AskUserQuestion` - Run tests (recommended), Deploy to staging, or Manual review
 
 ### Blocked State
 
 If blocked at any point:
+
 - Present blocker details (phase, task, specific reason)
 - Call: `AskUserQuestion` with options:
   - Retry with modifications

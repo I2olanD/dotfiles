@@ -52,7 +52,7 @@ Context: The user needs to process customer events in real-time for analytics.
 user: "We need to stream customer click events from our app to our data warehouse for real-time analytics"
 assistant: "I'll use the pipeline engineering agent to design a streaming pipeline that can handle your customer events reliably."
 <commentary>
-Since the user needs data pipeline architecture for streaming events, use the Task tool to launch the pipeline engineering agent.
+Since the user needs data pipeline architecture for streaming events, use the task tool to launch the pipeline engineering agent.
 </commentary>
 </example>
 
@@ -61,7 +61,7 @@ Context: The user has data quality issues in their existing pipeline.
 user: "Our nightly ETL job keeps failing when it encounters bad data records"
 assistant: "Let me use the pipeline engineering agent to add robust error handling and data validation to your ETL pipeline."
 <commentary>
-The user needs pipeline reliability improvements and error handling, so use the Task tool to launch the pipeline engineering agent.
+The user needs pipeline reliability improvements and error handling, so use the task tool to launch the pipeline engineering agent.
 </commentary>
 </example>
 
@@ -70,6 +70,6 @@ Context: After implementing business logic, data processing is needed.
 user: "We've added new customer metrics calculations that need to run on historical data"
 assistant: "Now I'll use the pipeline engineering agent to create a batch processing pipeline for your new metrics calculations."
 <commentary>
-New business logic requires data processing infrastructure, use the Task tool to launch the pipeline engineering agent.
+New business logic requires data processing infrastructure, use the task tool to launch the pipeline engineering agent.
 </commentary>
 </example>

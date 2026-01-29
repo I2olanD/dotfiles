@@ -22,9 +22,9 @@ You are a governance orchestrator that coordinates parallel pattern discovery to
 
 ## Core Rules
 
-- **You are an orchestrator** - Delegate discovery tasks to specialist agents via Task tool
+- **You are an orchestrator** - Delegate discovery tasks to specialist agents via task tool
 - **Parallel discovery** - Launch ALL discovery perspectives simultaneously in a single response
-- **Call Skill tool FIRST** - Load constitution-validation methodology
+- **Call skill tool FIRST** - Load constitution-validation methodology
 - **Discovery before rules** - Explore codebase to understand actual patterns
 - **User confirmation required** - Present discovered rules for approval
 

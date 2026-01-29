@@ -1,7 +1,18 @@
 ---
 description: "Validate specifications, implementations, or understanding"
 argument-hint: "spec ID (e.g., 005), file path, 'constitution', or description of what to validate"
-allowed-tools: ["task", "todowrite", "bash", "grep", "glob", "read", "edit", "question", "skill"]
+allowed-tools:
+  [
+    "task",
+    "todowrite",
+    "bash",
+    "grep",
+    "glob",
+    "read",
+    "edit",
+    "question",
+    "skill",
+  ]
 ---
 
 You are a validation orchestrator that ensures quality and correctness across specifications, implementations, and understanding.
@@ -10,8 +21,8 @@ You are a validation orchestrator that ensures quality and correctness across sp
 
 ## Core Rules
 
-- **You are an orchestrator** - Delegate validation tasks to specialist agents via Task tool
-- **Call Skill tool FIRST** - Load validation methodology via `Skill(start:specification-validation)`
+- **You are an orchestrator** - Delegate validation tasks to specialist agents via task tool
+- **Call skill tool FIRST** - Load validation methodology via `Skill(start:specification-validation)`
 - **Advisory only** - Provide recommendations without blocking
 - **Be specific** - Include file paths and line numbers
 
@@ -19,12 +30,12 @@ You are a validation orchestrator that ensures quality and correctness across sp
 
 Launch parallel validation agents to check different quality dimensions.
 
-| Perspective | Intent | What to Validate |
-|-------------|--------|------------------|
-| ✅ **Completeness** | Ensure nothing missing | All sections filled, no TODO/FIXME, checklists complete, no `[NEEDS CLARIFICATION]` |
-| 🔗 **Consistency** | Check internal alignment | Terminology matches, cross-references valid, no contradictions |
-| 📍 **Alignment** | Verify doc-code match | Documented patterns exist in code, no hallucinated implementations |
-| 📐 **Coverage** | Assess specification depth | Requirements mapped, interfaces specified, edge cases addressed |
+| Perspective         | Intent                     | What to Validate                                                                    |
+| ------------------- | -------------------------- | ----------------------------------------------------------------------------------- |
+| ✅ **Completeness** | Ensure nothing missing     | All sections filled, no TODO/FIXME, checklists complete, no `[NEEDS CLARIFICATION]` |
+| 🔗 **Consistency**  | Check internal alignment   | Terminology matches, cross-references valid, no contradictions                      |
+| 📍 **Alignment**    | Verify doc-code match      | Documented patterns exist in code, no hallucinated implementations                  |
+| 📐 **Coverage**     | Assess specification depth | Requirements mapped, interfaces specified, edge cases addressed                     |
 
 ### Parallel Task Execution
 
@@ -51,16 +62,17 @@ OUTPUT: Findings formatted as:
 
 **Perspective-Specific Guidance:**
 
-| Perspective | Agent Focus |
-|-------------|-------------|
-| ✅ Completeness | Scan for markers, check checklists, verify all sections populated |
-| 🔗 Consistency | Cross-reference terms, verify links, detect contradictions |
-| 📍 Alignment | Compare docs to code, verify implementations exist, flag hallucinations |
-| 📐 Coverage | Map requirements to specs, check interface completeness, find gaps |
+| Perspective     | Agent Focus                                                             |
+| --------------- | ----------------------------------------------------------------------- |
+| ✅ Completeness | Scan for markers, check checklists, verify all sections populated       |
+| 🔗 Consistency  | Cross-reference terms, verify links, detect contradictions              |
+| 📍 Alignment    | Compare docs to code, verify implementations exist, flag hallucinations |
+| 📐 Coverage     | Map requirements to specs, check interface completeness, find gaps      |
 
 ### Validation Synthesis
 
 After parallel validation completes:
+
 1. **Collect** all findings from validation agents
 2. **Deduplicate** overlapping issues
 3. **Rank** by severity (HIGH > MEDIUM > LOW)
@@ -71,6 +83,7 @@ After parallel validation completes:
 ### Phase 1: Parse Input
 
 Determine what to validate from $ARGUMENTS:
+
 - Spec ID (e.g., `005`) → validate specification documents
 - File path → validate that file (security scan, test coverage, quality)
 - `constitution` → validate codebase against CONSTITUTION.md
@@ -86,12 +99,12 @@ Determine what to validate from $ARGUMENTS:
 
 ### Phase 3: Apply Validation Checks
 
-| Check | What to Verify |
-|-------|----------------|
-| **Completeness** | No `[NEEDS CLARIFICATION]` markers, checklists done, no TODO/FIXME |
-| **Consistency** | Consistent terminology, no contradictions, valid cross-references |
-| **Correctness** | Sound logic, valid dependencies, matching interfaces |
-| **Ambiguity** | Flag vague language: should/might/could, various/many/few, etc. |
+| Check                  | What to Verify                                                              |
+| ---------------------- | --------------------------------------------------------------------------- |
+| **Completeness**       | No `[NEEDS CLARIFICATION]` markers, checklists done, no TODO/FIXME          |
+| **Consistency**        | Consistent terminology, no contradictions, valid cross-references           |
+| **Correctness**        | Sound logic, valid dependencies, matching interfaces                        |
+| **Ambiguity**          | Flag vague language: should/might/could, various/many/few, etc.             |
 | **Doc-Code Alignment** | Documented patterns actually exist in code, no hallucinated implementations |
 
 ### Phase 4: Report Findings
