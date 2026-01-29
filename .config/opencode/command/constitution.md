@@ -1,31 +1,44 @@
 ---
 description: "Create or update a project constitution with governance rules. Uses discovery-based approach to generate project-specific rules."
 argument-hint: "optional focus areas (e.g., 'security and testing', 'architecture patterns for Next.js')"
-allowed-tools:
-  [
-    "Task",
-    "TodoWrite",
-    "Bash",
-    "Grep",
-    "Glob",
-    "Read",
-    "Write",
-    "Edit",
-    "AskUserQuestion",
-    "Skill",
-  ]
+allowed-tools: ["Task", "TodoWrite", "Bash", "Grep", "Glob", "Read", "Write", "Edit", "AskUserQuestion", "Skill"]
 ---
 
-You are a governance specialist that creates and updates project constitutions through codebase discovery.
+You are a governance orchestrator that coordinates parallel pattern discovery to create project constitutions.
 
 **Focus Areas:** $ARGUMENTS
 
 ## Core Rules
 
+- **You are an orchestrator** - Delegate discovery tasks to specialist agents via Task tool
+- **Parallel discovery** - Launch ALL discovery perspectives simultaneously in a single response
 - **Call Skill tool FIRST** - Load constitution-validation methodology
 - **Discovery before rules** - Explore codebase to understand actual patterns
 - **User confirmation required** - Present discovered rules for approval
-- **File operations at command level** - Command writes CONSTITUTION.md, skill generates content
+
+## Discovery Perspectives
+
+Pattern discovery should cover these categories. Launch parallel agents for comprehensive analysis.
+
+| Perspective | Intent | What to Discover |
+|-------------|--------|------------------|
+| 🔐 **Security** | Identify security patterns and risks | Authentication methods, secret handling, input validation, injection prevention, CORS |
+| 🏗️ **Architecture** | Understand structural patterns | Layer structure, module boundaries, API patterns, data flow, dependencies |
+| 📝 **Code Quality** | Find coding conventions | Naming conventions, import patterns, error handling, logging, code organization |
+| 🧪 **Testing** | Discover test practices | Test framework, file patterns, coverage requirements, mocking approaches |
+
+### Focus Area Mapping
+
+When $ARGUMENTS specifies focus areas, select relevant perspectives:
+
+| Input | Discovery Perspectives |
+|-------|----------------------|
+| "security" | 🔐 Security |
+| "testing" | 🧪 Testing |
+| "architecture" | 🏗️ Architecture |
+| "code quality" | 📝 Code Quality |
+| Empty or "all" | All perspectives |
+| Framework-specific | Relevant subset based on framework |
 
 ## Workflow
 
@@ -46,45 +59,50 @@ test -f CONSTITUTION.md && echo "exists" || echo "not found"
 
 Context: No constitution exists, creating from scratch.
 
-- Call: `Skill(skill: "constitution-validation")`
-- The skill provides:
-  - Template structure
-  - Discovery methodology
-  - Rule generation guidelines
+- Call: `Skill(start:constitution-validation)`
+- The skill provides template structure, discovery methodology, and rule generation guidelines
 
-**Discovery Process:**
+**Launch Discovery Agents:**
 
-For each category, explore the codebase:
+Launch ALL applicable discovery perspectives in parallel (single response with multiple Task calls).
+
+**For each perspective, describe the discovery intent:**
 
 ```
-📂 Exploring: Security patterns
-- Authentication: [discovered]
-- Secret handling: [discovered]
-- Input validation: [discovered]
+Discover [PERSPECTIVE] patterns for constitution rules:
 
-📂 Exploring: Architecture patterns
-- Layer structure: [discovered]
-- Module boundaries: [discovered]
-- API patterns: [discovered]
+CONTEXT:
+- Project root: [path]
+- Tech stack: [detected frameworks, languages]
+- Existing configs: [.eslintrc, tsconfig, etc.]
 
-📂 Exploring: Code quality conventions
-- Naming conventions: [discovered]
-- Import patterns: [discovered]
-- Error handling: [discovered]
+FOCUS: [What this perspective discovers - from table above]
 
-📂 Exploring: Testing setup
-- Test framework: [discovered]
-- File patterns: [discovered]
-- Coverage: [discovered]
+OUTPUT: Findings formatted as:
+  📂 **[Category]**
+  🔍 Pattern: [What was discovered]
+  📍 Evidence: `file:line` references
+  📜 Proposed Rule: [L1/L2/L3] [Rule statement]
 ```
 
-**Rule Generation:**
+**Perspective-Specific Discovery:**
 
-Based on discoveries, generate rules with appropriate levels:
+| Perspective | Agent Focus |
+|-------------|-------------|
+| 🔐 Security | Find auth patterns, secret handling, validation approaches, generate security rules |
+| 🏗️ Architecture | Identify layer structure, module patterns, API design, generate architecture rules |
+| 📝 Code Quality | Discover naming conventions, imports, error handling, generate quality rules |
+| 🧪 Testing | Find test framework, patterns, coverage setup, generate testing rules |
 
-- L1 (Must): Security critical, auto-fixable
-- L2 (Should): Important, needs human judgment
-- L3 (May): Advisory, style preferences
+**Synthesize Discoveries:**
+
+1. **Collect** all findings from discovery agents
+2. **Deduplicate** overlapping patterns
+3. **Classify** rules by level:
+   - L1 (Must): Security critical, auto-fixable
+   - L2 (Should): Important, needs human judgment
+   - L3 (May): Advisory, style preferences
+4. **Group** by category for presentation
 
 **User Confirmation:**
 
@@ -118,19 +136,17 @@ Present discovered rules in categories:
 
 Context: Constitution exists, updating with new rules.
 
-- Call: `Skill(skill: "constitution-validation")`
+- Call: `Skill(start:constitution-validation)`
 - Read current constitution
 - Parse existing rules and categories
 
 **Present options:**
-
 - Add new rules (to existing or new category)
 - Modify existing rules
 - Remove rules
 - View current constitution
 
 If adding rules and focus areas provided:
-
 - Focus discovery on specified areas
 - Generate rules for those areas
 - Merge with existing constitution
@@ -153,8 +169,8 @@ Rules: [N] total
   - L3 (May): [N]
 
 Next Steps:
-- /validate constitution - Validate codebase against constitution
-- The constitution will be checked during /implement
+- /start:validate constitution - Validate codebase against constitution
+- The constitution will be checked during /start:implement
 ```
 
 ### Phase 4: Validate (Optional)
@@ -164,32 +180,31 @@ Context: User may want to immediately check codebase compliance.
 - Call: `AskUserQuestion` - Run validation now or skip
 
 If validation requested:
-
-- Call: `Skill(skill: "constitution-validation")` in validation mode
+- Call: `Skill(start:constitution-validation)` in validation mode
 - Report compliance findings
 
 ## Focus Area Interpretation
 
 When $ARGUMENTS provides focus areas, interpret them:
 
-| Input          | Discovery Focus                         |
-| -------------- | --------------------------------------- |
-| "security"     | Authentication, secrets, injection, XSS |
-| "testing"      | Test frameworks, coverage, patterns     |
-| "architecture" | Layers, boundaries, patterns            |
-| "React"        | Hooks, components, state management     |
-| "Next.js"      | Pages, API routes, SSR patterns         |
-| "monorepo"     | Package boundaries, shared code         |
-| "API"          | Endpoints, validation, error handling   |
+| Input | Discovery Focus |
+|-------|-----------------|
+| "security" | Authentication, secrets, injection, XSS |
+| "testing" | Test frameworks, coverage, patterns |
+| "architecture" | Layers, boundaries, patterns |
+| "React" | Hooks, components, state management |
+| "Next.js" | Pages, API routes, SSR patterns |
+| "monorepo" | Package boundaries, shared code |
+| "API" | Endpoints, validation, error handling |
 
 ## Examples
 
 ### Create New Constitution
 
 ```
-User: /constitution
+User: /start:constitution
 
-Opencode: 📜 Constitution Setup
+Claude: 📜 Constitution Setup
 
 No CONSTITUTION.md found at project root.
 
@@ -216,9 +231,9 @@ Would you like to:
 ### Create with Focus Areas
 
 ```
-User: /constitution "Focus on security and API patterns"
+User: /start:constitution "Focus on security and API patterns"
 
-Opencode: 📜 Constitution Setup (Focused)
+Claude: 📜 Constitution Setup (Focused)
 
 Focus areas: Security, API patterns
 
@@ -244,9 +259,9 @@ API Patterns (3 rules):
 ### Update Existing Constitution
 
 ```
-User: /constitution "Add testing rules"
+User: /start:constitution "Add testing rules"
 
-Opencode: 📜 Constitution Update
+Claude: 📜 Constitution Update
 
 Found existing CONSTITUTION.md with 8 rules.
 
@@ -293,8 +308,8 @@ Level Distribution:
 - L3 (May, Advisory): [N]
 
 Integration Points:
-- ✅ /validate constitution - Check compliance
-- ✅ /implement - Active enforcement
-- ✅ /review - Code review checks
-- ✅ /specify - SDD alignment
+- ✅ /start:validate constitution - Check compliance
+- ✅ /start:implement - Active enforcement
+- ✅ /start:review - Code review checks
+- ✅ /start:specify - SDD alignment
 ```

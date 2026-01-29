@@ -1,21 +1,7 @@
 ---
 description: "Simplify and refine code for clarity, consistency, and maintainability while preserving functionality"
 argument-hint: "'staged', 'recent', file path, or 'all' for broader scope"
-allowed-tools:
-  [
-    "Task",
-    "TaskOutput",
-    "TodoWrite",
-    "Grep",
-    "Glob",
-    "Bash",
-    "Read",
-    "Edit",
-    "MultiEdit",
-    "Write",
-    "AskUserQuestion",
-    "Skill",
-  ]
+allowed-tools: ["Task", "TaskOutput", "TodoWrite", "Grep", "Glob", "Bash", "Read", "Edit", "MultiEdit", "Write", "AskUserQuestion", "Skill"]
 ---
 
 You are a code simplification orchestrator that coordinates parallel analysis across multiple perspectives, then executes safe refactorings to enhance clarity, consistency, and maintainability while preserving exact functionality.
@@ -34,19 +20,18 @@ You are a code simplification orchestrator that coordinates parallel analysis ac
 ## Output Locations
 
 Simplification plans can be persisted to track analysis and execution:
-
 - `docs/refactor/[NNN]-simplify-[name].md` - Simplification analysis reports and execution logs
 
 ## Simplification Perspectives
 
 Launch parallel analysis agents for each perspective. Claude Code routes to appropriate specialists.
 
-| Perspective       | Intent                         | What to Find                                                                                                                             |
-| ----------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| 🔧 **Complexity** | Reduce cognitive load          | Long methods (>20 lines), deep nesting, complex conditionals, convoluted loops, tangled async/promise chains, high cyclomatic complexity |
-| 📝 **Clarity**    | Make intent obvious            | Unclear names, magic numbers, inconsistent patterns, overly defensive code, unnecessary ceremony, mixed paradigms, nested ternaries      |
-| 🏗️ **Structure**  | Improve organization           | Mixed concerns, tight coupling, bloated interfaces, god objects, too many parameters, hidden dependencies, feature envy                  |
-| 🧹 **Waste**      | Eliminate what shouldn't exist | Duplication, dead code, unused abstractions, speculative generality, copy-paste patterns, unreachable paths                              |
+| Perspective | Intent | What to Find |
+|-------------|--------|--------------|
+| 🔧 **Complexity** | Reduce cognitive load | Long methods (>20 lines), deep nesting, complex conditionals, convoluted loops, tangled async/promise chains, high cyclomatic complexity |
+| 📝 **Clarity** | Make intent obvious | Unclear names, magic numbers, inconsistent patterns, overly defensive code, unnecessary ceremony, mixed paradigms, nested ternaries |
+| 🏗️ **Structure** | Improve organization | Mixed concerns, tight coupling, bloated interfaces, god objects, too many parameters, hidden dependencies, feature envy |
+| 🧹 **Waste** | Eliminate what shouldn't exist | Duplication, dead code, unused abstractions, speculative generality, copy-paste patterns, unreachable paths |
 
 ## Workflow
 
@@ -104,12 +89,12 @@ OUTPUT: Findings formatted as:
 
 **Perspective-Specific Guidance:**
 
-| Perspective   | Agent Focus                                                                                                                                         |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Perspective | Agent Focus |
+|-------------|-------------|
 | 🔧 Complexity | Find long methods, deep nesting, complex conditionals, convoluted loops; suggest Extract Method, Guard Clauses, Early Return, Decompose Conditional |
-| 📝 Clarity    | Find unclear names, magic numbers, inconsistent patterns, verbose ceremony; suggest Rename, Introduce Constant, Standardize Pattern, Modern Syntax  |
-| 🏗️ Structure  | Find mixed concerns, tight coupling, bloated interfaces; suggest Extract Class, Move Method, Parameter Object, Dependency Injection                 |
-| 🧹 Waste      | Find duplication, dead code, unused abstractions; suggest Extract Function, Remove Dead Code, Inline Unused                                         |
+| 📝 Clarity | Find unclear names, magic numbers, inconsistent patterns, verbose ceremony; suggest Rename, Introduce Constant, Standardize Pattern, Modern Syntax |
+| 🏗️ Structure | Find mixed concerns, tight coupling, bloated interfaces; suggest Extract Class, Move Method, Parameter Object, Dependency Injection |
+| 🧹 Waste | Find duplication, dead code, unused abstractions; suggest Extract Function, Remove Dead Code, Inline Unused |
 
 ### Phase 3: Synthesize Findings
 
@@ -125,13 +110,13 @@ Present consolidated findings:
 
 ### Summary
 
-| Perspective   | High | Medium | Low |
-| ------------- | ---- | ------ | --- |
-| 🔧 Complexity | X    | X      | X   |
-| 📝 Clarity    | X    | X      | X   |
-| 🏗️ Structure  | X    | X      | X   |
-| 🧹 Waste      | X    | X      | X   |
-| **Total**     | X    | X      | X   |
+| Perspective | High | Medium | Low |
+|-------------|------|--------|-----|
+| 🔧 Complexity | X | X | X |
+| 📝 Clarity | X | X | X |
+| 🏗️ Structure | X | X | X |
+| 🧹 Waste | X | X | X |
+| **Total** | X | X | X |
 
 ### High Impact Opportunities
 
@@ -141,15 +126,12 @@ Present consolidated findings:
 ✅ Extract Method: Split into `validateOrder`, `applyDiscounts`, `calculateTax`, `formatResult`
 
 ### Medium Impact Opportunities
-
 ...
 
 ### Low Impact Opportunities
-
 ...
 
 ### Untested Code (Requires Decision)
-
 - `src/legacy.ts:10-50` - No test coverage, skip or add tests first?
 ```
 
@@ -171,7 +153,6 @@ Execution: One at a time with test verification
 ```
 
 Use `AskUserQuestion`:
-
 - "Document and proceed" - Save plan to `docs/refactor/[NNN]-simplify-[name].md`, then execute
 - "Proceed without documenting" - Execute simplifications directly
 - "Apply high-impact only" - Execute only high-impact changes
@@ -211,27 +192,24 @@ Tests: [Passing / Failing]
 
 ### Changes Summary
 
-| File       | Refactoring    | Before   | After                      |
-| ---------- | -------------- | -------- | -------------------------- |
+| File | Refactoring | Before | After |
+|------|-------------|--------|-------|
 | billing.ts | Extract Method | 75 lines | 4 functions, 20 lines each |
-| utils.ts   | Rename         | `calc()` | `calculateTotalWithTax()`  |
+| utils.ts | Rename | `calc()` | `calculateTotalWithTax()` |
 
 ### Quality Improvements
-
 - Reduced average method length from X to Y lines
 - Eliminated N lines of duplicate code
 - Improved naming clarity in M locations
 - Reduced cyclomatic complexity by Z%
 
 ### Skipped
-
 - `legacy.ts:10` - No test coverage (user declined)
 ```
 
 ### Phase 7: Next Steps
 
 Use `AskUserQuestion`:
-
 - "Commit these changes"
 - "Run full test suite"
 - "Address skipped items (add tests first)"
@@ -241,24 +219,22 @@ Use `AskUserQuestion`:
 
 When analyzing and refactoring, prefer explicit readable code:
 
-| ❌ Avoid         | ✅ Prefer                   |
-| ---------------- | --------------------------- |
-| Nested ternaries | `if/else` or `switch`       |
+| ❌ Avoid | ✅ Prefer |
+|----------|-----------|
+| Nested ternaries | `if/else` or `switch` |
 | Dense one-liners | Multi-line with clear steps |
-| Clever tricks    | Obvious implementations     |
-| Abbreviations    | Descriptive names           |
-| Magic numbers    | Named constants             |
+| Clever tricks | Obvious implementations |
+| Abbreviations | Descriptive names |
+| Magic numbers | Named constants |
 
 ## Anti-Patterns
 
 ### Don't Over-Simplify
-
 - ❌ Combining concerns for "fewer files"
 - ❌ Inlining everything for "fewer abstractions"
 - ❌ Removing helpful abstractions that aid understanding
 
 ### Don't Mix Concerns
-
 - ❌ Simplification + feature changes together
 - ❌ Multiple refactorings before running tests
 - ❌ Refactoring untested code without adding tests

@@ -1,20 +1,7 @@
 ---
 description: "Systematically diagnose and resolve bugs through conversational investigation and root cause analysis"
 argument-hint: "describe the bug, error message, or unexpected behavior"
-allowed-tools:
-  [
-    "Task",
-    "TaskOutput",
-    "TodoWrite",
-    "Bash",
-    "Grep",
-    "Glob",
-    "Read",
-    "Edit",
-    "MultiEdit",
-    "AskUserQuestion",
-    "Skill",
-  ]
+allowed-tools: ["Task", "TaskOutput", "TodoWrite", "Bash", "Grep", "Glob", "Read", "Edit", "MultiEdit", "AskUserQuestion", "Skill"]
 ---
 
 You are an expert debugging partner through natural conversation.
@@ -30,27 +17,60 @@ You are an expert debugging partner through natural conversation.
 - **Progressive disclosure** - Summary first, details on request
 - **User in control** - Propose and await user decision
 
+## Investigation Perspectives
+
+For complex bugs, launch parallel investigation agents to test multiple hypotheses.
+
+| Perspective | Intent | What to Investigate |
+|-------------|--------|---------------------|
+| 🔴 **Error Trace** | Follow the error path | Stack traces, error messages, exception handling, error propagation |
+| 🔀 **Code Path** | Trace execution flow | Conditional branches, data transformations, control flow, early returns |
+| 🔗 **Dependencies** | Check external factors | External services, database queries, API calls, network issues |
+| 📊 **State** | Inspect runtime values | Variable values, object states, race conditions, timing issues |
+| 🌍 **Environment** | Compare contexts | Configuration, versions, deployment differences, env variables |
+
 ### Parallel Task Execution
 
 **Decompose debugging investigation into parallel activities.** For complex bugs, launch multiple specialist agents in a SINGLE response to investigate different hypotheses simultaneously.
 
-**Activity decomposition for debugging:**
-
-- Error trace analysis (stack traces, error messages, exception handling)
-- Code path investigation (execution flow, conditional branches, data transformations)
-- Dependency analysis (external services, database queries, API calls)
-- State inspection (variable values, object states, race conditions)
-- Environment analysis (configuration, versions, deployment differences)
-
-**For EACH investigation activity, launch a specialist agent with:**
+**For each perspective, describe the investigation intent:**
 
 ```
-FOCUS: [Specific investigation - e.g., "Trace the authentication flow to identify where the null pointer occurs"]
-EXCLUDE: [Unrelated code paths - e.g., "UI rendering, unrelated services"]
-CONTEXT: [Error description + relevant code + reproduction steps]
-OUTPUT: Investigation findings with evidence and next steps
-SUCCESS: Root cause identified OR hypothesis confirmed/eliminated with evidence
+Investigate [PERSPECTIVE] for bug:
+
+CONTEXT:
+- Bug: [Error description, symptoms]
+- Reproduction: [Steps to reproduce]
+- Environment: [Where it occurs]
+
+FOCUS: [What this perspective investigates - from table above]
+
+OUTPUT: Findings formatted as:
+  🔍 **[Investigation Area]**
+  📍 Location: `file:line`
+  ✅ Checked: [What was verified]
+  🔴 Found: [Evidence discovered] OR ⚪ Clear: [No issues found]
+  💡 Hypothesis: [What this suggests]
 ```
+
+**Perspective-Specific Guidance:**
+
+| Perspective | Agent Focus |
+|-------------|-------------|
+| 🔴 Error Trace | Parse stack traces, find error origin, trace propagation |
+| 🔀 Code Path | Step through execution, check conditionals, verify data flow |
+| 🔗 Dependencies | Test external calls, check responses, verify connectivity |
+| 📊 State | Log variable values, check object states, detect races |
+| 🌍 Environment | Compare configs, check versions, find deployment diffs |
+
+### Investigation Synthesis
+
+After parallel investigation completes:
+1. **Collect** all findings from investigation agents
+2. **Correlate** evidence across perspectives
+3. **Rank** hypotheses by supporting evidence
+4. **Present** most likely root cause with evidence chain
+
 
 ## Workflow
 
@@ -58,7 +78,7 @@ SUCCESS: Root cause identified OR hypothesis confirmed/eliminated with evidence
 
 Context: Initial investigation, gathering symptoms, understanding scope.
 
-- Call: `Skill(skill: "bug-diagnosis")`
+- Call: `Skill(start:bug-diagnosis)`
 - Acknowledge the bug from $ARGUMENTS
 - Perform initial investigation (check git status, look for obvious errors)
 - Present brief summary, invite user direction:
@@ -77,7 +97,7 @@ Want me to dig deeper, or can you tell me more about when this started?"
 
 Context: Isolating where the bug lives through targeted investigation.
 
-- Call: `Skill(skill: "bug-diagnosis")` for hypothesis formation
+- Call: `Skill(start:bug-diagnosis)` for hypothesis formation
 - Form hypotheses, track internally with TodoWrite
 - Present theories conversationally:
 
@@ -95,7 +115,7 @@ Want me to dig into the first one?"
 
 Context: Verifying the actual cause through evidence.
 
-- Call: `Skill(skill: "bug-diagnosis")` for evidence gathering
+- Call: `Skill(start:bug-diagnosis)` for evidence gathering
 - Trace execution, gather specific evidence
 - Present finding with specific code reference (file:line):
 
@@ -113,7 +133,7 @@ Should I fix this, or do you want to discuss the approach first?"
 
 Context: Applying targeted fix and confirming it works.
 
-- Call: `Skill(skill: "bug-diagnosis")` for fix proposal
+- Call: `Skill(start:bug-diagnosis)` for fix proposal
 - Propose minimal fix, get user approval:
 
 ```
@@ -159,14 +179,12 @@ When asked "What did you check?", report ONLY observable actions:
 ✅ "I checked git log and found this file was last modified 2 days ago"
 
 ✅ Require evidence for claims:
-
 - "I analyzed..." → requires actual trace evidence
 - "This appears to be..." → requires supporting evidence
 
 ## When Stuck
 
 Be honest:
-
 ```
 "I've looked at [what you checked] but haven't pinpointed it yet.
 
