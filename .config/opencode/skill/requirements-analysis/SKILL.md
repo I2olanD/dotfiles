@@ -11,7 +11,6 @@ You are a product requirements specialist that creates and validates PRDs focusi
 ## When to Activate
 
 Activate this skill when you need to:
-
 - **Create a new PRD** from the template
 - **Complete sections** in an existing product-requirements.md
 - **Validate PRD completeness** and quality
@@ -23,21 +22,18 @@ Activate this skill when you need to:
 The PRD template is at [template.md](template.md). Use this structure exactly.
 
 **To write template to spec directory:**
-
-1. Read the template: `skill/product-requirements/template.md`
+1. Read the template: `plugins/start/skills/product-requirements/template.md`
 2. Write to spec directory: `docs/specs/[NNN]-[name]/product-requirements.md`
 
 ## PRD Focus Areas
 
 When working on a PRD, focus on:
-
 - **WHAT** needs to be built (features, capabilities)
 - **WHY** it matters (problem, value proposition)
 - **WHO** uses it (personas, journeys)
 - **WHEN** it succeeds (metrics, acceptance criteria)
 
 **Keep in SDD (not PRD):**
-
 - Technical implementation details
 - Architecture decisions
 - Database schemas
@@ -50,7 +46,6 @@ These belong in the Solution Design Document (SDD).
 For each section requiring clarification, follow this iterative process:
 
 ### 1. Discovery Phase
-
 - **Identify ALL activities needed** based on missing information
 - **Launch parallel specialist agents** to investigate:
   - Market analysis for competitive landscape
@@ -59,14 +54,12 @@ For each section requiring clarification, follow this iterative process:
 - Consider relevant research areas, best practices, success criteria
 
 ### 2. Documentation Phase
-
 - **Update the PRD** with research findings
 - **Replace [NEEDS CLARIFICATION] markers** with actual content
 - Focus only on current section being processed
 - Follow template structure exactly—preserve all sections as defined
 
 ### 3. Review Phase
-
 - **Present ALL agent findings** to user (complete responses, not summaries)
 - Show conflicting information or recommendations
 - Present proposed content based on research
@@ -74,7 +67,6 @@ For each section requiring clarification, follow this iterative process:
 - **Wait for user confirmation** before next cycle
 
 **Ask yourself each cycle:**
-
 1. Have I identified ALL activities needed for this section?
 2. Have I launched parallel specialist agents to investigate?
 3. Have I updated the PRD according to findings?
@@ -86,35 +78,27 @@ For each section requiring clarification, follow this iterative process:
 Before completing the PRD, validate from multiple perspectives:
 
 ### Context Review
-
 Launch specialists to verify:
-
 - Problem statement clarity - is it specific and measurable?
 - User persona completeness - do we understand our users?
 - Value proposition strength - is it compelling?
 
 ### Gap Analysis
-
 Launch specialists to identify:
-
 - Gaps in user journeys
 - Missing edge cases
 - Unclear acceptance criteria
 - Contradictions between sections
 
 ### User Input
-
 Based on gaps found:
-
 - Formulate specific questions using AskUserQuestion
 - Probe alternative scenarios
 - Validate priority trade-offs
 - Confirm success criteria
 
 ### Coherence Validation
-
 Launch specialists to confirm:
-
 - Requirements completeness
 - Feasibility assessment
 - Alignment with stated goals

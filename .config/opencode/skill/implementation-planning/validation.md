@@ -48,7 +48,7 @@ Use this checklist to validate Implementation Plan completeness before execution
 
 ## Validation Steps
 
-- [ ] **Each phase has validation step** - T\*.4 Validate present in each phase
+- [ ] **Each phase has validation step** - T*.4 Validate present in each phase
 - [ ] **Code review included** - Quality gate for code standards
 - [ ] **Automated tests included** - Test execution gate
 - [ ] **Specification compliance included** - Business acceptance gate
@@ -70,7 +70,6 @@ Use this checklist to validate Implementation Plan completeness before execution
 ## No-Go Items
 
 These should NOT appear in a PLAN:
-
 - [ ] **No time estimates** - Hours, days, sprints
 - [ ] **No resource assignments** - Who does what
 - [ ] **No implementation code** - Actual code snippets (examples in SDD)
@@ -79,10 +78,9 @@ These should NOT appear in a PLAN:
 ## Completion Criteria
 
 ✅ **PLAN is complete when:**
-
 - All checklist items pass
 - User has reviewed and approved the task breakdown
 - Every PRD requirement maps to at least one task
 - Every SDD component is covered by phases
 - A developer can start implementation immediately
-- Ready for `/implement` execution
+- Ready for `/start:implement` execution

@@ -14,7 +14,6 @@ You are a constitution specialist that creates and validates project governance 
 ## When to Activate
 
 Activate this skill when you need to:
-
 - **Create a new constitution** by discovering project patterns
 - **Validate existing code** against constitution rules
 - **Update constitution** with new rules or categories
@@ -35,27 +34,26 @@ Activate this skill when you need to:
 
 ### Level System (L1/L2/L3)
 
-| Level  | Name   | Blocking | Autofix                      | Use Case                                             |
-| ------ | ------ | -------- | ---------------------------- | ---------------------------------------------------- |
-| **L1** | Must   | ✅ Yes   | ✅ AI auto-corrects          | Critical rules - security, correctness, architecture |
-| **L2** | Should | ✅ Yes   | ❌ No (needs human judgment) | Important rules requiring manual attention           |
-| **L3** | May    | ❌ No    | ❌ No                        | Advisory/optional - style preferences, suggestions   |
+| Level | Name | Blocking | Autofix | Use Case |
+|-------|------|----------|---------|----------|
+| **L1** | Must | ✅ Yes | ✅ AI auto-corrects | Critical rules - security, correctness, architecture |
+| **L2** | Should | ✅ Yes | ❌ No (needs human judgment) | Important rules requiring manual attention |
+| **L3** | May | ❌ No | ❌ No | Advisory/optional - style preferences, suggestions |
 
 **Level Behavior:**
 
-| Level | Validation          | Implementation          | AI Behavior                                  |
-| ----- | ------------------- | ----------------------- | -------------------------------------------- |
-| `L1`  | Fails check, blocks | Blocks phase completion | **Automatically fixes** before proceeding    |
-| `L2`  | Fails check, blocks | Blocks phase completion | Reports violation, **requires human action** |
-| `L3`  | Reports only        | Does not block          | Optional improvement, can be ignored         |
+| Level | Validation | Implementation | AI Behavior |
+|-------|------------|----------------|-------------|
+| `L1` | Fails check, blocks | Blocks phase completion | **Automatically fixes** before proceeding |
+| `L2` | Fails check, blocks | Blocks phase completion | Reports violation, **requires human action** |
+| `L3` | Reports only | Does not block | Optional improvement, can be ignored |
 
 ## Template
 
 The constitution template is at [template.md](template.md). Use this structure exactly.
 
 **To create a constitution:**
-
-1. Read the template: `skill/constitution-validation/template.md`
+1. Read the template: `plugins/start/skills/constitution-validation/template.md`
 2. Explore codebase to resolve all `[NEEDS DISCOVERY]` markers
 3. Generate rules based on actual patterns found
 4. Write to project root: `CONSTITUTION.md`
@@ -89,7 +87,6 @@ For each category requiring rules, follow this iterative process:
 - **Wait for user confirmation** before next cycle
 
 **Ask yourself each cycle:**
-
 1. Have I explored the actual codebase (not assumed)?
 2. Have I discovered real patterns (not guessed)?
 3. Have I generated project-specific rules?
@@ -103,13 +100,11 @@ When generating rules from discovered patterns:
 ### L1 Rules (Blocking + Autofix)
 
 Generate for patterns that are:
-
 - Security critical (secrets, injection, auth)
 - Clearly fixable with deterministic changes
 - Objectively wrong (not style preference)
 
 **Examples:**
-
 - Hardcoded secrets → Replace with env var reference
 - `eval()` usage → Remove and use safer alternative
 - Barrel exports → Convert to direct imports
@@ -117,13 +112,11 @@ Generate for patterns that are:
 ### L2 Rules (Blocking, No Autofix)
 
 Generate for patterns that are:
-
 - Architecturally important
 - Require human judgment to fix
 - May have valid exceptions
 
 **Examples:**
-
 - Database calls outside repository layer
 - Cross-package imports via relative paths
 - Missing error handling
@@ -131,13 +124,11 @@ Generate for patterns that are:
 ### L3 Rules (Advisory)
 
 Generate for patterns that are:
-
 - Style preferences
 - Best practices that vary by context
 - Suggestions, not requirements
 
 **Examples:**
-
 - Function length recommendations
 - Test file presence
 - Documentation coverage
@@ -148,21 +139,21 @@ Each rule in the constitution uses this YAML structure:
 
 ```yaml
 level: L1 | L2 | L3
-pattern: "regex pattern" # OR
+pattern: "regex pattern"    # OR
 check: "semantic description for LLM interpretation"
 scope: "glob pattern for files to check"
 exclude: "glob patterns to skip (comma-separated)"
 message: "Human-readable violation message"
 ```
 
-| Field     | Required | Type                 | Description                                 |
-| --------- | -------- | -------------------- | ------------------------------------------- |
-| `level`   | Required | `L1` \| `L2` \| `L3` | Determines blocking and autofix behavior    |
-| `pattern` | One of   | Regex                | Pattern to match violations in source code  |
-| `check`   | One of   | String               | Semantic description for LLM interpretation |
-| `scope`   | Required | Glob                 | File patterns to check (supports `**`)      |
-| `exclude` | Optional | Glob                 | File patterns to skip (comma-separated)     |
-| `message` | Required | String               | Human-readable violation message            |
+| Field | Required | Type | Description |
+|-------|----------|------|-------------|
+| `level` | Required | `L1` \| `L2` \| `L3` | Determines blocking and autofix behavior |
+| `pattern` | One of | Regex | Pattern to match violations in source code |
+| `check` | One of | String | Semantic description for LLM interpretation |
+| `scope` | Required | Glob | File patterns to check (supports `**`) |
+| `exclude` | Optional | Glob | File patterns to skip (comma-separated) |
+| `message` | Required | String | Human-readable violation message |
 
 ## Validation Mode
 
@@ -234,7 +225,6 @@ For each parsed rule:
 ### Critical Violations (L1 - Autofix Required)
 
 #### 🛑 SEC-001: No Hardcoded Secrets
-
 - **Location:** `src/services/PaymentService.ts:42`
 - **Finding:** Hardcoded secret detected. Use environment variables.
 - **Code:** `const API_KEY = 'sk_live_xxx...'`
@@ -243,7 +233,6 @@ For each parsed rule:
 ### Blocking Violations (L2 - Human Action Required)
 
 #### ❌ ARCH-001: Repository Pattern
-
 - **Location:** `src/services/UserService.ts:18`
 - **Finding:** Direct database call outside repository.
 - **Code:** `await prisma.user.findMany(...)`
@@ -252,7 +241,6 @@ For each parsed rule:
 ### Advisories (L3 - Optional)
 
 #### ⚠️ QUAL-001: Function Length
-
 - **Location:** `src/utils/helpers.ts:45`
 - **Finding:** Function exceeds recommended 25 lines (actual: 38)
 - **Suggestion:** Consider extracting helper functions
@@ -265,23 +253,22 @@ For each parsed rule:
 
 ## Graceful Degradation
 
-| Scenario               | Behavior                                                      |
-| ---------------------- | ------------------------------------------------------------- |
-| No CONSTITUTION.md     | Report "No constitution found. Skipping constitution checks." |
-| Invalid rule format    | Skip rule, warn user, continue with other rules               |
-| Invalid regex pattern  | Report as config error, skip rule                             |
-| Scope matches no files | Report as info, not a failure                                 |
-| File read error        | Skip file, warn, continue                                     |
+| Scenario | Behavior |
+|----------|----------|
+| No CONSTITUTION.md | Report "No constitution found. Skipping constitution checks." |
+| Invalid rule format | Skip rule, warn user, continue with other rules |
+| Invalid regex pattern | Report as config error, skip rule |
+| Scope matches no files | Report as info, not a failure |
+| File read error | Skip file, warn, continue |
 
 ## Integration Points
 
 This skill is called by:
-
-- `/constitution` - For creation and updates
-- `/validate` (Mode E) - For constitution validation
-- `/implement` - For active enforcement during implementation
-- `/review` - For code review compliance checks
-- `/specify` (SDD phase) - For architecture alignment
+- `/start:constitution` - For creation and updates
+- `/start:validate` (Mode E) - For constitution validation
+- `/start:implement` - For active enforcement during implementation
+- `/start:review` - For code review compliance checks
+- `/start:specify` (SDD phase) - For architecture alignment
 
 ## Validation Checklist
 

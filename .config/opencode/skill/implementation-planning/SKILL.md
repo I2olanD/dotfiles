@@ -11,7 +11,6 @@ Creates actionable implementation plans that break features into executable task
 ## Success Criteria
 
 A plan is complete when:
-
 - [ ] A developer can follow it independently without additional context
 - [ ] Every task produces a verifiable deliverable (not just an activity)
 - [ ] All PRD acceptance criteria map to specific tasks
@@ -21,7 +20,6 @@ A plan is complete when:
 ## When to Activate
 
 Activate when:
-
 - **Create a new PLAN** from the template
 - **Complete phases** in an existing implementation-plan.md
 - **Define task sequences** and dependencies
@@ -33,21 +31,18 @@ Activate when:
 The PLAN template is at [template.md](template.md). Use this structure exactly.
 
 **To write template to spec directory:**
-
-1. Read the template: `skill/implementation-plan/template.md`
+1. Read the template: `plugins/start/skills/implementation-plan/template.md`
 2. Write to spec directory: `docs/specs/[NNN]-[name]/implementation-plan.md`
 
 ## PLAN Focus Areas
 
 Your plan MUST answer these questions:
-
 - **WHAT** produces value? (deliverables, not activities)
 - **IN WHAT ORDER** do tasks execute? (dependencies and sequencing)
 - **HOW TO VALIDATE** correctness? (test-first approach)
 - **WHERE** is each task specified? (links to PRD/SDD sections)
 
 Keep plans **actionable and focused**:
-
 - Use task descriptions, sequence, and validation criteria
 - Omit time estimates—focus on what, not when
 - Omit resource assignments—focus on work, not who
@@ -58,13 +53,11 @@ Keep plans **actionable and focused**:
 **Track logical units that produce verifiable outcomes.** The TDD cycle is the execution method, not separate tracked items.
 
 ### Good Tracking Units (produces outcome)
-
 - "Payment Entity" → Produces: working entity with tests ✓
 - "Stripe Adapter" → Produces: working integration with tests ✓
 - "Payment Form Component" → Produces: working UI with tests ✓
 
 ### Bad Tracking Units (too granular)
-
 - "Read payment interface contracts" → Preparation, not deliverable
 - "Test Payment.validate() rejects negative amounts" → Part of larger outcome
 - "Run linting" → Validation step, not deliverable
@@ -90,25 +83,21 @@ The checkbox tracks "Payment Entity" as a unit. Prime/Test/Implement/Validate ar
 Every task follows red-green-refactor within this pattern:
 
 ### 1. Prime Context
-
 - Read relevant specification sections
 - Understand interfaces and contracts
 - Load patterns and examples
 
 ### 2. Write Tests (Red)
-
 - Test behavior before implementation
 - Reference PRD acceptance criteria
 - Cover happy path and edge cases
 
 ### 3. Implement (Green)
-
 - Build to pass tests
 - Follow SDD architecture
 - Use discovered patterns
 
 ### 4. Validate (Refactor)
-
 - Run automated tests
 - Check code quality (lint, format)
 - Verify specification compliance
@@ -121,19 +110,18 @@ Use these annotations in the plan:
 - [ ] T1.2.1 [Task description] `[ref: SDD/Section 5; lines: 100-150]` `[activity: backend-api]`
 ```
 
-| Metadata                         | Description                     |
-| -------------------------------- | ------------------------------- |
-| `[parallel: true]`               | Tasks that can run concurrently |
-| `[component: name]`              | For multi-component features    |
-| `[ref: doc/section; lines: X-Y]` | Links to specifications         |
-| `[activity: type]`               | Hint for specialist selection   |
+| Metadata | Description |
+|----------|-------------|
+| `[parallel: true]` | Tasks that can run concurrently |
+| `[component: name]` | For multi-component features |
+| `[ref: doc/section; lines: X-Y]` | Links to specifications |
+| `[activity: type]` | Hint for specialist selection |
 
 ## Cycle Pattern
 
 For each phase requiring definition, follow this iterative process:
 
 ### 1. Discovery Phase
-
 - **Read PRD and SDD** to understand requirements and design
 - **Identify activities** needed for each implementation area
 - **Launch parallel specialist agents** to investigate:
@@ -143,21 +131,18 @@ For each phase requiring definition, follow this iterative process:
   - Validation approaches
 
 ### 2. Documentation Phase
-
 - **Update the PLAN** with task definitions
 - **Add specification references** (`[ref: ...]`)
 - Focus only on current phase being defined
 - Follow template structure exactly
 
 ### 3. Review Phase
-
 - **Present task breakdown** to user
 - Show dependencies and sequencing
 - Highlight parallel opportunities
 - **Wait for user confirmation** before next phase
 
 **Ask yourself each cycle:**
-
 1. Have I read the relevant PRD and SDD sections?
 2. Do all tasks trace back to specification requirements?
 3. Are dependencies between tasks clear?
@@ -180,7 +165,6 @@ For complex phases, validation is embedded in each task's **Validate** step.
 ### Deviation Protocol
 
 When implementation requires changes from the specification:
-
 1. Document the deviation with clear rationale
 2. Obtain approval before proceeding
 3. Update SDD when the deviation improves the design

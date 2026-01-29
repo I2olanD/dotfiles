@@ -14,7 +14,6 @@ You are a specification alignment specialist that monitors for drift between spe
 ## When to Activate
 
 Activate this skill when you need to:
-
 - **Monitor implementation phases** for spec alignment
 - **Detect scope creep** (implementing more than specified)
 - **Identify missing features** (specified but not implemented)
@@ -26,7 +25,6 @@ Activate this skill when you need to:
 ### Drift is Information, Not Failure
 
 Drift isn't inherently bad—it's valuable feedback:
-
 - **Scope creep** may indicate incomplete requirements
 - **Missing items** may reveal unrealistic timelines
 - **Contradictions** may surface spec ambiguities
@@ -36,12 +34,12 @@ The goal is **awareness and conscious decision-making**, not rigid compliance.
 
 ## Drift Types
 
-| Type            | Description                              | Example                               |
-| --------------- | ---------------------------------------- | ------------------------------------- |
+| Type | Description | Example |
+|------|-------------|---------|
 | **Scope Creep** | Implementation adds features not in spec | Added pagination not specified in PRD |
-| **Missing**     | Spec requires feature not implemented    | Error handling specified but not done |
-| **Contradicts** | Implementation conflicts with spec       | Spec says REST, code uses GraphQL     |
-| **Extra**       | Unplanned work that may be valuable      | Added caching for performance         |
+| **Missing** | Spec requires feature not implemented | Error handling specified but not done |
+| **Contradicts** | Implementation conflicts with spec | Spec says REST, code uses GraphQL |
+| **Extra** | Unplanned work that may be valuable | Added caching for performance |
 
 ## Detection Process
 
@@ -51,11 +49,10 @@ Read the spec documents to understand requirements:
 
 ```bash
 # Using spec.py to get spec metadata
-~/.config/opencode/skill/specification-management/spec.py [ID] --read
+~/.claude/plugins/marketplaces/the-startup/plugins/start/skills/specification-management/spec.py [ID] --read
 ```
 
 Extract from documents:
-
 - **PRD**: Acceptance criteria, user stories, requirements
 - **SDD**: Components, interfaces, architecture decisions
 - **PLAN**: Phase deliverables, task objectives
@@ -73,18 +70,18 @@ For the current implementation phase, examine:
 
 For each spec requirement:
 
-| Requirement     | Implementation               | Status         |
-| --------------- | ---------------------------- | -------------- |
-| User login      | `src/auth/login.ts`          | ✅ Aligned     |
-| Password reset  | Not found                    | ❌ Missing     |
+| Requirement | Implementation | Status |
+|-------------|----------------|--------|
+| User login | `src/auth/login.ts` | ✅ Aligned |
+| Password reset | Not found | ❌ Missing |
 | Session timeout | Different value (30m vs 15m) | ⚠️ Contradicts |
 
 For each implementation artifact:
 
-| Implementation | Spec Reference | Status         |
-| -------------- | -------------- | -------------- |
-| Rate limiting  | Not in spec    | 🔶 Extra       |
-| Pagination     | Not in spec    | 🔶 Scope Creep |
+| Implementation | Spec Reference | Status |
+|----------------|----------------|--------|
+| Rate limiting | Not in spec | 🔶 Extra |
+| Pagination | Not in spec | 🔶 Scope Creep |
 
 ### Step 4: Report Findings
 
@@ -112,7 +109,6 @@ const memoizedQuery = useMemo(() => {
 ```
 
 **Annotation Format:**
-
 - `// Implements: [DOC]-[SECTION]` - Links to spec requirement
 - `// Extra: [REASON]` - Acknowledges unspecified work
 
@@ -125,10 +121,9 @@ When annotations aren't present, use these heuristics:
 ### Finding Implemented Requirements
 
 1. **Test file analysis**: Test descriptions often mention requirements
-
    ```typescript
-   describe("User Authentication", () => {
-     it("should allow password reset via email", () => {
+   describe('User Authentication', () => {
+     it('should allow password reset via email', () => {
        // This likely implements the password reset requirement
      });
    });
@@ -164,20 +159,20 @@ Add to spec README under `## Drift Log` section:
 ```markdown
 ## Drift Log
 
-| Date       | Phase   | Drift Type  | Status       | Notes                             |
-| ---------- | ------- | ----------- | ------------ | --------------------------------- |
-| 2026-01-04 | Phase 2 | Scope creep | Acknowledged | Added pagination not in spec      |
-| 2026-01-04 | Phase 2 | Missing     | Updated      | Added validation per spec         |
-| 2026-01-04 | Phase 3 | Contradicts | Deferred     | Session timeout differs from spec |
+| Date | Phase | Drift Type | Status | Notes |
+|------|-------|------------|--------|-------|
+| 2026-01-04 | Phase 2 | Scope creep | Acknowledged | Added pagination not in spec |
+| 2026-01-04 | Phase 2 | Missing | Updated | Added validation per spec |
+| 2026-01-04 | Phase 3 | Contradicts | Deferred | Session timeout differs from spec |
 ```
 
 ### Status Values
 
-| Status           | Meaning                                 | Action Taken                   |
-| ---------------- | --------------------------------------- | ------------------------------ |
-| **Acknowledged** | Drift noted, proceeding anyway          | Implementation continues as-is |
-| **Updated**      | Spec or implementation changed to align | Drift resolved                 |
-| **Deferred**     | Decision postponed                      | Will address in future phase   |
+| Status | Meaning | Action Taken |
+|--------|---------|--------------|
+| **Acknowledged** | Drift noted, proceeding anyway | Implementation continues as-is |
+| **Updated** | Spec or implementation changed to align | Drift resolved |
+| **Deferred** | Decision postponed | Will address in future phase |
 
 ## User Interaction
 
@@ -214,9 +209,8 @@ After user decision, update README:
 ## Integration Points
 
 This skill is called by:
-
-- `/implement` - At end of each phase for alignment check
-- `/validate` (Mode C) - For comparison validation
+- `/start:implement` - At end of each phase for alignment check
+- `/start:validate` (Mode C) - For comparison validation
 
 ## Report Formats
 
