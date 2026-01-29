@@ -57,11 +57,11 @@ For comprehensive documentation, cover these perspectives. Launch parallel agent
 - Scan target for existing documentation
 - Identify gaps and stale docs
 - Determine which perspectives apply (see table above)
-- Call: `AskUserQuestion` with options: Generate all, Focus on gaps, Update stale, Show analysis
+- Call: `question` with options: Generate all, Focus on gaps, Update stale, Show analysis
 
 ### Phase 2: Launch Documentation Agents
 
-Launch applicable documentation activities in parallel (single response with multiple Task calls).
+Launch applicable documentation activities in parallel (single response with multiple task calls).
 
 **For each perspective, describe the documentation intent:**
 

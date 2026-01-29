@@ -4,7 +4,7 @@ description: |
   Execute implementation plans phase-by-phase with checkpoint validation.
   Use when implementing from a PLAN, executing task sequences, managing
   phase transitions, tracking implementation progress, or handling blocked
-  states. Maintains TodoWrite for phase tracking and ensures user confirmation
+  states. Maintains todowrite for phase tracking and ensures user confirmation
   at phase boundaries.
 allowed-tools: task, todowrite, read, edit, bash
 ---
@@ -19,7 +19,7 @@ Activate this skill when you need to:
 
 - **Execute implementation phases** from PLAN.md
 - **Manage phase transitions** with user confirmation
-- **Track progress** with TodoWrite (one phase at a time)
+- **Track progress** with todowrite (one phase at a time)
 - **Handle blocked states** with options
 - **Validate checkpoints** before proceeding
 
@@ -30,16 +30,16 @@ Activate this skill when you need to:
 1. **Read plan** - Identify tasks for current phase
 2. **Delegate ALL tasks** - Via task tool to subagents (parallel AND sequential)
 3. **Summarize results** - Extract key outputs for user visibility
-4. **Track progress** - TodoWrite updates
+4. **Track progress** - todowrite updates
 5. **Manage transitions** - Phase boundaries, user confirmation
 
-## TodoWrite Phase Protocol
+## todowrite Phase Protocol
 
 **CRITICAL**: Load tasks incrementally—one phase at a time to manage cognitive load.
 
 ### Loading Protocol
 
-1. Load ONLY current phase tasks into TodoWrite
+1. Load ONLY current phase tasks into todowrite
 2. Clear completed phase tasks before loading next phase
 3. Maintain phase progress separately from task progress
 4. Create natural pause points for user feedback
@@ -61,8 +61,8 @@ Activate this skill when you need to:
    Parallel opportunities: [List tasks marked parallel: true]
 ```
 
-1. Clear previous phase from TodoWrite (if any)
-2. Load current phase tasks into TodoWrite
+1. Clear previous phase from todowrite (if any)
+2. Load current phase tasks into todowrite
 3. Check for "Pre-implementation review" task
 4. If SDD sections referenced, read and confirm understanding
 
@@ -72,7 +72,7 @@ Activate this skill when you need to:
 
 **For Parallel Tasks** (same indentation, marked `[parallel: true]`):
 
-- Mark all as `in_progress` in TodoWrite
+- Mark all as `in_progress` in todowrite
 - Launch ALL parallel agents in SINGLE response
 - Await results, summarize each
 - Track completion independently
@@ -81,7 +81,7 @@ Activate this skill when you need to:
 
 - Launch ONE subagent via task tool
 - Await result, summarize key outputs
-- Mark as `completed` in TodoWrite
+- Mark as `completed` in todowrite
 - Proceed to next task
 
 ### Task Metadata
@@ -150,14 +150,14 @@ Tests: 5 passing
 
 Status: Blocked
 Reason: Missing User model - need src/models/User.ts
-Options: [present via AskUserQuestion]
+Options: [present via question]
 ```
 
 ## Checkpoint Validation
 
 Before marking phase complete, verify:
 
-- [ ] ALL TodoWrite tasks showing 'completed'
+- [ ] ALL todowrite tasks showing 'completed'
 - [ ] ALL PLAN.md checkboxes updated for this phase
 - [ ] ALL validation commands run and passed
 - [ ] NO blocking issues remain
@@ -273,7 +273,7 @@ Always wait for user confirmation between phases.
 
 Launch concurrent agents when tasks are marked `[parallel: true]`.
 
-### Track in TodoWrite
+### Track in todowrite
 
 Real-time task tracking during execution.
 

@@ -18,7 +18,7 @@ You are a code review orchestrator that coordinates comprehensive review feedbac
 
 ## Review Perspectives
 
-Code review should cover these perspectives. For each, launch a Task with clear intent - Opencode Code will route to the appropriate specialist subagent.
+Code review should cover these perspectives. For each, launch a task with clear intent - Opencode Code will route to the appropriate specialist subagent.
 
 ### Always Review
 
@@ -61,7 +61,7 @@ Code review should cover these perspectives. For each, launch a Task with clear 
 
 ### Phase 2: Launch Review Activities
 
-Launch ALL applicable review activities in parallel (single response with multiple Task calls).
+Launch ALL applicable review activities in parallel (single response with multiple task calls).
 
 **For each perspective, describe the review intent:**
 
@@ -136,7 +136,7 @@ Present in this format:
 
 ### Phase 4: Next Steps
 
-Use `AskUserQuestion` with options based on verdict:
+Use `question` with options based on verdict:
 
 **If REQUEST CHANGES:**
 

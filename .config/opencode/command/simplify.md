@@ -50,7 +50,7 @@ Launch parallel analysis agents for each perspective. Opencode Code routes to ap
 
 ### Phase 1: Gather Target Code & Baseline
 
-1. **Initialize methodology**: `Skill(start:safe-refactoring)`
+1. **Initialize methodology**: `skill(start:safe-refactoring)`
 
 2. Parse `$ARGUMENTS` to determine scope:
    - `staged` → `git diff --cached`
@@ -78,7 +78,7 @@ Baseline Status: [READY / TESTS FAILING / COVERAGE GAP]
 
 ### Phase 2: Launch Analysis Agents
 
-Launch ALL analysis perspectives in parallel (single response with multiple Task calls).
+Launch ALL analysis perspectives in parallel (single response with multiple task calls).
 
 **For each perspective, describe the analysis intent:**
 
@@ -168,7 +168,7 @@ Estimated: [N] refactorings across [M] files
 Execution: One at a time with test verification
 ```
 
-Use `AskUserQuestion`:
+Use `question`:
 
 - "Document and proceed" - Save plan to `docs/refactor/[NNN]-simplify-[name].md`, then execute
 - "Proceed without documenting" - Execute simplifications directly
@@ -228,7 +228,7 @@ Tests: [Passing / Failing]
 
 ### Phase 7: Next Steps
 
-Use `AskUserQuestion`:
+Use `question`:
 
 - "Commit these changes"
 - "Run full test suite"

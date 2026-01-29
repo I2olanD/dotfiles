@@ -88,7 +88,7 @@ After parallel analysis completes:
 
 ### Phase 1: Establish Baseline
 
-- Call: `Skill(start:safe-refactoring)`
+- Call: `skill(start:safe-refactoring)`
 - Locate target code based on $ARGUMENTS
 - Run existing tests to establish baseline
 - If tests failing → Stop and report to user
@@ -98,7 +98,7 @@ After parallel analysis completes:
 - Launch parallel analysis agents per Parallel Task Execution section
 - Identify issues: code smells, breaking changes (for upgrades), deprecated patterns, etc.
 - Present findings with recommended sequence and risk assessment
-- Call: `AskUserQuestion` with options:
+- Call: `question` with options:
   1. **Document and proceed** - Save plan to `docs/refactor/[NNN]-[name].md`, then execute
   2. **Proceed without documenting** - Execute refactorings directly
   3. **Cancel** - Abort refactoring

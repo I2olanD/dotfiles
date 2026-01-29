@@ -303,7 +303,7 @@ EOF
 
 ### Branch Creation Options
 
-When branch creation is appropriate, present options via `AskUserQuestion`:
+When branch creation is appropriate, present options via `question`:
 
 ```
 🔀 Git Workflow

@@ -106,7 +106,7 @@ Launch specialists to identify:
 
 Based on gaps found:
 
-- Formulate specific questions using AskUserQuestion
+- Formulate specific questions using question
 - Probe alternative scenarios
 - Validate priority trade-offs
 - Confirm success criteria

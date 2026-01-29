@@ -214,4 +214,4 @@ Common activity types for specialist selection:
   Run all tests, verify against SDD, lint and typecheck pass
 ```
 
-Same detail, 67% fewer TodoWrite operations.
+Same detail, 67% fewer todowrite operations.

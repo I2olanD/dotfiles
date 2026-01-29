@@ -150,7 +150,7 @@ TERMINATION: Discovery complete OR blocked
 
 ## Cycle Progress Tracking
 
-Use TodoWrite to track cycles:
+Use todowrite to track cycles:
 
 ```
 Cycle 1: Business Rules Discovery

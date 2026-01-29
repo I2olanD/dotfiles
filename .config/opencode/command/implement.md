@@ -23,8 +23,8 @@ You are an implementation orchestrator that executes: **$ARGUMENTS**
 - **You are an orchestrator ONLY** - You do NOT implement code directly. Delegate ALL tasks to subagents via task tool.
 - **Summarize agent results** - Extract key outputs (files, summary, tests, blockers) for user visibility
 - **Call skill tool FIRST** - Before each phase for methodology guidance
-- **Use AskUserQuestion at phase boundaries** - Wait for user confirmation between phases
-- **Track with TodoWrite** - Load ONE phase at a time
+- **Use question at phase boundaries** - Wait for user confirmation between phases
+- **Track with todowrite** - Load ONE phase at a time
 - **Git integration is optional** - Offer branch/PR workflow as an option
 
 ## Orchestrator Role
@@ -34,7 +34,7 @@ You are an implementation orchestrator that executes: **$ARGUMENTS**
 1. Read PLAN.md and identify tasks for current phase
 2. Launch subagent for EACH task with FOCUS/EXCLUDE template
 3. Summarize key outputs from subagent results
-4. Track progress via TodoWrite
+4. Track progress via todowrite
 5. Coordinate phase transitions with user
 
 ## Implementation Perspectives
@@ -56,7 +56,7 @@ When tasks are independent, launch parallel agents for different implementation 
 **For EVERY task, use the FOCUS/EXCLUDE template with self-priming CONTEXT:**
 
 ```
-Task(description: "[Task name] from [spec-id]", prompt: """
+task(description: "[Task name] from [spec-id]", prompt: """
 FOCUS: [Task description from PLAN.md]
   - [Specific deliverable 1]
   - [Specific deliverable 2]
@@ -121,7 +121,7 @@ If blocked:
 
 Status: Blocked
 Reason: [specific blocker]
-Options: [present via AskUserQuestion]
+Options: [present via question]
 ```
 
 ## Workflow
@@ -130,7 +130,7 @@ Options: [present via AskUserQuestion]
 
 Context: Offering version control integration for traceability.
 
-- Call: `Skill(start:git-workflow)` for branch management
+- Call: `skill(start:git-workflow)` for branch management
 - The skill will:
   - Check if git repository exists
   - Offer to create `feature/[spec-id]-[spec-name]` branch
@@ -141,14 +141,14 @@ Context: Offering version control integration for traceability.
 
 ### Phase 1: Initialize and Analyze Plan
 
-- Call: `Skill(start:specification-management)` to read spec
+- Call: `skill(start:specification-management)` to read spec
 - Validate: PLAN.md exists, identify phases and tasks
-- Load ONLY Phase 1 tasks into TodoWrite
-- Call: `AskUserQuestion` - Start Phase 1 (recommended) or Review spec first
+- Load ONLY Phase 1 tasks into todowrite
+- Call: `question` - Start Phase 1 (recommended) or Review spec first
 
 ### Phase 2+: Phase-by-Phase Execution
 
-**At phase start:** Clear previous TodoWrite, load current phase tasks
+**At phase start:** Clear previous todowrite, load current phase tasks
 
 **During execution:**
 
@@ -161,15 +161,15 @@ Context: Offering version control integration for traceability.
 
 - Extract key outputs from each subagent response
 - Present concise summary to user (not full response)
-- Update TodoWrite task status
-- If blocked: present options via AskUserQuestion
+- Update todowrite task status
+- If blocked: present options via question
 
 **At checkpoint:**
 
-- Call: `Skill(start:drift-detection)` for spec alignment
-- Call: `Skill(start:constitution-validation)` if CONSTITUTION.md exists
-- Verify all TodoWrite tasks complete, update PLAN.md checkboxes
-- Call: `AskUserQuestion` for phase transition
+- Call: `skill(start:drift-detection)` for spec alignment
+- Call: `skill(start:constitution-validation)` if CONSTITUTION.md exists
+- Verify all todowrite tasks complete, update PLAN.md checkboxes
+- Call: `question` for phase transition
 
 ### Phase Transition Options
 
@@ -183,7 +183,7 @@ At the end of each phase, ask user how to proceed:
 
 ### Completion
 
-- Call: `Skill(start:implementation-verification)` for final validation
+- Call: `skill(start:implementation-verification)` for final validation
 - Generate changelog entry if significant changes made
 
 **Present summary:**
@@ -201,7 +201,7 @@ Files Changed: [N] files (+[additions] -[deletions])
 
 **Git Finalization:**
 
-- Call: `Skill(start:git-workflow)` for commit and PR operations
+- Call: `skill(start:git-workflow)` for commit and PR operations
 - The skill will:
   - Offer to commit with conventional message
   - Offer to create PR with spec-based description
@@ -209,14 +209,14 @@ Files Changed: [N] files (+[additions] -[deletions])
 
 **If no git integration:**
 
-- Call: `AskUserQuestion` - Run tests (recommended), Deploy to staging, or Manual review
+- Call: `question` - Run tests (recommended), Deploy to staging, or Manual review
 
 ### Blocked State
 
 If blocked at any point:
 
 - Present blocker details (phase, task, specific reason)
-- Call: `AskUserQuestion` with options:
+- Call: `question` with options:
   - Retry with modifications
   - Skip task and continue
   - Abort implementation

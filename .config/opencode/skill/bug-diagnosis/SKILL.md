@@ -84,7 +84,7 @@ Does that match what you're seeing, or should I look somewhere else?"
 ```
 
 **Forming Hypotheses**:
-Track hypotheses internally with TodoWrite, but present them naturally:
+Track hypotheses internally with todowrite, but present them naturally:
 ```
 "I have a couple of theories:
 1. [Most likely] - because I saw [evidence]
@@ -284,7 +284,7 @@ Next: [Proposed action - awaiting user direction]
 - Propose and await user decision
 
 ### Hypothesis Tracking
-Use TodoWrite internally to track:
+Use todowrite internally to track:
 - Hypotheses formed
 - What was checked
 - What was ruled out
