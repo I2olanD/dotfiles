@@ -9,6 +9,7 @@ You are an agent delegation specialist that helps orchestrators break down compl
 ## When to Activate
 
 Activate this skill when you need to:
+
 - **Break down a complex task** into multiple distinct activities
 - **Launch specialist agents** (parallel or sequential)
 - **Create structured agent prompts** with FOCUS/EXCLUDE templates
@@ -78,6 +79,7 @@ Reasoning: [Why this strategy fits]
 ### When to Decompose
 
 **Decompose when:**
+
 - Multiple distinct activities needed
 - Independent components that can be validated separately
 - Natural boundaries between system layers
@@ -85,6 +87,7 @@ Reasoning: [Why this strategy fits]
 - Task complexity exceeds single agent capacity
 
 **Don't decompose when:**
+
 - Single focused activity
 - No clear separation of concerns
 - Overhead exceeds benefits
@@ -206,15 +209,15 @@ OUTPUT:
 
 ### Decision Matrix
 
-| Scenario | Dependencies | Shared State | Validation | File Paths | Recommendation |
-|----------|--------------|--------------|------------|------------|----------------|
-| Research tasks | None | Read-only | Independent | N/A | **PARALLEL** ⚡ |
-| Analysis tasks | None | Read-only | Independent | N/A | **PARALLEL** ⚡ |
-| Documentation | None | Unique paths | Independent | Unique | **PARALLEL** ⚡ |
-| Code creation | None | Unique files | Independent | Unique | **PARALLEL** ⚡ |
-| Build pipeline | Sequential | Shared files | Dependent | Same | **SEQUENTIAL** 📝 |
-| File editing | None | Same file | Collision risk | Same | **SEQUENTIAL** 📝 |
-| Dependent tasks | B needs A | Any | Dependent | Any | **SEQUENTIAL** 📝 |
+| Scenario        | Dependencies | Shared State | Validation     | File Paths | Recommendation    |
+| --------------- | ------------ | ------------ | -------------- | ---------- | ----------------- |
+| Research tasks  | None         | Read-only    | Independent    | N/A        | **PARALLEL** ⚡   |
+| Analysis tasks  | None         | Read-only    | Independent    | N/A        | **PARALLEL** ⚡   |
+| Documentation   | None         | Unique paths | Independent    | Unique     | **PARALLEL** ⚡   |
+| Code creation   | None         | Unique files | Independent    | Unique     | **PARALLEL** ⚡   |
+| Build pipeline  | Sequential   | Shared files | Dependent      | Same       | **SEQUENTIAL** 📝 |
+| File editing    | None         | Same file    | Collision risk | Same       | **SEQUENTIAL** 📝 |
+| Dependent tasks | B needs A    | Any          | Dependent      | Any        | **SEQUENTIAL** 📝 |
 
 ### Parallel Execution Checklist
 
@@ -255,6 +258,7 @@ Group 3: Task F
 ```
 
 **Example:** Authentication implementation
+
 - Group 1: Analyze security, Research best practices (parallel)
 - Sequential: Design schema (needs Group 1 results)
 - Group 2: Build API, Build UI (parallel)
@@ -325,6 +329,7 @@ DISCOVERY_FIRST: Before starting your task, understand the environment:
 ```
 
 **Example:**
+
 ```
 DISCOVERY_FIRST: Before starting your task, understand the environment:
     - find . -name "*test*" -o -name "*spec*" -type f | head -20
@@ -388,18 +393,20 @@ TERMINATION: Research complete OR information unavailable
 #### Direct Context Injection
 
 Pass context directly when:
+
 - Context is small and specific
 - Quick research tasks without spec documents
 - You have the exact information needed
 
 **Always include in CONTEXT:**
 
-1. **Relevant rules** - Extract applicable rules from CLAUDE.md or project docs
+1. **Relevant rules** - Extract applicable rules from CLAUDE.md, Agent.md or project docs
 2. **Project constraints** - Technical stack, coding standards, conventions
 3. **Prior outputs** - For sequential tasks, include relevant results from previous steps
 4. **Specification references** - For implementation tasks, cite PRD/SDD/PLAN sections
 
 **Example:**
+
 ```
 CONTEXT: Testing authentication service handling login, tokens, and sessions.
     - TDD required: Write tests before implementation
@@ -413,20 +420,21 @@ CONTEXT: Testing authentication service handling login, tokens, and sessions.
 #### Self-Priming Pattern
 
 Use "Self-prime from" directives when:
+
 - Implementation tasks with existing spec documents (PLAN, SDD, PRD)
 - Subagent needs full document context (not filtered excerpts)
 - Orchestrator should stay lightweight for longevity
 
 **Example:**
+
 ```
 CONTEXT:
     - Self-prime from: docs/specs/001-auth/implementation-plan.md (Phase 2, Task 3)
     - Self-prime from: docs/specs/001-auth/solution-design.md (Section 4.2)
-    - Self-prime from: CLAUDE.md (project standards)
+    - Self-prime from: CLAUDE.md / Agent.md (project standards)
     - Match interfaces defined in SDD Section 4.2
     - Follow existing patterns in src/services/
 ```
-
 
 ### Template Generation Examples
 
@@ -512,6 +520,7 @@ TERMINATION: Design complete OR blocked by missing requirements
 When multiple agents will create files:
 
 **Check before launching:**
+
 1. ✅ Are file paths specified explicitly in each agent's OUTPUT?
 2. ✅ Are all file paths unique (no two agents write same path)?
 3. ✅ Do paths follow project conventions?
@@ -578,18 +587,21 @@ Before launching agents that create files:
 Continue without user review when agent delivers:
 
 **Security improvements:**
+
 - Vulnerability fixes
 - Input validation additions
 - Authentication enhancements
 - Error handling improvements
 
 **Quality improvements:**
+
 - Code clarity enhancements
 - Documentation updates
 - Test coverage additions (if in scope)
 - Performance optimizations under 10 lines
 
 **Specification compliance:**
+
 - Exactly matches FOCUS requirements
 - Respects all EXCLUDE boundaries
 - Delivers expected OUTPUT format
@@ -600,6 +612,7 @@ Continue without user review when agent delivers:
 Present to user for confirmation when agent delivers:
 
 **Architectural changes:**
+
 - New external dependencies added
 - Database schema modifications
 - Public API changes
@@ -607,6 +620,7 @@ Present to user for confirmation when agent delivers:
 - Configuration file updates
 
 **Scope expansions:**
+
 - Features beyond FOCUS (but valuable)
 - Additional improvements requested
 - Alternative approaches suggested
@@ -616,18 +630,21 @@ Present to user for confirmation when agent delivers:
 Reject as scope creep when agent delivers:
 
 **Out of scope work:**
+
 - Features not in requirements
 - Work explicitly in EXCLUDE list
 - Breaking changes without migration path
 - Untested code modifications
 
 **Quality issues:**
+
 - Missing required OUTPUT format
 - Doesn't meet SUCCESS criteria
 - "While I'm here" additions
 - Unrequested improvements
 
 **Process violations:**
+
 - Skipped DISCOVERY_FIRST when required
 - Ignored CONTEXT constraints
 - Exceeded TERMINATION conditions
@@ -663,12 +680,14 @@ Recommendation:
 ### When Agent Response Seems Off
 
 **Ask yourself:**
+
 - Did I provide ambiguous instructions in FOCUS?
 - Should I have been more explicit in EXCLUDE?
 - Is this actually valuable despite being out of scope?
 - Would stricter FOCUS help or create more issues?
 
 **Response options:**
+
 1. **Accept and update requirements** - If valuable and safe
 2. **Reject and retry** - With refined FOCUS/EXCLUDE
 3. **Cherry-pick** - Keep compliant parts, discard scope creep
@@ -718,18 +737,19 @@ When an agent fails, follow this escalation:
 
 **Agent failed? Diagnose why:**
 
-| Symptom | Likely Cause | Solution |
-|---------|--------------|----------|
-| Scope creep | FOCUS too vague | Refine FOCUS, expand EXCLUDE |
-| Wrong approach | Wrong specialist | Try different agent type |
-| Incomplete work | Task too complex | Break into smaller tasks |
-| Blocked/stuck | Missing dependency | Check if should be sequential |
-| Wrong output | OUTPUT unclear | Specify exact format/path |
-| Quality issues | CONTEXT insufficient | Add more constraints/examples |
+| Symptom         | Likely Cause         | Solution                      |
+| --------------- | -------------------- | ----------------------------- |
+| Scope creep     | FOCUS too vague      | Refine FOCUS, expand EXCLUDE  |
+| Wrong approach  | Wrong specialist     | Try different agent type      |
+| Incomplete work | Task too complex     | Break into smaller tasks      |
+| Blocked/stuck   | Missing dependency   | Check if should be sequential |
+| Wrong output    | OUTPUT unclear       | Specify exact format/path     |
+| Quality issues  | CONTEXT insufficient | Add more constraints/examples |
 
 ### Template Refinement for Retry
 
 **Original (failed):**
+
 ```
 FOCUS: Implement authentication
 
@@ -739,6 +759,7 @@ EXCLUDE: Don't add tests
 **Why it failed:** Too vague, agent added OAuth when we wanted JWT
 
 **Refined (retry):**
+
 ```
 FOCUS: Implement JWT-based authentication for REST API endpoints
     - Create middleware for token validation
@@ -773,6 +794,7 @@ TERMINATION: Implementation complete OR blocked by missing User model
 ```
 
 **Changes:**
+
 - ✅ Specific JWT requirement (not generic "authentication")
 - ✅ Explicit endpoint specifications
 - ✅ Detailed EXCLUDE (OAuth, frontend, etc.)
@@ -799,6 +821,7 @@ TERMINATION: Implementation complete OR blocked by missing User model
    - **Sequential completion** - Build on partial results
 
 **Example:**
+
 ```
 Agent delivered:
 ✅ POST /auth/login endpoint (works perfectly)
@@ -817,6 +840,7 @@ Decision: Accept partial
 **Maximum retries: 3 attempts**
 
 After 3 failed attempts:
+
 1. **Present to user** - Explain what failed and why
 2. **Offer options** - Different approaches to try
 3. **Get guidance** - User decides next steps
@@ -848,6 +872,7 @@ Ready to launch: [Yes/No - if No, explain blocker]
 ```
 
 **For scope validation:**
+
 ```
 ✅ Scope Validation Complete
 
@@ -863,6 +888,7 @@ Summary:
 ```
 
 **For retry strategy:**
+
 ```
 🔄 Retry Strategy Generated
 
@@ -904,6 +930,7 @@ Retry attempt: [N of 3]
 ### Template Checklist
 
 Every agent prompt needs:
+
 - [ ] FOCUS: Complete, specific task description
 - [ ] EXCLUDE: Explicit boundaries
 - [ ] CONTEXT: Relevant rules and constraints
@@ -915,6 +942,7 @@ Every agent prompt needs:
 ### Parallel Execution Safety
 
 Before launching parallel agents, verify:
+
 - [ ] No dependencies between tasks
 - [ ] No shared state modifications
 - [ ] Independent validation possible

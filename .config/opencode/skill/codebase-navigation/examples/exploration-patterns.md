@@ -251,13 +251,13 @@ Grep: Invalid token
 
 ## Quick Reference: Search Strategy by Goal
 
-| Goal | Primary Tool | Pattern |
-|------|--------------|---------|
-| Find file by name | Glob | `**/target-name*` |
-| Find file by content | Grep | `pattern` with `files_with_matches` |
-| Understand function | Grep | Function name with `-C: 10` for context |
-| Find all usages | Grep | Call pattern with `files_with_matches` |
-| Map directory structure | Glob | `**/src/**/*` |
-| Find configuration | Glob | `**/*.{json,yaml,toml,env}` |
-| Trace dependencies | Grep | Import/require patterns |
-| Find tests | Glob | `**/*.test.* | **/*.spec.* | **/test_*` |
+| Goal                    | Primary Tool | Pattern                                 |
+| ----------------------- | ------------ | --------------------------------------- | ------------- | ------------ |
+| Find file by name       | Glob         | `**/target-name*`                       |
+| Find file by content    | Grep         | `pattern` with `files_with_matches`     |
+| Understand function     | Grep         | Function name with `-C: 10` for context |
+| Find all usages         | Grep         | Call pattern with `files_with_matches`  |
+| Map directory structure | Glob         | `**/src/**/*`                           |
+| Find configuration      | Glob         | `**/*.{json,yaml,toml,env}`             |
+| Trace dependencies      | Grep         | Import/require patterns                 |
+| Find tests              | Glob         | `\*_/_.test.\*                          | \*_/_.spec.\* | \*_/test\__` |
