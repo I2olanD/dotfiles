@@ -71,7 +71,7 @@ test -f CONSTITUTION.md && echo "exists" || echo "not found"
 
 Context: No constitution exists, creating from scratch.
 
-- Call: `skill(start:constitution-validation)`
+- Call: `skill({ name: "constitution-validation" })`
 - The skill provides template structure, discovery methodology, and rule generation guidelines
 
 **Launch Discovery Agents:**
@@ -148,7 +148,7 @@ Present discovered rules in categories:
 
 Context: Constitution exists, updating with new rules.
 
-- Call: `skill(start:constitution-validation)`
+- Call: `skill({ name: "constitution-validation" })`
 - Read current constitution
 - Parse existing rules and categories
 
@@ -183,8 +183,8 @@ Rules: [N] total
   - L3 (May): [N]
 
 Next Steps:
-- /start:validate constitution - Validate codebase against constitution
-- The constitution will be checked during /start:implement
+- /validate constitution - Validate codebase against constitution
+- The constitution will be checked during /implement
 ```
 
 ### Phase 4: Validate (Optional)
@@ -195,7 +195,7 @@ Context: User may want to immediately check codebase compliance.
 
 If validation requested:
 
-- Call: `skill(start:constitution-validation)` in validation mode
+- Call: `skill({ name: "constitution-validation" })` in validation mode
 - Report compliance findings
 
 ## Focus Area Interpretation
@@ -217,7 +217,7 @@ When $ARGUMENTS provides focus areas, interpret them:
 ### Create New Constitution
 
 ```
-User: /start:constitution
+User: /constitution
 
 Opencode: 📜 Constitution Setup
 
@@ -246,7 +246,7 @@ Would you like to:
 ### Create with Focus Areas
 
 ```
-User: /start:constitution "Focus on security and API patterns"
+User: /constitution "Focus on security and API patterns"
 
 Opencode: 📜 Constitution Setup (Focused)
 
@@ -274,7 +274,7 @@ API Patterns (3 rules):
 ### Update Existing Constitution
 
 ```
-User: /start:constitution "Add testing rules"
+User: /constitution "Add testing rules"
 
 Opencode: 📜 Constitution Update
 
@@ -323,8 +323,8 @@ Level Distribution:
 - L3 (May, Advisory): [N]
 
 Integration Points:
-- ✅ /start:validate constitution - Check compliance
-- ✅ /start:implement - Active enforcement
-- ✅ /start:review - Code review checks
-- ✅ /start:specify - SDD alignment
+- ✅ /validate constitution - Check compliance
+- ✅ /implement - Active enforcement
+- ✅ /review - Code review checks
+- ✅ /specify - SDD alignment
 ```

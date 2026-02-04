@@ -216,8 +216,8 @@ After user decision, update README:
 
 This skill is called by:
 
-- `/start:implement` - At end of each phase for alignment check
-- `/start:validate` (Mode C) - For comparison validation
+- `/implement` - At end of each phase for alignment check
+- `/validate` (Mode C) - For comparison validation
 
 ## Report Formats
 

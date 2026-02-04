@@ -375,7 +375,7 @@ Options:
 
 ## Integration Points
 
-### With /start:specify
+### With /specify
 
 Call this skill for:
 
@@ -383,7 +383,7 @@ Call this skill for:
 2. **Commit** after each phase → Generate phase-specific commit
 3. **PR creation** at completion → Create spec review PR
 
-### With /start:implement
+### With /implement
 
 Call this skill for:
 
@@ -391,7 +391,7 @@ Call this skill for:
 2. **Commit** after each phase → Generate implementation commit
 3. **PR creation** at completion → Create implementation PR
 
-### With /start:refactor
+### With /refactor
 
 Call this skill for:
 

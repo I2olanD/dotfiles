@@ -9,11 +9,13 @@ Advanced patterns, rule types, and examples for constitution authoring.
 Pattern rules use regex to match violations in source code. These are deterministic and fast.
 
 **When to use:**
+
 - Text patterns that can be matched literally
 - Syntax violations (forbidden imports, banned functions)
 - Secret detection (API keys, passwords)
 
 **Regex Tips:**
+
 - Escape special characters: `\.` for literal dot
 - Use `\s*` for flexible whitespace
 - Use `\b` for word boundaries
@@ -44,11 +46,13 @@ message: Direct innerHTML assignment risks XSS. Use framework's DOM methods.
 Check rules use semantic descriptions that the LLM interprets. These are flexible but non-deterministic.
 
 **When to use:**
+
 - Architectural patterns that require understanding context
 - Rules that span multiple lines or files
 - Semantic concepts (like "database calls only in repositories")
 
 **Writing Good Check Descriptions:**
+
 - Be specific about what constitutes a violation
 - Include examples of valid and invalid patterns
 - Mention file locations or naming conventions to check
@@ -78,14 +82,14 @@ The `scope` field uses glob patterns to determine which files to check.
 
 ### Common Patterns
 
-| Pattern | Matches |
-|---------|---------|
-| `**/*.ts` | All TypeScript files |
-| `src/**/*.ts` | TypeScript files in src/ |
-| `**/*.{ts,js}` | TypeScript and JavaScript |
-| `packages/*/src/**` | All packages' src folders |
-| `apps/web/**` | Only the web app |
-| `!**/*.test.ts` | Exclude test files (use in `exclude`) |
+| Pattern             | Matches                               |
+| ------------------- | ------------------------------------- |
+| `**/*.ts`           | All TypeScript files                  |
+| `src/**/*.ts`       | TypeScript files in src/              |
+| `**/*.{ts,js}`      | TypeScript and JavaScript             |
+| `packages/*/src/**` | All packages' src folders             |
+| `apps/web/**`       | Only the web app                      |
+| `!**/*.test.ts`     | Exclude test files (use in `exclude`) |
 
 ### Monorepo Scoping
 
@@ -124,13 +128,13 @@ exclude: "src/generated/**"                      # Generated code
 
 When parsing rules, IDs are auto-generated from category:
 
-| Category | Prefix | Example |
-|----------|--------|---------|
-| Security | SEC | SEC-001 |
-| Architecture | ARCH | ARCH-001 |
-| Code Quality | QUAL | QUAL-001 |
-| Testing | TEST | TEST-001 |
-| Custom | CUST | CUST-001 |
+| Category      | Prefix                    | Example  |
+| ------------- | ------------------------- | -------- |
+| Security      | SEC                       | SEC-001  |
+| Architecture  | ARCH                      | ARCH-001 |
+| Code Quality  | QUAL                      | QUAL-001 |
+| Testing       | TEST                      | TEST-001 |
+| Custom        | CUST                      | CUST-001 |
 | [Custom Name] | First 4 letters uppercase | PERF-001 |
 
 ## Common Rule Patterns
@@ -239,7 +243,7 @@ message: Unhandled promise rejection possible. Add error handling.
 
 In monorepos, place CONSTITUTION.md at root. Rules apply to all packages via scope:
 
-```markdown
+````markdown
 ## Architecture
 
 ### Package Boundaries
@@ -250,6 +254,7 @@ check: Imports between packages must use package name
 scope: "packages/*/src/**"
 message: Cross-package import violation.
 ```
+````
 
 ### Web-Specific Rules
 
@@ -259,7 +264,8 @@ pattern: "document\\."
 scope: "packages/server/src/**"
 message: DOM access forbidden in server package.
 ```
-```
+
+````
 
 ### Per-Package Exceptions
 
@@ -271,7 +277,7 @@ pattern: "console\\.log"
 scope: "packages/*/src/**"
 exclude: "packages/cli/src/**"
 message: No console.log except in CLI package.
-```
+````
 
 ## Validation Modes
 
@@ -280,7 +286,7 @@ message: No console.log except in CLI package.
 Check all rules against entire codebase:
 
 ```
-/start:validate constitution
+/validate constitution
 ```
 
 ### Targeted Validation
@@ -288,12 +294,12 @@ Check all rules against entire codebase:
 Check against specific files or directories:
 
 ```
-/start:validate constitution src/services/
+/validate constitution src/services/
 ```
 
 ### Implementation Validation
 
-Called automatically during `/start:implement` phases.
+Called automatically during `/implement` phases.
 
 ## Performance Considerations
 
@@ -321,6 +327,7 @@ Called automatically during `/start:implement` phases.
 ### Invalid Regex Error
 
 Common issues:
+
 - Missing escape for special chars: `(`, `)`, `.`, `*`
 - Unbalanced groups
 - Invalid quantifiers

@@ -50,7 +50,7 @@ Launch parallel analysis agents for each perspective. Opencode Code routes to ap
 
 ### Phase 1: Gather Target Code & Baseline
 
-1. **Initialize methodology**: `skill(start:safe-refactoring)`
+1. **Initialize methodology**: `skill({ name: "safe-refactoring" })`
 
 2. Parse `$ARGUMENTS` to determine scope:
    - `staged` → `git diff --cached`

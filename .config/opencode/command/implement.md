@@ -130,7 +130,7 @@ Options: [present via question]
 
 Context: Offering version control integration for traceability.
 
-- Call: `skill(start:git-workflow)` for branch management
+- Call: `skill({ name: "git-workflow" })` for branch management
 - The skill will:
   - Check if git repository exists
   - Offer to create `feature/[spec-id]-[spec-name]` branch
@@ -141,7 +141,7 @@ Context: Offering version control integration for traceability.
 
 ### Phase 1: Initialize and Analyze Plan
 
-- Call: `skill(start:specification-management)` to read spec
+- Call: `skill({ name: "specification-management" })` to read spec
 - Validate: PLAN.md exists, identify phases and tasks
 - Load ONLY Phase 1 tasks into todowrite
 - Call: `question` - Start Phase 1 (recommended) or Review spec first
@@ -166,8 +166,8 @@ Context: Offering version control integration for traceability.
 
 **At checkpoint:**
 
-- Call: `skill(start:drift-detection)` for spec alignment
-- Call: `skill(start:constitution-validation)` if CONSTITUTION.md exists
+- Call: `skill({ name: "drift-detection" })` for spec alignment
+- Call: `skill({ name: "constitution-validation" })` if CONSTITUTION.md exists
 - Verify all todowrite tasks complete, update PLAN.md checkboxes
 - Call: `question` for phase transition
 
@@ -183,7 +183,7 @@ At the end of each phase, ask user how to proceed:
 
 ### Completion
 
-- Call: `skill(start:implementation-verification)` for final validation
+- Call: `skill({ name: "implementation-verification" })` for final validation
 - Generate changelog entry if significant changes made
 
 **Present summary:**
@@ -201,7 +201,7 @@ Files Changed: [N] files (+[additions] -[deletions])
 
 **Git Finalization:**
 
-- Call: `skill(start:git-workflow)` for commit and PR operations
+- Call: `skill({ name: "git-workflow" })` for commit and PR operations
 - The skill will:
   - Offer to commit with conventional message
   - Offer to create PR with spec-based description

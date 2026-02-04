@@ -98,7 +98,7 @@ OUTPUT: Findings formatted as:
 
 ### Phase 1: Initialize Analysis Scope
 
-- Call: `skill(start:codebase-analysis)`
+- Call: `skill({ name: "codebase-analysis" })`
 - Determine scope from $ARGUMENTS (business, technical, security, performance, integration, or specific domain)
 - If unclear, ask user to clarify focus area
 

@@ -278,11 +278,11 @@ For each parsed rule:
 
 This skill is called by:
 
-- `/start:constitution` - For creation and updates
-- `/start:validate` (Mode E) - For constitution validation
-- `/start:implement` - For active enforcement during implementation
-- `/start:review` - For code review compliance checks
-- `/start:specify` (SDD phase) - For architecture alignment
+- `/constitution` - For creation and updates
+- `/validate` (Mode E) - For constitution validation
+- `/implement` - For active enforcement during implementation
+- `/review` - For code review compliance checks
+- `/specify` (SDD phase) - For architecture alignment
 
 ## Validation Checklist
 
