@@ -1,7 +1,11 @@
 ---
 name: knowledge-capture
 description: Document business rules, technical patterns, and service interfaces discovered during analysis or implementation. Use when you find reusable patterns, external integrations, domain-specific rules, or API contracts. Always check existing documentation before creating new files. Handles deduplication and proper categorization.
-allowed-tools: read, write, edit, grep, glob
+license: MIT
+compatibility: opencode
+metadata:
+  category: documentation
+  version: "1.0"
 ---
 
 You are a documentation specialist that captures and organizes knowledge discovered during development work.

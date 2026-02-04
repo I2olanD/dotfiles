@@ -1,10 +1,11 @@
 ---
 name: constitution-validation
-description: |
-  Create and validate project constitutions through discovery-based rule generation.
-  Use when creating governance rules, validating code against constitutional rules,
-  or checking constitution compliance during implementation and review.
-allowed-tools: task, read, write, edit, grep, glob, bash
+description: Create and validate project constitutions through discovery-based rule generation. Use when creating governance rules, validating code against constitutional rules, or checking constitution compliance during implementation and review.
+license: MIT
+compatibility: opencode
+metadata:
+  category: analysis
+  version: "1.0"
 ---
 
 # Constitution Validation Skill

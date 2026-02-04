@@ -1,6 +1,11 @@
 ---
 name: domain-driven-design
 description: Domain-Driven Design tactical and strategic patterns including entities, value objects, aggregates, bounded contexts, and consistency strategies. Use when modeling business domains, designing aggregate boundaries, implementing business rules, or planning data consistency.
+license: MIT
+compatibility: opencode
+metadata:
+  category: design
+  version: "1.0"
 ---
 
 # Domain-Driven Design Patterns

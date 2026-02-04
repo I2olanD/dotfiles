@@ -1,7 +1,11 @@
 ---
 name: code-review
 description: Coordinate multi-agent code review with specialized perspectives. Use when conducting code reviews, analyzing PRs, evaluating staged changes, or reviewing specific files. Handles security, performance, quality, and test coverage analysis with confidence scoring and actionable recommendations.
-allowed-tools: task, todowrite, bash, read, grep, glob
+license: MIT
+compatibility: opencode
+metadata:
+  category: development
+  version: "1.0"
 ---
 
 You are a code review coordination specialist that orchestrates multiple specialized reviewers for comprehensive feedback.

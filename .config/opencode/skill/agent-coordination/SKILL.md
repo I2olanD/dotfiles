@@ -1,12 +1,11 @@
 ---
 name: agent-coordination
-description: |
-  Execute implementation plans phase-by-phase with checkpoint validation.
-  Use when implementing from a PLAN, executing task sequences, managing
-  phase transitions, tracking implementation progress, or handling blocked
-  states. Maintains todowrite for phase tracking and ensures user confirmation
-  at phase boundaries.
-allowed-tools: task, todowrite, read, edit, bash
+description: Execute implementation plans phase-by-phase with checkpoint validation. Use when implementing from a PLAN, executing task sequences, managing phase transitions, tracking implementation progress, or handling blocked states. Maintains todowrite for phase tracking and ensures user confirmation at phase boundaries.
+license: MIT
+compatibility: opencode
+metadata:
+  category: development
+  version: "1.0"
 ---
 
 # Execution Orchestration Skill

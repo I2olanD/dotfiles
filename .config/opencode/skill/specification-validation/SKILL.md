@@ -1,11 +1,11 @@
 ---
 name: specification-validation
-description: |
-  Validate specifications, implementations, or understanding for completeness,
-  consistency, and correctness. Use when checking spec quality, comparing
-  implementation against design, validating file contents, assessing readiness,
-  or confirming understanding. Supports spec IDs, file paths, and freeform requests.
-allowed-tools: task, read, grep, glob, bash
+description: Validate specifications, implementations, or understanding for completeness, consistency, and correctness. Use when checking spec quality, comparing implementation against design, validating file contents, assessing readiness, or confirming understanding. Supports spec IDs, file paths, and freeform requests.
+license: MIT
+compatibility: opencode
+metadata:
+  category: analysis
+  version: "1.0"
 ---
 
 # Specification Validation Skill

@@ -1,6 +1,11 @@
 ---
 name: documentation-extraction
 description: Interpret existing docs, READMEs, specs, and configuration files efficiently. Use when onboarding to a codebase, verifying implementation against specs, understanding API contracts, or parsing configuration. Covers reading strategies for README, API docs, specs, configs, and cross-referencing with code.
+license: MIT
+compatibility: opencode
+metadata:
+  category: documentation
+  version: "1.0"
 ---
 
 # Documentation Reading

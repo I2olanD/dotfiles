@@ -1,6 +1,11 @@
 ---
 name: codebase-navigation
 description: Navigate, search, and understand project structures. Use when onboarding to a codebase, locating implementations, tracing dependencies, or understanding architecture. Provides patterns for file searching with Glob, code searching with Grep, and systematic architecture analysis.
+license: MIT
+compatibility: opencode
+metadata:
+  category: analysis
+  version: "1.0"
 ---
 
 # Codebase Exploration

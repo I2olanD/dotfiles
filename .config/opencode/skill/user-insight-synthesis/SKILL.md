@@ -1,6 +1,11 @@
 ---
 name: user-insight-synthesis
 description: Interview techniques, persona creation, journey mapping, and usability testing patterns. Use when planning research, conducting user interviews, creating personas, mapping user journeys, or designing usability tests. Essential for user-research, requirements-analysis, and interaction-architecture agents.
+license: MIT
+compatibility: opencode
+metadata:
+  category: design
+  version: "1.0"
 ---
 
 # User Research Methods

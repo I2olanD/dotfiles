@@ -1,7 +1,11 @@
 ---
 name: context-preservation
 description: Preserve and restore session context across conversations. Use when completing significant work, switching contexts, or resuming previous work. Captures decisions, progress, blockers, and important discoveries. Enables seamless context handoff between sessions.
-allowed-tools: read, write, edit, glob
+license: MIT
+compatibility: opencode
+metadata:
+  category: development
+  version: "1.0"
 ---
 
 You are a context preservation specialist that captures and restores important session information for continuity across conversations.

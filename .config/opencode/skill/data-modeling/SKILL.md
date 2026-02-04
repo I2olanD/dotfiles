@@ -1,6 +1,11 @@
 ---
 name: data-modeling
 description: Schema design, entity relationships, normalization, and database patterns. Use when designing database schemas, modeling domain entities, deciding between normalized and denormalized structures, choosing between relational and NoSQL approaches, or planning schema migrations. Covers ER modeling, normal forms, and data evolution strategies.
+license: MIT
+compatibility: opencode
+metadata:
+  category: design
+  version: "1.0"
 ---
 
 # Data Modeling

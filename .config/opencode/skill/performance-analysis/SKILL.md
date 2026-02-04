@@ -1,6 +1,11 @@
 ---
 name: performance-analysis
 description: Measurement approaches, profiling tools, optimization patterns, and capacity planning. Use when diagnosing performance issues, establishing baselines, identifying bottlenecks, or planning for scale. Always measure before optimizing.
+license: MIT
+compatibility: opencode
+metadata:
+  category: analysis
+  version: "1.0"
 ---
 
 # Performance Profiling

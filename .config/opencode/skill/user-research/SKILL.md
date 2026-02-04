@@ -1,6 +1,11 @@
 ---
 name: user-research
 description: User interview techniques, persona creation, journey mapping, and research synthesis patterns. Use when planning research studies, conducting interviews, creating personas, or translating research findings into actionable design recommendations.
+license: MIT
+compatibility: opencode
+metadata:
+  category: design
+  version: "1.0"
 ---
 
 # User Research Methodology

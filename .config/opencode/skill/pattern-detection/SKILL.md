@@ -1,6 +1,11 @@
 ---
 name: pattern-detection
 description: Identify existing codebase patterns (naming conventions, architectural patterns, testing patterns) to maintain consistency. Use when generating code, reviewing changes, or understanding established practices. Ensures new code aligns with project conventions.
+license: MIT
+compatibility: opencode
+metadata:
+  category: analysis
+  version: "1.0"
 ---
 
 # Pattern Recognition

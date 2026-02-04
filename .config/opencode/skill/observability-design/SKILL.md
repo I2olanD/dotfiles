@@ -1,6 +1,11 @@
 ---
 name: observability-design
 description: Monitoring strategies, distributed tracing, SLI/SLO design, and alerting patterns. Use when designing monitoring infrastructure, defining service level objectives, implementing distributed tracing, creating alert rules, building dashboards, or establishing incident response procedures. Covers the three pillars of observability and production readiness.
+license: MIT
+compatibility: opencode
+metadata:
+  category: devops
+  version: "1.0"
 ---
 
 # Observability Patterns

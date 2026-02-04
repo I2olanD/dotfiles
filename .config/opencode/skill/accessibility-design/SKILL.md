@@ -1,6 +1,11 @@
 ---
 name: accessibility-design
 description: WCAG 2.1 AA compliance patterns, screen reader compatibility, keyboard navigation, and ARIA best practices. Use when implementing accessible interfaces, reviewing UI components, or auditing accessibility compliance. Covers semantic HTML, focus management, color contrast, and assistive technology testing.
+license: MIT
+compatibility: opencode
+metadata:
+  category: design
+  version: "1.0"
 ---
 
 # Accessibility Standards

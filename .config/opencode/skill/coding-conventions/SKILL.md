@@ -1,6 +1,11 @@
 ---
 name: coding-conventions
 description: Apply consistent security, performance, and accessibility standards across all recommendations. Use when reviewing code, designing features, or validating implementations. Cross-cutting skill for all agents.
+license: MIT
+compatibility: opencode
+metadata:
+  category: development
+  version: "1.0"
 ---
 
 # Best Practices

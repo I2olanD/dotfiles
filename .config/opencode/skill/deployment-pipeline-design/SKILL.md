@@ -1,6 +1,11 @@
 ---
 name: deployment-pipeline-design
 description: Pipeline design, deployment strategies (blue-green, canary, rolling), and CI/CD platform patterns. Use when designing pipelines, implementing deployments, configuring quality gates, or setting up automated release workflows. Covers GitHub Actions, GitLab CI, and platform-agnostic patterns.
+license: MIT
+compatibility: opencode
+metadata:
+  category: devops
+  version: "1.0"
 ---
 
 # CI/CD Patterns

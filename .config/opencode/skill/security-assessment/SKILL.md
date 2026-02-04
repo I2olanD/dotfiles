@@ -1,6 +1,11 @@
 ---
 name: security-assessment
 description: Vulnerability review, OWASP patterns, secure coding practices, and threat modeling approaches. Use when reviewing code security, designing secure systems, performing threat analysis, or validating security implementations.
+license: MIT
+compatibility: opencode
+metadata:
+  category: development
+  version: "1.0"
 ---
 
 # Security Assessment

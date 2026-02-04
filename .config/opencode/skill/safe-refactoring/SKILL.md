@@ -1,11 +1,11 @@
 ---
 name: safe-refactoring
-description: |
-  Systematic code refactoring while preserving all external behavior.
-  Use when identifying code smells, planning refactoring sequences,
-  executing safe structural improvements, or validating behavior preservation.
-  Includes code smell catalog (reference.md) and refactoring execution protocol.
-allowed-tools: task, todowrite, bash, grep, glob, read, edit
+description: Systematic code refactoring while preserving all external behavior. Use when identifying code smells, planning refactoring sequences, executing safe structural improvements, or validating behavior preservation. Includes code smell catalog (reference.md) and refactoring execution protocol.
+license: MIT
+compatibility: opencode
+metadata:
+  category: development
+  version: "1.0"
 ---
 
 # Refactoring Methodology Skill

@@ -1,6 +1,11 @@
 ---
 name: code-quality-review
 description: Systematic code review patterns, quality dimensions, anti-pattern detection, and constructive feedback techniques. Use when reviewing code changes, assessing codebase quality, identifying technical debt, or mentoring through reviews. Covers correctness, design, security, performance, and maintainability.
+license: MIT
+compatibility: opencode
+metadata:
+  category: development
+  version: "1.0"
 ---
 
 # Code Quality Review Methodology

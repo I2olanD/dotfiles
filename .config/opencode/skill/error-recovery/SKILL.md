@@ -1,6 +1,11 @@
 ---
 name: error-recovery
 description: Consistent error patterns, validation approaches, and recovery strategies. Use when implementing input validation, designing error responses, handling failures gracefully, or establishing logging practices. Covers operational vs programmer errors, user-facing vs internal errors, and recovery mechanisms.
+license: MIT
+compatibility: opencode
+metadata:
+  category: development
+  version: "1.0"
 ---
 
 # Error Handling

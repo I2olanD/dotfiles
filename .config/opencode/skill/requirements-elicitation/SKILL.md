@@ -1,6 +1,11 @@
 ---
 name: requirements-elicitation
 description: Requirement gathering techniques, stakeholder analysis, user story patterns, and specification validation. Use when clarifying vague requirements, resolving conflicting needs, documenting specifications, or validating requirements with stakeholders.
+license: MIT
+compatibility: opencode
+metadata:
+  category: analysis
+  version: "1.0"
 ---
 
 # Requirements Elicitation Methodology

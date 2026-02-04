@@ -1,6 +1,11 @@
 ---
 name: feature-prioritization
 description: RICE, MoSCoW, Kano, and value-effort prioritization frameworks with scoring methodologies and decision documentation. Use when prioritizing features, evaluating competing initiatives, creating roadmaps, or making build vs defer decisions.
+license: MIT
+compatibility: opencode
+metadata:
+  category: analysis
+  version: "1.0"
 ---
 
 # Prioritization Framework Application

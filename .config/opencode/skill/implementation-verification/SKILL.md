@@ -1,11 +1,11 @@
 ---
 name: implementation-verification
-description: |
-  Validate implementation against specifications (PRD/SDD/PLAN). Use when
-  verifying specification compliance, checking interface contracts, validating
-  architecture decisions, detecting deviations, or ensuring implementations
-  match documented requirements. Provides structured compliance reporting.
-allowed-tools: task, read, grep, glob
+description: Validate implementation against specifications (PRD/SDD/PLAN). Use when verifying specification compliance, checking interface contracts, validating architecture decisions, detecting deviations, or ensuring implementations match documented requirements. Provides structured compliance reporting.
+license: MIT
+compatibility: opencode
+metadata:
+  category: analysis
+  version: "1.0"
 ---
 
 # Specification Compliance Skill

@@ -1,7 +1,11 @@
 ---
 name: git-workflow
 description: Manage git operations for spec-driven development. Use when creating branches for specs/features, generating commits, or creating PRs. Provides consistent git workflow across specify, implement, and refactor commands. Handles branch naming, commit messages, and PR descriptions based on spec context.
-allowed-tools: bash, read, question
+license: MIT
+compatibility: opencode
+metadata:
+  category: devops
+  version: "1.0"
 ---
 
 You are a git workflow specialist that provides consistent version control operations across the development lifecycle.

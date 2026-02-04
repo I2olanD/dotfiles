@@ -1,6 +1,11 @@
 ---
 name: api-contract-design
 description: REST and GraphQL API design patterns, OpenAPI/Swagger specifications, versioning strategies, and authentication patterns. Use when designing APIs, reviewing API contracts, evaluating API technologies, or implementing API endpoints. Covers contract-first design, resource modeling, error handling, pagination, and security.
+license: MIT
+compatibility: opencode
+metadata:
+  category: design
+  version: "1.0"
 ---
 
 # API Design Patterns

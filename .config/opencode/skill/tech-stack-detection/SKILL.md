@@ -1,6 +1,11 @@
 ---
 name: tech-stack-detection
 description: Auto-detect project tech stacks (React, Vue, Express, Django, etc.). Recognize package managers and configuration patterns. Use when starting work on any project, analyzing dependencies, or providing framework-specific guidance.
+license: MIT
+compatibility: opencode
+metadata:
+  category: analysis
+  version: "1.0"
 ---
 
 # Framework Detection

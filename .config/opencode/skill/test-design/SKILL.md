@@ -1,6 +1,11 @@
 ---
 name: test-design
 description: Apply test pyramid principles, coverage targets, and framework-specific patterns. Use when designing test suites, reviewing test coverage, or implementing tests. Covers Jest, Pytest, and common testing frameworks with naming conventions and organization patterns.
+license: MIT
+compatibility: opencode
+metadata:
+  category: development
+  version: "1.0"
 ---
 
 # Testing Strategies

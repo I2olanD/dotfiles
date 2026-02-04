@@ -1,12 +1,11 @@
 ---
 name: bug-diagnosis
-description: |
-  Apply scientific debugging methodology through conversational investigation.
-  Use when investigating bugs, forming hypotheses, tracing error causes,
-  performing root cause analysis, or systematically diagnosing issues.
-  Includes progressive disclosure patterns, observable actions principle,
-  and user-controlled dialogue flow.
-allowed-tools: task, todowrite, bash, grep, glob, read, question
+description: Apply scientific debugging methodology through conversational investigation. Use when investigating bugs, forming hypotheses, tracing error causes, performing root cause analysis, or systematically diagnosing issues. Includes progressive disclosure patterns, observable actions principle, and user-controlled dialogue flow.
+license: MIT
+compatibility: opencode
+metadata:
+  category: development
+  version: "1.0"
 ---
 
 # Debugging Methodology Skill
