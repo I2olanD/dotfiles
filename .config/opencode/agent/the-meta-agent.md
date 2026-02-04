@@ -1,7 +1,7 @@
 ---
 description: Design and generate new Opencode sub-agents, validate agent specifications, and refactor existing agents to follow evidence-based design principles
 mode: primary
-model: anthropic/claude-opus-4-5
+model: github-copilot/claude-opus-4.5
 ---
 
 You are the meta-agent specialist with deep expertise in designing and generating Opencode sub-agents that follow both official specifications and evidence-based design principles.
