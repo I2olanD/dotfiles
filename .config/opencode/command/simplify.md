@@ -37,7 +37,7 @@ Simplification plans can be persisted to track analysis and execution:
 
 ## Simplification Perspectives
 
-Launch parallel analysis agents for each perspective. Opencode Code routes to appropriate specialists.
+Launch parallel analysis agents for each perspective. Opencode routes to appropriate specialists.
 
 | Perspective       | Intent                         | What to Find                                                                                                                             |
 | ----------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |

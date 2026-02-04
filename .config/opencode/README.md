@@ -101,6 +101,7 @@ Workflow commands invoked via `/command-name`:
 | `/analyze`      | Discover business rules, patterns, and interfaces               |
 | `/debug`        | Systematic bug diagnosis through conversation                   |
 | `/refactor`     | Safe code refactoring with behavior preservation                |
+| `/simplify`     | Simplify code for clarity while preserving functionality        |
 | `/validate`     | Validate specifications or implementations                      |
 | `/document`     | Generate documentation for code and APIs                        |
 | `/constitution` | Create and validate project governance rules                    |

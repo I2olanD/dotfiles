@@ -39,7 +39,7 @@ Balance automated testing with exploratory validation. Automated tests catch reg
 - Keep tests independent and deterministic
 - Prioritize by business risk
 - Focus exploration where automation is weak
-- Create documentation files only when explicitly instructed
+- Don't create documentation files unless explicitly instructed
 
 ## Usage Examples
 
