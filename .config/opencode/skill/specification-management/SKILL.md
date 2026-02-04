@@ -31,13 +31,13 @@ Use `spec.py` to create and read specification directories:
 
 ```bash
 # Create new spec (auto-incrementing ID)
-~/.claude/plugins/marketplaces/the-startup/~/.config/opencode/skill/specification-management/spec.py "feature-name"
+~/.config/opencode/skill/specification-management/spec.py "feature-name"
 
 # Read existing spec metadata (TOML output)
-~/.claude/plugins/marketplaces/the-startup/~/.config/opencode/skill/specification-management/spec.py 004 --read
+~/.config/opencode/skill/specification-management/spec.py 004 --read
 
 # Add template to existing spec
-~/.claude/plugins/marketplaces/the-startup/~/.config/opencode/skill/specification-management/spec.py 004 --add product-requirements
+~/.config/opencode/skill/specification-management/spec.py 004 --add product-requirements
 ```
 
 **TOML Output Format:**

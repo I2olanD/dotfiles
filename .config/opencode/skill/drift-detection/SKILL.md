@@ -52,7 +52,7 @@ Read the spec documents to understand requirements:
 
 ```bash
 # Using spec.py to get spec metadata
-~/.claude/plugins/marketplaces/the-startup/~/.config/opencode/skill/specification-management/spec.py [ID] --read
+~/.config/opencode/skill/specification-management/spec.py [ID] --read
 ```
 
 Extract from documents:
