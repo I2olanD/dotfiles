@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="./assets/logo.png" alt="Logo">
+</div>
+
 # OpenCode Configuration
 
 > This is a copy of repo [https://github.com/rsmdt/the-startup]
