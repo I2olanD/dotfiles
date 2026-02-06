@@ -8,17 +8,6 @@
 
 A comprehensive AI Agent configuration providing specialized agents, reusable skills, and workflow commands for software development.
 
-## Structure
-
-```
-opencode/
-├── agent/              # Specialized AI agents
-├── command/            # Workflow commands (/slash commands)
-└── skill/              # Reusable expertise modules
-```
-
----
-
 ## Agents
 
 Agents are specialized AI personas that handle specific domains. They're organized into teams:
@@ -37,20 +26,24 @@ Designs and generates new Opencode sub-agents. Validates agent specifications an
 
 ### The Analyst Team
 
-| Agent                    | Purpose                                                                   |
-| ------------------------ | ------------------------------------------------------------------------- |
-| `feature-prioritization` | Prioritize features, evaluate trade-offs, establish success metrics       |
-| `project-coordination`   | Break down projects, identify dependencies, coordinate work streams       |
-| `requirements-analysis`  | Clarify requirements, document specifications, define acceptance criteria |
+| Agent                    | Purpose                                                                    |
+| ------------------------ | -------------------------------------------------------------------------- |
+| `feature-prioritization` | Prioritize features, evaluate trade-offs, establish success metrics        |
+| `market-research`        | Research market context, analyze competitors, evaluate product positioning |
+| `project-coordination`   | Break down projects, identify dependencies, coordinate work streams        |
+| `requirements-analysis`  | Clarify requirements, document specifications, define acceptance criteria  |
 
 ### The Architect Team
 
-| Agent                  | Purpose                                                                 |
-| ---------------------- | ----------------------------------------------------------------------- |
-| `quality-review`       | Review architecture and code quality, security assessments              |
-| `system-architecture`  | Design scalable systems, technology selection, deployment architecture  |
-| `system-documentation` | Create architectural docs, ADRs, integration guides, runbooks           |
-| `technology-research`  | Research solutions, evaluate technologies, proof-of-concept development |
+| Agent                  | Purpose                                                                     |
+| ---------------------- | --------------------------------------------------------------------------- |
+| `compatibility-review` | Review code for breaking changes, API contracts, schema compatibility       |
+| `complexity-review`    | Review code for unnecessary complexity, over-engineering, YAGNI violations  |
+| `quality-review`       | Review architecture and code quality, security assessments                  |
+| `security-review`      | Review code for security vulnerabilities, injection prevention, auth issues |
+| `system-architecture`  | Design scalable systems, technology selection, deployment architecture      |
+| `system-documentation` | Create architectural docs, ADRs, integration guides, runbooks               |
+| `technology-research`  | Research solutions, evaluate technologies, proof-of-concept development     |
 
 ### The Designer Team
 
@@ -63,24 +56,27 @@ Designs and generates new Opencode sub-agents. Validates agent specifications an
 
 ### The Software Engineer Team
 
-| Agent                      | Purpose                                                 |
-| -------------------------- | ------------------------------------------------------- |
-| `api-development`          | Design REST/GraphQL APIs, documentation, SDK generation |
-| `component-development`    | Design UI components, state management patterns         |
-| `domain-modeling`          | Model business domains, entities, persistence design    |
-| `performance-optimization` | Optimize bundle size, rendering, memory usage           |
+| Agent                      | Purpose                                                          |
+| -------------------------- | ---------------------------------------------------------------- |
+| `api-development`          | Design REST/GraphQL APIs, documentation, SDK generation          |
+| `component-development`    | Design UI components, state management patterns                  |
+| `concurrency-review`       | Review code for race conditions, deadlocks, async anti-patterns  |
+| `domain-modeling`          | Model business domains, entities, persistence design             |
+| `performance-optimization` | Optimize bundle size, rendering, memory usage                    |
 
 ### The Platform Engineer Team
 
-| Agent                    | Purpose                                                    |
-| ------------------------ | ---------------------------------------------------------- |
-| `containerization`       | Docker images, Kubernetes deployments, container workflows |
-| `data-architecture`      | Schema modeling, migration planning, storage optimization  |
-| `deployment-automation`  | CI/CD pipelines, blue-green/canary deployments             |
-| `infrastructure-as-code` | Terraform, CloudFormation, Pulumi modules                  |
-| `performance-tuning`     | System profiling, database optimization, capacity planning |
-| `pipeline-engineering`   | ETL/ELT workflows, stream processing, data quality         |
-| `production-monitoring`  | Metrics, logging, alerting, SLI/SLO definition             |
+| Agent                    | Purpose                                                        |
+| ------------------------ | -------------------------------------------------------------- |
+| `ci-cd-pipelines`        | Design CI/CD pipelines, deployment strategies, rollback        |
+| `containerization`       | Docker images, Kubernetes deployments, container workflows     |
+| `data-architecture`      | Schema modeling, migration planning, storage optimization      |
+| `dependency-review`      | Review dependencies for security, licenses, supply chain risks |
+| `deployment-automation`  | CI/CD pipelines, blue-green/canary deployments                 |
+| `infrastructure-as-code` | Terraform, CloudFormation, Pulumi modules                      |
+| `performance-tuning`     | System profiling, database optimization, capacity planning     |
+| `pipeline-engineering`   | ETL/ELT workflows, stream processing, data quality             |
+| `production-monitoring`  | Metrics, logging, alerting, SLI/SLO definition                 |
 
 ### The QA Engineer Team
 
@@ -158,14 +154,15 @@ Universal skills available to all agents:
 
 ### Quality Skills
 
-| Skill                  | Purpose                              |
-| ---------------------- | ------------------------------------ |
-| `code-quality-review`  | Code smells, design patterns         |
-| `code-review`          | Multi-agent code review coordination |
-| `performance-analysis` | Profiling, bottleneck identification |
-| `security-assessment`  | OWASP patterns, vulnerability review |
-| `test-design`          | Test pyramid, coverage strategies    |
-| `testing`              | Writing and running effective tests  |
+| Skill                  | Purpose                                       |
+| ---------------------- | --------------------------------------------- |
+| `code-quality-review`  | Code smells, design patterns                  |
+| `code-review`          | Multi-agent code review coordination          |
+| `performance-analysis` | Profiling, bottleneck identification          |
+| `security-assessment`  | OWASP patterns, vulnerability review          |
+| `test-design`          | Test pyramid, coverage strategies             |
+| `testing`              | Writing and running effective tests           |
+| `vibe-security`        | Secure web app coding, OWASP compliance, XSS/CSRF/SSRF protection |
 
 ### Specification & Workflow Skills
 
