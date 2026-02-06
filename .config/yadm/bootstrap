@@ -1,12 +1,18 @@
 #!/bin/bash
 
+set -e
+
 DIVIDER="----------------------------------------------------------------------------"
 
-if ! which brew > /dev/null; then
+if ! command -v brew > /dev/null; then
   echo "${DIVIDER}"
-  echo "[YADM] Homebrew is not insalled, exiting..."
+  echo "[YADM] Homebrew is not installed, exiting..."
   exit 1
 fi
+
+echo "${DIVIDER}"
+echo "[YADM] Updating Homebrew"
+brew update
 
 if [ -f ~/.config/homebrew/Brewfile ]; then
   echo "${DIVIDER}"
@@ -18,16 +24,16 @@ if [ ! -d ~/.tmux/plugins/tpm ]; then
   echo "${DIVIDER}"
   echo "[YADM] Tmux setup"
   git clone --depth 1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-  (exec "~/.tmux/plugins/tpm/scripts/install_plugins.sh")
+  ~/.tmux/plugins/tpm/scripts/install_plugins.sh
 fi
 
-if [ -d ~/.tmux/plugins/tpm ]; then
+if [ -d ~/.tmux/plugins/tpm ] && pgrep -q tmux; then
   echo "${DIVIDER}"
-  echo "[YADM] Tmux installation"
+  echo "[YADM] Tmux reload config"
   tmux source ~/.config/tmux/tmux.conf
 fi
 
-if which WezTerm | grep -q "/opt/homebrew/bin/WezTerm"; then
+if command -v wezterm > /dev/null; then
   echo "${DIVIDER}"
   echo "[YADM] Set terminal"
 
