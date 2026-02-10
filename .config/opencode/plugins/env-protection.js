@@ -7,6 +7,8 @@ export const EnvProtection = async ({
 }) => {
   return {
     "tool.execute.before": async (input, output) => {
+      if (input.tool !== "read") return;
+
       const filePath = output.args?.filePath;
       if (!filePath) return;
 
