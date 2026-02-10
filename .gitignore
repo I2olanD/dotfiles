@@ -62,3 +62,35 @@ mise.toml
 
 # NPM
 .npmrc
+
+# Sensitive Configuration Files - NEVER COMMIT
+# ----------------------------------------------------------------------------------------------
+# OAuth tokens and API credentials
+.config/configstore/
+.config/github-copilot/
+.config/raycast/
+.config/stripe/
+
+# Rest
+.config/btop/
+.config/fish/
+.config/gh/
+.config/mole/
+.config/nx/
+.config/uv/
+
+# Authentication and password managers
+.config/op/
+.config/gh/hosts.yml
+
+# Log files (may contain sensitive paths/data)
+.config/mole/*.log
+.config/tmux-client-*.log
+
+# General sensitive patterns
+**/credentials*
+**/tokens.json
+**/*secret*
+**/*.pem
+**/*.key
+!**/*.pub
