@@ -8,7 +8,13 @@ export const NotificationPlugin = async ({
   return {
     event: async ({ event }) => {
       if (event.type === "session.created") {
-        await $`ffplay -nodisp -autoexit -loglevel quiet ~/.config/opencode/plugins/sounds/PeasantWhat3.ogg`;
+        const sounds = [
+          "PeasantWhat3.ogg",
+          "PeasantYesAttack1.ogg",
+          "PeasantYes4.ogg",
+        ];
+        const sound = sounds[Math.floor(Math.random() * sounds.length)];
+        await $`ffplay -nodisp -autoexit -loglevel quiet ~/.config/opencode/plugins/sounds/${sound}`;
       }
       if (event.type === "session.compacted") {
         await $`ffplay -nodisp -autoexit -loglevel quiet ~/.config/opencode/plugins/sounds/PeasantPissed5.ogg`;
