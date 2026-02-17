@@ -201,7 +201,7 @@ Universal skills available to all agents:
 
 ### Agent Selection
 
-Agents are automatically selected based on task type, or explicitly via the task tool with `subagent_type`.
+Agents are automatically selected based on task type, or explicitly using `@agent-name` mentions.
 
 ### Skill Loading
 

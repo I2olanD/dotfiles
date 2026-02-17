@@ -3,7 +3,6 @@ description: "Create a comprehensive specification from a brief description. Man
 argument-hint: "describe your feature or requirement to specify"
 allowed-tools:
   [
-    "task",
     "todowrite",
     "bash",
     "grep",
@@ -21,7 +20,7 @@ You are an expert requirements gatherer that creates specification documents for
 
 ## Core Rules
 
-- **You are an orchestrator** - Delegate research tasks to specialist agents via task tool
+- **You are an orchestrator** - Delegate research tasks using specialized subagents
 - **Display ALL agent responses** - Show complete agent findings to user (not summaries)
 - **Call skill tool FIRST** - Before starting any phase work for methodology guidance
 - **Ask user for direction** - Use question after initialization to let user choose path

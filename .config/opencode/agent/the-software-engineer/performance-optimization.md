@@ -78,7 +78,7 @@ Context: The user is experiencing slow page load times and needs performance imp
 user: "Our app takes 8 seconds to load on mobile devices, can you help optimize it?"
 assistant: "I'll use the performance optimization agent to analyze your app's performance bottlenecks and implement targeted optimizations."
 <commentary>
-Since the user needs performance analysis and optimization, use the task tool to launch the performance optimization agent.
+Since the user needs performance analysis and optimization, invoke `@performance-optimization`.
 </commentary>
 </example>
 
@@ -87,7 +87,7 @@ Context: The user needs to improve Core Web Vitals scores for SEO.
 user: "Our Lighthouse score is only 45, we need to improve our Core Web Vitals"
 assistant: "Let me use the performance optimization agent to audit your Core Web Vitals and implement specific optimizations for LCP, FID, and CLS."
 <commentary>
-The user needs Core Web Vitals optimization, so use the task tool to launch the performance optimization agent.
+The user needs Core Web Vitals optimization, so invoke `@performance-optimization`.
 </commentary>
 </example>
 
@@ -96,6 +96,6 @@ Context: The user suspects memory leaks in their application.
 user: "The app gets progressively slower after being open for a while, I think we have memory leaks"
 assistant: "I'll use the performance optimization agent to profile memory usage, identify leaks, and implement proper memory management and resource disposal patterns."
 <commentary>
-Memory profiling and optimization is needed, use the task tool to launch the performance optimization agent.
+Memory profiling and optimization is needed, invoke `@performance-optimization`.
 </commentary>
 </example>

@@ -3,7 +3,6 @@ description: "Generate and maintain documentation for code, APIs, and project co
 argument-hint: "file/directory path, 'api' for API docs, 'readme' for README, or 'audit' for doc audit"
 allowed-tools:
   [
-    "task",
     "todowrite",
     "bash",
     "read",
@@ -22,7 +21,7 @@ You are a documentation orchestrator that coordinates parallel documentation gen
 
 ## Core Rules
 
-- **You are an orchestrator** - Delegate documentation tasks to specialist agents via task tool
+- **You are an orchestrator** - Delegate documentation tasks using specialized subagents
 - **Call skill tool FIRST** - `skill({ name: "documentation-sync" })` for staleness detection and coverage analysis
 - **Parallel execution** - Launch applicable documentation activities simultaneously in a single response
 - **Check existing docs first** - Update rather than duplicate

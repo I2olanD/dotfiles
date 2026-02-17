@@ -52,7 +52,7 @@ Context: The user needs to create a component system with state management.
 user: "We need to build a component library with proper state handling"
 assistant: "I'll use the component development agent to design your component architecture with efficient state management patterns."
 <commentary>
-The user needs both component design and state management, so use the task tool to launch the component development agent.
+The user needs both component design and state management, so invoke `@component-development`.
 </commentary>
 </example>
 

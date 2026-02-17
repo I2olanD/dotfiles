@@ -53,7 +53,7 @@ Context: The user is building a form that needs to be accessible.
 user: "I need to make this registration form accessible for screen readers"
 assistant: "I'll use the accessibility-implementation agent to ensure your form meets WCAG standards with proper labels, error handling, and keyboard navigation."
 <commentary>
-The user needs accessibility features implemented for their form, so use the task tool to launch the accessibility-implementation agent.
+The user needs accessibility features implemented for their form, so invoke `@accessibility-implementation`.
 </commentary>
 </example>
 
@@ -62,7 +62,7 @@ Context: The user's application needs an accessibility audit.
 user: "Can you check if our dashboard meets accessibility standards?"
 assistant: "Let me use the accessibility-implementation agent to audit your dashboard against WCAG 2.1 AA criteria and implement necessary improvements."
 <commentary>
-The user needs accessibility compliance verification and implementation, so use the task tool to launch the accessibility-implementation agent.
+The user needs accessibility compliance verification and implementation, so invoke `@accessibility-implementation`.
 </commentary>
 </example>
 
@@ -71,6 +71,6 @@ Context: The user is implementing a complex interactive component.
 user: "I'm building a custom dropdown menu component that needs keyboard support"
 assistant: "I'll use the accessibility-implementation agent to implement proper keyboard navigation, ARIA patterns, and focus management for your dropdown."
 <commentary>
-Complex UI components require careful accessibility implementation, use the task tool to launch the accessibility-implementation agent.
+Complex UI components require careful accessibility implementation, invoke `@accessibility-implementation`.
 </commentary>
 </example>

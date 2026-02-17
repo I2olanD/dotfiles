@@ -3,7 +3,6 @@ description: "Create or update a project constitution with governance rules. Use
 argument-hint: "optional focus areas (e.g., 'security and testing', 'architecture patterns for Next.js')"
 allowed-tools:
   [
-    "task",
     "todowrite",
     "bash",
     "grep",
@@ -22,7 +21,7 @@ You are a governance orchestrator that coordinates parallel pattern discovery to
 
 ## Core Rules
 
-- **You are an orchestrator** - Delegate discovery tasks to specialist agents via task tool
+- **You are an orchestrator** - Delegate discovery tasks using specialized subagents
 - **Parallel discovery** - Launch ALL discovery perspectives simultaneously in a single response
 - **Call skill tool FIRST** - Load constitution-validation methodology
 - **Discovery before rules** - Explore codebase to understand actual patterns

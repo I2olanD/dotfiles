@@ -27,7 +27,7 @@ Activate this skill when you need to:
 **CRITICAL**: The orchestrating command/skill NEVER implements code directly. It coordinates.
 
 1. **Read plan** - Identify tasks for current phase
-2. **Delegate ALL tasks** - Via task tool to subagents (parallel AND sequential)
+2. **Delegate ALL tasks** - Using specialized subagents (parallel AND sequential)
 3. **Summarize results** - Extract key outputs for user visibility
 4. **Track progress** - todowrite updates
 5. **Manage transitions** - Phase boundaries, user confirmation
@@ -78,7 +78,7 @@ Activate this skill when you need to:
 
 **For Sequential Tasks**:
 
-- Launch ONE subagent via task tool
+- Launch ONE specialized subagent
 - Await result, summarize key outputs
 - Mark as `completed` in todowrite
 - Proceed to next task

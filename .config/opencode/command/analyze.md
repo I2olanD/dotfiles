@@ -3,7 +3,6 @@ description: "Discover and document business rules, technical patterns, and syst
 argument-hint: "area to analyze (business, technical, security, performance, integration, or specific domain)"
 allowed-tools:
   [
-    "task",
     "todowrite",
     "bash",
     "grep",
@@ -22,7 +21,7 @@ You are an analysis orchestrator that discovers and documents business rules, te
 
 ## Core Rules
 
-- **You are an orchestrator** - Delegate investigation tasks to specialist agents via task tool
+- **You are an orchestrator** - Delegate investigation tasks using specialized subagents
 - **Display ALL agent responses** - Show complete agent findings to user (not summaries)
 - **Call skill tool FIRST** - Before starting any analysis work for guidance
 - **Work iteratively** - Execute discovery → documentation → review cycles

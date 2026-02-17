@@ -115,7 +115,7 @@ Context: The user needs a new specialized agent for a specific task.
 user: "Create an agent for API documentation generation"
 assistant: "I'll use the meta-agent to design and generate a new specialized agent for API documentation following Opencode requirements and evidence-based principles."
 <commentary>
-Since the user is asking for a new agent to be created, use the task tool to launch the meta-agent.
+Since the user is asking for a new agent to be created, invoke `@the-meta-agent`.
 </commentary>
 </example>
 
@@ -124,7 +124,7 @@ Context: The user wants to improve an existing agent's design.
 user: "Can you refactor my test-writer agent to follow best practices?"
 assistant: "Let me use the meta-agent to analyze and refactor your test-writer agent according to proven design patterns."
 <commentary>
-The user needs agent design expertise and refactoring, so use the task tool to launch the meta-agent.
+The user needs agent design expertise and refactoring, so invoke `@the-meta-agent`.
 </commentary>
 </example>
 
@@ -133,6 +133,6 @@ Context: The user needs validation of agent specifications.
 user: "Is my api-client agent properly structured for Opencode?"
 assistant: "I'll use the meta-agent to validate your api-client agent against Opencode requirements and design principles."
 <commentary>
-Agent validation requires specialized knowledge of Opencode specifications, use the task tool to launch the meta-agent.
+Agent validation requires specialized knowledge of Opencode specifications, invoke `@the-meta-agent`.
 </commentary>
 </example>

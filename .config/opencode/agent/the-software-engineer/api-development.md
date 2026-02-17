@@ -51,7 +51,7 @@ Context: The user needs to design and document a new API.
 user: "I need to create a REST API for our user service with proper documentation"
 assistant: "I'll use the API development agent to design your REST API with comprehensive contracts and interactive documentation."
 <commentary>
-The user needs both API design and documentation, so use the task tool to launch the API development agent.
+The user needs both API design and documentation, so invoke `@api-development`.
 </commentary>
 </example>
 
@@ -60,7 +60,7 @@ Context: The user wants to improve their existing API.
 user: "Our API is messy and the docs are outdated"
 assistant: "Let me use the API development agent to redesign your API patterns and generate up-to-date documentation from your code."
 <commentary>
-The user needs API improvement and documentation updates, use the task tool to launch the API development agent.
+The user needs API improvement and documentation updates, invoke `@api-development`.
 </commentary>
 </example>
 
@@ -69,6 +69,6 @@ Context: The user is building a GraphQL service.
 user: "We're creating a GraphQL API for our product catalog and need proper schemas and docs"
 assistant: "I'll use the API development agent to design your GraphQL schema and create interactive documentation with playground integration."
 <commentary>
-New GraphQL API needs both design and documentation, use the task tool to launch the API development agent.
+New GraphQL API needs both design and documentation, invoke `@api-development`.
 </commentary>
 </example>

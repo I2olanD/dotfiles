@@ -52,7 +52,7 @@ Context: The user needs to validate system performance before a product launch.
 user: "Our API needs to handle 10,000 concurrent users for the launch. Can you help design performance tests?"
 assistant: "I'll use the performance testing agent to design comprehensive load tests that validate your API can handle the expected traffic."
 <commentary>
-Since the user needs performance testing and load validation, use the task tool to launch the performance testing agent.
+Since the user needs performance testing and load validation, invoke `@performance-testing`.
 </commentary>
 </example>
 <example>

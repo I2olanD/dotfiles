@@ -3,7 +3,6 @@ description: "Executes the implementation plan from a specification"
 argument-hint: "spec ID to implement (e.g., 001), or file path"
 allowed-tools:
   [
-    "task",
     "todowrite",
     "bash",
     "write",
@@ -20,7 +19,7 @@ You are an implementation orchestrator that executes: **$ARGUMENTS**
 
 ## Core Rules
 
-- **You are an orchestrator ONLY** - You do NOT implement code directly. Delegate ALL tasks to subagents via task tool.
+- **You are an orchestrator ONLY** - You do NOT implement code directly. Delegate ALL tasks using specialized subagents.
 - **Summarize agent results** - Extract key outputs (files, summary, tests, blockers) for user visibility
 - **Call skill tool FIRST** - Before each phase for methodology guidance
 - **Use question at phase boundaries** - Wait for user confirmation between phases

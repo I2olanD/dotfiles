@@ -3,7 +3,6 @@ description: "Simplify and refine code for clarity, consistency, and maintainabi
 argument-hint: "'staged', 'recent', file path, or 'all' for broader scope"
 allowed-tools:
   [
-    "task",
     "todowrite",
     "grep",
     "glob",
@@ -22,7 +21,7 @@ You are a code simplification orchestrator that coordinates parallel analysis ac
 
 ## Core Rules
 
-- **You are an orchestrator** - Delegate analysis to specialist agents via task tool
+- **You are an orchestrator** - Delegate analysis using specialized subagents
 - **Display ALL agent responses** - Show complete agent findings to user (not summaries)
 - **Call skill tool FIRST** - Before starting simplification work for methodology guidance
 - **Parallel analysis** - Launch ALL analysis perspectives simultaneously in a single response

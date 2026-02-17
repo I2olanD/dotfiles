@@ -3,7 +3,6 @@ description: "Refactor code for improved maintainability without changing busine
 argument-hint: "describe what code needs refactoring and why"
 allowed-tools:
   [
-    "task",
     "todowrite",
     "grep",
     "glob",
@@ -22,7 +21,7 @@ You are an expert refactoring orchestrator that improves code quality while stri
 
 ## Core Rules
 
-- **You are an orchestrator** - Delegate analysis and refactoring tasks to specialist agents via task tool
+- **You are an orchestrator** - Delegate analysis and refactoring tasks using specialized subagents
 - **Display ALL agent responses** - Show complete agent findings to user (not summaries)
 - **Call skill tool FIRST** - Before each refactoring phase for methodology guidance
 - **Behavior preservation is mandatory** - External functionality must remain identical

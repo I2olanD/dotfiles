@@ -39,7 +39,7 @@ Context: The team has a backlog of features and needs to decide what to build ne
 user: "We have 15 feature requests from customers and limited engineering resources for Q2"
 assistant: "I'll use the feature-prioritization agent to apply data-driven frameworks and help you identify which features will deliver the most value for your available resources."
 <commentary>
-The user needs to make prioritization decisions with constrained resources, so use the task tool to launch the feature-prioritization agent.
+The user needs to make prioritization decisions with constrained resources, so invoke `@feature-prioritization`.
 </commentary>
 </example>
 
@@ -57,6 +57,6 @@ Context: Stakeholders are debating which initiative should take precedence.
 user: "Marketing wants the referral system, but engineering says we should fix technical debt first"
 assistant: "I'll apply the feature-prioritization agent to analyze both options using objective frameworks and help you make a data-driven decision."
 <commentary>
-There's a trade-off decision between competing priorities that needs systematic analysis, use the task tool to launch the feature-prioritization agent.
+There's a trade-off decision between competing priorities that needs systematic analysis, invoke `@feature-prioritization`.
 </commentary>
 </example>
