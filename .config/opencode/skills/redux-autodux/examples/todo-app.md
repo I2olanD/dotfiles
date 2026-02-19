@@ -1,0 +1,35 @@
+# Autodux Example: Todo App
+
+This is an example SudoLang source that can be transpiled to JavaScript using:
+
+```
+TodoDux |> transpile(JavaScript)
+```
+
+We recommend authoring all code in SudoLang and transpiling to JavaScript when you need to provide detailed specifications to AI agents.
+
+## Types
+
+Todo Item {
+  id,
+  text,
+  isComplete,
+}
+
+## Action Creators
+
+createTodo({ text = '', id = createId(), isComplete = false } = {}) => ActionObject 
+deleteTodo(id) => ActionObject
+toggleComplete(id) => ActionObject
+
+## Dux Definition
+
+TodoDux {
+  initialState = []
+  slice = 'todo'
+  actions = [createTodo, deleteTodo, toggleComplete]
+  selectors = [getTodos, getIncompleteTodos, getCompleteTodos]
+  mapStateToProps
+  mapDispatchToProps
+  connectedComponentName = TodoList
+}
