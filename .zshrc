@@ -3,6 +3,8 @@
 # ============================================================================
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
+export TERM="wezterm"
+
 # ============================================================================
 # Options
 # ============================================================================
@@ -173,3 +175,13 @@ if output="$(mole completion zsh 2>/dev/null)"; then eval "$output"; fi
 
 # opencode
 export PATH=/Users/rolandwallner/.opencode/bin:$PATH
+
+# yadm
+alias ycm="yadm checkout main"
+alias yst="yadm status"
+alias yco="yadm checkout"
+
+# editable cmd line
+autoload -z edit-command-line
+zle -N edit-command-line
+bindkey "^X^E" edit-command-line
