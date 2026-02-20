@@ -180,6 +180,7 @@ export PATH=/Users/rolandwallner/.opencode/bin:$PATH
 alias ycm="yadm checkout main"
 alias yst="yadm status"
 alias yco="yadm checkout"
+alias yypush='yadm push origin "$(yadm rev-parse --abbrev-ref HEAD)"'
 
 # editable cmd line
 autoload -z edit-command-line
