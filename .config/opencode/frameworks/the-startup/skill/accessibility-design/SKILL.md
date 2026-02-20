@@ -14,32 +14,72 @@ metadata:
 
 This skill provides comprehensive guidance for implementing WCAG 2.1 AA compliance across digital products. It establishes patterns for semantic markup, assistive technology compatibility, and inclusive interaction design.
 
+```sudolang
+AccessibilityDesign {
+  See: skill/shared/interfaces.sudo.md
+  
+  State {
+    complianceLevel: "AA" | "AAA"
+    currentAudit: AuditResult?
+    violations: Violation[]
+  }
+  
+  constraints {
+    WCAG 2.1 AA is the minimum compliance target
+    Semantic HTML must be used before ARIA
+    All interactive elements must be keyboard accessible
+    Color must never be the sole means of conveying information
+    Focus indicators must meet 3:1 contrast ratio
+  }
+}
+```
+
 ## Core Principles
 
 ### 1. POUR Framework
 
 All accessibility work follows the four POUR principles:
 
-**Perceivable** - Information must be presentable in ways users can perceive
-- Provide text alternatives for non-text content
-- Create content adaptable to different presentations
-- Make content distinguishable (color, contrast, audio control)
-
-**Operable** - Interface components must be operable by all users
-- Make all functionality keyboard accessible
-- Provide sufficient time to read and use content
-- Avoid content that causes seizures or physical reactions
-- Help users navigate, find content, and determine location
-
-**Understandable** - Information and operation must be understandable
-- Make text readable and understandable
-- Make pages appear and operate predictably
-- Help users avoid and correct mistakes
-
-**Robust** - Content must be robust enough for diverse user agents
-- Maximize compatibility with current and future assistive technologies
-- Use valid, semantic markup
-- Ensure programmatic access to all functionality
+```sudolang
+POURFramework {
+  Perceivable {
+    description: "Information must be presentable in ways users can perceive"
+    require {
+      Text alternatives exist for all non-text content
+      Content is adaptable to different presentations
+      Content is distinguishable (color, contrast, audio control)
+    }
+  }
+  
+  Operable {
+    description: "Interface components must be operable by all users"
+    require {
+      All functionality is keyboard accessible
+      Sufficient time is provided to read and use content
+      Content does not cause seizures or physical reactions
+      Users can navigate, find content, and determine location
+    }
+  }
+  
+  Understandable {
+    description: "Information and operation must be understandable"
+    require {
+      Text is readable and understandable
+      Pages appear and operate predictably
+      Users can avoid and correct mistakes
+    }
+  }
+  
+  Robust {
+    description: "Content must be robust enough for diverse user agents"
+    require {
+      Compatible with current and future assistive technologies
+      Valid, semantic markup is used
+      Programmatic access exists for all functionality
+    }
+  }
+}
+```
 
 ### 2. Semantic HTML First
 
@@ -55,20 +95,53 @@ Semantic HTML is the foundation of accessibility. ARIA should enhance, never rep
 <div role="button" tabindex="0" onclick="submit()">Submit Form</div>
 ```
 
-Use native HTML elements whenever possible:
-- `<button>` for actions
-- `<a href>` for navigation
-- `<input>`, `<select>`, `<textarea>` for form controls
-- `<nav>`, `<main>`, `<aside>`, `<header>`, `<footer>` for landmarks
-- `<h1>` through `<h6>` for heading hierarchy
+```sudolang
+SemanticHTMLRules {
+  constraints {
+    Use native HTML elements whenever possible
+    ARIA only fills gaps for complex widgets not covered by HTML
+    Never use ARIA to replace semantic HTML
+  }
+  
+  fn selectElement(purpose: String) {
+    match (purpose) {
+      case "action" | "button" => "<button>"
+      case "navigation" | "link" => "<a href>"
+      case "text-input" => "<input type='text'>"
+      case "selection" => "<select>"
+      case "multiline-input" => "<textarea>"
+      case "landmark-nav" => "<nav>"
+      case "landmark-main" => "<main>"
+      case "landmark-aside" => "<aside>"
+      case "landmark-header" => "<header>"
+      case "landmark-footer" => "<footer>"
+      case "heading" => "<h1> through <h6>"
+      default => warn "Consider if a native element exists"
+    }
+  }
+}
+```
 
 ### 3. Progressive Enhancement
 
 Build accessibility in layers:
-1. Semantic HTML provides baseline accessibility
-2. CSS enhances presentation without breaking structure
-3. JavaScript adds interactivity while maintaining keyboard access
-4. ARIA fills gaps for complex widgets not covered by HTML
+
+```sudolang
+ProgressiveEnhancement {
+  layers: [
+    { level: 1, tech: "Semantic HTML", purpose: "Baseline accessibility" },
+    { level: 2, tech: "CSS", purpose: "Enhances presentation without breaking structure" },
+    { level: 3, tech: "JavaScript", purpose: "Adds interactivity while maintaining keyboard access" },
+    { level: 4, tech: "ARIA", purpose: "Fills gaps for complex widgets not covered by HTML" }
+  ]
+  
+  constraints {
+    Each layer must build on previous without breaking accessibility
+    Higher layers must not remove functionality from lower layers
+    Base layer must remain functional when higher layers fail
+  }
+}
+```
 
 ## Implementation Patterns
 
@@ -105,6 +178,23 @@ Every page requires proper document structure:
 </html>
 ```
 
+```sudolang
+DocumentStructure {
+  require {
+    html element has lang attribute
+    Page has descriptive title
+    Skip link exists for keyboard users
+    Landmarks are properly defined (header, main, footer)
+    Single h1 exists per page
+  }
+  
+  warn {
+    Multiple nav elements should have unique aria-label
+    Main landmark should have id for skip link target
+  }
+}
+```
+
 ### Heading Hierarchy
 
 Maintain logical heading order without skipping levels:
@@ -117,6 +207,26 @@ Maintain logical heading order without skipping levels:
   <h2>Another Section</h2>
     <h3>Subsection</h3>
       <h4>Sub-subsection</h4>
+```
+
+```sudolang
+HeadingHierarchy {
+  constraints {
+    Only one h1 per page
+    Headings must not skip levels (h1 -> h3 is invalid)
+    Heading level must reflect document outline
+  }
+  
+  fn validateHeadingOrder(headings: Heading[]) {
+    for (i in 1..headings.length) {
+      currentLevel = headings[i].level
+      previousLevel = headings[i-1].level
+      
+      require currentLevel <= previousLevel + 1 
+        else error "Heading level skipped: h${previousLevel} -> h${currentLevel}"
+    }
+  }
+}
 ```
 
 ### Skip Links
@@ -165,6 +275,22 @@ Focus indicators must be visible and meet contrast requirements:
 }
 ```
 
+```sudolang
+FocusManagement {
+  constraints {
+    Focus indicators must never be removed entirely
+    Focus indicator must have 3:1 contrast ratio minimum
+    Focus must be visible in all color modes
+  }
+  
+  require {
+    All focusable elements have visible focus state
+    Focus order matches visual reading order
+    Programmatic focus changes are intentional and announced
+  }
+}
+```
+
 #### Focus Trapping for Modals
 
 ```javascript
@@ -197,14 +323,25 @@ function trapFocus(element) {
 
 #### Standard Keyboard Patterns
 
-| Key | Action |
-|-----|--------|
-| Tab | Move focus to next focusable element |
-| Shift+Tab | Move focus to previous focusable element |
-| Enter/Space | Activate buttons and links |
-| Arrow keys | Navigate within components (menus, tabs, radio groups) |
-| Escape | Close modals, menus, dropdowns |
-| Home/End | Move to first/last item in lists |
+```sudolang
+KeyboardPatterns {
+  fn handleKeyPress(key: String, context: String) {
+    match (key, context) {
+      case ("Tab", _) => "Move focus to next focusable element"
+      case ("Shift+Tab", _) => "Move focus to previous focusable element"
+      case ("Enter", "button" | "link") => "Activate element"
+      case ("Space", "button") => "Activate button"
+      case ("Space", "checkbox") => "Toggle checkbox"
+      case ("ArrowUp" | "ArrowDown", "menu" | "listbox") => "Navigate within component"
+      case ("ArrowLeft" | "ArrowRight", "tabs" | "radio") => "Navigate within component"
+      case ("Escape", "modal" | "menu" | "dropdown") => "Close and return focus"
+      case ("Home", "list") => "Move to first item"
+      case ("End", "list") => "Move to last item"
+      default => "No action"
+    }
+  }
+}
+```
 
 #### Tab Order
 
@@ -223,9 +360,25 @@ Ensure logical tab order follows visual order:
 </form>
 ```
 
-Never use positive `tabindex` values. Only use:
-- `tabindex="0"` to make non-interactive elements focusable
-- `tabindex="-1"` to make elements programmatically focusable but not in tab order
+```sudolang
+TabIndex {
+  constraints {
+    Never use positive tabindex values
+    tabindex="0" only to make non-interactive elements focusable
+    tabindex="-1" only for programmatic focus targets
+    Tab order must match visual reading order
+  }
+  
+  fn validateTabindex(value: Number) {
+    match (value) {
+      case 0 => "Valid: Element in natural tab order"
+      case -1 => "Valid: Programmatically focusable only"
+      case n if n > 0 => error "Invalid: Positive tabindex creates unpredictable order"
+      default => "Valid: Natural tab order"
+    }
+  }
+}
+```
 
 ### ARIA Patterns
 
@@ -233,10 +386,34 @@ Never use positive `tabindex` values. Only use:
 
 Use ARIA only when native HTML cannot achieve the required accessibility:
 
-1. **Custom widgets** - Tabs, accordions, carousels, tree views
-2. **Dynamic content** - Live regions for updates
-3. **Relationships** - Connecting labels to complex controls
-4. **States** - Expanded/collapsed, selected, pressed
+```sudolang
+ARIAUsage {
+  validUseCases: [
+    "Custom widgets: tabs, accordions, carousels, tree views",
+    "Dynamic content: live regions for updates",
+    "Relationships: connecting labels to complex controls",
+    "States: expanded/collapsed, selected, pressed"
+  ]
+  
+  constraints {
+    Native HTML elements are always preferred over ARIA
+    ARIA must not conflict with native semantics
+    All ARIA roles must have required states and properties
+    Dynamic ARIA attributes must be kept in sync with visual state
+  }
+  
+  fn shouldUseARIA(element: Element, requirement: String) {
+    match (requirement) {
+      case r if nativeHTMLSufficient(r) => false
+      case "custom-widget" => true
+      case "dynamic-announcement" => true
+      case "relationship-mapping" => true
+      case "state-indication" => true
+      default => false
+    }
+  }
+}
+```
 
 #### ARIA Roles
 
@@ -262,15 +439,23 @@ Common roles for custom widgets:
 
 #### ARIA States and Properties
 
-| Attribute | Purpose | Example |
-|-----------|---------|---------|
-| `aria-expanded` | Indicates expandable element state | `aria-expanded="false"` |
-| `aria-selected` | Indicates selection state | `aria-selected="true"` |
-| `aria-pressed` | Indicates toggle button state | `aria-pressed="mixed"` |
-| `aria-hidden` | Hides content from assistive tech | `aria-hidden="true"` |
-| `aria-live` | Announces dynamic content | `aria-live="polite"` |
-| `aria-describedby` | References descriptive content | `aria-describedby="hint"` |
-| `aria-labelledby` | References labeling content | `aria-labelledby="heading"` |
+```sudolang
+ARIAAttributes {
+  fn selectAttribute(purpose: String, state: Any) {
+    match (purpose) {
+      case "expandable" => { attr: "aria-expanded", value: state.expanded }
+      case "selection" => { attr: "aria-selected", value: state.selected }
+      case "toggle" => { attr: "aria-pressed", value: state.pressed }
+      case "hide-from-at" => { attr: "aria-hidden", value: "true" }
+      case "live-polite" => { attr: "aria-live", value: "polite" }
+      case "live-assertive" => { attr: "aria-live", value: "assertive" }
+      case "description" => { attr: "aria-describedby", value: state.descriptionId }
+      case "label" => { attr: "aria-labelledby", value: state.labelId }
+      default => null
+    }
+  }
+}
+```
 
 #### Live Regions
 
@@ -291,6 +476,25 @@ Announce dynamic content changes:
 <div role="status">
   Loading... 50% complete
 </div>
+```
+
+```sudolang
+LiveRegions {
+  fn selectPoliteness(messageType: String) {
+    match (messageType) {
+      case "error" | "critical" => "assertive"
+      case "success" | "info" | "status" => "polite"
+      case "progress" => "polite"
+      default => "polite"
+    }
+  }
+  
+  warn {
+    Assertive live regions should be used sparingly
+    Live regions should not update too frequently
+    Status messages should use role="status"
+  }
+}
 ```
 
 ### Form Accessibility
@@ -315,6 +519,22 @@ Every form control requires a label:
 </fieldset>
 ```
 
+```sudolang
+FormAccessibility {
+  require {
+    Every form control has an associated label
+    Labels use explicit for/id association
+    Related controls are grouped with fieldset/legend
+    Instructions appear before the input
+  }
+  
+  warn {
+    Placeholder text should not replace labels
+    Instructions should be associated via aria-describedby
+  }
+}
+```
+
 #### Error Handling
 
 Provide clear, actionable error messages:
@@ -329,12 +549,23 @@ Provide clear, actionable error messages:
 </span>
 ```
 
-Error message requirements:
-- Identify the field in error
-- Describe what went wrong
-- Provide guidance for correction
-- Use `aria-invalid` on the field
-- Announce errors via live region or `role="alert"`
+```sudolang
+FormErrorHandling {
+  require {
+    Error message identifies the field in error
+    Error message describes what went wrong
+    Error message provides guidance for correction
+    Field has aria-invalid="true" when invalid
+    Error is announced via live region or role="alert"
+  }
+  
+  fn validateErrorMessage(error: FormError) {
+    require error.fieldName != null else "Must identify field"
+    require error.description != null else "Must describe problem"
+    require error.guidance != null else "Must provide fix guidance"
+  }
+}
+```
 
 #### Required Fields
 
@@ -349,6 +580,42 @@ Error message requirements:
 ### Images and Media
 
 #### Alternative Text
+
+```sudolang
+AlternativeText {
+  fn selectAltStrategy(imageType: String, context: ImageContext) {
+    match (imageType) {
+      case "informative" => {
+        alt: describeContent(context),
+        role: null
+      }
+      case "decorative" => {
+        alt: "",
+        role: "presentation"
+      }
+      case "functional" => {
+        alt: describeAction(context),
+        role: null
+      }
+      case "complex" => {
+        alt: briefDescription(context),
+        ariaDescribedby: extendedDescriptionId
+      }
+      default => {
+        alt: describeContent(context),
+        role: null
+      }
+    }
+  }
+  
+  constraints {
+    Informative images must have meaningful alt text
+    Decorative images must have empty alt and role="presentation"
+    Complex images need extended description via aria-describedby
+    Alt text should not start with "image of" or "picture of"
+  }
+}
+```
 
 Provide meaningful alt text for informative images:
 
@@ -381,15 +648,50 @@ Provide meaningful alt text for informative images:
 </video>
 ```
 
+```sudolang
+MediaAccessibility {
+  require {
+    Video has captions track
+    Pre-recorded audio has transcript
+    Video controls are keyboard accessible
+  }
+  
+  warn {
+    Consider audio descriptions for video
+    Auto-play should be avoided
+  }
+}
+```
+
 ### Color and Contrast
 
 #### Minimum Contrast Ratios
 
-| Content Type | Minimum Ratio (AA) | Enhanced Ratio (AAA) |
-|--------------|-------------------|---------------------|
-| Normal text (< 18pt) | 4.5:1 | 7:1 |
-| Large text (>= 18pt or 14pt bold) | 3:1 | 4.5:1 |
-| UI components and graphics | 3:1 | N/A |
+```sudolang
+ContrastRequirements {
+  fn getMinimumRatio(contentType: String, level: "AA" | "AAA") {
+    match (contentType, level) {
+      case ("normal-text", "AA") => 4.5
+      case ("normal-text", "AAA") => 7.0
+      case ("large-text", "AA") => 3.0
+      case ("large-text", "AAA") => 4.5
+      case ("ui-component", "AA") => 3.0
+      case ("ui-component", "AAA") => 3.0
+      case ("graphic", "AA") => 3.0
+      case ("graphic", "AAA") => 3.0
+      default => 4.5
+    }
+  }
+  
+  fn isLargeText(size: Number, weight: String) {
+    match (size, weight) {
+      case (s, _) if s >= 18 => true
+      case (s, "bold") if s >= 14 => true
+      default => false
+    }
+  }
+}
+```
 
 #### Never Rely on Color Alone
 
@@ -403,6 +705,17 @@ Provide meaningful alt text for informative images:
   <svg aria-hidden="true"><!-- Error icon --></svg>
   Invalid email format
 </span>
+```
+
+```sudolang
+ColorUsage {
+  constraints {
+    Color must never be the sole means of conveying information
+    Links must be distinguishable from surrounding text beyond color
+    Error states must include icon or text indicator
+    Charts must use patterns or labels in addition to color
+  }
+}
 ```
 
 ### Motion and Animation
@@ -422,11 +735,26 @@ Provide meaningful alt text for informative images:
 }
 ```
 
-#### Auto-playing Content
-
-- Avoid auto-playing video or audio
-- Provide controls to pause, stop, or hide moving content
-- Limit animations to under 5 seconds or provide stop mechanism
+```sudolang
+MotionAccessibility {
+  constraints {
+    Respect prefers-reduced-motion media query
+    Auto-playing content must have pause controls
+    Animations over 5 seconds need stop mechanism
+    No content flashes more than 3 times per second
+  }
+  
+  require {
+    Animation respects prefers-reduced-motion
+    Moving content has pause/stop control
+  }
+  
+  warn {
+    Avoid auto-playing video or audio
+    Consider providing reduced-motion alternatives
+  }
+}
+```
 
 ## Testing Methodology
 
@@ -445,41 +773,65 @@ Automated testing catches approximately 30-40% of issues.
 
 #### Keyboard Testing
 
-1. Disconnect or disable mouse
-2. Navigate entire page using Tab/Shift+Tab
-3. Verify all interactive elements are reachable
-4. Verify focus indicators are visible
-5. Test all keyboard shortcuts
-6. Escape from all modals and menus
+```sudolang
+KeyboardTestingChecklist {
+  require {
+    All interactive elements reachable via Tab
+    Focus indicators visible on all focusable elements
+    Tab order matches visual reading order
+    All functionality operable without mouse
+    Escape closes modals and menus
+    No keyboard traps (except intentional modal traps)
+  }
+  
+  procedure: [
+    "Disconnect or disable mouse",
+    "Navigate entire page using Tab/Shift+Tab",
+    "Verify all interactive elements are reachable",
+    "Verify focus indicators are visible",
+    "Test all keyboard shortcuts",
+    "Escape from all modals and menus"
+  ]
+}
+```
 
 #### Screen Reader Testing
 
-Test with multiple screen readers:
-
-| Platform | Screen Reader | Browser |
-|----------|---------------|---------|
-| Windows | NVDA (free) | Firefox, Chrome |
-| Windows | JAWS | Chrome, Edge |
-| macOS | VoiceOver | Safari |
-| iOS | VoiceOver | Safari |
-| Android | TalkBack | Chrome |
-
-Screen reader testing checklist:
-- [ ] All images have appropriate alt text
-- [ ] Headings convey page structure
-- [ ] Links and buttons have descriptive names
-- [ ] Form fields have labels
-- [ ] Error messages are announced
-- [ ] Dynamic content updates are announced
-- [ ] Tables have proper headers
-- [ ] Custom widgets announce state changes
+```sudolang
+ScreenReaderTestMatrix {
+  combinations: [
+    { platform: "Windows", reader: "NVDA", browsers: ["Firefox", "Chrome"] },
+    { platform: "Windows", reader: "JAWS", browsers: ["Chrome", "Edge"] },
+    { platform: "macOS", reader: "VoiceOver", browsers: ["Safari"] },
+    { platform: "iOS", reader: "VoiceOver", browsers: ["Safari"] },
+    { platform: "Android", reader: "TalkBack", browsers: ["Chrome"] }
+  ]
+  
+  require {
+    All images have appropriate alt text
+    Headings convey page structure
+    Links and buttons have descriptive names
+    Form fields have labels
+    Error messages are announced
+    Dynamic content updates are announced
+    Tables have proper headers
+    Custom widgets announce state changes
+  }
+}
+```
 
 #### Visual Testing
 
-- Zoom to 200% and verify no horizontal scrolling
-- Test with high contrast mode enabled
-- Disable images and verify content is still understandable
-- Test with browser text size increased
+```sudolang
+VisualTestingChecklist {
+  require {
+    Content readable at 200% zoom without horizontal scroll
+    Content functional in high contrast mode
+    Content understandable with images disabled
+    Text readable with browser font size increased
+  }
+}
+```
 
 ### WCAG Audit
 
@@ -498,11 +850,17 @@ Perform manual audit against WCAG 2.1 AA success criteria. See `checklists/wcag-
 </div>
 ```
 
-Requirements:
-- Focus moves to dialog when opened
-- Focus is trapped within dialog
-- Escape key closes dialog
-- Focus returns to trigger element on close
+```sudolang
+ModalPattern {
+  require {
+    Focus moves to dialog when opened
+    Focus is trapped within dialog
+    Escape key closes dialog
+    Focus returns to trigger element on close
+    Background content has aria-hidden="true"
+  }
+}
+```
 
 ### Accordion
 
@@ -517,6 +875,18 @@ Requirements:
     <!-- Content -->
   </div>
 </div>
+```
+
+```sudolang
+AccordionPattern {
+  require {
+    Trigger is a button element
+    Button has aria-expanded state
+    Button has aria-controls pointing to panel
+    Panel has role="region" when content is significant
+    Only one panel expanded at a time (single-select) OR multiple allowed (multi-select)
+  }
+}
 ```
 
 ### Navigation Menu
@@ -536,6 +906,18 @@ Requirements:
     </li>
   </ul>
 </nav>
+```
+
+```sudolang
+NavigationPattern {
+  require {
+    Nav element has aria-label when multiple navs exist
+    Current page indicated with aria-current="page"
+    Dropdown triggers have aria-expanded
+    Dropdown triggers have aria-haspopup="true"
+    Submenus accessible via keyboard
+  }
+}
 ```
 
 ### Data Table
@@ -558,6 +940,22 @@ Requirements:
     </tr>
   </tbody>
 </table>
+```
+
+```sudolang
+DataTablePattern {
+  require {
+    Table has caption or aria-label
+    Column headers have scope="col"
+    Row headers have scope="row"
+    Complex tables use headers attribute for cell associations
+  }
+  
+  warn {
+    Avoid using tables for layout
+    Consider responsive alternatives for complex tables
+  }
+}
 ```
 
 ## Resources

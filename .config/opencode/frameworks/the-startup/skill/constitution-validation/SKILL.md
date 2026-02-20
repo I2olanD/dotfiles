@@ -36,19 +36,31 @@ Activate this skill when you need to:
 
 ### Level System (L1/L2/L3)
 
-| Level  | Name   | Blocking | Autofix                      | Use Case                                             |
-| ------ | ------ | -------- | ---------------------------- | ---------------------------------------------------- |
-| **L1** | Must   | ✅ Yes   | ✅ AI auto-corrects          | Critical rules - security, correctness, architecture |
-| **L2** | Should | ✅ Yes   | ❌ No (needs human judgment) | Important rules requiring manual attention           |
-| **L3** | May    | ❌ No    | ❌ No                        | Advisory/optional - style preferences, suggestions   |
+See: `skill/shared/interfaces.sudo.md` for `ConstitutionLevel` interface.
 
-**Level Behavior:**
-
-| Level | Validation          | Implementation          | AI Behavior                                  |
-| ----- | ------------------- | ----------------------- | -------------------------------------------- |
-| `L1`  | Fails check, blocks | Blocks phase completion | **Automatically fixes** before proceeding    |
-| `L2`  | Fails check, blocks | Blocks phase completion | Reports violation, **requires human action** |
-| `L3`  | Reports only        | Does not block          | Optional improvement, can be ignored         |
+```sudolang
+// Reference shared ConstitutionLevel with enforcement behavior
+ConstitutionLevel {
+  L1 { blocking: true, autofix: true, name: "Must" }
+  L2 { blocking: true, autofix: false, name: "Should" }
+  L3 { blocking: false, autofix: false, name: "May" }
+  
+  fn enforce(rule, violation) {
+    match (rule.level) {
+      case L1 => autofix(violation) |> continue
+      case L2 => report(violation) |> block |> awaitHuman
+      case L3 => log(violation) |> continue
+    }
+  }
+  
+  fn deriveRuleBehavior(level) {
+    {
+      blocking: level in [L1, L2],
+      autofix: level == L1
+    }
+  }
+}
+```
 
 ## Template
 
@@ -63,7 +75,73 @@ The constitution template is at [template.md](template.md). Use this structure e
 
 ## Cycle Pattern
 
-For each category requiring rules, follow this iterative process:
+```sudolang
+ConstitutionCycle {
+  State {
+    phase: "discovery" | "documentation" | "review"
+    category: String?
+    discoveredPatterns: Pattern[]
+    proposedRules: Rule[]
+    userConfirmed: Boolean
+  }
+  
+  constraints {
+    Must explore actual codebase before generating rules
+    Must discover real patterns, not assume
+    Must generate project-specific rules
+    Must present findings to user
+    Must receive user confirmation before next cycle
+  }
+  
+  /startCycle category:String => {
+    State.phase = "discovery"
+    State.category = category
+    State.discoveredPatterns = []
+    State.proposedRules = []
+    State.userConfirmed = false
+  }
+  
+  /discover => {
+    require State.phase == "discovery"
+    
+    // Launch parallel discovery agents
+    parallel {
+      discoverSecurityPatterns()     // auth, secrets, validation
+      discoverArchitecturePatterns() // layers, boundaries, deps
+      discoverQualityConventions()   // naming, formatting, structure
+      discoverTestingSetup()         // frameworks, coverage, patterns
+      discoverFrameworkPatterns()    // framework-specific rules
+    }
+    
+    State.phase = "documentation"
+  }
+  
+  /document => {
+    require State.phase == "documentation"
+    require State.discoveredPatterns.length > 0
+    
+    for each pattern in State.discoveredPatterns {
+      rule = generateRuleFromPattern(pattern)
+      State.proposedRules.push(rule)
+    }
+    
+    State.phase = "review"
+  }
+  
+  /review => {
+    require State.phase == "review"
+    
+    presentToUser(State.proposedRules)
+    await userConfirmation
+    State.userConfirmed = true
+  }
+  
+  /nextCycle => {
+    require State.userConfirmed == true
+    // Ready for next category
+  }
+}
+```
 
 ### 1. Discovery Phase
 
@@ -89,55 +167,77 @@ For each category requiring rules, follow this iterative process:
 - Highlight rules needing user confirmation
 - **Wait for user confirmation** before next cycle
 
-**Ask yourself each cycle:**
-
-1. Have I explored the actual codebase (not assumed)?
-2. Have I discovered real patterns (not guessed)?
-3. Have I generated project-specific rules?
-4. Have I presented findings to the user?
-5. Have I received user confirmation?
-
 ## Rule Generation Guidelines
 
-When generating rules from discovered patterns:
+```sudolang
+RuleGenerator {
+  fn generateRule(pattern: Pattern) {
+    match (pattern.category) {
+      case "security" if pattern.critical => generateL1Rule(pattern)
+      case "architecture" if pattern.boundary => generateL2Rule(pattern)
+      case "style" => generateL3Rule(pattern)
+      default => classifyAndGenerate(pattern)
+    }
+  }
+  
+  fn generateL1Rule(pattern) {
+    // L1: Blocking + Autofix
+    // For patterns that are:
+    // - Security critical (secrets, injection, auth)
+    // - Clearly fixable with deterministic changes
+    // - Objectively wrong (not style preference)
+    {
+      level: L1,
+      pattern: pattern.regex,
+      scope: pattern.scope,
+      message: pattern.violation,
+      autofix: pattern.fix
+    }
+  }
+  
+  fn generateL2Rule(pattern) {
+    // L2: Blocking, No Autofix
+    // For patterns that are:
+    // - Architecturally important
+    // - Require human judgment to fix
+    // - May have valid exceptions
+    {
+      level: L2,
+      check: pattern.semanticDescription,
+      scope: pattern.scope,
+      message: pattern.violation
+    }
+  }
+  
+  fn generateL3Rule(pattern) {
+    // L3: Advisory
+    // For patterns that are:
+    // - Style preferences
+    // - Best practices that vary by context
+    // - Suggestions, not requirements
+    {
+      level: L3,
+      check: pattern.recommendation,
+      scope: pattern.scope,
+      message: pattern.suggestion
+    }
+  }
+}
+```
 
-### L1 Rules (Blocking + Autofix)
+**L1 Examples:**
 
-Generate for patterns that are:
+- Hardcoded secrets -> Replace with env var reference
+- `eval()` usage -> Remove and use safer alternative
+- Barrel exports -> Convert to direct imports
 
-- Security critical (secrets, injection, auth)
-- Clearly fixable with deterministic changes
-- Objectively wrong (not style preference)
-
-**Examples:**
-
-- Hardcoded secrets → Replace with env var reference
-- `eval()` usage → Remove and use safer alternative
-- Barrel exports → Convert to direct imports
-
-### L2 Rules (Blocking, No Autofix)
-
-Generate for patterns that are:
-
-- Architecturally important
-- Require human judgment to fix
-- May have valid exceptions
-
-**Examples:**
+**L2 Examples:**
 
 - Database calls outside repository layer
 - Cross-package imports via relative paths
 - Missing error handling
 
-### L3 Rules (Advisory)
-
-Generate for patterns that are:
-
-- Style preferences
-- Best practices that vary by context
-- Suggestions, not requirements
-
-**Examples:**
+**L3 Examples:**
 
 - Function length recommendations
 - Test file presence
@@ -145,25 +245,25 @@ Generate for patterns that are:
 
 ## Rule Schema
 
-Each rule in the constitution uses this YAML structure:
+```sudolang
+interface ConstitutionRule {
+  level: L1 | L2 | L3           // Required: determines blocking/autofix
+  pattern: Regex?               // One of pattern or check required
+  check: String?                // Semantic description for LLM
+  scope: Glob                   // Required: file patterns to check
+  exclude: Glob?                // Optional: patterns to skip
+  message: String               // Required: violation message
+}
 
-```yaml
-level: L1 | L2 | L3
-pattern: "regex pattern" # OR
-check: "semantic description for LLM interpretation"
-scope: "glob pattern for files to check"
-exclude: "glob patterns to skip (comma-separated)"
-message: "Human-readable violation message"
+RuleSchema {
+  constraints {
+    require level in [L1, L2, L3]
+    require (pattern != null) xor (check != null)
+    require scope != null
+    require message != null
+  }
+}
 ```
-
-| Field     | Required | Type                 | Description                                 |
-| --------- | -------- | -------------------- | ------------------------------------------- |
-| `level`   | Required | `L1` \| `L2` \| `L3` | Determines blocking and autofix behavior    |
-| `pattern` | One of   | Regex                | Pattern to match violations in source code  |
-| `check`   | One of   | String               | Semantic description for LLM interpretation |
-| `scope`   | Required | Glob                 | File patterns to check (supports `**`)      |
-| `exclude` | Optional | Glob                 | File patterns to skip (comma-separated)     |
-| `message` | Required | String               | Human-readable violation message            |
 
 ## Validation Mode
 
@@ -176,45 +276,98 @@ When validating (not creating), skip discovery and:
 
 ### Rule Parsing
 
-```pseudocode
-FUNCTION: parse_constitution(markdown_content)
+```sudolang
+fn parseConstitution(markdownContent: String) {
   rules = []
-  current_category = null
-
-  FOR EACH section in markdown:
-    IF section.header.level == 2:
-      current_category = section.header.text  # e.g., "Code Quality", "Security"
-    ELSE IF section.header.level == 3:
-      yaml_block = extract_yaml_code_block(section.content)
-      IF yaml_block:
-        rule = {
-          id: generate_rule_id(current_category, index),  # e.g., "SEC-001"
-          name: section.header.text,                       # e.g., "No Hardcoded Secrets"
-          category: current_category,
-          level: yaml_block.level,
-          pattern: yaml_block.pattern,
-          check: yaml_block.check,
-          scope: yaml_block.scope,
-          exclude: yaml_block.exclude,
-          message: yaml_block.message,
+  currentCategory = null
+  ruleIndex = 0
+  
+  for each section in markdownContent.sections {
+    match (section.header.level) {
+      case 2 => {
+        currentCategory = section.header.text
+        ruleIndex = 0
+      }
+      case 3 => {
+        yamlBlock = extractYamlCodeBlock(section.content)
+        if (yamlBlock != null) {
+          rule = {
+            id: generateRuleId(currentCategory, ruleIndex),
+            name: section.header.text,
+            category: currentCategory,
+            level: yamlBlock.level,
+            pattern: yamlBlock.pattern,
+            check: yamlBlock.check,
+            scope: yamlBlock.scope,
+            exclude: yamlBlock.exclude,
+            message: yamlBlock.message,
+            blocking: yamlBlock.level in [L1, L2],
+            autofix: yamlBlock.level == L1
+          }
+          
+          if (rule.pattern || rule.check) {
+            rules.push(rule)
+            ruleIndex++
+          }
         }
-        IF rule.pattern OR rule.check:
-          # Derive behavior from level
-          rule.blocking = (rule.level == "L1" OR rule.level == "L2")
-          rule.autofix = (rule.level == "L1")
-          rules.append(rule)
-  RETURN rules
+      }
+    }
+  }
+  
+  return rules
+}
+
+fn generateRuleId(category: String, index: Number) {
+  prefix = match (category) {
+    case "Security" => "SEC"
+    case "Architecture" => "ARCH"
+    case "Code Quality" => "QUAL"
+    case "Testing" => "TEST"
+    default => category.substring(0, 3).toUpperCase()
+  }
+  return "$prefix-${String(index + 1).padStart(3, '0')}"
+}
 ```
 
 ### Validation Execution
 
-For each parsed rule:
-
-1. **Glob files matching scope** (excluding patterns in `exclude`)
-2. **For Pattern rules**: Execute regex match against file contents
-3. **For Check rules**: Use LLM to interpret semantic check
-4. **Collect violations** with file path, line number, code snippet
-5. **Categorize by level** for reporting
+```sudolang
+fn validateAgainstConstitution(constitution: String, target: String) {
+  rules = parseConstitution(constitution)
+  violations = []
+  
+  for each rule in rules {
+    files = glob(rule.scope) |> filter(f => !matches(f, rule.exclude))
+    
+    for each file in files {
+      content = read(file)
+      
+      fileViolations = match (rule) {
+        case { pattern: p } if p != null => {
+          findPatternMatches(content, p) |> map(m => {
+            file: file,
+            line: m.line,
+            code: m.snippet,
+            rule: rule
+          })
+        }
+        case { check: c } if c != null => {
+          evaluateSemanticCheck(content, c) |> map(v => {
+            file: file,
+            line: v.line,
+            code: v.snippet,
+            rule: rule
+          })
+        }
+      }
+      
+      violations.push(...fileViolations)
+    }
+  }
+  
+  return categorizeByLevel(violations)
+}
+```
 
 ## Compliance Report Format
 
@@ -227,14 +380,14 @@ For each parsed rule:
 
 ### Summary
 
-- ✅ Passed: [N] rules
-- ⚠️ L3 Advisories: [N] rules
-- ❌ L2 Blocking: [N] rules
-- 🛑 L1 Critical: [N] rules
+- Passed: [N] rules
+- L3 Advisories: [N] rules
+- L2 Blocking: [N] rules
+- L1 Critical: [N] rules
 
 ### Critical Violations (L1 - Autofix Required)
 
-#### 🛑 SEC-001: No Hardcoded Secrets
+#### SEC-001: No Hardcoded Secrets
 
 - **Location:** `src/services/PaymentService.ts:42`
 - **Finding:** Hardcoded secret detected. Use environment variables.
@@ -243,7 +396,7 @@ For each parsed rule:
 
 ### Blocking Violations (L2 - Human Action Required)
 
-#### ❌ ARCH-001: Repository Pattern
+#### ARCH-001: Repository Pattern
 
 - **Location:** `src/services/UserService.ts:18`
 - **Finding:** Direct database call outside repository.
@@ -252,7 +405,7 @@ For each parsed rule:
 
 ### Advisories (L3 - Optional)
 
-#### ⚠️ QUAL-001: Function Length
+#### QUAL-001: Function Length
 
 - **Location:** `src/utils/helpers.ts:45`
 - **Finding:** Function exceeds recommended 25 lines (actual: 38)
@@ -266,13 +419,32 @@ For each parsed rule:
 
 ## Graceful Degradation
 
-| Scenario               | Behavior                                                      |
-| ---------------------- | ------------------------------------------------------------- |
-| No CONSTITUTION.md     | Report "No constitution found. Skipping constitution checks." |
-| Invalid rule format    | Skip rule, warn user, continue with other rules               |
-| Invalid regex pattern  | Report as config error, skip rule                             |
-| Scope matches no files | Report as info, not a failure                                 |
-| File read error        | Skip file, warn, continue                                     |
+```sudolang
+fn handleValidationError(scenario: String, context: any) {
+  match (scenario) {
+    case "no_constitution" => {
+      log("No constitution found. Skipping constitution checks.")
+      return { status: "skipped", reason: "no_constitution" }
+    }
+    case "invalid_rule_format" => {
+      warn("Invalid rule format: ${context.rule}")
+      continue  // Skip rule, process others
+    }
+    case "invalid_regex" => {
+      report("Config error: Invalid regex in rule ${context.ruleId}")
+      continue  // Skip rule, process others
+    }
+    case "no_matching_files" => {
+      info("Scope '${context.scope}' matched no files")
+      continue  // Not a failure
+    }
+    case "file_read_error" => {
+      warn("Could not read file: ${context.file}")
+      continue  // Skip file, process others
+    }
+  }
+}
+```
 
 ## Integration Points
 
@@ -286,21 +458,47 @@ This skill is called by:
 
 ## Validation Checklist
 
-Before completing constitution creation:
-
-- [ ] All `[NEEDS DISCOVERY]` markers resolved
-- [ ] Every rule has valid level (L1/L2/L3)
-- [ ] Every rule has either `pattern` or `check`
-- [ ] Every rule has `scope` and `message`
-- [ ] Rules are specific to this project (not generic)
-- [ ] User has confirmed proposed rules
+```sudolang
+ConstitutionChecklist {
+  constraints {
+    require allMarkersResolved("[NEEDS DISCOVERY]")
+    require everyRuleHasValidLevel(L1 | L2 | L3)
+    require everyRuleHas(pattern | check)
+    require everyRuleHas(scope, message)
+    require rulesAreProjectSpecific()
+    require userHasConfirmedRules()
+  }
+  
+  fn validate(constitution) {
+    findings = []
+    
+    if (hasUnresolvedMarkers(constitution)) {
+      findings.push({ severity: "critical", message: "Unresolved [NEEDS DISCOVERY] markers" })
+    }
+    
+    for each rule in parseConstitution(constitution) {
+      if (rule.level not in [L1, L2, L3]) {
+        findings.push({ severity: "critical", message: "Invalid level: ${rule.id}" })
+      }
+      if (!rule.pattern && !rule.check) {
+        findings.push({ severity: "critical", message: "Missing pattern/check: ${rule.id}" })
+      }
+      if (!rule.scope || !rule.message) {
+        findings.push({ severity: "high", message: "Missing required field: ${rule.id}" })
+      }
+    }
+    
+    return { valid: findings.length == 0, findings }
+  }
+}
+```
 
 ## Output Format
 
 After constitution work, report:
 
 ```
-📜 Constitution Status: [Created / Updated / Validated]
+Constitution Status: [Created / Updated / Validated]
 
 Discovery Findings:
 - Project Type: [discovered type]
@@ -315,8 +513,8 @@ Categories:
 - [Project-Specific]: [N] rules
 
 User Confirmations:
-- [Rule 1]: ✅ Confirmed
-- [Rule 2]: ⏳ Pending
+- [Rule 1]: Confirmed
+- [Rule 2]: Pending
 
 Next Steps:
 - [What needs to happen next]

@@ -22,35 +22,402 @@ Activate this skill when you need to:
 - **Handle blocked states** with options
 - **Validate checkpoints** before proceeding
 
+## Core Interfaces
+
+See: skill/shared/interfaces.sudo.md (PhaseState, PhaseWorkflow, ExecutionMode)
+
+```sudolang
+interface PhaseTask {
+  id: String
+  name: String
+  activity: String?          // [activity: areas]
+  complexity: String?        // [complexity: level]
+  parallel: Boolean          // [parallel: true]
+  ref: String?               // [ref: SDD/Section X.Y]
+  status: "pending" | "in_progress" | "completed" | "blocked"
+}
+
+interface PhaseContext {
+  phaseNumber: Number
+  phaseName: String
+  tasks: PhaseTask[]
+  priorOutputs: String[]     // Accumulated from previous phases
+  relevantSpecs: String[]    // PRD/SDD excerpts
+}
+
+interface TaskResult {
+  taskId: String
+  status: "success" | "blocked"
+  files: String[]
+  summary: String
+  tests: { passing: Number, failing: Number, pending: Number }?
+  blockers: String[]
+}
+```
+
 ## Orchestrator Role
 
-**CRITICAL**: The orchestrating command/skill NEVER implements code directly. It coordinates.
+```sudolang
+AgentCoordinationSkill {
+  constraints {
+    Orchestrating command/skill NEVER implements code directly
+    ALL tasks delegated to specialized subagents
+    Only current phase tasks loaded into todowrite
+    Phase boundaries require user confirmation
+    Context accumulated incrementally across phases
+  }
 
-1. **Read plan** - Identify tasks for current phase
-2. **Delegate ALL tasks** - Using specialized subagents (parallel AND sequential)
-3. **Summarize results** - Extract key outputs for user visibility
-4. **Track progress** - todowrite updates
-5. **Manage transitions** - Phase boundaries, user confirmation
+  OrchestratorResponsibilities {
+    1. "Read plan - Identify tasks for current phase"
+    2. "Delegate ALL tasks - Using specialized subagents (parallel AND sequential)"
+    3. "Summarize results - Extract key outputs for user visibility"
+    4. "Track progress - todowrite updates"
+    5. "Manage transitions - Phase boundaries, user confirmation"
+  }
+}
+```
 
-## todowrite Phase Protocol
+## Phase Execution State Machine
 
-**CRITICAL**: Load tasks incrementally—one phase at a time to manage cognitive load.
+```sudolang
+PhaseExecutionMachine {
+  State {
+    current: "init"
+    phaseNumber: 0
+    tasks: []
+    completedPhases: []
+    blockers: []
+    awaiting: null
+  }
 
-### Loading Protocol
+  constraints {
+    Cannot skip phases without explicit override
+    User confirmation required at phase boundaries
+    Blocked state requires explicit resolution
+    Current phase must complete before advancing
+    Only ONE phase loaded in todowrite at a time
+  }
 
-1. Load ONLY current phase tasks into todowrite
-2. Clear completed phase tasks before loading next phase
-3. Maintain phase progress separately from task progress
-4. Create natural pause points for user feedback
+  Transitions {
+    init -> loading_phase: /startPhase
+    loading_phase -> executing: when tasks loaded
+    executing -> checkpoint: when all tasks completed
+    executing -> blocked: when blocker encountered
+    blocked -> executing: /unblock
+    blocked -> checkpoint: /skip
+    checkpoint -> loading_phase: user confirms proceed
+    checkpoint -> complete: no more phases
+  }
 
-### Why Phase-by-Phase
+  /startPhase phaseNumber:Number, context:PhaseContext => {
+    require phaseNumber > 0
+    require context.tasks.length > 0
 
-- Prevents LLM context overload with too many tasks
-- Maintains focus on current work
-- Creates natural pause points for user feedback
-- Enables user to stop or redirect between phases
+    // Clear previous phase from todowrite
+    if completedPhases.length > 0 {
+      clearTodowrite(completedPhases.last)
+    }
 
-## Phase Execution Pattern
+    // Load current phase tasks
+    loadTodowrite(context.tasks)
+
+    emit """
+      📍 Starting Phase $phaseNumber: $context.phaseName
+         Tasks: ${context.tasks.length} total
+         Parallel opportunities: ${context.tasks |> filter(t => t.parallel) |> map(t => t.name)}
+    """
+
+    // Check for pre-implementation review
+    if context.tasks |> any(t => t.name.includes("Pre-implementation review")) {
+      readAndConfirmSddSections(context.relevantSpecs)
+    }
+  }
+
+  /advance => {
+    require State.tasks |> all(t => t.status == "completed")
+    require State.blockers.length == 0
+
+    completedPhases.push(current)
+    phaseNumber = phaseNumber + 1
+
+    if hasMorePhases() {
+      awaiting = "user_confirmation"
+      emitPhaseSummary()
+    } else {
+      transition -> complete
+      emitCompletionSummary()
+    }
+  }
+
+  /block reason:String, task:PhaseTask => {
+    State.blockers.push({ reason, task })
+    task.status = "blocked"
+
+    emit """
+      ⚠️ Implementation Blocked
+
+      Phase: $phaseNumber
+      Task: ${task.name}
+      Reason: $reason
+
+      Options:
+      1. Retry with modifications
+      2. Skip task and continue
+      3. Abort implementation
+      4. Get manual assistance
+
+      Awaiting your decision...
+    """
+
+    awaiting = "blocker_resolution"
+  }
+
+  /unblock resolution:String => {
+    require State.blockers.length > 0
+
+    match (resolution) {
+      case "retry" => {
+        blockers.pop()
+        retryTask(blockers.last.task)
+      }
+      case "skip" => {
+        blockers.pop()
+        markTaskSkipped(blockers.last.task)
+        continueExecution()
+      }
+      case "abort" => {
+        transition -> aborted
+        emitAbortSummary()
+      }
+      case "assist" => {
+        awaiting = "manual_assistance"
+        escalateToUser()
+      }
+    }
+  }
+}
+```
+
+## Task Execution Logic
+
+```sudolang
+fn determineTaskExecution(tasks: PhaseTask[]) {
+  match (tasks) {
+    case tasks if tasks |> all(t => t.parallel) => {
+      mode: "parallel",
+      action: "Launch ALL parallel agents in SINGLE response"
+    }
+    case tasks if tasks |> none(t => t.parallel) => {
+      mode: "sequential",
+      action: "Launch ONE specialized subagent at a time"
+    }
+    case tasks => {
+      // Mixed: group parallel tasks, sequence the rest
+      parallelGroups: tasks |> groupConsecutive(t => t.parallel)
+      mode: "mixed",
+      action: "Execute parallel groups together, sequential tasks individually"
+    }
+  }
+}
+
+TaskExecution {
+  /executeParallel tasks:PhaseTask[] => {
+    require tasks |> all(t => t.parallel)
+
+    // Mark all as in_progress
+    tasks |> each(t => {
+      t.status = "in_progress"
+      updateTodowrite(t.id, "in_progress")
+    })
+
+    // Launch ALL parallel agents in SINGLE response
+    results = launchParallelAgents(tasks)
+
+    // Summarize each result
+    results |> each(r => summarizeResult(r))
+
+    // Track completion
+    results |> each(r => {
+      match (r.status) {
+        case "success" => markCompleted(r.taskId)
+        case "blocked" => handleBlocker(r)
+      }
+    })
+  }
+
+  /executeSequential task:PhaseTask => {
+    task.status = "in_progress"
+    updateTodowrite(task.id, "in_progress")
+
+    result = launchSpecializedAgent(task)
+
+    summarizeResult(result)
+
+    match (result.status) {
+      case "success" => {
+        task.status = "completed"
+        updateTodowrite(task.id, "completed")
+      }
+      case "blocked" => {
+        PhaseExecutionMachine./block(result.blockers[0], task)
+      }
+    }
+  }
+}
+```
+
+## Agent Delegation
+
+```sudolang
+DelegationPrompts {
+  /implementation task:PhaseTask, context:PhaseContext => """
+    FOCUS: ${task.name}
+    EXCLUDE: Other tasks, future phases
+    CONTEXT: ${context.relevantSpecs |> join("\n")} + ${context.priorOutputs |> join("\n")}
+    SDD_REQUIREMENTS: ${task.ref ?? "See relevant SDD sections"}
+    SPECIFICATION_CONSTRAINTS: Must match interfaces, patterns, decisions
+    SUCCESS: Task completion criteria + specification compliance
+  """
+
+  /review implementation:String, sddSection:String => """
+    REVIEW_FOCUS: $implementation
+    SDD_COMPLIANCE: Check against SDD Section $sddSection
+    VERIFY:
+      - Interface contracts match specification
+      - Business logic follows defined flows
+      - Architecture decisions are respected
+      - No unauthorized deviations
+  """
+}
+```
+
+## Result Summarization
+
+```sudolang
+fn summarizeResult(result: TaskResult) {
+  match (result.status) {
+    case "success" => emit """
+      ✅ Task ${result.taskId}: ${result.summary}
+
+      Files: ${result.files |> join(", ")}
+      Summary: ${result.summary}
+      Tests: ${result.tests?.passing ?? 0} passing
+    """
+
+    case "blocked" => emit """
+      ⚠️ Task ${result.taskId}: Blocked
+
+      Status: Blocked
+      Reason: ${result.blockers[0]}
+      Options: [present via question]
+    """
+  }
+}
+```
+
+## Checkpoint Validation
+
+```sudolang
+CheckpointValidation {
+  /validate phase:PhaseContext => {
+    require {
+      phase.tasks |> all(t => t.status == "completed")
+        | "ALL todowrite tasks must be completed"
+
+      planCheckboxesUpdated(phase.phaseNumber)
+        | "ALL PLAN.md checkboxes must be updated for this phase"
+
+      validationCommandsPassed(phase)
+        | "ALL validation commands must run and pass"
+
+      PhaseExecutionMachine.State.blockers.length == 0
+        | "NO blocking issues may remain"
+    }
+
+    // User confirmation always required
+    awaitUserConfirmation()
+  }
+
+  constraints {
+    Never proceed without explicit user confirmation
+    All validation criteria must pass before checkpoint
+    Failed validations block phase completion
+  }
+}
+```
+
+## Review Handling
+
+```sudolang
+ReviewHandling {
+  State {
+    revisionCycles: 0
+    maxCycles: 3
+  }
+
+  /handleReview feedback:String => {
+    match (feedback) {
+      case f if f.matches(/APPROVED|LGTM|✅/) => {
+        proceedToNextTask()
+      }
+
+      case f if f.includes("specification violation") => {
+        // Must fix before proceeding - no cycle count
+        require fixViolation(f) | "Specification violations must be fixed"
+        retry()
+      }
+
+      case f if f.includes("revision needed") => {
+        revisionCycles = revisionCycles + 1
+
+        match (revisionCycles) {
+          case c if c > maxCycles => {
+            escalateToUser("""
+              ⚠️ Review Escalation
+
+              After $maxCycles revision cycles, issue unresolved.
+              Latest feedback: $feedback
+
+              Awaiting manual guidance...
+            """)
+          }
+          default => {
+            implementChanges(f)
+            resubmitForReview()
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## Context Accumulation
+
+```sudolang
+ContextAccumulation {
+  fn buildPhaseContext(phaseNumber: Number, priorOutputs: String[]) {
+    match (phaseNumber) {
+      case 1 => {
+        context: extractPrdSddExcerpts(),
+        priorOutputs: []
+      }
+      case n => {
+        context: extractRelevantSpecs(n),
+        priorOutputs: priorOutputs |> filterRelevant(n)
+      }
+    }
+  }
+
+  constraints {
+    Pass only relevant context to avoid overload
+    Accumulate outputs incrementally
+    Filter context by relevance to current phase
+  }
+}
+```
+
+## Output Formats
 
 ### Phase Start
 
@@ -60,109 +427,7 @@ Activate this skill when you need to:
    Parallel opportunities: [List tasks marked parallel: true]
 ```
 
-1. Clear previous phase from todowrite (if any)
-2. Load current phase tasks into todowrite
-3. Check for "Pre-implementation review" task
-4. If SDD sections referenced, read and confirm understanding
-
-### Task Execution
-
-**Delegate ALL tasks to subagents** (see Orchestrator Role above).
-
-**For Parallel Tasks** (same indentation, marked `[parallel: true]`):
-
-- Mark all as `in_progress` in todowrite
-- Launch ALL parallel agents in SINGLE response
-- Await results, summarize each
-- Track completion independently
-
-**For Sequential Tasks**:
-
-- Launch ONE specialized subagent
-- Await result, summarize key outputs
-- Mark as `completed` in todowrite
-- Proceed to next task
-
-### Task Metadata
-
-Extract from PLAN.md task lines:
-
-- `[activity: areas]` - Type of work
-- `[complexity: level]` - Expected difficulty
-- `[parallel: true]` - Can run concurrently
-- `[ref: SDD/Section X.Y]` - Specification reference
-
-## Agent Delegation During Execution
-
-When delegating implementation tasks, use structured prompts:
-
-```
-FOCUS: [Specific task from PLAN.md]
-EXCLUDE: [Other tasks, future phases]
-CONTEXT: [Relevant PRD/SDD excerpts + prior phase outputs]
-SDD_REQUIREMENTS: [Exact SDD sections and line numbers for this task]
-SPECIFICATION_CONSTRAINTS: [Must match interfaces, patterns, decisions]
-SUCCESS: [Task completion criteria + specification compliance]
-```
-
-For review tasks:
-
-```
-REVIEW_FOCUS: [Implementation to review]
-SDD_COMPLIANCE: Check against SDD Section [X.Y]
-VERIFY:
-  - Interface contracts match specification
-  - Business logic follows defined flows
-  - Architecture decisions are respected
-  - No unauthorized deviations
-```
-
-## Result Summarization
-
-After each subagent completes, extract and present key outputs. Do NOT display full responses.
-
-### Extract Key Outputs
-
-From subagent response, identify:
-
-- **Files**: Paths created or modified
-- **Summary**: 1-2 sentence implementation highlight
-- **Tests**: Pass/fail/pending status
-- **Blockers**: Issues preventing completion
-
-### Present Concise Summary
-
-**Success format:**
-
-```
-✅ Task [N]: [Name]
-
-Files: src/services/auth.ts, src/routes/auth.ts
-Summary: Implemented JWT authentication with bcrypt password hashing
-Tests: 5 passing
-```
-
-**Blocked format:**
-
-```
-⚠️ Task [N]: [Name]
-
-Status: Blocked
-Reason: Missing User model - need src/models/User.ts
-Options: [present via question]
-```
-
-## Checkpoint Validation
-
-Before marking phase complete, verify:
-
-- [ ] ALL todowrite tasks showing 'completed'
-- [ ] ALL PLAN.md checkboxes updated for this phase
-- [ ] ALL validation commands run and passed
-- [ ] NO blocking issues remain
-- [ ] User confirmation received
-
-## Phase Summary Format
+### Phase Summary
 
 ```
 ✅ Phase [X] Complete: [Phase Name]
@@ -178,43 +443,7 @@ Key outputs:
 Should I proceed to Phase [X+1]: [Next Phase Name]?
 ```
 
-## Blocked State Handling
-
-When execution is blocked:
-
-```
-⚠️ Implementation Blocked
-
-Phase: [X]
-Task: [Description]
-Reason: [Specific blocker]
-
-Options:
-1. Retry with modifications
-2. Skip task and continue
-3. Abort implementation
-4. Get manual assistance
-
-Awaiting your decision...
-```
-
-## Review Handling Protocol
-
-After implementation, handle review feedback:
-
-- **APPROVED/LGTM/✅** → proceed to next task
-- **Specification violation** → must fix before proceeding
-- **Revision needed** → implement changes (max 3 cycles)
-- **After 3 cycles** → escalate to user
-
-## Context Accumulation
-
-- Phase 1 context = PRD/SDD excerpts
-- Phase 2 context = Phase 1 outputs + relevant specs
-- Phase N context = Accumulated outputs + relevant specs
-- Pass only relevant context to avoid overload
-
-## Progress Display
+### Progress Display
 
 ```
 📊 Overall Progress:
@@ -224,9 +453,7 @@ Phase 3: ⏳ Pending
 Phase 4: ⏳ Pending
 ```
 
-## Completion Protocol
-
-When all phases complete:
+### Completion Summary
 
 ```
 🎉 Implementation Complete!
@@ -243,39 +470,19 @@ Suggested next steps:
 3. Create PR for review
 ```
 
-## Output Format
-
-After phase operations, report:
-
-```
-📍 Phase Execution Status
-
-Phase: [X] - [Name]
-Status: [In Progress / Complete / Blocked]
-
-Tasks:
-- ✅ [Completed task 1]
-- ✅ [Completed task 2]
-- 🔄 [Current task]
-- ⏳ [Pending task]
-
-Next: [What happens next]
-```
-
 ## Quick Reference
 
-### Phase Boundaries Are Stops
+```sudolang
+QuickReference {
+  rules {
+    "Phase Boundaries Are Stops" => "Always wait for user confirmation between phases"
+    "Respect Parallel Hints" => "Launch concurrent agents when tasks are marked [parallel: true]"
+    "Track in todowrite" => "Real-time task tracking during execution"
+    "Update PLAN.md at Phase Completion" => "All checkboxes in a phase get updated together"
+  }
+}
+```
 
-Always wait for user confirmation between phases.
+---
 
-### Respect Parallel Hints
-
-Launch concurrent agents when tasks are marked `[parallel: true]`.
-
-### Track in todowrite
-
-Real-time task tracking during execution.
-
-### Update PLAN.md at Phase Completion
-
-All checkboxes in a phase get updated together.
+skill({ name: "agent-coordination" })

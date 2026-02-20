@@ -57,23 +57,47 @@ Keep plans **actionable and focused**:
 - Omit resource assignments—focus on work, not who
 - Omit implementation code—the plan guides, implementation follows
 
-## Task Granularity Principle
+## Task Granularity
 
-**Track logical units that produce verifiable outcomes.** The TDD cycle is the execution method, not separate tracked items.
+```sudolang
+TaskGranularity {
+  constraints {
+    Track logical units that produce verifiable outcomes
+    TDD cycle is execution method, not separate tracked items
+    Each task must produce a testable deliverable
+  }
+  
+  fn isValidTask(description: String) {
+    match (description) {
+      // Good: produces outcome
+      case d if producesArtifact(d) => true
+      case d if hasVerifiableResult(d) => true
+      
+      // Bad: too granular
+      case d if isPreparationOnly(d) => false   // "Read payment interface"
+      case d if isSingleTestCase(d) => false    // "Test X rejects Y"
+      case d if isValidationStep(d) => false    // "Run linting"
+      
+      default => false
+    }
+  }
+  
+  examples {
+    good: [
+      "Payment Entity"        // Produces: working entity with tests
+      "Stripe Adapter"        // Produces: working integration with tests
+      "Payment Form Component" // Produces: working UI with tests
+    ]
+    bad: [
+      "Read payment interface contracts"        // Preparation, not deliverable
+      "Test Payment.validate() rejects amounts" // Part of larger outcome
+      "Run linting"                             // Validation step only
+    ]
+  }
+}
+```
 
-### Good Tracking Units (produces outcome)
-
-- "Payment Entity" → Produces: working entity with tests ✓
-- "Stripe Adapter" → Produces: working integration with tests ✓
-- "Payment Form Component" → Produces: working UI with tests ✓
-
-### Bad Tracking Units (too granular)
-
-- "Read payment interface contracts" → Preparation, not deliverable
-- "Test Payment.validate() rejects negative amounts" → Part of larger outcome
-- "Run linting" → Validation step, not deliverable
-
-### Structure Pattern
+### Task Structure Pattern
 
 ```markdown
 - [ ] **T1.1 Payment Entity** `[activity: domain-modeling]`
@@ -89,135 +113,263 @@ Keep plans **actionable and focused**:
 
 The checkbox tracks "Payment Entity" as a unit. Prime/Test/Implement/Validate are embedded guidance.
 
-## TDD Phase Structure
+## TDD Phase State Machine
 
-Every task follows red-green-refactor within this pattern:
+```sudolang
+interface TDDPhase {
+  name: "prime" | "test" | "implement" | "validate"
+  description: String
+  artifacts: String[]
+}
 
-### 1. Prime Context
-
-- Read relevant specification sections
-- Understand interfaces and contracts
-- Load patterns and examples
-
-### 2. Write Tests (Red)
-
-- Test behavior before implementation
-- Reference PRD acceptance criteria
-- Cover happy path and edge cases
-
-### 3. Implement (Green)
-
-- Build to pass tests
-- Follow SDD architecture
-- Use discovered patterns
-
-### 4. Validate (Refactor)
-
-- Run automated tests
-- Check code quality (lint, format)
-- Verify specification compliance
+TDDStateMachine {
+  State {
+    current: TDDPhase
+    taskId: String
+    completed: TDDPhase[]
+  }
+  
+  constraints {
+    Must follow sequence: prime → test → implement → validate
+    Cannot skip phases without explicit deviation approval
+    Each phase must produce artifacts before advancing
+    Validate phase must pass before task completion
+  }
+  
+  phases {
+    prime {
+      name: "Prime Context"
+      artifacts: ["specification understanding", "interface contracts", "patterns loaded"]
+      actions: [
+        "Read relevant specification sections"
+        "Understand interfaces and contracts"
+        "Load patterns and examples"
+      ]
+    }
+    
+    test {
+      name: "Write Tests (Red)"
+      artifacts: ["failing tests", "test coverage plan"]
+      actions: [
+        "Test behavior before implementation"
+        "Reference PRD acceptance criteria"
+        "Cover happy path and edge cases"
+      ]
+    }
+    
+    implement {
+      name: "Implement (Green)"
+      artifacts: ["passing code", "SDD-compliant structure"]
+      actions: [
+        "Build to pass tests"
+        "Follow SDD architecture"
+        "Use discovered patterns"
+      ]
+    }
+    
+    validate {
+      name: "Validate (Refactor)"
+      artifacts: ["test results", "quality checks", "compliance verification"]
+      actions: [
+        "Run automated tests"
+        "Check code quality (lint, format)"
+        "Verify specification compliance"
+      ]
+    }
+  }
+  
+  /advance => {
+    require current phase artifacts exist
+    completed.push(current)
+    current = nextPhase(current)
+  }
+  
+  /completeTask => {
+    require current == "validate"
+    require all validation checks pass
+    emit "task_complete"
+  }
+}
+```
 
 ## Task Metadata
 
-Use these annotations in the plan:
+```sudolang
+interface TaskMetadata {
+  parallel: Boolean?      // Can run concurrently with other tasks
+  component: String?      // For multi-component features
+  ref: SpecReference?     // Links to specifications
+  activity: ActivityType? // Hint for specialist selection
+}
 
-```markdown
-- [ ] T1.2.1 [Task description] `[ref: SDD/Section 5; lines: 100-150]` `[activity: backend-api]`
+interface SpecReference {
+  document: "PRD" | "SDD"
+  section: String
+  lines: Range?
+}
+
+ActivityType = "domain-modeling" | "backend-api" | "frontend-ui" | 
+               "integration" | "e2e-testing" | "validate" | "infrastructure"
+
+fn formatTaskLine(id: String, description: String, meta: TaskMetadata) => {
+  base = "- [ ] $id $description"
+  annotations = []
+  
+  if meta.ref => annotations.push("[ref: $meta.ref.document/$meta.ref.section; lines: $meta.ref.lines]")
+  if meta.activity => annotations.push("[activity: $meta.activity]")
+  if meta.parallel => annotations.push("[parallel: true]")
+  if meta.component => annotations.push("[component: $meta.component]")
+  
+  "$base `${annotations |> join(' ')}`"
+}
 ```
 
-| Metadata                         | Description                     |
-| -------------------------------- | ------------------------------- |
-| `[parallel: true]`               | Tasks that can run concurrently |
-| `[component: name]`              | For multi-component features    |
-| `[ref: doc/section; lines: X-Y]` | Links to specifications         |
-| `[activity: type]`               | Hint for specialist selection   |
+## Planning Cycle Workflow
 
-## Cycle Pattern
-
-For each phase requiring definition, follow this iterative process:
-
-### 1. Discovery Phase
-
-- **Read PRD and SDD** to understand requirements and design
-- **Identify activities** needed for each implementation area
-- **Launch parallel specialist agents** to investigate:
-  - Task sequencing and dependencies
-  - Testing strategies
-  - Risk assessment
-  - Validation approaches
-
-### 2. Documentation Phase
-
-- **Update the PLAN** with task definitions
-- **Add specification references** (`[ref: ...]`)
-- Focus only on current phase being defined
-- Follow template structure exactly
-
-### 3. Review Phase
-
-- **Present task breakdown** to user
-- Show dependencies and sequencing
-- Highlight parallel opportunities
-- **Wait for user confirmation** before next phase
-
-**Ask yourself each cycle:**
-
-1. Have I read the relevant PRD and SDD sections?
-2. Do all tasks trace back to specification requirements?
-3. Are dependencies between tasks clear?
-4. Can parallel tasks actually run in parallel?
-5. Are validation steps included in each phase?
-6. Have I received user confirmation?
+```sudolang
+PlanningCycle {
+  State: PhaseState {
+    current: "discovery"
+    completed: []
+    blockers: []
+    awaiting: null
+  }
+  
+  constraints {
+    User confirmation required at phase boundaries
+    Cannot skip phases without explicit override
+    Each cycle must trace tasks to specifications
+  }
+  
+  phases {
+    discovery {
+      actions: [
+        "Read PRD and SDD to understand requirements and design"
+        "Identify activities needed for each implementation area"
+        "Launch parallel specialist agents to investigate"
+      ]
+      specialists: [
+        "Task sequencing and dependencies"
+        "Testing strategies"
+        "Risk assessment"
+        "Validation approaches"
+      ]
+    }
+    
+    documentation {
+      actions: [
+        "Update the PLAN with task definitions"
+        "Add specification references [ref: ...]"
+        "Focus only on current phase being defined"
+        "Follow template structure exactly"
+      ]
+    }
+    
+    review {
+      actions: [
+        "Present task breakdown to user"
+        "Show dependencies and sequencing"
+        "Highlight parallel opportunities"
+        "Wait for user confirmation before next phase"
+      ]
+    }
+  }
+  
+  /selfCheck => {
+    require "Have I read the relevant PRD and SDD sections?"
+    require "Do all tasks trace back to specification requirements?"
+    require "Are dependencies between tasks clear?"
+    require "Can parallel tasks actually run in parallel?"
+    require "Are validation steps included in each phase?"
+    require "Have I received user confirmation?"
+  }
+}
+```
 
 ## Specification Compliance
 
-Every phase should include a validation task:
-
-```markdown
-- [ ] **T1.3 Phase Validation** `[activity: validate]`
-
-  Run all phase tests, linting, type checking. Verify against SDD patterns and PRD acceptance criteria.
+```sudolang
+SpecificationCompliance {
+  constraints {
+    Every phase must include validation task
+    All tasks must trace to PRD or SDD
+    Deviations require explicit approval
+  }
+  
+  fn validationTask(phaseId: String) => """
+    - [ ] **T$phaseId.N Phase Validation** `[activity: validate]`
+    
+      Run all phase tests, linting, type checking. 
+      Verify against SDD patterns and PRD acceptance criteria.
+  """
+  
+  DeviationProtocol {
+    steps: [
+      "Document the deviation with clear rationale"
+      "Obtain approval before proceeding"
+      "Update SDD when the deviation improves the design"
+      "Record all deviations in the plan for traceability"
+    ]
+    
+    /handleDeviation reason:String => {
+      document(reason)
+      approval = await user confirmation
+      if approved => updateSDD()
+      recordInPlan(reason, approval)
+    }
+  }
+}
 ```
-
-For complex phases, validation is embedded in each task's **Validate** step.
-
-### Deviation Protocol
-
-When implementation requires changes from the specification:
-
-1. Document the deviation with clear rationale
-2. Obtain approval before proceeding
-3. Update SDD when the deviation improves the design
-4. Record all deviations in the plan for traceability
 
 ## Validation Checklist
 
-See [validation.md](validation.md) for the complete checklist. Key gates:
+See [validation.md](validation.md) for the complete checklist.
 
-- [ ] All specification file paths are correct and exist
-- [ ] Context priming section is complete
-- [ ] All implementation phases are defined
-- [ ] Each phase follows TDD: Prime → Test → Implement → Validate
-- [ ] Dependencies between phases are clear (no circular dependencies)
-- [ ] Parallel work is properly tagged with `[parallel: true]`
-- [ ] Activity hints provided for specialist selection `[activity: type]`
-- [ ] Every phase references relevant SDD sections
-- [ ] Every test references PRD acceptance criteria
-- [ ] Integration & E2E tests defined in final phase
-- [ ] Project commands match actual project setup
-- [ ] A developer could follow this plan independently
+```sudolang
+PLANValidation {
+  require {
+    // File integrity
+    "All specification file paths are correct and exist"
+    "Context priming section is complete"
+    
+    // Phase structure
+    "All implementation phases are defined"
+    "Each phase follows TDD: Prime → Test → Implement → Validate"
+    "Dependencies between phases are clear (no circular dependencies)"
+    
+    // Metadata completeness
+    "Parallel work is properly tagged with [parallel: true]"
+    "Activity hints provided for specialist selection [activity: type]"
+    "Every phase references relevant SDD sections"
+    "Every test references PRD acceptance criteria"
+    
+    // Coverage
+    "Integration & E2E tests defined in final phase"
+    "Project commands match actual project setup"
+  }
+  
+  warn {
+    "Phases without parallel task opportunities"
+    "Missing edge case coverage in test definitions"
+    "Large phases that could be decomposed further"
+  }
+  
+  // Ultimate quality gate
+  require "A developer could follow this plan independently"
+}
+```
 
 ## Output Format
 
 After PLAN work, report:
 
 ```
-📋 PLAN Status: [spec-id]-[name]
+PLAN Status: [spec-id]-[name]
 
 Phases Defined:
-- Phase 1 [Name]: ✅ Complete (X tasks)
-- Phase 2 [Name]: 🔄 In progress
-- Phase 3 [Name]: ⏳ Pending
+- Phase 1 [Name]: Complete (X tasks)
+- Phase 2 [Name]: In progress
+- Phase 3 [Name]: Pending
 
 Task Summary:
 - Total tasks: [N]

@@ -23,9 +23,163 @@ Activate this skill when you need to:
 - **Initialize or update README.md** in spec directories
 - **Read existing spec metadata** via spec.py
 
-## Core Responsibilities
+## Core Interfaces
 
-### 1. Directory Management
+See: `skill/shared/interfaces.sudo.md` for PhaseState, PhaseWorkflow
+
+```sudolang
+interface SpecMetadata {
+  id: String               // e.g., "004"
+  name: String             // e.g., "feature-name"
+  dir: String              // e.g., "docs/specs/004-feature-name"
+  prd: String?             // Path to PRD if exists
+  sdd: String?             // Path to SDD if exists
+  plan: String?            // Path to PLAN if exists
+  files: String[]          // List of existing files
+}
+
+interface SpecDocument {
+  name: String
+  status: "pending" | "in_progress" | "completed" | "skipped"
+  notes: String?
+}
+
+interface Decision {
+  date: String
+  decision: String
+  rationale: String
+}
+
+interface SpecState {
+  id: String
+  name: String
+  phase: "initialization" | "prd" | "sdd" | "plan" | "implementation" | "complete"
+  documents: SpecDocument[]
+  decisions: Decision[]
+  context: String
+}
+```
+
+## Spec Workflow State Machine
+
+```sudolang
+SpecWorkflow {
+  State: SpecState {
+    phase: "initialization"
+    documents: [
+      { name: "product-requirements.md", status: "pending" },
+      { name: "solution-design.md", status: "pending" },
+      { name: "implementation-plan.md", status: "pending" }
+    ]
+    decisions: []
+    context: ""
+  }
+  
+  constraints {
+    Phase transitions require user confirmation
+    Skipped phases must have documented rationale
+    README.md must be updated on every state change
+    Cannot advance to implementation without at least SDD or PLAN
+  }
+  
+  fn nextPhase(current: String) {
+    match (current) {
+      case "initialization" => "prd"
+      case "prd" => "sdd"
+      case "sdd" => "plan"
+      case "plan" => "implementation"
+      case "implementation" => "complete"
+      default => current
+    }
+  }
+  
+  fn suggestContinuation(metadata: SpecMetadata) {
+    match (metadata) {
+      case { plan: p } if p != null => {
+        message: "PLAN found. Proceed to implementation?",
+        suggestedPhase: "implementation"
+      }
+      case { sdd: s, plan: null } if s != null => {
+        message: "SDD found. Continue to PLAN?",
+        suggestedPhase: "plan"
+      }
+      case { prd: p, sdd: null } if p != null => {
+        message: "PRD found. Continue to SDD?",
+        suggestedPhase: "sdd"
+      }
+      default => {
+        message: "Start from PRD?",
+        suggestedPhase: "prd"
+      }
+    }
+  }
+  
+  /create name:String => {
+    execute: "~/.config/opencode/skill/specification-management/spec.py '$name'"
+    parse TOML output into SpecMetadata
+    initialize README.md with template
+    State.phase = "initialization"
+    present spec directory and next steps
+  }
+  
+  /read id:String => {
+    execute: "~/.config/opencode/skill/specification-management/spec.py $id --read"
+    parse TOML output into SpecMetadata
+    present current state and suggestContinuation
+  }
+  
+  /addTemplate id:String, template:String => {
+    execute: "~/.config/opencode/skill/specification-management/spec.py $id --add $template"
+    update State.documents status
+    update README.md
+  }
+  
+  /skip document:String, rationale:String => {
+    require rationale is not empty
+    State.documents.find(d => d.name == document).status = "skipped"
+    State.decisions.push({
+      date: today(),
+      decision: "$document skipped",
+      rationale: rationale
+    })
+    update README.md
+  }
+  
+  /advance => {
+    require current phase work is complete OR skipped with rationale
+    State.phase = nextPhase(State.phase)
+    update README.md
+    present new phase and handoff to appropriate skill
+  }
+}
+```
+
+## Validation Requirements
+
+```sudolang
+SpecValidation {
+  require {
+    spec.py command executed successfully
+    README.md exists in spec directory
+    Current phase is correctly recorded in README.md
+    All decisions have been logged with date and rationale
+  }
+  
+  warn {
+    More than 3 days since last README.md update
+    Phase marked complete without document validation
+    Skipping multiple consecutive phases
+  }
+  
+  constraints {
+    Never proceed without user confirmation on phase transitions
+    Always update README.md before reporting completion
+    Decision log must include rationale, not just action
+  }
+}
+```
+
+## Directory Management
 
 Use `spec.py` to create and read specification directories:
 
@@ -57,11 +211,9 @@ files = [
 ]
 ```
 
-### 2. README.md Management
+## README.md Template
 
 Every spec directory should have a `README.md` tracking decisions and progress.
-
-**Create README.md** when a new spec is created:
 
 ```markdown
 # Specification: [NNN]-[name]
@@ -98,72 +250,58 @@ Every spec directory should have a `README.md` tracking decisions and progress.
 _This file is managed by the specification-management skill._
 ```
 
-**Update README.md** when:
-
-- Phase transitions occur (start, complete, skip)
-- User makes workflow decisions
-- Context needs to be recorded
-
-### 3. Phase Transitions
-
-Guide users through the specification workflow:
-
-1. **Check existing state** - Use `spec.py [ID] --read`
-2. **Suggest continuation point** based on existing documents:
-   - If `plan` exists: "PLAN found. Proceed to implementation?"
-   - If `sdd` exists but `plan` doesn't: "SDD found. Continue to PLAN?"
-   - If `prd` exists but `sdd` doesn't: "PRD found. Continue to SDD?"
-   - If no documents: "Start from PRD?"
-3. **Record decisions** in README.md
-4. **Update phase status** as work progresses
-
-### 4. Decision Tracking
-
-Log all significant decisions:
-
-```markdown
-## Decisions Log
-
-| Date       | Decision       | Rationale                            |
-| ---------- | -------------- | ------------------------------------ |
-| 2025-12-10 | PRD skipped    | Requirements documented in JIRA-1234 |
-| 2025-12-10 | Start with SDD | Technical spike already completed    |
-```
-
 ## Workflow Integration
 
-This skill works with document-specific skills:
-
-- `product-requirements` skill - PRD creation and validation
-- `solution-design` skill - SDD creation and validation
-- `implementation-plan` skill - PLAN creation and validation
-
-**Handoff Pattern:**
-
-1. Specification-management creates directory and README
-2. User confirms phase to start
-3. Context shifts to document-specific work
-4. Document skill activates for detailed guidance
-5. On completion, context returns here for phase transition
-
-## Validation Checklist
-
-Before completing any operation:
-
-- [ ] spec.py command executed successfully
-- [ ] README.md exists and is up-to-date
-- [ ] Current phase is correctly recorded
-- [ ] All decisions have been logged
-- [ ] User has confirmed next steps
+```sudolang
+WorkflowHandoff {
+  skills: [
+    { phase: "prd", skill: "requirements-analysis" },
+    { phase: "sdd", skill: "architecture-design" },
+    { phase: "plan", skill: "implementation-planning" }
+  ]
+  
+  fn handoff(phase: String) {
+    match (phase) {
+      case "prd" => {
+        activate: "requirements-analysis",
+        context: "Continue PRD creation for spec",
+        returnTo: "specification-management on completion"
+      }
+      case "sdd" => {
+        activate: "architecture-design",
+        context: "Continue SDD creation for spec",
+        returnTo: "specification-management on completion"
+      }
+      case "plan" => {
+        activate: "implementation-planning",
+        context: "Continue PLAN creation for spec",
+        returnTo: "specification-management on completion"
+      }
+      case "implementation" => {
+        activate: "agent-coordination",
+        context: "Execute implementation from PLAN",
+        returnTo: "specification-management on completion"
+      }
+    }
+  }
+  
+  constraints {
+    Specification-management creates directory and README first
+    User confirms phase before handoff
+    Document skill activates for detailed guidance
+    On completion, context returns here for phase transition
+  }
+}
+```
 
 ## Output Format
 
 After spec operations, report:
 
 ```
-📁 Specification: [NNN]-[name]
-📍 Directory: docs/specs/[NNN]-[name]/
-📋 Current Phase: [Phase]
+Specification: [NNN]-[name]
+Directory: docs/specs/[NNN]-[name]/
+Current Phase: [Phase]
 
 Documents:
 - product-requirements.md: [status]

@@ -22,11 +22,47 @@ A cross-cutting skill that enforces consistent security, performance, and qualit
 
 ## Core Domains
 
+```sudolang
+CodingConventions {
+  State {
+    domain: "security" | "performance" | "accessibility" | "error-handling"
+    findings: Finding[]
+    context: CodeContext
+  }
+  
+  constraints {
+    Apply security checks before performance optimization
+    Accessibility is a default, not an afterthought
+    Use checklists during code review, not just at the end
+    Document exceptions to standards with rationale
+    Automate checks where possible (linting, testing)
+  }
+}
+```
+
 ### Security
 
 Covers common vulnerability prevention aligned with OWASP Top 10. Apply these checks to any code that handles user input, authentication, data storage, or external communications.
 
 See: `checklists/security-checklist.md`
+
+```sudolang
+SecurityValidation {
+  require {
+    All user input is validated at boundaries
+    Parameterized queries for database operations
+    Authentication tokens have expiration
+    Sensitive data encrypted at rest and in transit
+    No secrets hardcoded in source
+  }
+  
+  warn {
+    Missing rate limiting on public endpoints
+    Verbose error messages exposed to users
+    Overly permissive CORS configuration
+  }
+}
+```
 
 ### Performance
 
@@ -34,15 +70,75 @@ Covers optimization patterns for frontend, backend, and database operations. App
 
 See: `checklists/performance-checklist.md`
 
+```sudolang
+PerformanceValidation {
+  require {
+    Database queries use appropriate indexes
+    N+1 query patterns eliminated
+    Large payloads paginated
+    Expensive operations cached appropriately
+  }
+  
+  warn {
+    Synchronous operations that could be async
+    Missing lazy loading for non-critical resources
+    Unbounded loops or recursion
+    Missing connection pooling
+  }
+}
+```
+
 ### Accessibility
 
 Covers WCAG 2.1 Level AA compliance. Apply these checks to all user-facing components to ensure inclusive design.
 
 See: `checklists/accessibility-checklist.md`
 
+```sudolang
+AccessibilityValidation {
+  require {
+    All images have meaningful alt text
+    Keyboard navigation works for all interactions
+    Color contrast meets WCAG AA (4.5:1 for text)
+    Form inputs have associated labels
+    Focus states are visible
+  }
+  
+  warn {
+    Missing ARIA labels on interactive elements
+    Content not accessible via screen reader
+    Motion without reduced-motion support
+    Time-limited interactions without extensions
+  }
+}
+```
+
 ## Error Handling Patterns
 
 All agents should recommend these error handling approaches:
+
+```sudolang
+ErrorHandlingPatterns {
+  constraints {
+    Validate inputs at system boundaries
+    Create domain-specific error types with context
+    Never expose internal error details to users
+    Log full context internally, sanitize externally
+    Define criticality levels for graceful degradation
+  }
+  
+  fn selectPattern(scenario: ErrorScenario) {
+    match (scenario) {
+      case { location: "boundary", input: _ } => Pattern.FailFast
+      case { errorType: "domain-specific" } => Pattern.SpecificErrorTypes
+      case { audience: "user" } => Pattern.UserSafeMessages
+      case { criticality: "optional" } => Pattern.GracefulDegradation
+      case { failure: "transient" } => Pattern.RetryWithBackoff
+      default => Pattern.FailFast
+    }
+  }
+}
+```
 
 ### Pattern 1: Fail Fast at Boundaries
 
@@ -94,6 +190,19 @@ try {
 
 When non-critical operations fail, degrade gracefully rather than failing entirely. Define what is critical vs. optional.
 
+```sudolang
+fn handleDegradation(results: SettledResult[]) {
+  match (results) {
+    case [{ status: "rejected", critical: true }, ...] => 
+      throw new Error("Cannot load - critical operation failed")
+    case [{ status: "rejected", critical: false }, ...rest] => 
+      continue with placeholders for failed optional operations
+    case [{ status: "fulfilled" }, ...] => 
+      return all values
+  }
+}
+```
+
 ```
 async function loadDashboard() {
   const [userData, analytics, recommendations] = await Promise.allSettled([
@@ -118,6 +227,28 @@ async function loadDashboard() {
 
 For transient failures (network, rate limits), implement exponential backoff with maximum attempts.
 
+```sudolang
+RetryStrategy {
+  config {
+    maxAttempts: 3
+    baseDelayMs: 100
+    backoffMultiplier: 2
+  }
+  
+  fn calculateDelay(attempt: Number) => 
+    Math.pow(config.backoffMultiplier, attempt) * config.baseDelayMs
+  
+  fn shouldRetry(error: Error, attempt: Number) {
+    match (error) {
+      case { type: "network" } if attempt < maxAttempts => true
+      case { status: 429 } if attempt < maxAttempts => true  // Rate limited
+      case { status: 503 } if attempt < maxAttempts => true  // Service unavailable
+      default => false
+    }
+  }
+}
+```
+
 ```
 async function fetchWithRetry(url, maxAttempts = 3) {
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -131,13 +262,27 @@ async function fetchWithRetry(url, maxAttempts = 3) {
 }
 ```
 
-## Best Practices
+## Validation Workflow
 
-- Apply security checks before performance optimization
-- Make accessibility a default, not an afterthought
-- Use checklists during code review, not just at the end
-- Document exceptions to standards with rationale
-- Automate checks where possible (linting, testing)
+```sudolang
+fn validateCode(code: Code, domains: String[]) {
+  findings = []
+  
+  domains |> forEach(domain => {
+    match (domain) {
+      case "security" => findings.push(...SecurityValidation.check(code))
+      case "performance" => findings.push(...PerformanceValidation.check(code))
+      case "accessibility" => findings.push(...AccessibilityValidation.check(code))
+    }
+  })
+  
+  return {
+    valid: findings |> none(f => f.severity == "critical"),
+    findings: findings,
+    summary: generateSummary(findings)
+  }
+}
+```
 
 ## References
 

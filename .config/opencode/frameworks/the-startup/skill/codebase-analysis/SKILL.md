@@ -27,71 +27,135 @@ Analysis is iterative. Each cycle builds on previous findings. Discover incremen
 
 ## Analysis Cycle Pattern
 
-### For Each Cycle
+```sudolang
+interface AnalysisCycle {
+  cycleNumber: Number
+  area: AnalysisArea
+  phase: "discovery" | "documentation" | "review"
+  findings: Finding[]
+  documentsUpdated: String[]
+  questionsRemaining: String[]
+}
 
-**1. Discovery Phase**
-- Process the analysis area sequentially
-- Identify ALL activities needed based on what information is missing
-- **ALWAYS launch multiple specialist agents in parallel** to investigate
-- After receiving user feedback, identify NEW research needs
+AnalysisCycleWorkflow {
+  State {
+    currentCycle: 1
+    phase: "discovery"
+    priorFindings: []
+    awaitingConfirmation: false
+  }
 
-**2. Documentation Phase**
-- Update documentation based on research findings
-- Incorporate user feedback
-- Apply category-specific documentation rules
-- Focus only on current area being processed
+  constraints {
+    One area per cycle
+    Each cycle builds on previous findings
+    User confirmation required before next cycle
+    Parallel agent delegation mandatory in discovery
+  }
 
-**3. Review Phase**
-- **Present ALL agent findings to the user** including:
-  - Complete responses from each agent (not summaries)
-  - Conflicting information or recommendations
-  - Proposed content based on the research
-  - Questions that need user clarification
-- Present what was discovered, what questions remain
-- **Wait for user confirmation** before proceeding to next cycle
+  /discovery area:AnalysisArea => {
+    require activities identified for area
+    warn if parallel agents not launched
+
+    identifyActivities(area)
+    launchParallelAgents(activities)
+    collectFindings()
+    incorporateUserFeedback()
+  }
+
+  /documentation findings:Finding[] => {
+    require findings from discovery phase
+    warn if category rules not applied
+
+    updateDocumentation(findings)
+    applyCategoryRules(findings.area)
+    focusOnCurrentAreaOnly()
+  }
+
+  /review findings:Finding[] => {
+    require all agent findings presented completely
+    require not summarized - present full responses
+    require conflicting information highlighted
+    require questions for clarification listed
+
+    presentFindings(findings)
+    awaitingConfirmation = true
+    awaitUserConfirmation()
+  }
+
+  /nextCycle => {
+    require awaitingConfirmation == false
+    require user confirmed
+
+    currentCycle++
+    priorFindings.push(currentFindings)
+    phase = "discovery"
+  }
+}
+```
 
 ### Cycle Checklist
 
-**Ask yourself each cycle:**
-1. Discovery: Have I identified ALL activities needed for this area?
-2. Discovery: Have I launched parallel specialist agents to investigate?
-3. Documentation: Have I updated docs according to category rules?
-4. Review: Have I presented COMPLETE agent responses (not summaries)?
-5. Review: Have I received user confirmation before next cycle?
-6. Are there more areas that need investigation?
-7. Should I continue or wait for user input?
+```sudolang
+CycleChecklist {
+  /validate cycle:AnalysisCycle => {
+    require cycle.phase == "discovery" implies activitiesIdentified(cycle)
+    require cycle.phase == "discovery" implies parallelAgentsLaunched(cycle)
+    require cycle.phase == "documentation" implies docsUpdatedPerCategoryRules(cycle)
+    require cycle.phase == "review" implies completeResponsesPresented(cycle)
+    require cycle.phase == "review" implies userConfirmationReceived(cycle)
+    warn if moreAreasNeedInvestigation(cycle) && !userInputRequested
+  }
+}
+```
 
 ## Analysis Areas
 
-### Business Analysis
-- Extract business rules from codebase
-- Research domain best practices
-- Identify validation and workflow patterns
-- Document in: `docs/domain/`
-
-### Technical Analysis
-- Identify architectural patterns
-- Analyze code structure and design patterns
-- Review component relationships
-- Document in: `docs/patterns/`
-
-### Security Analysis
-- Identify security patterns and vulnerabilities
-- Analyze authentication and authorization approaches
-- Review data protection mechanisms
-- Document in: `docs/patterns/` or `docs/domain/`
-
-### Performance Analysis
-- Analyze performance patterns and bottlenecks
-- Review optimization approaches
-- Identify resource management patterns
-- Document in: `docs/patterns/`
-
-### Integration Analysis
-- Analyze API design patterns
-- Review service communication patterns
-- Identify data exchange mechanisms
-- Document in: `docs/interfaces/`
+```sudolang
+AnalysisArea {
+  match (type) {
+    case "business" => {
+      activities: [
+        "Extract business rules from codebase",
+        "Research domain best practices",
+        "Identify validation and workflow patterns"
+      ]
+      documentIn: "docs/domain/"
+    }
+    case "technical" => {
+      activities: [
+        "Identify architectural patterns",
+        "Analyze code structure and design patterns",
+        "Review component relationships"
+      ]
+      documentIn: "docs/patterns/"
+    }
+    case "security" => {
+      activities: [
+        "Identify security patterns and vulnerabilities",
+        "Analyze authentication and authorization approaches",
+        "Review data protection mechanisms"
+      ]
+      documentIn: "docs/patterns/ or docs/domain/"
+    }
+    case "performance" => {
+      activities: [
+        "Analyze performance patterns and bottlenecks",
+        "Review optimization approaches",
+        "Identify resource management patterns"
+      ]
+      documentIn: "docs/patterns/"
+    }
+    case "integration" => {
+      activities: [
+        "Analyze API design patterns",
+        "Review service communication patterns",
+        "Identify data exchange mechanisms"
+      ]
+      documentIn: "docs/interfaces/"
+    }
+  }
+}
+```
 
 ## Documentation Structure
 
@@ -106,46 +170,77 @@ docs/
 
 ### Documentation Decision Criteria
 
-Include documentation in OUTPUT only when **ALL** criteria are met:
+```sudolang
+DocumentationDecision {
+  constraints {
+    Include in output only when ALL criteria met
+    Check existing docs before creating: grep -ri "keyword" docs/
+  }
 
-1. **Reusable** - Pattern/interface/rule used in 2+ places OR clearly reusable
-2. **Non-Obvious** - Not standard practices (REST, MVC, CRUD)
-3. **Not a Duplicate** - Check existing docs first: `grep -ri "keyword" docs/`
+  /shouldDocument finding:Finding => {
+    match (finding) {
+      case f if !isReusable(f) => {
+        include: false,
+        reason: "Not reusable - pattern/interface/rule must be used in 2+ places OR clearly reusable"
+      }
+      case f if isStandardPractice(f) => {
+        include: false,
+        reason: "Standard practice - REST, MVC, CRUD are non-obvious"
+      }
+      case f if isDuplicate(f) => {
+        include: false,
+        reason: "Duplicate - update existing docs instead"
+      }
+      default => {
+        include: true,
+        action: "Document in appropriate category"
+      }
+    }
+  }
 
-### What NOT to Document
-
-- ❌ Meta-documentation (SUMMARY.md, REPORT.md, ANALYSIS.md)
-- ❌ Standard practices (REST APIs, MVC, CRUD)
-- ❌ One-off implementation details
-- ❌ Duplicate files when existing docs should be updated
+  /neverDocument => [
+    "Meta-documentation (SUMMARY.md, REPORT.md, ANALYSIS.md)",
+    "Standard practices (REST APIs, MVC, CRUD)",
+    "One-off implementation details",
+    "Duplicate files when existing docs should be updated"
+  ]
+}
+```
 
 ## Agent Delegation for Discovery
 
-When launching specialist agents for investigation:
+See: skill/shared/interfaces.sudo.md (TaskPrompt interface)
 
-```
-FOCUS: [Specific discovery activity]
-  - What information to find
-  - What patterns to identify
-  - What rules to extract
-
-EXCLUDE: [Out of scope areas]
-  - [Unrelated areas]: out of scope
-  - Documentation: deferred to documentation phase
-
-CONTEXT: [Background for investigation]
-  - Analysis area: [business/technical/etc.]
-  - Prior findings: [If any from previous cycles]
-
-OUTPUT: Structured findings including:
-  - Key discoveries
-  - Patterns identified
-  - Questions for clarification
-  - Recommendations
-
-SUCCESS: All findings documented with evidence
-
-TERMINATION: Discovery complete OR blocked
+```sudolang
+DiscoveryDelegation {
+  /delegate activity:String, area:AnalysisArea, priorFindings:Finding[] => {
+    TaskPrompt {
+      focus: activity
+      deliverables: [
+        "What information to find",
+        "What patterns to identify",
+        "What rules to extract"
+      ]
+      exclude: [
+        "Unrelated areas: out of scope",
+        "Documentation: deferred to documentation phase"
+      ]
+      context: [
+        "Analysis area: ${area.type}",
+        "Prior findings: ${priorFindings |> summarize}"
+      ]
+      output: [
+        "Structured findings including:",
+        "- Key discoveries",
+        "- Patterns identified",
+        "- Questions for clarification",
+        "- Recommendations"
+      ]
+      success: ["All findings documented with evidence"]
+      termination: ["Discovery complete OR blocked"]
+    }
+  }
+}
 ```
 
 ## Cycle Progress Tracking
@@ -168,101 +263,121 @@ Cycle 2: Technical Patterns Discovery
 
 ## Findings Presentation Format
 
-After each discovery cycle:
+```sudolang
+interface CycleReport {
+  cycleNumber: Number
+  area: String
+  agentsLaunched: Number
+  keyFindings: FindingWithEvidence[]
+  patternsIdentified: Pattern[]
+  documentationChanges: String[]
+  questionsForClarification: String[]
+  nextStepOptions: String[]
+}
 
-```
-🔍 Discovery Cycle [N] Complete
+/presentCycleComplete report:CycleReport => """
+🔍 Discovery Cycle ${report.cycleNumber} Complete
 
-Area: [Analysis area]
-Agents Launched: [N]
+Area: ${report.area}
+Agents Launched: ${report.agentsLaunched}
 
 Key Findings:
-1. [Finding with evidence]
-2. [Finding with evidence]
-3. [Finding with evidence]
+${report.keyFindings |> enumerate |> map(f => "${f.index}. ${f.finding} [evidence: ${f.evidence}]") |> join("\n")}
 
 Patterns Identified:
-- [Pattern name]: [Brief description]
-- [Pattern name]: [Brief description]
+${report.patternsIdentified |> map(p => "- ${p.name}: ${p.description}") |> join("\n")}
 
 Documentation Created/Updated:
-- docs/[category]/[file.md]
+${report.documentationChanges |> map(d => "- ${d}") |> join("\n")}
 
 Questions for Clarification:
-1. [Question about ambiguous finding]
-2. [Question about conflicting information]
+${report.questionsForClarification |> enumerate |> map(q => "${q.index}. ${q.question}") |> join("\n")}
 
-Should I continue to [next area] or investigate [finding] further?
+Should I continue to ${report.nextStepOptions[0]} or investigate ${report.nextStepOptions[1]} further?
+"""
 ```
 
 ## Analysis Summary Format
 
-At completion of all cycles:
+```sudolang
+interface AnalysisSummary {
+  cyclesCompleted: Number
+  areasAnalyzed: String[]
+  documentationCreated: DocumentFile[]
+  majorFindings: String[]
+  gapsIdentified: String[]
+  recommendedNextSteps: String[]
+}
 
-```
+/presentAnalysisComplete summary:AnalysisSummary => """
 📊 Analysis Complete
 
 Summary:
-- Cycles completed: [N]
-- Areas analyzed: [List]
-- Documentation created: [Count] files
+- Cycles completed: ${summary.cyclesCompleted}
+- Areas analyzed: ${summary.areasAnalyzed |> join(", ")}
+- Documentation created: ${summary.documentationCreated.length} files
 
 Documentation Created:
-- docs/domain/[file1.md] - [Brief description]
-- docs/patterns/[file2.md] - [Brief description]
-- docs/interfaces/[file3.md] - [Brief description]
+${summary.documentationCreated |> map(d => "- ${d.path} - ${d.description}") |> join("\n")}
 
 Major Findings:
-1. [Critical pattern/rule discovered]
-2. [Important insight]
-3. [Significant finding]
+${summary.majorFindings |> enumerate |> map(f => "${f.index}. ${f.finding}") |> join("\n")}
 
 Gaps Identified:
-- [Area needing further analysis]
-- [Missing documentation]
+${summary.gapsIdentified |> map(g => "- ${g}") |> join("\n")}
 
 Recommended Next Steps:
-1. [Action item]
-2. [Action item]
+${summary.recommendedNextSteps |> enumerate |> map(s => "${s.index}. ${s.step}") |> join("\n")}
+"""
 ```
 
 ## Output Format
 
-When reporting analysis progress:
+```sudolang
+interface ProgressReport {
+  currentCycle: Number
+  area: String
+  phase: "Discovery" | "Documentation" | "Review"
+  activities: ActivityStatus[]
+  findingsSoFar: String[]
+  next: String
+}
 
-```
+/presentProgress report:ProgressReport => """
 🔍 Analysis Progress
 
-Current Cycle: [N]
-Area: [Analysis area]
-Phase: [Discovery / Documentation / Review]
+Current Cycle: ${report.currentCycle}
+Area: ${report.area}
+Phase: ${report.phase}
 
 Activities:
-- [Activity 1]: [Status]
-- [Activity 2]: [Status]
+${report.activities |> map(a => "- ${a.name}: ${a.status}") |> join("\n")}
 
 Findings So Far:
-- [Key finding 1]
-- [Key finding 2]
+${report.findingsSoFar |> map(f => "- ${f}") |> join("\n")}
 
-Next: [What's happening next]
+Next: ${report.next}
+"""
 ```
 
 ## Quick Reference
 
-### Cycle Pattern
-Discovery → Documentation → Review → (repeat)
+```sudolang
+QuickReference {
+  cyclePattern: "Discovery → Documentation → Review → (repeat)"
+  
+  constraints {
+    Always launch multiple agents for investigation (parallel-first)
+    Obtain user confirmation before proceeding to next cycle
+    Each cycle accumulates context from previous findings
+  }
 
-### Parallel-First
-Always launch multiple agents for investigation.
-
-### Document Appropriately
-- Business rules → docs/domain/
-- Technical patterns → docs/patterns/
-- External integrations → docs/interfaces/
-
-### User Confirmation Required
-Obtain user confirmation before proceeding to next cycle.
-
-### Build on Prior Cycles
-Each cycle accumulates context from previous findings.
+  documentationRouting {
+    match (findingType) {
+      case "business_rules" => "docs/domain/"
+      case "technical_patterns" => "docs/patterns/"
+      case "external_integrations" => "docs/interfaces/"
+    }
+  }
+}
+```

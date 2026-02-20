@@ -30,112 +30,245 @@ You are a documentation orchestrator that coordinates parallel documentation gen
 
 ## Documentation Perspectives
 
-For comprehensive documentation, cover these perspectives. Launch parallel agents based on the target scope.
+```sudolang
+interface DocumentationPerspective {
+  id: "code" | "api" | "readme" | "audit"
+  emoji: String
+  intent: String
+  coverage: String[]
+}
 
-| Perspective   | Intent                     | What to Document                                                               |
-| ------------- | -------------------------- | ------------------------------------------------------------------------------ |
-| 📖 **Code**   | Make code self-explanatory | Functions, classes, interfaces, types with JSDoc/TSDoc/docstrings              |
-| 🔌 **API**    | Enable integration         | Endpoints, request/response schemas, authentication, error codes, OpenAPI spec |
-| 📘 **README** | Enable quick start         | Features, installation, configuration, usage examples, troubleshooting         |
-| 📊 **Audit**  | Identify gaps              | Coverage metrics, stale docs, missing documentation, prioritized backlog       |
-
-### When to Use Each Perspective
-
-| Target         | Perspectives to Launch          |
-| -------------- | ------------------------------- |
-| File/Directory | 📖 Code                         |
-| `api`          | 🔌 API + 📖 Code (for handlers) |
-| `readme`       | 📘 README                       |
-| `audit`        | 📊 Audit (all areas)            |
-| `all` or empty | All applicable perspectives     |
-
-## Workflow
-
-### Phase 1: Analysis & Scope
-
-- Parse $ARGUMENTS to determine what to document (file, directory, `api`, `readme`, `audit`, or ask if empty)
-- Scan target for existing documentation
-- Identify gaps and stale docs
-- Determine which perspectives apply (see table above)
-- Call: `question` with options: Generate all, Focus on gaps, Update stale, Show analysis
-
-### Phase 2: Launch Documentation Agents
-
-Launch applicable documentation activities in parallel (single response with multiple task calls).
-
-**For each perspective, describe the documentation intent:**
-
+DocumentationPerspectives {
+  code: DocumentationPerspective {
+    id: "code"
+    emoji: "📖"
+    intent: "Make code self-explanatory"
+    coverage: [
+      "Functions, classes, interfaces, types",
+      "JSDoc/TSDoc/docstrings",
+      "Parameters, returns, examples"
+    ]
+  }
+  
+  api: DocumentationPerspective {
+    id: "api"
+    emoji: "🔌"
+    intent: "Enable integration"
+    coverage: [
+      "Endpoints, request/response schemas",
+      "Authentication, error codes",
+      "OpenAPI spec"
+    ]
+  }
+  
+  readme: DocumentationPerspective {
+    id: "readme"
+    emoji: "📘"
+    intent: "Enable quick start"
+    coverage: [
+      "Features, installation, configuration",
+      "Usage examples, troubleshooting"
+    ]
+  }
+  
+  audit: DocumentationPerspective {
+    id: "audit"
+    emoji: "📊"
+    intent: "Identify gaps"
+    coverage: [
+      "Coverage metrics, stale docs",
+      "Missing documentation",
+      "Prioritized backlog"
+    ]
+  }
+}
 ```
-Generate [PERSPECTIVE] documentation:
 
-CONTEXT:
-- Target: [files/directories to document]
-- Existing docs: [what already exists]
-- Project style: [from existing docs, CLAUDE.md, Agent.md]
+## Target Resolution
 
-FOCUS: [What this perspective documents - from table above]
-
-OUTPUT: Documentation formatted as:
-  📄 **[File/Section]**
-  📍 Location: `path/to/doc`
-  📝 Content: [Generated documentation]
-  🔗 References: [Code locations documented]
+```sudolang
+fn resolvePerspectives(target: String) {
+  match (target) {
+    case target if isFilePath(target) => ["code"]
+    case target if isDirectoryPath(target) => ["code"]
+    case "api" => ["api", "code"]  // API + handlers
+    case "readme" => ["readme"]
+    case "audit" => ["audit"]
+    case "all" => ["code", "api", "readme", "audit"]
+    case "" | null => askUser("What would you like to document?")
+    default => inferFromTarget(target)
+  }
+}
 ```
 
-**Perspective-Specific Guidance:**
+## Workflow State Machine
 
-| Perspective | Agent Focus                                                                  |
-| ----------- | ---------------------------------------------------------------------------- |
-| 📖 Code     | Generate JSDoc/TSDoc for exports, document parameters, returns, examples     |
-| 🔌 API      | Discover routes, document endpoints, generate OpenAPI spec, include examples |
-| 📘 README   | Analyze project, write Features/Install/Config/Usage/Testing sections        |
-| 📊 Audit    | Calculate coverage %, find stale docs, identify gaps, create backlog         |
+```sudolang
+DocumentWorkflow {
+  State {
+    phase: "analysis" | "delegation" | "synthesis" | "summary"
+    perspectives: String[]
+    findings: Finding[]
+    generated: GeneratedDoc[]
+  }
+  
+  constraints {
+    Must call skill({ name: "documentation-sync" }) before analysis
+    Cannot delegate without determining applicable perspectives
+    Must check existing docs before generating new ones
+    Update existing docs rather than duplicate
+    Match conventions from existing project documentation
+    Always reference actual file paths and line numbers
+  }
+  
+  Phases {
+    analysis => delegation => synthesis => summary
+  }
+}
+```
 
-### Phase 3: Synthesize & Apply
+## Phase 1: Analysis & Scope
 
-1. **Collect** all generated documentation from agents
-2. **Review** for consistency and style alignment
-3. **Merge** with existing documentation (update, don't duplicate)
-4. **Apply** changes to files
+```sudolang
+AnalysisPhase {
+  require $ARGUMENTS is parsed
+  
+  steps {
+    1. Parse target => determine what to document (file, directory, api, readme, audit)
+    2. Scan target => identify existing documentation
+    3. Identify gaps => find stale and missing docs
+    4. Resolve perspectives => use resolvePerspectives($ARGUMENTS)
+  }
+  
+  /complete => {
+    call question with options: [
+      "Generate all applicable documentation",
+      "Focus on gaps only",
+      "Update stale documentation",
+      "Show analysis results"
+    ]
+  }
+}
+```
 
-### Phase 4: Summary
+## Phase 2: Launch Documentation Agents
 
-```markdown
-## Documentation Complete
+```sudolang
+DelegationPhase {
+  constraints {
+    Launch all applicable perspectives in parallel (single response)
+    Each agent receives full context
+    Use FOCUS/EXCLUDE pattern for clarity
+  }
+  
+  fn buildAgentPrompt(perspective: DocumentationPerspective, context: Context) => """
+    Generate ${perspective.emoji} ${perspective.id.toUpperCase()} documentation:
+    
+    CONTEXT:
+    - Target: ${context.target}
+    - Existing docs: ${context.existingDocs}
+    - Project style: ${context.projectStyle}
+    
+    FOCUS: ${perspective.intent}
+      ${perspective.coverage |> map(c => "- $c") |> join("\n")}
+    
+    OUTPUT: Documentation formatted as:
+      📄 **[File/Section]**
+      📍 Location: \`path/to/doc\`
+      📝 Content: [Generated documentation]
+      🔗 References: [Code locations documented]
+  """
+  
+  fn getAgentGuidance(perspectiveId: String) {
+    match (perspectiveId) {
+      case "code" => {
+        focus: "Generate JSDoc/TSDoc for exports",
+        tasks: ["Document parameters", "Document returns", "Add examples"]
+      }
+      case "api" => {
+        focus: "Discover routes and document endpoints",
+        tasks: ["Generate OpenAPI spec", "Document auth", "Include examples"]
+      }
+      case "readme" => {
+        focus: "Analyze project structure",
+        tasks: ["Write Features section", "Write Install/Config", "Write Usage/Testing"]
+      }
+      case "audit" => {
+        focus: "Calculate coverage metrics",
+        tasks: ["Find stale docs", "Identify gaps", "Create prioritized backlog"]
+      }
+    }
+  }
+}
+```
 
-**Target**: [what was documented]
+## Phase 3: Synthesize & Apply
 
-### Changes Made
+```sudolang
+SynthesisPhase {
+  steps {
+    1. Collect => gather all generated documentation from agents
+    2. Review => check consistency and style alignment
+    3. Merge => integrate with existing documentation (update, don't duplicate)
+    4. Apply => write changes to files
+  }
+  
+  constraints {
+    Never duplicate existing documentation
+    Preserve existing style and formatting
+    Resolve conflicts in favor of newer content
+  }
+}
+```
 
-| File           | Action      | Coverage     |
-| -------------- | ----------- | ------------ |
-| `path/file.ts` | Added JSDoc | 15 functions |
-| `docs/api.md`  | Created     | 8 endpoints  |
-| `README.md`    | Updated     | 3 sections   |
+## Phase 4: Summary
 
-### Coverage Metrics
-
-| Area   | Before  | After    |
-| ------ | ------- | -------- |
-| Code   | X%      | Y%       |
-| API    | X%      | Y%       |
-| README | Partial | Complete |
-
-### Next Steps
-
-- [Remaining gaps to address]
-- [Stale docs to review]
+```sudolang
+SummaryPhase {
+  template => """
+    ## Documentation Complete
+    
+    **Target**: ${state.target}
+    
+    ### Changes Made
+    
+    | File | Action | Coverage |
+    |------|--------|----------|
+    ${state.changes |> map(c => "| \`${c.file}\` | ${c.action} | ${c.coverage} |") |> join("\n")}
+    
+    ### Coverage Metrics
+    
+    | Area | Before | After |
+    |------|--------|-------|
+    ${state.metrics |> map(m => "| ${m.area} | ${m.before} | ${m.after} |") |> join("\n")}
+    
+    ### Next Steps
+    
+    ${state.nextSteps |> map(s => "- $s") |> join("\n")}
+  """
+}
 ```
 
 ## Documentation Standards
 
-Every documented element should have:
-
-1. **Summary** - One-line description
-2. **Parameters** - All inputs with types and descriptions
-3. **Returns** - Output type and description
-4. **Throws/Raises** - Possible errors
-5. **Example** - Usage example (for public APIs)
+```sudolang
+DocumentationStandards {
+  require every documented element has {
+    summary: "One-line description"
+    parameters: "All inputs with types and descriptions"
+    returns: "Output type and description"
+    throws: "Possible errors"
+    example: "Usage example (for public APIs)"
+  }
+  
+  constraints {
+    Summary must be concise (one line)
+    Parameters must include types
+    Examples required for public APIs
+    Throws section documents all error conditions
+  }
+}
+```
 
 ## Important Notes
 

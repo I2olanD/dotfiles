@@ -22,23 +22,43 @@ Activate this skill when:
 
 ## Core Principles
 
-### What to Preserve
+```sudolang
+ContextPreservation {
+  State {
+    categories: PreservationCategory[]
+    contextFile: ContextFile?
+    activeSession: SessionContext?
+  }
 
-| Category        | Examples                                                 | Priority |
-| --------------- | -------------------------------------------------------- | -------- |
-| **Decisions**   | Architectural choices, trade-offs, rejected alternatives | HIGH     |
-| **Progress**    | Completed tasks, current state, next steps               | HIGH     |
-| **Blockers**    | What's blocking, what was tried, potential solutions     | HIGH     |
-| **Discoveries** | Patterns found, gotchas, undocumented behaviors          | MEDIUM   |
-| **Context**     | Files modified, dependencies, related specs              | MEDIUM   |
-| **References**  | Relevant docs, external resources, code locations        | LOW      |
+  interface PreservationCategory {
+    name: String
+    examples: String[]
+    priority: "HIGH" | "MEDIUM" | "LOW"
+  }
 
-### What NOT to Preserve
+  PreservationPriorities {
+    HIGH: [
+      { name: "Decisions", examples: ["Architectural choices", "Trade-offs", "Rejected alternatives"] },
+      { name: "Progress", examples: ["Completed tasks", "Current state", "Next steps"] },
+      { name: "Blockers", examples: ["What's blocking", "What was tried", "Potential solutions"] }
+    ]
+    MEDIUM: [
+      { name: "Discoveries", examples: ["Patterns found", "Gotchas", "Undocumented behaviors"] },
+      { name: "Context", examples: ["Files modified", "Dependencies", "Related specs"] }
+    ]
+    LOW: [
+      { name: "References", examples: ["Relevant docs", "External resources", "Code locations"] }
+    ]
+  }
 
-- ❌ Entire file contents (reference paths instead)
-- ❌ Obvious/generic information
-- ❌ Temporary debugging output
-- ❌ Sensitive data (secrets, credentials)
+  constraints {
+    warn "Reference file paths instead of including entire file contents"
+    warn "Exclude obvious/generic information"
+    warn "Do not preserve temporary debugging output"
+    require "Never preserve sensitive data (secrets, credentials)"
+  }
+}
+```
 
 ---
 
@@ -57,6 +77,64 @@ Context files are stored in `.config/opencode/context/`:
 ```
 
 ### File Structure
+
+```sudolang
+interface ContextFile {
+  title: String
+  date: DateTime
+  duration: String
+  task: String
+  summary: String
+  decisions: Decision[]
+  progress: ProgressState
+  blockers: Blocker[]
+  discoveries: Discovery[]
+  filesModified: FileChange[]
+  references: Reference[]
+  resumeInstructions: String[]
+}
+
+interface Decision {
+  title: String
+  choice: String
+  alternativesConsidered: String[]
+  rationale: String
+  impact: String
+}
+
+interface ProgressState {
+  completed: Task[]
+  inProgress: Task[]
+  nextSteps: String[]
+}
+
+interface Blocker {
+  title: String
+  issue: String
+  attempted: String[]
+  potentialSolutions: String[]
+}
+
+interface Discovery {
+  title: String
+  finding: String
+  location: String
+  implication: String
+}
+
+interface FileChange {
+  file: String
+  changes: String
+  status: "Complete" | "In progress" | "Pending"
+}
+
+interface Reference {
+  label: String
+  path: String
+}
+```
+
+**Template:**
 
 ```markdown
 # Session Context: [Brief Title]
@@ -77,10 +155,6 @@ Context files are stored in `.config/opencode/context/`:
 **Alternatives Considered**: [Other options]
 **Rationale**: [Why this choice]
 **Impact**: [What this affects]
-
-### [Decision 2 Title]
-
-...
 
 ## Progress
 
@@ -140,127 +214,168 @@ When resuming this work:
 
 ## Capture Protocol
 
-### End of Session Capture
+```sudolang
+CaptureProtocol {
+  fn identifyKeyContext() {
+    questions: [
+      "What decisions were made that someone else (or future me) needs to know?",
+      "What is the current state of the work?",
+      "What are the next logical steps?",
+      "What blockers or challenges were encountered?",
+      "What non-obvious things were discovered?"
+    ]
+    
+    evaluate each question |> collect findings
+  }
 
-When significant work is being completed or session is ending:
+  fn generateContextFile(taskSlug: String) {
+    ensure directory ".config/opencode/context" exists
+    filename = ".config/opencode/context/session-$(date +%Y-%m-%d)-${taskSlug}.md"
+    return filename
+  }
 
-#### Step 1: Identify Key Context
+  constraints {
+    require "Be specific - Include file paths, line numbers, exact values"
+    require "Be concise - Bullet points over paragraphs"
+    require "Be actionable - Next steps should be clear enough to execute"
+  }
 
-Ask yourself:
-
-- What decisions were made that someone else (or future me) needs to know?
-- What is the current state of the work?
-- What are the next logical steps?
-- What blockers or challenges were encountered?
-- What non-obvious things were discovered?
-
-#### Step 2: Generate Context File
-
-```bash
-# Create context directory if needed
-mkdir -p .config/opencode/context
-
-# Generate timestamped filename
-filename=".config/opencode/context/session-$(date +%Y-%m-%d)-[task-slug].md"
+  /capture slug:String => {
+    context = identifyKeyContext()
+    filename = generateContextFile(slug)
+    write context to filename using template
+    emit CaptureComplete { filename, stats }
+  }
+}
 ```
-
-#### Step 3: Write Context
-
-Use the file structure template above, focusing on:
-
-- **Be specific** - Include file paths, line numbers, exact values
-- **Be concise** - Bullet points over paragraphs
-- **Be actionable** - Next steps should be clear enough to execute
 
 ### Decision Capture
 
-When an important decision is made during the session:
+```sudolang
+interface DecisionRecord {
+  title: String
+  context: String              // Why this decision came up
+  options: EvaluatedOption[]
+  chosen: String
+  rationale: String
+  tradeoffs: String[]
+  reversibility: "Easy" | "Moderate" | "Difficult"
+}
 
-```markdown
-### [Decision Title]
+interface EvaluatedOption {
+  name: String
+  pros: String[]
+  cons: String[]
+}
 
-**Context**: [Why this decision came up]
-**Options Evaluated**:
+fn captureDecision(decision: DecisionRecord) => """
+  ### $decision.title
 
-1. [Option A] - [Pros/Cons]
-2. [Option B] - [Pros/Cons]
-3. [Option C] - [Pros/Cons]
+  **Context**: $decision.context
+  **Options Evaluated**:
+  ${ decision.options |> map(o => "1. $o.name - Pros: $o.pros, Cons: $o.cons") |> join("\n") }
 
-**Chosen**: [Option X]
-**Rationale**: [Why this option]
-**Trade-offs**: [What we're giving up]
-**Reversibility**: [How hard to change later]
+  **Chosen**: $decision.chosen
+  **Rationale**: $decision.rationale
+  **Trade-offs**: ${ decision.tradeoffs |> join(", ") }
+  **Reversibility**: $decision.reversibility
+"""
 ```
 
 ### Blocker Capture
 
-When encountering a blocker:
+```sudolang
+interface BlockerRecord {
+  title: String
+  symptom: String
+  expected: String
+  rootCause: String?
+  suspected: String?
+  investigationLog: InvestigationStep[]
+  blockedOn: String
+  workaround: String?
+  escalation: String?
+}
 
-```markdown
-### [Blocker Title]
+interface InvestigationStep {
+  tried: String
+  result: String
+}
 
-**Symptom**: [What's happening]
-**Expected**: [What should happen]
-**Root Cause**: [If known] / **Suspected**: [If unknown]
+fn captureBlocker(blocker: BlockerRecord) => """
+  ### $blocker.title
 
-**Investigation Log**:
+  **Symptom**: $blocker.symptom
+  **Expected**: $blocker.expected
+  ${ blocker.rootCause ? "**Root Cause**: $blocker.rootCause" : "**Suspected**: $blocker.suspected" }
 
-1. Tried [X] → Result: [Y]
-2. Tried [A] → Result: [B]
+  **Investigation Log**:
+  ${ blocker.investigationLog |> map((s, i) => "${i+1}. Tried $s.tried → Result: $s.result") |> join("\n") }
 
-**Blocked On**: [Specific thing needed]
-**Workaround**: [If any exists]
-**Escalation**: [Who/what could help]
+  **Blocked On**: $blocker.blockedOn
+  ${ blocker.workaround ? "**Workaround**: $blocker.workaround" : "" }
+  ${ blocker.escalation ? "**Escalation**: $blocker.escalation" : "" }
+"""
 ```
 
 ---
 
 ## Restore Protocol
 
-### Session Start Restoration
+```sudolang
+RestoreProtocol {
+  fn checkForContext() {
+    contextDir = ".config/opencode/context/"
+    files = list files matching "*.md" in contextDir
+    activeContext = read "${contextDir}active-context.md" if exists
+    return { files, activeContext }
+  }
 
-When resuming previous work:
+  fn loadContext(file: ContextFile) {
+    summary = extractSummary(file)
+    
+    emit ContextFound {
+      session: file.title,
+      date: file.date,
+      summary: summary,
+      decisionsCount: file.decisions.length,
+      progress: file.progress.inProgress,
+      nextSteps: file.progress.nextSteps |> take(3),
+      blockersCount: file.blockers.length,
+      resumeFrom: suggestStartingPoint(file)
+    }
+  }
 
-#### Step 1: Check for Context
+  fn applyContext(file: ContextFile) {
+    load relevant files mentioned in file.filesModified
+    verify assumptions still hold (code hasn't changed)
+    pick up from file.progress.nextSteps
+  }
 
-```bash
-# Find recent context files
-ls -la .config/opencode/context/*.md
-
-# Check for active context
-cat .config/opencode/context/active-context.md
+  /restore => {
+    { files, activeContext } = checkForContext()
+    
+    match (activeContext) {
+      case Some(ctx) => {
+        loadContext(ctx)
+        presentOptions: [
+          "Continue from where we left off",
+          "Review full context first",
+          "Start fresh (archive this context)"
+        ]
+      }
+      case None => emit NoContextFound {
+        message: "This appears to be a fresh start",
+        options: [
+          "Start fresh",
+          "Check for context in parent directory",
+          "Create initial context from current state"
+        ]
+      }
+    }
+  }
+}
 ```
-
-#### Step 2: Load Context
-
-Read the context file and present a summary:
-
-```
-🔄 Previous Session Context Found
-
-Session: [Title] ([Date])
-Summary: [Brief summary]
-
-Decisions Made: [N]
-Current Progress: [Status]
-Next Steps: [First 2-3 items]
-Open Blockers: [N]
-
-Resume from: [Suggested starting point]
-
-Would you like to:
-1. Continue from where we left off
-2. Review full context first
-3. Start fresh (archive this context)
-```
-
-#### Step 3: Apply Context
-
-When continuing:
-
-- Load relevant files mentioned in context
-- Verify assumptions still hold (code hasn't changed)
-- Pick up from documented next steps
 
 ---
 
@@ -270,192 +385,191 @@ When continuing:
 
 When context accumulates over multiple sessions:
 
-#### Merge Strategy
+```sudolang
+ContextCompression {
+  interface ConsolidatedContext {
+    projectName: String
+    activePeriod: { start: Date, end: Date }
+    totalSessions: Number
+    executiveSummary: String
+    keyDecisions: DecisionSummary[]
+    currentState: String
+    sessionHistory: CollapsedSession[]
+  }
 
-```markdown
-# Consolidated Context: [Project/Feature Name]
+  interface DecisionSummary {
+    date: Date
+    decision: String
+    rationale: String
+  }
 
-**Active Period**: [Start date] - [Current date]
-**Total Sessions**: [N]
+  interface CollapsedSession {
+    number: Number
+    date: Date
+    title: String
+    content: String  // Original session content
+  }
 
-## Executive Summary
+  fn mergeContexts(sessions: ContextFile[]) => ConsolidatedContext {
+    projectName: extractCommonProject(sessions)
+    activePeriod: { start: sessions.first.date, end: sessions.last.date }
+    totalSessions: sessions.length
+    executiveSummary: generateSummary(sessions)
+    keyDecisions: sessions |> flatMap(s => s.decisions) |> summarize
+    currentState: sessions.last.progress
+    sessionHistory: sessions |> map(toCollapsedSession)
+  }
 
-[High-level summary of entire effort]
-
-## Key Decisions (All Sessions)
-
-| Date   | Decision   | Rationale         |
-| ------ | ---------- | ----------------- |
-| [Date] | [Decision] | [Brief rationale] |
-
-## Current State
-
-[As of most recent session]
-
-## Complete History
-
-<details>
-<summary>Session 1: [Date] - [Title]</summary>
-[Collapsed content from session 1]
-</details>
-
-<details>
-<summary>Session 2: [Date] - [Title]</summary>
-[Collapsed content from session 2]
-</details>
+  fn archiveOldContext(files: String[]) {
+    archiveDir = ".config/opencode/context/archive/"
+    ensure archiveDir exists
+    
+    for each file in files:
+      move file to archiveDir
+  }
+}
 ```
-
-#### Archival
-
-Old context files should be:
-
-1. Merged into consolidated context
-2. Moved to `.config/opencode/context/archive/`
-3. Retained for reference but not auto-loaded
 
 ---
 
 ## Integration with Other Workflows
 
-### With Specifications
+```sudolang
+WorkflowIntegration {
+  interface SpecificationContext {
+    specId: String
+    specName: String
+    location: String
+    progress: {
+      PRD: "Complete" | "In Progress" | "Pending" | "Skipped"
+      SDD: "Complete" | "In Progress" | "Pending" | "Skipped"
+      PLAN: { phase: Number, total: Number }
+    }
+    deviations: String[]
+  }
 
-When working on a spec-based implementation:
+  interface ImplementationContext {
+    branch: String
+    base: String
+    baseCommit: String
+    filesInProgress: FileProgress[]
+    tests: { passing: Number, failing: Number, pending: Number }
+  }
 
-```markdown
-## Specification Context
+  interface FileProgress {
+    path: String
+    state: String
+    percentComplete: Number
+  }
 
-Spec: [ID] - [Name]
-Location: docs/specs/[ID]-[name]/
-
-Progress vs Spec:
-
-- PRD: [Status]
-- SDD: [Status]
-- PLAN: [Phase X of Y]
-
-Deviations from Spec:
-
-- [Any changes made from original plan]
-```
-
-### With Implementation
-
-When implementing features:
-
-```markdown
-## Implementation Context
-
-Branch: feature/[name]
-Base: main (at commit [sha])
-
-Files in Progress:
-| File | State | % Complete |
-|------|-------|------------|
-| [path] | [state] | [N]% |
-
-Tests:
-
-- [N] passing
-- [N] failing
-- [N] pending
-```
-
-### With Review
-
-When in the middle of code review:
-
-```markdown
-## Review Context
-
-PR/Branch: [identifier]
-Review State: [In progress / Feedback given / Awaiting response]
-
-Findings So Far:
-
-- Critical: [N]
-- High: [N]
-- Medium: [N]
-
-Outstanding Questions:
-
-- [Question 1]
-- [Question 2]
+  interface ReviewContext {
+    identifier: String
+    reviewState: "In progress" | "Feedback given" | "Awaiting response"
+    findings: { critical: Number, high: Number, medium: Number }
+    outstandingQuestions: String[]
+  }
+}
 ```
 
 ---
 
 ## Automatic Context Triggers
 
-The skill should be triggered automatically when:
+```sudolang
+ContextTriggers {
+  HighPriority {
+    description: "Always capture"
+    triggers: [
+      "Session ending with uncommitted significant work",
+      "Hitting a blocker that requires external input",
+      "Making architectural decisions",
+      "Discovering undocumented system behavior"
+    ]
+    action: /capture immediately
+  }
 
-### High-Priority Triggers (Always Capture)
+  MediumPriority {
+    description: "Suggest capture"
+    triggers: [
+      "Completing a major phase of work",
+      "Switching to a different task/context",
+      "After 30+ minutes of focused work"
+    ]
+    action: prompt user to capture
+  }
 
-- 🔴 Session ending with uncommitted significant work
-- 🔴 Hitting a blocker that requires external input
-- 🔴 Making architectural decisions
-- 🔴 Discovering undocumented system behavior
+  RestorationTriggers {
+    description: "Check for existing context"
+    triggers: [
+      "Starting session in directory with .config/opencode/context/",
+      'User mentions "continue", "resume", "where were we"',
+      "Detecting in-progress work (uncommitted changes + context file)"
+    ]
+    action: /restore
+  }
 
-### Medium-Priority Triggers (Suggest Capture)
-
-- 🟡 Completing a major phase of work
-- 🟡 Switching to a different task/context
-- 🟡 After 30+ minutes of focused work
-
-### Context Restoration Triggers
-
-- 🔵 Starting session in directory with `.config/opencode/context/`
-- 🔵 User mentions "continue", "resume", "where were we"
-- 🔵 Detecting in-progress work (uncommitted changes + context file)
+  fn detectTrigger(event: SessionEvent) {
+    match (event) {
+      case { type: "session_end", uncommittedWork: true } => HighPriority.action
+      case { type: "blocker_hit", requiresExternal: true } => HighPriority.action
+      case { type: "decision", architectural: true } => HighPriority.action
+      case { type: "discovery", undocumented: true } => HighPriority.action
+      case { type: "phase_complete" } => MediumPriority.action
+      case { type: "context_switch" } => MediumPriority.action
+      case { type: "session_start", contextExists: true } => RestorationTriggers.action
+      case { type: "user_message", contains: ["continue", "resume", "where were we"] } => RestorationTriggers.action
+      default => null
+    }
+  }
+}
+```
 
 ---
 
 ## Output Format
 
-### When Capturing Context
+```sudolang
+OutputFormats {
+  fn captureOutput(result: CaptureResult) => """
+    Context Preserved
 
-```
-💾 Context Preserved
+    Session: $result.title
+    Saved to: $result.filename
 
-Session: [Title]
-Saved to: .config/opencode/context/[filename].md
+    Captured:
+    - $result.decisions.length decisions
+    - $result.progress.length progress items
+    - $result.blockers.length blockers
+    - $result.discoveries.length discoveries
 
-Captured:
-- [N] decisions
-- [N] progress items
-- [N] blockers
-- [N] discoveries
+    Resume command: "Continue from $result.sessionName"
+  """
 
-Resume command: "Continue from [session name]"
-```
+  fn restoreOutput(context: ContextFile) => """
+    Context Restored
 
-### When Restoring Context
+    Session: $context.title from $context.date
+    Status: $context.summary
 
-```
-🔄 Context Restored
+    Ready to continue with:
+    ${ context.progress.nextSteps |> take(2) |> map((s, i) => "${i+1}. $s") |> join("\n") }
 
-Session: [Title] from [Date]
-Status: [Current state summary]
+    $context.blockers.length blockers still open
+    $context.decisions.length decisions to consider
+  """
 
-Ready to continue with:
-1. [First next step]
-2. [Second next step]
+  fn noContextOutput() => """
+    No Previous Context Found
 
-[N] blockers still open
-[N] decisions to consider
-```
+    This appears to be a fresh start. As you work, I'll:
+    - Track significant decisions
+    - Note blockers and discoveries
+    - Preserve context when session ends
 
-### When No Context Found
-
-```
-📋 No Previous Context Found
-
-This appears to be a fresh start. As you work, I'll:
-- Track significant decisions
-- Note blockers and discoveries
-- Preserve context when session ends
-
-Would you like to:
-1. Start fresh
-2. Check for context in parent directory
-3. Create initial context from current state
+    Would you like to:
+    1. Start fresh
+    2. Check for context in parent directory
+    3. Create initial context from current state
+  """
+}
 ```

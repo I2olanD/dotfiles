@@ -35,161 +35,315 @@ The SDD template is at [template.md](template.md). Use this structure exactly.
 
 ## SDD Focus Areas
 
-When working on an SDD, focus on:
+```sudolang
+interface SDDFocusArea {
+  how: String     // Architecture, patterns, approaches
+  where: String   // Directory structure, component locations
+  what: String    // Interfaces, APIs, data models
+  why: String     // Decision rationale (ADRs)
+}
 
-- **HOW** it will be built (architecture, patterns)
-- **WHERE** code lives (directory structure, components)
-- **WHAT** interfaces exist (APIs, data models, integrations)
-- **WHY** decisions were made (ADRs with rationale)
-
-**Ensure alignment with:**
-
-- PRD requirements (every requirement should be addressable)
-- Existing codebase patterns (leverage what already works)
-- Constraints identified in the PRD
+SDDAlignment {
+  constraints {
+    Every design decision must trace to a PRD requirement
+    Must leverage existing codebase patterns where applicable
+    Must respect constraints identified in the PRD
+    No orphan components without PRD justification
+  }
+}
+```
 
 ## Cycle Pattern
 
 For each section requiring clarification, follow this iterative process:
 
-### 1. Discovery Phase
+```sudolang
+interface CyclePhase {
+  name: "discovery" | "documentation" | "review"
+  complete: Boolean
+  findings: String[]
+}
 
-- **Read the completed PRD** to understand requirements
-- **Explore the codebase** to understand existing patterns
-- **Launch parallel specialist agents** to investigate:
-  - Architecture patterns and best practices
-  - Database/data model design
-  - API design and interface contracts
-  - Security implications
-  - Performance characteristics
-  - Integration approaches
-
-### 2. Documentation Phase
-
-- **Update the SDD** with research findings
-- **Replace [NEEDS CLARIFICATION] markers** with actual content
-- Focus only on current section being processed
-- Follow template structure exactly—preserve all sections as defined
-
-### 3. Review Phase
-
-- **Present ALL agent findings** to user (complete responses, not summaries)
-- Show conflicting recommendations or trade-offs
-- Present proposed architecture with rationale
-- Highlight decisions needing user confirmation (ADRs)
-- **Wait for user confirmation** before next cycle
-
-**Ask yourself each cycle:**
-
-1. Have I read and understood the relevant PRD requirements?
-2. Have I explored existing codebase patterns?
-3. Have I launched parallel specialist agents?
-4. Have I updated the SDD according to findings?
-5. Have I presented options and trade-offs to the user?
-6. Have I received user confirmation on architecture decisions?
+SDDCycle {
+  State {
+    currentPhase: CyclePhase
+    sectionInProgress: String
+    userConfirmed: Boolean
+  }
+  
+  constraints {
+    Must read PRD before design decisions
+    Must explore codebase before proposing patterns
+    User confirmation required before next cycle
+    Focus on one section at a time
+  }
+  
+  /discovery section:String => {
+    read completed PRD for requirements
+    explore codebase for existing patterns
+    launch parallel specialists for:
+      - Architecture patterns and best practices
+      - Database/data model design
+      - API design and interface contracts
+      - Security implications
+      - Performance characteristics
+      - Integration approaches
+  }
+  
+  /document findings:Finding[] => {
+    update SDD with research findings
+    replace [NEEDS CLARIFICATION] markers
+    follow template structure exactly
+    preserve all defined sections
+  }
+  
+  /review => {
+    present ALL agent findings (complete, not summaries)
+    show conflicting recommendations or trade-offs
+    present proposed architecture with rationale
+    highlight decisions needing confirmation (ADRs)
+    await user confirmation
+  }
+  
+  /selfCheck => match (State) {
+    case { prdRead: false } => warn "Have not read PRD requirements"
+    case { codebaseExplored: false } => warn "Have not explored codebase"
+    case { specialistsLaunched: false } => warn "Have not launched specialists"
+    case { sddUpdated: false } => warn "Have not updated SDD"
+    case { optionsPresented: false } => warn "Have not presented options"
+    case { userConfirmed: false } => warn "Awaiting user confirmation"
+    default => "Cycle complete"
+  }
+}
+```
 
 ## Final Validation
 
 Before completing the SDD, validate through systematic checks:
 
-### Overlap and Conflict Detection
+```sudolang
+interface ValidationCategory {
+  name: String
+  checks: ValidationCheck[]
+  passed: Boolean
+}
 
-Launch specialists to identify:
+interface ValidationCheck {
+  id: String
+  description: String
+  status: "pass" | "fail" | "pending"
+  severity: "critical" | "high" | "medium"
+}
 
-- **Component Overlap**: Are responsibilities duplicated across components?
-- **Interface Conflicts**: Do multiple interfaces serve the same purpose?
-- **Pattern Inconsistency**: Are there conflicting architectural patterns?
-- **Data Redundancy**: Is data duplicated without justification?
+SDDValidation {
+  categories: [
+    OverlapDetection,
+    CoverageAnalysis,
+    BoundaryValidation,
+    ConsistencyVerification
+  ]
+  
+  /validate sdd:SDD => {
+    results = categories |> map(c => c.validate(sdd))
+    match (results) {
+      case r if r |> any(c => c.hasCritical) => {
+        status: "blocked",
+        action: "Address critical issues before proceeding"
+      }
+      case r if r |> any(c => !c.passed) => {
+        status: "incomplete",
+        action: "Review failed checks"
+      }
+      default => {
+        status: "ready",
+        action: "SDD validated for implementation"
+      }
+    }
+  }
+}
 
-### Coverage Analysis
+OverlapDetection {
+  /validate sdd:SDD => launch specialists to identify:
+    - Component Overlap: duplicated responsibilities across components?
+    - Interface Conflicts: multiple interfaces serving same purpose?
+    - Pattern Inconsistency: conflicting architectural patterns?
+    - Data Redundancy: duplicated data without justification?
+}
 
-Launch specialists to verify:
+CoverageAnalysis {
+  /validate sdd:SDD => launch specialists to verify:
+    - PRD Coverage: ALL requirements from PRD addressed?
+    - Component Completeness: UI, business logic, data, integration defined?
+    - Interface Completeness: all external/internal interfaces specified?
+    - Cross-Cutting Concerns: security, error handling, logging, performance?
+    - Deployment Coverage: deployment, configuration, operational aspects?
+}
 
-- **PRD Coverage**: Are ALL requirements from the PRD addressed?
-- **Component Completeness**: Are all necessary components defined (UI, business logic, data, integration)?
-- **Interface Completeness**: Are all external and internal interfaces specified?
-- **Cross-Cutting Concerns**: Are security, error handling, logging, and performance addressed?
-- **Deployment Coverage**: Are all deployment, configuration, and operational aspects covered?
+BoundaryValidation {
+  /validate sdd:SDD => launch specialists to validate:
+    - Component Boundaries: clearly defined and bounded responsibilities?
+    - Layer Separation: presentation, business, data properly separated?
+    - Integration Points: all system boundaries explicitly documented?
+    - Dependency Direction: correct flow, no circular dependencies?
+}
 
-### Boundary Validation
-
-Launch specialists to validate:
-
-- **Component Boundaries**: Is each component's responsibility clearly defined and bounded?
-- **Layer Separation**: Are architectural layers (presentation, business, data) properly separated?
-- **Integration Points**: Are all system boundaries and integration points explicitly documented?
-- **Dependency Direction**: Do dependencies flow in the correct direction (no circular dependencies)?
-
-### Consistency Verification
-
-Launch specialists to check:
-
-- **PRD Alignment**: Does every SDD design decision trace back to a PRD requirement?
-- **Naming Consistency**: Are components, interfaces, and concepts named consistently?
-- **Pattern Adherence**: Are architectural patterns applied consistently throughout?
-- **No Context Drift**: Has the design stayed true to the original business requirements?
+ConsistencyVerification {
+  /validate sdd:SDD => launch specialists to check:
+    - PRD Alignment: every design decision traces to PRD requirement?
+    - Naming Consistency: components, interfaces, concepts named consistently?
+    - Pattern Adherence: architectural patterns applied consistently?
+    - No Context Drift: design stayed true to business requirements?
+}
+```
 
 ## Validation Checklist
 
-See [validation.md](validation.md) for the complete checklist. Key gates:
+See [validation.md](validation.md) for the complete checklist.
 
-- [ ] All required sections are complete
-- [ ] No [NEEDS CLARIFICATION] markers remain
-- [ ] All context sources are listed with relevance ratings
-- [ ] Project commands are discovered from actual project files
-- [ ] Constraints → Strategy → Design → Implementation path is logical
-- [ ] Architecture pattern is clearly stated with rationale
-- [ ] Every component in diagram has directory mapping
-- [ ] Every interface has specification
-- [ ] Error handling covers all error types
-- [ ] Quality requirements are specific and measurable
-- [ ] Every quality requirement has test coverage
-- [ ] **All architecture decisions confirmed by user**
-- [ ] Component names consistent across diagrams
-- [ ] A developer could implement from this design
+```sudolang
+SDDValidationGates {
+  require {
+    all_sections_complete: "All required sections are complete"
+    no_clarification_markers: "No [NEEDS CLARIFICATION] markers remain"
+    context_sources_listed: "All context sources listed with relevance ratings"
+    commands_discovered: "Project commands discovered from actual project files"
+    logical_path: "Constraints -> Strategy -> Design -> Implementation path is logical"
+    architecture_stated: "Architecture pattern clearly stated with rationale"
+    diagram_mapping: "Every component in diagram has directory mapping"
+    interfaces_specified: "Every interface has specification"
+    error_handling_complete: "Error handling covers all error types"
+    quality_measurable: "Quality requirements are specific and measurable"
+    quality_tested: "Every quality requirement has test coverage"
+    user_confirmed: "All architecture decisions confirmed by user"
+    naming_consistent: "Component names consistent across diagrams"
+    implementable: "A developer could implement from this design"
+  }
+  
+  fn evaluate(sdd: SDD) => {
+    gates = require |> entries
+    results = gates |> map(([id, desc]) => {
+      check: id,
+      description: desc,
+      passed: evaluate_gate(sdd, id)
+    })
+    
+    match (results) {
+      case r if r |> all(g => g.passed) => { ready: true, gates: results }
+      case r => { 
+        ready: false, 
+        gates: results,
+        blockers: r |> filter(g => !g.passed)
+      }
+    }
+  }
+}
+```
 
 ## Architecture Decision Records (ADRs)
 
 Every significant decision needs user confirmation:
 
-```markdown
-- [ ] ADR-1 [Decision Name]: [Choice made]
-  - Rationale: [Why this over alternatives]
-  - Trade-offs: [What we accept]
-  - User confirmed: _Pending_
-```
+```sudolang
+interface ADR {
+  id: String              // e.g., "ADR-1"
+  name: String            // Decision name
+  choice: String          // Choice made
+  rationale: String       // Why this over alternatives
+  tradeoffs: String[]     // What we accept
+  confirmed: Boolean      // User confirmed
+}
 
-**Obtain user confirmation for all implementation-impacting decisions.**
+ADRManagement {
+  constraints {
+    All implementation-impacting decisions require user confirmation
+    Trade-offs must be explicitly documented
+    Alternatives considered must be listed
+    No proceeding with unconfirmed critical ADRs
+  }
+  
+  /format adr:ADR => """
+    - [ ] $adr.id [$adr.name]: $adr.choice
+      - Rationale: $adr.rationale
+      - Trade-offs: ${ adr.tradeoffs |> join(", ") }
+      - User confirmed: ${ adr.confirmed ? "Yes" : "_Pending_" }
+  """
+  
+  /checkReadiness adrs:ADR[] => match (adrs) {
+    case a if a |> any(r => !r.confirmed) => {
+      ready: false,
+      pending: a |> filter(r => !r.confirmed)
+    }
+    default => { ready: true }
+  }
+}
+```
 
 ## Output Format
 
-After SDD work, report:
+```sudolang
+interface SDDStatusReport {
+  specId: String
+  architecture: {
+    pattern: String
+    keyComponents: String[]
+    externalIntegrations: String[]
+  }
+  sections: SectionStatus[]
+  adrs: ADRStatus[]
+  validation: {
+    passed: Number
+    pending: Number
+  }
+  nextSteps: String[]
+}
 
-```
-🏗️ SDD Status: [spec-id]-[name]
+interface SectionStatus {
+  name: String
+  status: "complete" | "needs_decision" | "in_progress"
+  blockedBy: String?
+}
 
-Architecture:
-- Pattern: [Selected pattern]
-- Key Components: [List]
-- External Integrations: [List]
+interface ADRStatus {
+  id: String
+  confirmed: Boolean
+}
 
-Sections Completed:
-- [Section 1]: ✅ Complete
-- [Section 2]: ⚠️ Needs user decision on [topic]
-- [Section 3]: 🔄 In progress
+fn formatReport(report: SDDStatusReport) => """
+  SDD Status: $report.specId
 
-ADRs:
-- [ADR-1]: ✅ Confirmed
-- [ADR-2]: ⏳ Pending confirmation
+  Architecture:
+  - Pattern: $report.architecture.pattern
+  - Key Components: ${ report.architecture.keyComponents |> join(", ") }
+  - External Integrations: ${ report.architecture.externalIntegrations |> join(", ") }
 
-Validation Status:
-- [X] items passed
-- [Y] items pending
+  Sections Completed:
+  ${ report.sections |> map(s => formatSectionStatus(s)) |> join("\n") }
 
-Next Steps:
-- [What needs to happen next]
+  ADRs:
+  ${ report.adrs |> map(a => formatADRStatus(a)) |> join("\n") }
+
+  Validation Status:
+  - $report.validation.passed items passed
+  - $report.validation.pending items pending
+
+  Next Steps:
+  ${ report.nextSteps |> map(s => "- $s") |> join("\n") }
+"""
+
+fn formatSectionStatus(s: SectionStatus) => match (s.status) {
+  case "complete" => "- [$s.name]: Complete"
+  case "needs_decision" => "- [$s.name]: Needs user decision on $s.blockedBy"
+  case "in_progress" => "- [$s.name]: In progress"
+}
+
+fn formatADRStatus(a: ADRStatus) => match (a.confirmed) {
+  case true => "- [$a.id]: Confirmed"
+  case false => "- [$a.id]: Pending confirmation"
+}
 ```
 
 ## Examples
 
 See [examples/architecture-examples.md](examples/architecture-examples.md) for reference.
+
+skill({ name: "architecture-design" })

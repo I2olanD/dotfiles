@@ -42,11 +42,29 @@ The test pyramid guides test distribution for optimal feedback speed and confide
 
 ### Distribution Guidelines
 
-| Test Type   | Target % | Execution Time | Scope                    |
-|-------------|----------|----------------|--------------------------|
-| Unit        | 60-70%   | < 100ms each   | Single function/class    |
-| Integration | 20-30%   | < 5s each      | Service boundaries       |
-| E2E         | 5-10%    | < 30s each     | Critical user paths      |
+```sudolang
+TestDistribution {
+  fn getTestTypeSpec(testType: String) {
+    match (testType) {
+      case "unit" => {
+        targetPercent: "60-70%",
+        maxExecutionTime: "< 100ms each",
+        scope: "Single function/class"
+      }
+      case "integration" => {
+        targetPercent: "20-30%",
+        maxExecutionTime: "< 5s each",
+        scope: "Service boundaries"
+      }
+      case "e2e" => {
+        targetPercent: "5-10%",
+        maxExecutionTime: "< 30s each",
+        scope: "Critical user paths"
+      }
+    }
+  }
+}
+```
 
 ## Core Patterns
 
@@ -172,15 +190,44 @@ def test_list_orders_empty():
 
 ## Coverage Targets
 
-### Recommended Coverage by Code Type
-
-| Code Type          | Statement | Branch | Target |
-|--------------------|-----------|--------|--------|
-| Business Logic     | 90%       | 85%    | High   |
-| API Controllers    | 80%       | 75%    | Medium |
-| Utility Functions  | 95%       | 90%    | High   |
-| UI Components      | 70%       | 65%    | Medium |
-| Generated Code     | N/A       | N/A    | Skip   |
+```sudolang
+CoverageTargets {
+  fn getCoverageSpec(codeType: String) {
+    match (codeType) {
+      case "business_logic" => {
+        statement: 90,
+        branch: 85,
+        priority: "high"
+      }
+      case "api_controllers" => {
+        statement: 80,
+        branch: 75,
+        priority: "medium"
+      }
+      case "utility_functions" => {
+        statement: 95,
+        branch: 90,
+        priority: "high"
+      }
+      case "ui_components" => {
+        statement: 70,
+        branch: 65,
+        priority: "medium"
+      }
+      case "generated_code" => {
+        statement: null,
+        branch: null,
+        priority: "skip"
+      }
+    }
+  }
+  
+  constraints {
+    Coverage percentage alone is insufficient
+    Prioritize: critical paths, edge cases, regression prevention, complex logic
+  }
+}
+```
 
 ### Coverage Quality Over Quantity
 
@@ -194,6 +241,19 @@ Coverage percentage alone is insufficient. Prioritize:
 ## Framework-Specific Patterns
 
 ### Jest (JavaScript/TypeScript)
+
+```sudolang
+JestPatterns {
+  fileStructure: "co-located"  // *.test.ts next to source
+  
+  constraints {
+    require mockRepo initialization in beforeEach
+    require jest.clearAllMocks() in afterEach
+    require descriptive describe/it blocks
+    warn when mocking internal methods
+  }
+}
+```
 
 ```typescript
 // File structure
@@ -241,6 +301,18 @@ describe('UserService', () => {
 ```
 
 ### Pytest (Python)
+
+```sudolang
+PytestPatterns {
+  fileStructure: "mirrored"  // tests/ mirrors src/
+  
+  constraints {
+    require fixtures via conftest.py for shared setup
+    require Mock(spec=...) for type-safe mocking
+    warn when not using @pytest.mark.parametrize for similar test cases
+  }
+}
+```
 
 ```python
 # File structure
@@ -335,14 +407,18 @@ describe('LoginForm', () => {
 
 ## Test Organization
 
-### File Naming Conventions
-
-| Framework | Test File Pattern      | Example                    |
-|-----------|------------------------|----------------------------|
-| Jest      | `*.test.ts`            | `UserService.test.ts`      |
-| Pytest    | `test_*.py`            | `test_user_service.py`     |
-| Go        | `*_test.go`            | `user_service_test.go`     |
-| JUnit     | `*Test.java`           | `UserServiceTest.java`     |
+```sudolang
+TestFileNaming {
+  fn getFilePattern(framework: String) {
+    match (framework) {
+      case "jest" => { pattern: "*.test.ts", example: "UserService.test.ts" }
+      case "pytest" => { pattern: "test_*.py", example: "test_user_service.py" }
+      case "go" => { pattern: "*_test.go", example: "user_service_test.go" }
+      case "junit" => { pattern: "*Test.java", example: "UserServiceTest.java" }
+    }
+  }
+}
+```
 
 ### Directory Structure Patterns
 
@@ -375,18 +451,56 @@ tests/
 
 ## Best Practices
 
-- Run tests before committing; never commit failing tests
-- Keep unit tests under 100ms execution time
-- Mock external dependencies at service boundaries only
-- Use factories or fixtures for test data, not raw literals
-- Delete flaky tests or fix them immediately
-- Review tests during code review with same rigor as production code
-- Name tests as specifications that document behavior
-- Prefer real implementations over mocks when practical
-- Test edge cases: nulls, empty collections, boundaries
-- Avoid conditional logic in tests
+```sudolang
+TestBestPractices {
+  constraints {
+    require tests pass before committing
+    require unit tests complete in < 100ms
+    require mocking only at service boundaries
+    require factories/fixtures for test data (not raw literals)
+    require immediate fix or deletion of flaky tests
+    require same review rigor for tests as production code
+  }
+  
+  warn {
+    when test names don't describe behavior
+    when using mocks instead of real implementations unnecessarily
+    when missing edge case coverage (nulls, empty collections, boundaries)
+    when tests contain conditional logic
+  }
+}
+```
 
 ## Anti-Patterns to Avoid
+
+```sudolang
+TestAntiPatterns {
+  fn detectAntiPattern(testCode: String) {
+    match (testCode) {
+      case code if accessesPrivateMembers(code) => {
+        antiPattern: "testing_implementation_details",
+        problem: "Brittle test that breaks on refactoring",
+        fix: "Test observable behavior through public API"
+      }
+      case code if usesSharedMutableState(code) => {
+        antiPattern: "shared_mutable_state",
+        problem: "Tests interfere with each other",
+        fix: "Use fresh fixtures per test via setup methods"
+      }
+      case code if mocksSystemUnderTest(code) => {
+        antiPattern: "over_mocking",
+        problem: "Test doesn't verify real behavior",
+        fix: "Mock dependencies, not the system under test"
+      }
+      case code if hasDuplicatedTestCases(code) => {
+        antiPattern: "test_duplication",
+        problem: "Redundant maintenance burden",
+        fix: "Use parameterized tests"
+      }
+    }
+  }
+}
+```
 
 ### Testing Implementation Details
 

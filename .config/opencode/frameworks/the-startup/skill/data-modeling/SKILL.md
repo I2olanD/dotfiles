@@ -29,12 +29,17 @@ Data models outlive applications. A well-designed schema encodes business rules,
 
 Entities represent distinct business concepts that have identity and lifecycle.
 
-**Entity Identification Checklist:**
-- Has unique identity across the system
-- Has attributes that describe it
-- Participates in relationships with other entities
-- Has a meaningful lifecycle (created, modified, archived)
-- Would be stored and retrieved independently
+```sudolang
+EntityIdentification {
+  require {
+    Has unique identity across the system
+    Has attributes that describe it
+    Participates in relationships with other entities
+    Has meaningful lifecycle (created, modified, archived)
+    Would be stored and retrieved independently
+  }
+}
+```
 
 **Common Entity Patterns:**
 - Core domain objects (User, Product, Order)
@@ -44,33 +49,74 @@ Entities represent distinct business concepts that have identity and lifecycle.
 
 ### Relationship Types
 
-| Type | Notation | Example | Implementation |
-|------|----------|---------|----------------|
-| One-to-One | 1:1 | User - Profile | FK with unique constraint or same table |
-| One-to-Many | 1:N | Customer - Orders | FK on the "many" side |
-| Many-to-Many | M:N | Students - Courses | Junction/bridge table |
+```sudolang
+fn determineRelationshipImplementation(relationship) {
+  match (relationship.type) {
+    case "1:1" => {
+      implementation: "FK with unique constraint or same table",
+      example: "User - Profile"
+    }
+    case "1:N" => {
+      implementation: "FK on the 'many' side",
+      example: "Customer - Orders"
+    }
+    case "M:N" => {
+      implementation: "Junction/bridge table",
+      example: "Students - Courses"
+    }
+  }
+}
 
-**Relationship Considerations:**
-- Cardinality: minimum and maximum on each side
-- Optionality: required vs optional participation
-- Direction: unidirectional vs bidirectional navigation
-- Cascade behavior: what happens on delete/update
+RelationshipAnalysis {
+  considerations: [
+    "Cardinality: minimum and maximum on each side",
+    "Optionality: required vs optional participation",
+    "Direction: unidirectional vs bidirectional navigation",
+    "Cascade behavior: what happens on delete/update"
+  ]
+}
+```
 
 ### Attribute Analysis
 
-**Attribute Types:**
-- Simple: single atomic value (name, price)
-- Composite: structured value (address = street + city + postal)
-- Derived: calculated from other attributes (age from birthdate)
-- Multi-valued: repeating values (phone numbers, tags)
+```sudolang
+interface Attribute {
+  name: String
+  type: "simple" | "composite" | "derived" | "multi-valued"
+  nullable: Boolean
+  description: String
+}
 
-**Key Types:**
-- Natural key: business-meaningful identifier (SSN, ISBN)
-- Surrogate key: system-generated identifier (UUID, auto-increment)
-- Composite key: multiple columns forming identity
-- Candidate key: any attribute(s) that could serve as primary key
+fn categorizeAttribute(attribute) {
+  match (attribute) {
+    case { atomic: true, single: true } => "simple"      // name, price
+    case { structured: true } => "composite"              // address = street + city + postal
+    case { calculatedFrom: _ } => "derived"               // age from birthdate
+    case { repeating: true } => "multi-valued"            // phone numbers, tags
+  }
+}
 
-**Best Practice:** Prefer surrogate keys for primary keys; use natural keys as unique constraints.
+interface Key {
+  type: "natural" | "surrogate" | "composite" | "candidate"
+  columns: String[]
+}
+
+fn categorizeKey(key) {
+  match (key) {
+    case { businessMeaningful: true } => "natural"        // SSN, ISBN
+    case { systemGenerated: true } => "surrogate"         // UUID, auto-increment
+    case { columns: c } if c.length > 1 => "composite"    // Multiple columns
+    case { couldServePrimary: true } => "candidate"       // Any viable primary key option
+  }
+}
+
+KeyDesign {
+  constraints {
+    Prefer surrogate keys for primary keys
+    Use natural keys as unique constraints
+  }
+}
+```
 
 ## Normalization
 
@@ -78,76 +124,67 @@ Entities represent distinct business concepts that have identity and lifecycle.
 
 Each normal form builds on the previous. Normalize until requirements dictate otherwise.
 
-#### First Normal Form (1NF)
-
-**Rule:** Eliminate repeating groups; each cell contains atomic values.
-
-**Violation Example:**
-```
-Order(id, customer, items: "widget,gadget,thing")
-```
-
-**Resolution:**
-```
-Order(id, customer)
-OrderItem(order_id, item_name)
-```
-
-#### Second Normal Form (2NF)
-
-**Rule:** Remove partial dependencies on composite keys.
-
-**Violation Example:**
-```
-OrderItem(order_id, product_id, product_name, quantity)
-                                 ^-- depends only on product_id
-```
-
-**Resolution:**
-```
-OrderItem(order_id, product_id, quantity)
-Product(product_id, product_name)
-```
-
-#### Third Normal Form (3NF)
-
-**Rule:** Remove transitive dependencies; non-key columns depend only on the key.
-
-**Violation Example:**
-```
-Employee(id, department_id, department_name)
-                            ^-- depends on department_id, not employee id
-```
-
-**Resolution:**
-```
-Employee(id, department_id)
-Department(id, name)
-```
-
-#### Boyce-Codd Normal Form (BCNF)
-
-**Rule:** Every determinant is a candidate key.
-
-**Violation Example:**
-```
-CourseOffering(student, course, instructor)
--- Constraint: each instructor teaches only one course
--- instructor -> course (but instructor is not a candidate key)
-```
-
-**Resolution:**
-```
-InstructorCourse(instructor, course) -- instructor is key
-Enrollment(student, instructor) -- references instructor
+```sudolang
+NormalFormValidation {
+  fn validate1NF(table) {
+    require {
+      No repeating groups
+      Each cell contains atomic values
+    }
+    
+    // Violation: Order(id, customer, items: "widget,gadget,thing")
+    // Resolution: Separate Order and OrderItem tables
+  }
+  
+  fn validate2NF(table) {
+    require {
+      Satisfies 1NF
+      No partial dependencies on composite keys
+    }
+    
+    // Violation: OrderItem(order_id, product_id, product_name, quantity)
+    //            where product_name depends only on product_id
+    // Resolution: Extract Product(product_id, product_name)
+  }
+  
+  fn validate3NF(table) {
+    require {
+      Satisfies 2NF
+      No transitive dependencies
+      Non-key columns depend only on the key
+    }
+    
+    // Violation: Employee(id, department_id, department_name)
+    //            where department_name depends on department_id
+    // Resolution: Extract Department(id, name)
+  }
+  
+  fn validateBCNF(table) {
+    require {
+      Satisfies 3NF
+      Every determinant is a candidate key
+    }
+    
+    // Violation: CourseOffering(student, course, instructor)
+    //            with constraint: instructor -> course
+    // Resolution: InstructorCourse(instructor, course) + Enrollment(student, instructor)
+  }
+}
 ```
 
 ### When to Stop Normalizing
 
-Stop at 3NF for most OLTP systems. Consider BCNF when:
-- Update anomalies cause data corruption
-- Data integrity is paramount
-- Write frequency is high
+```sudolang
+fn determineNormalizationLevel(context) {
+  match (context) {
+    case { systemType: "OLTP" } => "3NF"
+    case { updateAnomalies: true } => "BCNF"
+    case { dataIntegrity: "paramount" } => "BCNF"
+    case { writeFrequency: "high" } => "BCNF"
+    default => "3NF"
+  }
+}
+```
 
 ## Denormalization Strategies
 
@@ -193,68 +230,69 @@ DailySales
 
 **Trade-off:** Fast analytics, storage overhead, stale until refreshed.
 
-### Denormalization Decision Matrix
+### Denormalization Decision
 
-| Factor | Normalize | Denormalize |
-|--------|-----------|-------------|
-| Write frequency | High | Low |
-| Read frequency | Low | High |
-| Data consistency | Critical | Eventual OK |
-| Query complexity | Simple | Complex joins |
-| Data size | Small | Large |
+```sudolang
+fn shouldDenormalize(context) {
+  match (context) {
+    case { writeFrequency: "high" } => false      // Keep normalized
+    case { readFrequency: "high", writeFrequency: "low" } => true
+    case { consistency: "critical" } => false      // Keep normalized
+    case { consistency: "eventual_ok" } => true
+    case { queryComplexity: "complex_joins" } => true
+    case { queryComplexity: "simple" } => false
+    case { dataSize: "large" } => true
+    case { dataSize: "small" } => false
+    default => false  // Safe default: keep normalized
+  }
+}
+```
 
 ## NoSQL Data Modeling Patterns
 
 ### Document Stores (MongoDB, DynamoDB)
 
-**Embedding Pattern:**
-Embed related data that is read together and has 1:few relationship.
-
-```json
-{
-  "order_id": "123",
-  "customer": {
-    "id": "456",
-    "name": "Jane Doe",
-    "email": "jane@example.com"
-  },
-  "items": [
-    {"product_id": "A1", "name": "Widget", "quantity": 2}
-  ]
-}
-```
-
-**Referencing Pattern:**
-Reference related data when it changes independently or is shared.
-
-```json
-{
-  "order_id": "123",
-  "customer_id": "456",
-  "item_ids": ["A1", "B2"]
-}
-```
-
-**Hybrid Pattern:**
-Embed summary data, reference for full details.
-
-```json
-{
-  "order_id": "123",
-  "customer_summary": {
-    "id": "456",
-    "name": "Jane Doe"
-  },
-  "items": [
-    {"product_id": "A1", "name": "Widget", "quantity": 2}
-  ]
+```sudolang
+fn determineDocumentPattern(relationship) {
+  match (relationship) {
+    case { readTogether: true, cardinality: "1:few" } => {
+      pattern: "embedding",
+      example: """
+        {
+          "order_id": "123",
+          "customer": { "id": "456", "name": "Jane Doe", "email": "jane@example.com" },
+          "items": [{ "product_id": "A1", "name": "Widget", "quantity": 2 }]
+        }
+      """
+    }
+    case { changesIndependently: true } | { shared: true } => {
+      pattern: "referencing",
+      example: """
+        {
+          "order_id": "123",
+          "customer_id": "456",
+          "item_ids": ["A1", "B2"]
+        }
+      """
+    }
+    default => {
+      pattern: "hybrid",
+      description: "Embed summary data, reference for full details",
+      example: """
+        {
+          "order_id": "123",
+          "customer_summary": { "id": "456", "name": "Jane Doe" },
+          "items": [{ "product_id": "A1", "name": "Widget", "quantity": 2 }]
+        }
+      """
+    }
+  }
 }
 ```
 
 ### Key-Value Stores
 
-**Access Pattern Design:**
-Design keys around query patterns.
+**Access Pattern Design:** Design keys around query patterns.
 
 ```
 USER:{user_id} -> user data
@@ -262,13 +300,11 @@ USER:{user_id}:ORDERS -> list of order ids
 ORDER:{order_id} -> order data
 ```
 
-**Composite Keys:**
-Combine entity type with identifiers for namespacing.
+**Composite Keys:** Combine entity type with identifiers for namespacing.
 
 ### Wide-Column Stores (Cassandra, HBase)
 
-**Partition Key Design:**
-Choose partition keys for even distribution and access locality.
+**Partition Key Design:** Choose partition keys for even distribution and access locality.
 
 ```
 Primary Key: (user_id, order_date)
@@ -276,10 +312,15 @@ Primary Key: (user_id, order_date)
                        ^-- clustering column (ordering)
 ```
 
-**Avoid:**
-- High-cardinality partition keys causing hot spots
-- Large partitions exceeding recommended sizes
-- Scatter-gather queries across partitions
+```sudolang
+WideColumnDesign {
+  warn {
+    High-cardinality partition keys causing hot spots
+    Large partitions exceeding recommended sizes
+    Scatter-gather queries across partitions
+  }
+}
+```
 
 ### Graph Databases
 
@@ -296,19 +337,39 @@ Primary Key: (user_id, order_date)
 
 ## Schema Evolution Strategies
 
-### Additive Changes (Safe)
+### Change Classification
 
-- Add new nullable columns
-- Add new tables
-- Add new indexes
-- Add new optional fields (NoSQL)
-
-### Breaking Changes (Require Migration)
-
-- Remove columns/tables
-- Rename columns/tables
-- Change data types
-- Add non-nullable columns without defaults
+```sudolang
+fn classifySchemaChange(change) {
+  match (change.type) {
+    case "add_nullable_column" => { safe: true, migration: "additive" }
+    case "add_table" => { safe: true, migration: "additive" }
+    case "add_index" => { safe: true, migration: "additive" }
+    case "add_optional_field" => { safe: true, migration: "additive" }  // NoSQL
+    
+    case "remove_column" | "remove_table" => { 
+      safe: false, 
+      migration: "breaking",
+      action: "Requires data migration"
+    }
+    case "rename_column" | "rename_table" => {
+      safe: false,
+      migration: "breaking",
+      action: "Requires application updates"
+    }
+    case "change_data_type" => {
+      safe: false,
+      migration: "breaking",
+      action: "Requires data conversion"
+    }
+    case "add_non_nullable_column" if !change.hasDefault => {
+      safe: false,
+      migration: "breaking",
+      action: "Requires default value or backfill"
+    }
+  }
+}
+```
 
 ### Migration Patterns
 
@@ -337,25 +398,39 @@ Handle multiple versions in application code during transition.
 
 ## Best Practices
 
-- Model the domain first, then optimize for access patterns
-- Use surrogate keys for primary keys; natural keys as unique constraints
-- Normalize to 3NF for OLTP; denormalize deliberately for read-heavy loads
-- Document all foreign key relationships and cascade behaviors
-- Version control all schema changes as migration scripts
-- Test migrations on production-like data volumes
-- Consider query patterns when designing NoSQL schemas
-- Plan for schema evolution from day one
+```sudolang
+DataModelingBestPractices {
+  constraints {
+    Model the domain first, then optimize for access patterns
+    Use surrogate keys for primary keys
+    Use natural keys as unique constraints
+    Normalize to 3NF for OLTP
+    Denormalize deliberately for read-heavy loads
+    Document all foreign key relationships and cascade behaviors
+    Version control all schema changes as migration scripts
+    Test migrations on production-like data volumes
+    Consider query patterns when designing NoSQL schemas
+    Plan for schema evolution from day one
+  }
+}
+```
 
 ## Anti-Patterns
 
-- Designing schemas around UI forms instead of domain concepts
-- Using generic columns (field1, field2, field3)
-- Entity-Attribute-Value (EAV) for structured data
-- Storing comma-separated values in single columns
-- Circular foreign key dependencies
-- Missing indexes on foreign key columns
-- Hard-deleting data without soft-delete consideration
-- Ignoring temporal aspects (effective dates, audit trails)
+```sudolang
+DataModelingAntiPatterns {
+  warn {
+    Designing schemas around UI forms instead of domain concepts
+    Using generic columns (field1, field2, field3)
+    Entity-Attribute-Value (EAV) for structured data
+    Storing comma-separated values in single columns
+    Circular foreign key dependencies
+    Missing indexes on foreign key columns
+    Hard-deleting data without soft-delete consideration
+    Ignoring temporal aspects (effective dates, audit trails)
+  }
+}
+```
 
 ## References
 

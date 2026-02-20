@@ -25,191 +25,194 @@ Systematic patterns for navigating and understanding codebases efficiently.
 
 Start broad, then narrow down. This three-step pattern works for any codebase.
 
-### Step 1: Project Layout
+```sudolang
+StructureAnalysis {
+  constraints {
+    Always start with project layout before diving into source
+    Read documentation files when present
+    Verify assumptions about structure
+  }
 
-```bash
-# Understand top-level structure
-ls -la
+  /analyzeLayout => {
+    // Step 1: Project Layout
+    ls -la                                          // Top-level structure
+    ls -la *.json *.yaml *.yml *.toml 2>/dev/null   // Config files (reveals tech stack)
+    ls -la README* CLAUDE.md Agent.md docs/ 2>/dev/null  // Documentation
+  }
 
-# Find configuration files (reveals tech stack)
-ls -la *.json *.yaml *.yml *.toml 2>/dev/null
+  /analyzeSource => {
+    // Step 2: Source Organization
+    Glob: **/src/**/*.{ts,js,py,go,rs,java}         // Source directories
+    Glob: **/{test,tests,__tests__,spec}/**/*       // Test directories
+    Glob: **/index.{ts,js,py} | **/main.{ts,js,py,go,rs}  // Entry points
+  }
 
-# Check for documentation
-ls -la README* CLAUDE.md Agent.md docs/ 2>/dev/null
-```
-
-### Step 2: Source Organization
-
-```
-# Find source directories
-Glob: **/src/**/*.{ts,js,py,go,rs,java}
-
-# Find test directories
-Glob: **/{test,tests,__tests__,spec}/**/*
-
-# Find entry points
-Glob: **/index.{ts,js,py} | **/main.{ts,js,py,go,rs}
-```
-
-### Step 3: Configuration Discovery
-
-```
-# Package/dependency files
-Glob: **/package.json | **/requirements.txt | **/go.mod | **/Cargo.toml
-
-# Build configuration
-Glob: **/{tsconfig,vite.config,webpack.config,jest.config}.*
-
-# Environment/deployment
-Glob: **/{.env*,docker-compose*,Dockerfile}
+  /analyzeConfig => {
+    // Step 3: Configuration Discovery
+    Glob: **/package.json | **/requirements.txt | **/go.mod | **/Cargo.toml  // Dependencies
+    Glob: **/{tsconfig,vite.config,webpack.config,jest.config}.*  // Build config
+    Glob: **/{.env*,docker-compose*,Dockerfile}     // Environment/deployment
+  }
+}
 ```
 
 ## Deep Search Strategies
 
-### Finding Implementations
+```sudolang
+SearchStrategy {
+  /findImplementation target:String, language:String? => {
+    match (language) {
+      case "python" => Grep: def $target
+      case "go" => Grep: func $target
+      case "rust" => Grep: fn $target
+      default => {
+        // Generic patterns for JS/TS and others
+        Grep: (function|class|interface|type)\s+$target
+        Grep: export\s+(default\s+)?(function|class|const)\s+$target
+      }
+    }
+  }
 
-When you need to locate where something is implemented:
+  /traceUsage target:String => {
+    Grep: import.*from\s+['"].*$target    // Find imports
+    Grep: $target\(                        // Find function calls
+    Grep: $target                          // Broad reference search
+  }
 
-```
-# Find function/class definitions
-Grep: (function|class|interface|type)\s+TargetName
-
-# Find exports
-Grep: export\s+(default\s+)?(function|class|const)\s+TargetName
-
-# Find specific patterns (adjust for language)
-Grep: def target_name  # Python
-Grep: func TargetName  # Go
-Grep: fn target_name   # Rust
-```
-
-### Tracing Usage
-
-When you need to find where something is used:
-
-```
-# Find imports of a module
-Grep: import.*from\s+['"].*target-module
-
-# Find function calls
-Grep: targetFunction\(
-
-# Find references (broad search)
-Grep: TargetName
-```
-
-### Architecture Mapping
-
-When you need to understand system structure:
-
-```
-# Find all route definitions
-Grep: (app\.(get|post|put|delete)|router\.)
-
-# Find database models/schemas
-Grep: (Schema|Model|Entity|Table)\s*\(
-Glob: **/{models,entities,schemas}/**/*
-
-# Find service boundaries
-Glob: **/{services,controllers,handlers}/**/*
-Grep: (class|interface)\s+\w+Service
+  /mapArchitecture => {
+    // Routes
+    Grep: (app\.(get|post|put|delete)|router\.)
+    
+    // Database models/schemas
+    Grep: (Schema|Model|Entity|Table)\s*\(
+    Glob: **/{models,entities,schemas}/**/*
+    
+    // Service boundaries
+    Glob: **/{services,controllers,handlers}/**/*
+    Grep: (class|interface)\s+\w+Service
+  }
+}
 ```
 
 ## Exploration Patterns by Goal
 
-### Goal: Understand Entry Points
+```sudolang
+ExplorationPatterns {
+  /findEntryPoints type:String => {
+    match (type) {
+      case "web" => {
+        Grep: (Route|path|endpoint)
+        Glob: **/routes/**/* | **/*router*
+      }
+      case "cli" => {
+        Grep: (command|program\.)
+        Glob: **/cli/**/* | **/commands/**/*
+      }
+      case "events" => {
+        Grep: (on|handle|subscribe)\s*\(
+      }
+    }
+  }
 
-```
-# Web application routes
-Grep: (Route|path|endpoint)
-Glob: **/routes/**/* | **/*router*
+  /findConfiguration => {
+    Grep: (process\.env|os\.environ|env\.)    // Environment variables
+    Grep: (feature|flag|toggle)                // Feature flags
+    Grep: (const|let)\s+(CONFIG|config|settings)  // Config objects
+    Glob: **/{config,constants}/**/*
+  }
 
-# CLI commands
-Grep: (command|program\.)
-Glob: **/cli/**/* | **/commands/**/*
-
-# Event handlers
-Grep: (on|handle|subscribe)\s*\(
-```
-
-### Goal: Find Configuration
-
-```
-# Environment variables
-Grep: (process\.env|os\.environ|env\.)
-
-# Feature flags
-Grep: (feature|flag|toggle)
-
-# Constants/config objects
-Grep: (const|let)\s+(CONFIG|config|settings)
-Glob: **/{config,constants}/**/*
-```
-
-### Goal: Understand Data Flow
-
-```
-# Database queries
-Grep: (SELECT|INSERT|UPDATE|DELETE|find|create|update)
-Grep: (prisma|sequelize|typeorm|mongoose)\.
-
-# API calls
-Grep: (fetch|axios|http\.|request\()
-
-# State management
-Grep: (useState|useReducer|createStore|createSlice)
+  /traceDataFlow => {
+    // Database queries
+    Grep: (SELECT|INSERT|UPDATE|DELETE|find|create|update)
+    Grep: (prisma|sequelize|typeorm|mongoose)\.
+    
+    // API calls
+    Grep: (fetch|axios|http\.|request\()
+    
+    // State management
+    Grep: (useState|useReducer|createStore|createSlice)
+  }
+}
 ```
 
 ## Best Practices
 
-### Search Efficiently
+```sudolang
+NavigationBestPractices {
+  constraints {
+    warn "Searching node_modules or vendor directories wastes time"
+    warn "Grepping common words without filters produces noise"
+    require "Read project documentation (README, CLAUDE.md, Agent.md) before exploring"
+    require "Verify assumptions about structure rather than assuming"
+  }
 
-1. **Start with Glob** for file discovery - faster than grep for locating files
-2. **Use Grep** for content search - supports regex and context
-3. **Narrow scope** - search in specific directories when possible
-4. **Check output modes** - use `files_with_matches` for discovery, `content` for analysis
+  SearchEfficiency {
+    prefer Glob for file discovery         // Faster than grep for locating files
+    prefer Grep for content search         // Supports regex and context
+    narrow scope to specific directories when possible
+    use files_with_matches mode for discovery, content mode for analysis
+  }
 
-### Build Mental Models
-
-1. **Map the layers** - presentation, business logic, data access
-2. **Identify patterns** - repository, service, controller, etc.
-3. **Note conventions** - naming, file organization, code style
-4. **Document boundaries** - where modules connect and separate
-
-### Avoid Common Pitfalls
-
-- **Do not** search entire node_modules/vendor directories
-- **Do not** assume structure without verifying
-- **Do not** skip reading project documentation (README, CLAUDE.md, Agent.md)
-- **Do not** grep for common words without filtering (use glob filters)
+  MentalModelBuilding {
+    map layers: presentation, business_logic, data_access
+    identify patterns: repository, service, controller, etc
+    note conventions: naming, file_organization, code_style
+    document boundaries: where modules connect and separate
+  }
+}
+```
 
 ## Output Format
 
 After exploration, summarize findings:
 
-```
-## Codebase Overview
+```sudolang
+interface CodebaseOverview {
+  techStack: String[]       // Languages, frameworks, tools
+  architecture: String      // Monolith, microservices, modular, etc.
+  entryPoints: String[]     // Main files, routes, handlers
+  keyDirectories: DirectoryInfo[]
+  conventions: ConventionsObserved
+  dependencies: DependencyInfo[]
+}
 
-**Tech Stack:** [Languages, frameworks, tools]
-**Architecture:** [Monolith, microservices, modular, etc.]
-**Entry Points:** [Main files, routes, handlers]
+interface DirectoryInfo {
+  path: String
+  purpose: String
+}
 
-## Key Directories
+interface ConventionsObserved {
+  naming: String
+  fileOrganization: String
+  testing: String
+}
 
-- `src/` - [Purpose]
-- `lib/` - [Purpose]
-- `tests/` - [Purpose]
+interface DependencyInfo {
+  name: String
+  purpose: String
+}
 
-## Conventions Observed
+fn formatOverview(overview: CodebaseOverview) => """
+  ## Codebase Overview
 
-- Naming: [Pattern]
-- File organization: [Pattern]
-- Testing: [Pattern]
+  **Tech Stack:** ${overview.techStack |> join(", ")}
+  **Architecture:** ${overview.architecture}
+  **Entry Points:** ${overview.entryPoints |> join(", ")}
 
-## Dependencies
+  ## Key Directories
 
-- [Key dependency]: [Purpose]
-- [Key dependency]: [Purpose]
+  ${overview.keyDirectories |> map(d => "- `${d.path}` - ${d.purpose}") |> join("\n")}
+
+  ## Conventions Observed
+
+  - Naming: ${overview.conventions.naming}
+  - File organization: ${overview.conventions.fileOrganization}
+  - Testing: ${overview.conventions.testing}
+
+  ## Dependencies
+
+  ${overview.dependencies |> map(d => "- ${d.name}: ${d.purpose}") |> join("\n")}
+"""
 ```
 
 ## References

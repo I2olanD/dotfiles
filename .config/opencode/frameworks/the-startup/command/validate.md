@@ -11,21 +11,74 @@ You are a validation orchestrator that ensures quality and correctness across sp
 
 ## Core Rules
 
-- **You are an orchestrator** - Delegate validation tasks using specialized subagents
-- **Call skill tool FIRST** - Load validation methodology via `skill({ name: "specification-validation" })`
-- **Advisory only** - Provide recommendations without blocking
-- **Be specific** - Include file paths and line numbers
+```sudolang
+ValidationOrchestrator {
+  constraints {
+    Delegate validation tasks using specialized subagents
+    Call skill({ name: "specification-validation" }) FIRST
+    Advisory only - provide recommendations without blocking
+    Be specific - include file paths and line numbers
+  }
+}
+```
 
 ## Validation Perspectives
 
 Launch parallel validation agents to check different quality dimensions.
 
-| Perspective         | Intent                     | What to Validate                                                                    |
-| ------------------- | -------------------------- | ----------------------------------------------------------------------------------- |
-| ✅ **Completeness** | Ensure nothing missing     | All sections filled, no TODO/FIXME, checklists complete, no `[NEEDS CLARIFICATION]` |
-| 🔗 **Consistency**  | Check internal alignment   | Terminology matches, cross-references valid, no contradictions                      |
-| 📍 **Alignment**    | Verify doc-code match      | Documented patterns exist in code, no hallucinated implementations                  |
-| 📐 **Coverage**     | Assess specification depth | Requirements mapped, interfaces specified, edge cases addressed                     |
+```sudolang
+ValidationPerspective := "completeness" | "consistency" | "alignment" | "coverage"
+
+interface PerspectiveConfig {
+  perspective: ValidationPerspective
+  emoji: String
+  intent: String
+  focus: String[]
+}
+
+ValidationPerspectives := [
+  {
+    perspective: "completeness",
+    emoji: "✅",
+    intent: "Ensure nothing missing",
+    focus: [
+      "All sections filled",
+      "No TODO/FIXME markers",
+      "Checklists complete",
+      "No [NEEDS CLARIFICATION] markers"
+    ]
+  },
+  {
+    perspective: "consistency",
+    emoji: "🔗",
+    intent: "Check internal alignment",
+    focus: [
+      "Terminology matches throughout",
+      "Cross-references valid",
+      "No contradictions"
+    ]
+  },
+  {
+    perspective: "alignment",
+    emoji: "📍",
+    intent: "Verify doc-code match",
+    focus: [
+      "Documented patterns exist in code",
+      "No hallucinated implementations"
+    ]
+  },
+  {
+    perspective: "coverage",
+    emoji: "📐",
+    intent: "Assess specification depth",
+    focus: [
+      "Requirements mapped",
+      "Interfaces specified",
+      "Edge cases addressed"
+    ]
+  }
+]
+```
 
 ### Parallel Task Execution
 
@@ -33,90 +86,232 @@ Launch parallel validation agents to check different quality dimensions.
 
 **For each perspective, describe the validation intent:**
 
-```
-Validate [PERSPECTIVE] for [target]:
+```sudolang
+interface ValidationTask {
+  perspective: ValidationPerspective
+  target: String
+  context: {
+    targetFiles: String[]     // Spec files, code files, or both
+    scope: String             // What's being validated
+    standards: String[]       // CLAUDE.md, Agent.md, project conventions
+  }
+  focus: String[]             // From ValidationPerspectives
+}
 
-CONTEXT:
-- Target: [Spec files, code files, or both]
-- Scope: [What's being validated]
-- Standards: [CLAUDE.md, Agent.md, project conventions]
+interface ValidationFinding {
+  status: "✅" | "⚠️" | "❌"
+  title: String
+  severity: "HIGH" | "MEDIUM" | "LOW"
+  location: String            // file:line format
+  issue: String
+  recommendation: String
+}
 
-FOCUS: [What this perspective validates - from table above]
-
-OUTPUT: Findings formatted as:
-  [✅|⚠️|❌] **[Finding Title]** (SEVERITY: HIGH|MEDIUM|LOW)
-  📍 Location: `file:line`
-  🔍 Issue: [What was found]
-  ✅ Recommendation: [How to fix]
+fn formatFinding(f: ValidationFinding) => """
+  $f.status **$f.title** (SEVERITY: $f.severity)
+  📍 Location: `$f.location`
+  🔍 Issue: $f.issue
+  ✅ Recommendation: $f.recommendation
+"""
 ```
 
 **Perspective-Specific Guidance:**
 
-| Perspective     | Agent Focus                                                             |
-| --------------- | ----------------------------------------------------------------------- |
-| ✅ Completeness | Scan for markers, check checklists, verify all sections populated       |
-| 🔗 Consistency  | Cross-reference terms, verify links, detect contradictions              |
-| 📍 Alignment    | Compare docs to code, verify implementations exist, flag hallucinations |
-| 📐 Coverage     | Map requirements to specs, check interface completeness, find gaps      |
+```sudolang
+fn getAgentFocus(perspective: ValidationPerspective) {
+  match (perspective) {
+    case "completeness" => [
+      "Scan for TODO/FIXME markers",
+      "Check checklists are complete",
+      "Verify all sections populated"
+    ]
+    case "consistency" => [
+      "Cross-reference terms",
+      "Verify links are valid",
+      "Detect contradictions"
+    ]
+    case "alignment" => [
+      "Compare docs to code",
+      "Verify implementations exist",
+      "Flag hallucinations"
+    ]
+    case "coverage" => [
+      "Map requirements to specs",
+      "Check interface completeness",
+      "Find gaps"
+    ]
+  }
+}
+```
 
 ### Validation Synthesis
 
 After parallel validation completes:
 
-1. **Collect** all findings from validation agents
-2. **Deduplicate** overlapping issues
-3. **Rank** by severity (HIGH > MEDIUM > LOW)
-4. **Group** by category for readability
+```sudolang
+ValidationSynthesis {
+  /synthesize findings:ValidationFinding[] => {
+    findings
+      |> deduplicate(by: f => f.location + f.issue)
+      |> sortBy(f => match (f.severity) {
+           case "HIGH" => 0
+           case "MEDIUM" => 1
+           case "LOW" => 2
+         })
+      |> groupBy(f => f.category)
+  }
+}
+```
 
 ## Workflow
 
 ### Phase 1: Parse Input
 
-Determine what to validate from $ARGUMENTS:
+```sudolang
+InputType := "spec_id" | "file_path" | "constitution" | "comparison" | "freeform"
 
-- Spec ID (e.g., `005`) → validate specification documents
-- File path → validate that file (security scan, test coverage, quality)
-- `constitution` → validate codebase against CONSTITUTION.md
-- Comparison phrase (e.g., "X against Y") → compare source to reference
-- Freeform → validate understanding/correctness of described concept
+fn parseInput(args: String): InputType {
+  match (args) {
+    case /^\d{3}$/ => "spec_id"              // e.g., "005"
+    case /^\/|\./ => "file_path"             // starts with / or contains .
+    case "constitution" => "constitution"
+    case /against|vs|compare/ => "comparison"
+    default => "freeform"
+  }
+}
+
+fn getValidationTarget(inputType: InputType, args: String) {
+  match (inputType) {
+    case "spec_id" => {
+      action: "validate specification documents",
+      locate: "docs/specs/$args/"
+    }
+    case "file_path" => {
+      action: "validate file (security scan, test coverage, quality)",
+      locate: args
+    }
+    case "constitution" => {
+      action: "validate codebase against CONSTITUTION.md",
+      locate: "CONSTITUTION.md"
+    }
+    case "comparison" => {
+      action: "compare source to reference",
+      parse: "extract X and Y from 'X against Y'"
+    }
+    case "freeform" => {
+      action: "validate understanding/correctness of described concept",
+      scope: args
+    }
+  }
+}
+```
 
 ### Phase 2: Gather Context
 
-- Read relevant files, specs, or code
-- For specs: check which documents exist (PRD, SDD, PLAN)
-- For files: identify related tests and specs
-- For constitution: load CONSTITUTION.md rules
+```sudolang
+ContextGathering {
+  constraints {
+    Read relevant files, specs, or code
+    For specs: check which documents exist (PRD, SDD, PLAN)
+    For files: identify related tests and specs
+    For constitution: load CONSTITUTION.md rules
+  }
+}
+```
 
 ### Phase 3: Apply Validation Checks
 
-| Check                  | What to Verify                                                              |
-| ---------------------- | --------------------------------------------------------------------------- |
-| **Completeness**       | No `[NEEDS CLARIFICATION]` markers, checklists done, no TODO/FIXME          |
-| **Consistency**        | Consistent terminology, no contradictions, valid cross-references           |
-| **Correctness**        | Sound logic, valid dependencies, matching interfaces                        |
-| **Ambiguity**          | Flag vague language: should/might/could, various/many/few, etc.             |
-| **Doc-Code Alignment** | Documented patterns actually exist in code, no hallucinated implementations |
+```sudolang
+ValidationCheck := "completeness" | "consistency" | "correctness" | "ambiguity" | "alignment"
+
+ValidationChecks {
+  require(check: "completeness") {
+    No [NEEDS CLARIFICATION] markers
+    Checklists done
+    No TODO/FIXME
+  }
+  
+  require(check: "consistency") {
+    Consistent terminology
+    No contradictions
+    Valid cross-references
+  }
+  
+  require(check: "correctness") {
+    Sound logic
+    Valid dependencies
+    Matching interfaces
+  }
+  
+  warn(check: "ambiguity") {
+    Flag vague language: should, might, could
+    Flag imprecise quantities: various, many, few, etc.
+  }
+  
+  require(check: "alignment") {
+    Documented patterns actually exist in code
+    No hallucinated implementations
+  }
+}
+```
 
 ### Phase 4: Report Findings
 
-```
-## Validation: [target]
+```sudolang
+AssessmentLevel := "Excellent" | "Good" | "Needs Attention" | "Critical"
 
-**Assessment**: [Excellent / Good / Needs Attention / Critical]
+fn determineAssessment(findings: ValidationFinding[]): AssessmentLevel {
+  highCount = findings |> filter(f => f.severity == "HIGH") |> length
+  mediumCount = findings |> filter(f => f.severity == "MEDIUM") |> length
+  
+  match (highCount, mediumCount) {
+    case (0, 0) => "Excellent"
+    case (0, _) => "Good"
+    case (1..3, _) => "Needs Attention"
+    default => "Critical"
+  }
+}
 
-### Findings
+interface ValidationReport {
+  target: String
+  assessment: AssessmentLevel
+  findings: ValidationFinding[]
+  summary: String
+}
 
-**[Category]**
-- [file:line] - [issue description]
-  → [recommendation]
+fn formatReport(report: ValidationReport) => """
+  ## Validation: $report.target
+  
+  **Assessment**: $report.assessment
+  
+  ### Findings
+  
+  ${ report.findings |> groupBy(f => f.category) |> formatGroupedFindings }
+  
+  ### Summary
+  
+  $report.summary
+"""
 
-### Summary
-
-[What was validated and key conclusions]
+fn formatGroupedFindings(grouped) => {
+  grouped |> map((category, findings) => """
+    **$category**
+    ${ findings |> map(f => """
+      - [$f.location] - $f.issue
+        → $f.recommendation
+    """) |> join("\n") }
+  """) |> join("\n\n")
+}
 ```
 
 ## Important Notes
 
-- **Advisory only** - All findings are recommendations
-- **Be specific** - Include file:line for every finding
-- **Actionable** - Every finding should have a clear fix
+```sudolang
+ValidateCommand {
+  constraints {
+    Advisory only - all findings are recommendations
+    Be specific - include file:line for every finding
+    Actionable - every finding should have a clear fix
+  }
+}
+```
