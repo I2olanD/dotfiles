@@ -37,19 +37,19 @@ ConstitutionOrchestrator {
 
 Pattern discovery should cover these categories. Launch parallel agents for comprehensive analysis.
 
-| Perspective         | Intent                               | What to Discover                                                                      |
-| ------------------- | ------------------------------------ | ------------------------------------------------------------------------------------- |
-| Security            | Identify security patterns and risks | Authentication methods, secret handling, input validation, injection prevention, CORS |
-| Architecture        | Understand structural patterns       | Layer structure, module boundaries, API patterns, data flow, dependencies             |
-| Code Quality        | Find coding conventions              | Naming conventions, import patterns, error handling, logging, code organization       |
-| Testing             | Discover test practices              | Test framework, file patterns, coverage requirements, mocking approaches              |
+| Perspective  | Intent                               | What to Discover                                                                      |
+| ------------ | ------------------------------------ | ------------------------------------------------------------------------------------- |
+| Security     | Identify security patterns and risks | Authentication methods, secret handling, input validation, injection prevention, CORS |
+| Architecture | Understand structural patterns       | Layer structure, module boundaries, API patterns, data flow, dependencies             |
+| Code Quality | Find coding conventions              | Naming conventions, import patterns, error handling, logging, code organization       |
+| Testing      | Discover test practices              | Test framework, file patterns, coverage requirements, mocking approaches              |
 
 ```sudolang
 DiscoveryPerspective {
   State {
     perspectives: ["Security", "Architecture", "Code Quality", "Testing"]
   }
-  
+
   fn mapFocusArea(input: String) {
     match (input.toLowerCase()) {
       case "security" => ["Security"]
@@ -76,14 +76,14 @@ ConstitutionWorkflow {
     awaiting: null
     constitutionExists: false
   }
-  
+
   Phases: [
     "check_existing",
     "create_or_update",
     "write_constitution",
     "validate_optional"
   ]
-  
+
   constraints {
     Must check existence before create/update decision
     User must approve rules before writing
@@ -101,16 +101,16 @@ CheckExistingPhase {
   require {
     current == "check_existing"
   }
-  
+
   /check => {
     exists = bash("test -f CONSTITUTION.md && echo 'exists' || echo 'not found'")
     State.constitutionExists = (exists == "exists")
-    
+
     match (State.constitutionExists) {
       case true => route to "update_flow"
       case false => route to "create_flow"
     }
-    
+
     advance to "create_or_update"
   }
 }
@@ -126,27 +126,27 @@ CreateConstitutionPhase {
     current == "create_or_update"
     State.constitutionExists == false
   }
-  
+
   /init => {
     skill({ name: "constitution-validation" })
     // Skill provides template structure, discovery methodology, rule generation guidelines
   }
-  
+
   /launchDiscovery perspectives:String[] => {
     // Launch ALL applicable discovery perspectives in parallel
     // Single response with multiple task calls
-    
+
     perspectives |> map(p => Task {
       prompt: """
         Discover $p patterns for constitution rules:
-        
+
         CONTEXT:
         - Project root: [path]
         - Tech stack: [detected frameworks, languages]
         - Existing configs: [.eslintrc, tsconfig, etc.]
-        
+
         FOCUS: [What this perspective discovers]
-        
+
         OUTPUT: Findings formatted as:
           **[Category]**
           Pattern: [What was discovered]
@@ -155,17 +155,17 @@ CreateConstitutionPhase {
       """
     })
   }
-  
+
   DiscoveryFocus {
     Security => "Find auth patterns, secret handling, validation approaches, generate security rules"
     Architecture => "Identify layer structure, module patterns, API design, generate architecture rules"
     CodeQuality => "Discover naming conventions, imports, error handling, generate quality rules"
     Testing => "Find test framework, patterns, coverage setup, generate testing rules"
   }
-  
+
   /synthesize findings:Finding[] => {
     // Reference: ConstitutionLevel from shared/interfaces.sudo.md
-    
+
     findings
       |> deduplicate overlapping patterns
       |> classify by level {
@@ -175,7 +175,7 @@ CreateConstitutionPhase {
          }
       |> group by category
   }
-  
+
   /presentForApproval rules:Rule[] => {
     // Present discovered rules in categories
     formatRulesForApproval(rules)
@@ -216,28 +216,28 @@ UpdateConstitutionPhase {
     current == "create_or_update"
     State.constitutionExists == true
   }
-  
+
   /init => {
     skill({ name: "constitution-validation" })
     constitution = read("CONSTITUTION.md")
     existingRules = parseRules(constitution)
   }
-  
+
   UpdateOptions: [
     "add_new_rules",      // To existing or new category
     "modify_rules",       // Change existing rules
     "remove_rules",       // Delete rules
     "view_current"        // Display constitution
   ]
-  
+
   /addRules focusAreas:String[] => {
     require focusAreas is provided
-    
+
     // Focus discovery on specified areas
     discoveries = launchDiscovery(focusAreas)
     newRules = generateRules(discoveries)
     mergedConstitution = merge(existingRules, newRules)
-    
+
     presentForApproval(mergedConstitution)
   }
 }
@@ -253,10 +253,10 @@ WriteConstitutionPhase {
     current == "write_constitution"
     rules have been approved by user
   }
-  
+
   /write approvedRules:Rule[] => {
     write("CONSTITUTION.md", formatConstitution(approvedRules))
-    
+
     // Confirmation output
     summary = {
       location: "CONSTITUTION.md",
@@ -268,7 +268,7 @@ WriteConstitutionPhase {
         L3: countByLevel(approvedRules, ConstitutionLevel.L3)
       }
     }
-    
+
     advance to "validate_optional"
   }
 }
@@ -300,16 +300,16 @@ ValidateOptionalPhase {
   require {
     current == "validate_optional"
   }
-  
+
   /prompt => {
     question("Run validation now or skip?")
   }
-  
+
   /validate => {
     skill({ name: "constitution-validation" })  // Validation mode
     reportComplianceFindings()
   }
-  
+
   /skip => {
     complete workflow
   }
@@ -442,18 +442,18 @@ Would you like to:
 OutputSummary {
   fn format(result: ConstitutionResult) => """
     Constitution [$result.action]
-    
+
     File: CONSTITUTION.md
     Total Rules: $result.totalRules
-    
+
     Categories:
     ${ result.categories |> map(c => "- $c.name: $c.count rules") |> join("\n") }
-    
+
     Level Distribution:
     - L1 (Must, Autofix): $result.l1Count
     - L2 (Should, Manual): $result.l2Count
     - L3 (May, Advisory): $result.l3Count
-    
+
     Integration Points:
     - /validate constitution - Check compliance
     - /implement - Active enforcement
