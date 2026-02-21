@@ -30,15 +30,15 @@ A bounded context defines the boundary within which a domain model applies. The 
 ```
 Example: "Customer" in different contexts
 
-┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
-│    Sales        │  │    Support      │  │    Billing      │
-│    Context      │  │    Context      │  │    Context      │
-├─────────────────┤  ├─────────────────┤  ├─────────────────┤
-│ Customer:       │  │ Customer:       │  │ Customer:       │
-│ - Leads         │  │ - Tickets       │  │ - Invoices      │
-│ - Opportunities │  │ - SLA           │  │ - Payment       │
-│ - Proposals     │  │ - Satisfaction  │  │ - Credit Limit  │
-└─────────────────┘  └─────────────────┘  └─────────────────┘
++-----------------+  +-----------------+  +-----------------+
+|    Sales        |  |    Support      |  |    Billing      |
+|    Context      |  |    Context      |  |    Context      |
++-----------------+  +-----------------+  +-----------------+
+| Customer:       |  | Customer:       |  | Customer:       |
+| - Leads         |  | - Tickets       |  | - Invoices      |
+| - Opportunities |  | - SLA           |  | - Payment       |
+| - Proposals     |  | - Satisfaction  |  | - Credit Limit  |
++-----------------+  +-----------------+  +-----------------+
 ```
 
 #### Context Identification
@@ -51,16 +51,38 @@ Ask these questions to find context boundaries:
 
 ### Context Mapping
 
-Define how bounded contexts integrate:
-
-| Pattern | Description | Use When |
-|---------|-------------|----------|
-| **Shared Kernel** | Shared code between contexts | Close collaboration, same team |
-| **Customer-Supplier** | Upstream/downstream relationship | Clear dependency direction |
-| **Conformist** | Downstream adopts upstream model | No negotiation power |
-| **Anti-Corruption Layer** | Translation layer between models | Protecting domain from external models |
-| **Open Host Service** | Published API for integration | Multiple consumers |
-| **Published Language** | Shared interchange format | Industry standards exist |
+```sudolang
+ContextMapping {
+  selectPattern(relationship) {
+    match relationship {
+      { collaboration: "close", team: "same" } => {
+        pattern: "Shared Kernel",
+        description: "Shared code between contexts"
+      }
+      { dependency: "clear", direction: "upstream-downstream" } => {
+        pattern: "Customer-Supplier",
+        description: "Upstream/downstream relationship"
+      }
+      { negotiationPower: "none" } => {
+        pattern: "Conformist",
+        description: "Downstream adopts upstream model"
+      }
+      { protection: "needed", externalModel: true } => {
+        pattern: "Anti-Corruption Layer",
+        description: "Translation layer between models"
+      }
+      { consumers: "multiple" } => {
+        pattern: "Open Host Service",
+        description: "Published API for integration"
+      }
+      { industryStandards: true } => {
+        pattern: "Published Language",
+        description: "Shared interchange format"
+      }
+    }
+  }
+}
+```
 
 ### Ubiquitous Language
 
@@ -75,13 +97,13 @@ Building Ubiquitous Language:
 4. EVOLVE as understanding deepens
 
 Example Glossary Entry:
-┌─────────────────────────────────────────────────────────────┐
-│ Term: Order                                                  │
-│ Definition: A confirmed request from a customer to purchase │
-│             one or more products at agreed prices.          │
-│ NOT: A shopping cart (which is an Intent, not an Order)     │
-│ Context: Sales                                              │
-└─────────────────────────────────────────────────────────────┘
++-------------------------------------------------------------+
+| Term: Order                                                  |
+| Definition: A confirmed request from a customer to purchase |
+|             one or more products at agreed prices.          |
+| NOT: A shopping cart (which is an Intent, not an Order)     |
+| Context: Sales                                              |
++-------------------------------------------------------------+
 ```
 
 ## Tactical Patterns
@@ -98,13 +120,13 @@ Characteristics:
 - Equality by ID
 
 Example:
-┌─────────────────────────────────────────┐
-│ Entity: Order                           │
-├─────────────────────────────────────────┤
-│ Identity: orderId (UUID)                │
-│ State: status, items, total             │
-│ Behavior: addItem(), submit(), cancel() │
-└─────────────────────────────────────────┘
++-----------------------------------------+
+| Entity: Order                           |
++-----------------------------------------+
+| Identity: orderId (UUID)                |
+| State: status, items, total             |
+| Behavior: addItem(), submit(), cancel() |
++-----------------------------------------+
 
 class Order {
   private readonly id: OrderId;      // Identity - immutable
@@ -135,13 +157,13 @@ Characteristics:
 - Self-validating
 
 Example:
-┌─────────────────────────────────────────┐
-│ Value Object: Money                     │
-├─────────────────────────────────────────┤
-│ Attributes: amount, currency            │
-│ Behavior: add(), subtract(), format()   │
-│ Invariant: amount >= 0                  │
-└─────────────────────────────────────────┘
++-----------------------------------------+
+| Value Object: Money                     |
++-----------------------------------------+
+| Attributes: amount, currency            |
+| Behavior: add(), subtract(), format()   |
+| Invariant: amount >= 0                  |
++-----------------------------------------+
 
 class Money {
   constructor(
@@ -167,12 +189,26 @@ class Money {
 
 #### When to Use Value Objects
 
-| Use Value Object | Use Entity |
-|------------------|------------|
-| No need to track over time | Need to track lifecycle |
-| Interchangeable instances | Unique identity matters |
-| Defined by attributes | Defined by continuity |
-| Examples: Money, Address, DateRange | Examples: User, Order, Account |
+```sudolang
+selectObjectType(requirements) {
+  match requirements {
+    { trackOverTime: false, interchangeable: true } => {
+      type: "Value Object",
+      examples: ["Money", "Address", "DateRange"]
+    }
+    { trackOverTime: true, uniqueIdentity: true } => {
+      type: "Entity",
+      examples: ["User", "Order", "Account"]
+    }
+    { definedBy: "attributes" } => {
+      type: "Value Object"
+    }
+    { definedBy: "continuity" } => {
+      type: "Entity"
+    }
+  }
+}
+```
 
 ### Aggregates
 
@@ -187,43 +223,48 @@ Aggregate Design Rules:
 4. DESIGN small aggregates (prefer single entity)
 
 Example:
-┌─────────────────────────────────────────────────────────────┐
-│ Aggregate: Order                                            │
-│ Root: Order (entity)                                        │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────────┐                                        │
-│  │ Order (Root)    │◄── Aggregate Root                      │
-│  │ - orderId       │                                        │
-│  │ - customerId ───┼──► Reference by ID only                │
-│  │ - status        │                                        │
-│  └────────┬────────┘                                        │
-│           │                                                 │
-│  ┌────────▼────────┐                                        │
-│  │ OrderItem       │◄── Inside aggregate                    │
-│  │ - productId ────┼──► Reference by ID only                │
-│  │ - quantity      │                                        │
-│  │ - price (Money) │◄── Value Object                        │
-│  └─────────────────┘                                        │
-└─────────────────────────────────────────────────────────────┘
++-------------------------------------------------------------+
+| Aggregate: Order                                            |
+| Root: Order (entity)                                        |
++-------------------------------------------------------------+
+|  +-----------------+                                        |
+|  | Order (Root)    |<-- Aggregate Root                      |
+|  | - orderId       |                                        |
+|  | - customerId ---+--> Reference by ID only                |
+|  | - status        |                                        |
+|  +--------+--------+                                        |
+|           |                                                 |
+|  +--------v--------+                                        |
+|  | OrderItem       |<-- Inside aggregate                    |
+|  | - productId ----+--> Reference by ID only                |
+|  | - quantity      |                                        |
+|  | - price (Money) |<-- Value Object                        |
+|  +-----------------+                                        |
++-------------------------------------------------------------+
 ```
 
 #### Aggregate Sizing
 
-```
-Start Small:
-- Begin with single-entity aggregates
-- Expand only when invariants require it
+```sudolang
+AggregateSizing {
+  Constraints {
+    Start with single-entity aggregates.
+    Expand only when invariants require it.
+  }
 
-Signs of Too-Large Aggregate:
-- Frequent optimistic lock conflicts
-- Loading too much data for simple operations
-- Multiple users editing simultaneously
-- Transactional failures across unrelated data
-
-Signs of Too-Small Aggregate:
-- Invariants not protected
-- Business rules scattered across services
-- Eventual consistency where immediate is required
+  diagnoseSize(aggregate) {
+    match aggregate {
+      { lockConflicts: "frequent" } => warn "Too Large: Frequent optimistic lock conflicts"
+      { dataLoad: "excessive" } => warn "Too Large: Loading too much data for simple operations"
+      { concurrentEdits: true } => warn "Too Large: Multiple users editing simultaneously"
+      { transactionFailures: "unrelated-data" } => warn "Too Large: Transactional failures across unrelated data"
+      { invariantsProtected: false } => warn "Too Small: Invariants not protected"
+      { rulesScattered: true } => warn "Too Small: Business rules scattered across services"
+      { consistencyMismatch: "eventual-needs-immediate" } => warn "Too Small: Eventual consistency where immediate is required"
+      default => "Aggregate size appears appropriate"
+    }
+  }
+}
 ```
 
 ### Domain Events
@@ -232,17 +273,17 @@ Represent something that happened in the domain. Immutable facts about the past.
 
 ```
 Event Structure:
-┌─────────────────────────────────────────┐
-│ Event: OrderPlaced                      │
-├─────────────────────────────────────────┤
-│ eventId: UUID                           │
-│ occurredAt: DateTime                    │
-│ aggregateId: orderId                    │
-│ payload:                                │
-│   - customerId                          │
-│   - items                               │
-│   - totalAmount                         │
-└─────────────────────────────────────────┘
++-----------------------------------------+
+| Event: OrderPlaced                      |
++-----------------------------------------+
+| eventId: UUID                           |
+| occurredAt: DateTime                    |
+| aggregateId: orderId                    |
+| payload:                                |
+|   - customerId                          |
+|   - items                               |
+|   - totalAmount                         |
++-----------------------------------------+
 
 Naming Convention:
 - Past tense (OrderPlaced, not PlaceOrder)
@@ -264,11 +305,24 @@ class OrderPlaced implements DomainEvent {
 
 #### Event Patterns
 
-| Pattern | Description | Use Case |
-|---------|-------------|----------|
-| **Event Notification** | Minimal data, query for details | Loose coupling |
-| **Event-Carried State** | Full data in event | Performance, offline |
-| **Event Sourcing** | Events as source of truth | Audit, temporal queries |
+```sudolang
+selectEventPattern(requirements) {
+  match requirements {
+    { coupling: "loose" } => {
+      pattern: "Event Notification",
+      description: "Minimal data, query for details"
+    }
+    { performance: "critical" } | { offline: true } => {
+      pattern: "Event-Carried State",
+      description: "Full data in event"
+    }
+    { audit: true } | { temporalQueries: true } => {
+      pattern: "Event Sourcing",
+      description: "Events as source of truth"
+    }
+  }
+}
+```
 
 ### Repositories
 
@@ -358,26 +412,42 @@ Coordinate multiple aggregates with compensation:
 ```
 Saga: Order Fulfillment
 
-┌─────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────┐
-│ Create  │────►│ Reserve     │────►│ Charge      │────►│ Ship    │
-│ Order   │     │ Inventory   │     │ Payment     │     │ Order   │
-└────┬────┘     └──────┬──────┘     └──────┬──────┘     └─────────┘
-     │                 │                   │
-     │ Compensate:     │ Compensate:       │ Compensate:
-     │ Cancel Order    │ Release Inventory │ Refund Payment
-     ▼                 ▼                   ▼
++---------+     +-------------+     +-------------+     +---------+
+| Create  |---->| Reserve     |---->| Charge      |---->| Ship    |
+| Order   |     | Inventory   |     | Payment     |     | Order   |
++----+----+     +------+------+     +------+------+     +---------+
+     |                 |                   |
+     | Compensate:     | Compensate:       | Compensate:
+     | Cancel Order    | Release Inventory | Refund Payment
+     v                 v                   v
 
 On failure at any step, execute compensation in reverse order.
 ```
 
 ### Choosing Consistency
 
-| Scenario | Strategy |
-|----------|----------|
-| Within single aggregate | Transactional (ACID) |
-| Across aggregates, same service | Eventual (domain events) |
-| Across services | Saga with compensation |
-| Read model updates | Eventual (projection) |
+```sudolang
+selectConsistencyStrategy(scenario) {
+  match scenario {
+    { scope: "single-aggregate" } => {
+      strategy: "Transactional (ACID)",
+      description: "Within single aggregate"
+    }
+    { scope: "cross-aggregate", service: "same" } => {
+      strategy: "Eventual (domain events)",
+      description: "Across aggregates, same service"
+    }
+    { scope: "cross-service" } => {
+      strategy: "Saga with compensation",
+      description: "Across services"
+    }
+    { type: "read-model" } => {
+      strategy: "Eventual (projection)",
+      description: "Read model updates"
+    }
+  }
+}
+```
 
 ## Anti-Patterns
 
@@ -460,34 +530,36 @@ function createOrder(
 
 ## Implementation Checklist
 
-### Aggregate Design
+```sudolang
+AggregateDesign {
+  require "Single entity can be aggregate root."
+  require "Invariants are protected at boundary."
+  require "Other aggregates referenced by ID only."
+  require "Fits in memory comfortably."
+  require "One transaction per aggregate."
+}
 
-- [ ] Single entity can be aggregate root
-- [ ] Invariants are protected at boundary
-- [ ] Other aggregates referenced by ID only
-- [ ] Fits in memory comfortably
-- [ ] One transaction per aggregate
+EntityImplementation {
+  require "Has unique identifier."
+  require "Equality based on ID."
+  require "Encapsulates business rules."
+  require "State changes through methods."
+}
 
-### Entity Implementation
+ValueObjectImplementation {
+  require "All properties immutable."
+  require "Equality based on attributes."
+  require "Self-validating."
+  require "Operations return new instances."
+}
 
-- [ ] Has unique identifier
-- [ ] Equality based on ID
-- [ ] Encapsulates business rules
-- [ ] State changes through methods
-
-### Value Object Implementation
-
-- [ ] All properties immutable
-- [ ] Equality based on attributes
-- [ ] Self-validating
-- [ ] Operations return new instances
-
-### Repository Implementation
-
-- [ ] One per aggregate
-- [ ] Returns aggregate roots only
-- [ ] Hides persistence details
-- [ ] Supports queries needed by domain
+RepositoryImplementation {
+  require "One per aggregate."
+  require "Returns aggregate roots only."
+  require "Hides persistence details."
+  require "Supports queries needed by domain."
+}
+```
 
 ## References
 

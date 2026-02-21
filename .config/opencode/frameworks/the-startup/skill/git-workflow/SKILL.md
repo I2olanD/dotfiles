@@ -22,14 +22,35 @@ Activate this skill when you need to:
 
 ## Core Principles
 
-### Git Safety
-
-- **Preserve history** on main/master (no force push)
-- **Keep git config unchanged** unless explicitly requested
-- **Check repository status** before operations
-- **Create backups** before destructive operations
+```sudolang
+GitSafety {
+  Constraints {
+    Never force push to main or master.
+    Never modify git config unless explicitly requested.
+    Always check repository status before operations.
+    Create backups before destructive operations.
+  }
+}
+```
 
 ### Branch Naming Convention
+
+```sudolang
+BranchContext = "spec" | "feature" | "migrate" | "refactor"
+
+BranchNaming {
+  generateBranchName(context, identifier, name) {
+    slug = slugify(name)
+
+    match context {
+      "spec"     => "spec/${identifier}-${slug}"
+      "feature"  => "feature/${identifier}-${slug}"
+      "migrate"  => "migrate/${slug}"
+      "refactor" => "refactor/${slug}"
+    }
+  }
+}
+```
 
 | Context        | Pattern                  | Example                  |
 | -------------- | ------------------------ | ------------------------ |
@@ -40,335 +61,255 @@ Activate this skill when you need to:
 
 ### Commit Message Convention
 
+```sudolang
+CommitMessage {
+  CommitType = "feat" | "fix" | "docs" | "refactor" | "test" | "chore"
+
+  types {
+    feat     => "New feature"
+    fix      => "Bug fix"
+    docs     => "Documentation"
+    refactor => "Code refactoring"
+    test     => "Adding tests"
+    chore    => "Maintenance"
+  }
+
+  format(type, scope, description, body?) {
+    """
+    ${type}(${scope}): ${description}
+
+    ${body ?? ""}
+
+    Co-authored-by: Opencode <claude@anthropic.com>
+    """
+  }
+}
 ```
-<type>(<scope>): <description>
-
-[optional body]
-
-[optional footer]
-
-Co-authored-by: Opencode <claude@anthropic.com>
-```
-
-**Types:**
-
-- `feat` - New feature
-- `fix` - Bug fix
-- `docs` - Documentation
-- `refactor` - Code refactoring
-- `test` - Adding tests
-- `chore` - Maintenance
 
 ---
 
 ## Operations
 
-### Operation 1: Repository Check
+```sudolang
+SpecPhase = "prd" | "sdd" | "plan" | "all"
 
-**When**: Before any git operation
+GitOperations {
+  State {
+    isGitRepo
+    currentBranch
+    baseBranch
+    uncommittedChanges
+    remote?
+  }
 
-```bash
-# Check if git repository
-git rev-parse --is-inside-work-tree 2>/dev/null
+  /checkRepository => {
+    require git rev-parse --is-inside-work-tree succeeds
+      else warn "Not a git repository"
 
-# Get current branch
-git branch --show-current
+    State.currentBranch = git branch --show-current
+    State.uncommittedChanges = git status --porcelain |> lineCount
+    State.remote = git remote -v |> extractOrigin
+    State.isGitRepo = true
 
-# Check for uncommitted changes
-git status --porcelain
+    emit """
+      Repository Status
 
-# Get remote info
-git remote -v
+      Repository: [OK] Git repository detected
+      Current Branch: ${State.currentBranch}
+      Remote: ${State.remote ?? "none"}
+      Uncommitted Changes: ${State.uncommittedChanges} files
+
+      Ready for git operations: ${State.uncommittedChanges == 0 ? "Yes" : "No"}
+    """
+  }
+
+  /createBranch context, identifier, name => {
+    require State.isGitRepo else abort "Not a git repository"
+
+    match State.uncommittedChanges {
+      0 => continue
+      _ => {
+        choice = promptUser(UncommittedChangesOptions)
+        match choice {
+          "stash"   => git stash push -m "Auto-stash for branch creation"
+          "commit"  => /commit
+          "proceed" => continue
+          "cancel"  => abort "Branch creation cancelled"
+        }
+      }
+    }
+
+    baseBranch = git symbolic-ref refs/remotes/origin/HEAD
+      |> sed 's@^refs/remotes/origin/@@'
+    branchName = BranchNaming.generateBranchName(context, identifier, name)
+
+    git checkout -b "${branchName}"
+
+    emit """
+      Branch Created
+
+      Branch: ${branchName}
+      Base: ${baseBranch}
+      Context: ${context}
+
+      Ready to proceed.
+    """
+  }
+
+  /commitSpec spec_id, spec_name, phase => {
+    slug = slugify(spec_name)
+
+    message = match phase {
+      "prd" => CommitMessage.format(
+        "docs", "spec-${spec_id}",
+        "Add product requirements",
+        "Defines requirements for ${spec_name}.\n\nSee: docs/specs/${spec_id}-${slug}/product-requirements.md"
+      )
+      "sdd" => CommitMessage.format(
+        "docs", "spec-${spec_id}",
+        "Add solution design",
+        "Architecture and technical design for ${spec_name}.\n\nSee: docs/specs/${spec_id}-${slug}/solution-design.md"
+      )
+      "plan" => CommitMessage.format(
+        "docs", "spec-${spec_id}",
+        "Add implementation plan",
+        "Phased implementation tasks for ${spec_name}.\n\nSee: docs/specs/${spec_id}-${slug}/implementation-plan.md"
+      )
+      "all" => CommitMessage.format(
+        "docs", "spec-${spec_id}",
+        "Create specification for ${spec_name}",
+        """
+        Complete specification including:
+        - Product requirements (PRD)
+        - Solution design (SDD)
+        - Implementation plan (PLAN)
+
+        See: docs/specs/${spec_id}-${slug}/
+        """
+      )
+    }
+
+    git commit -m "${message}"
+  }
+
+  /commitImplementation spec_id, spec_name, phase, summary => {
+    slug = slugify(spec_name)
+
+    message = CommitMessage.format(
+      "feat", spec_id,
+      summary,
+      "Implements phase ${phase} of specification ${spec_id}-${spec_name}.\n\nSee: docs/specs/${spec_id}-${slug}/"
+    )
+
+    git commit -m "${message}"
+  }
+}
 ```
 
-**Output:**
+### Pull Request Creation
 
-```
-🔍 Repository Status
+```sudolang
+PullRequestOperations {
+  /createSpecPR spec_id, spec_name, summary => {
+    slug = slugify(spec_name)
 
-Repository: ✅ Git repository detected
-Current Branch: [branch-name]
-Remote: [origin-url]
-Uncommitted Changes: [N] files
+    gh pr create \
+      --title "docs(spec-${spec_id}): ${spec_name}" \
+      --body """
+        ## Specification: ${spec_name}
 
-Ready for git operations: [Yes/No]
-```
+        ${summary}
 
-### Operation 2: Branch Creation
+        ## Documents
 
-**When**: Starting new spec or implementation
+        - [ ] Product Requirements (PRD)
+        - [ ] Solution Design (SDD)
+        - [ ] Implementation Plan (PLAN)
 
-**Input Required:**
+        ## Review Checklist
 
-- `context`: "spec" | "feature" | "migrate" | "refactor"
-- `identifier`: Spec ID, feature name, or migration description
-- `name`: Human-readable name (will be slugified)
+        - [ ] Requirements are clear and testable
+        - [ ] Architecture is sound and scalable
+        - [ ] Implementation plan is actionable
+        - [ ] No [NEEDS CLARIFICATION] markers remain
 
-**Process:**
+        ## Related
 
-```bash
-# Ensure clean state or stash changes
-if [ -n "$(git status --porcelain)" ]; then
-  echo "Uncommitted changes detected"
-  # Ask user: stash, commit, or abort
-fi
+        - Spec Directory: \`docs/specs/${spec_id}-${slug}/\`
+      """
+  }
 
-# Get base branch
-base_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+  /createImplementationPR spec_id, spec_name, summary => {
+    slug = slugify(spec_name)
 
-# Create branch based on context
-case $context in
-  "spec")
-    branch_name="spec/${identifier}-${name_slug}"
-    ;;
-  "feature")
-    branch_name="feature/${identifier}-${name_slug}"
-    ;;
-  "migrate")
-    branch_name="migrate/${name_slug}"
-    ;;
-  "refactor")
-    branch_name="refactor/${name_slug}"
-    ;;
-esac
+    gh pr create \
+      --title "feat(${spec_id}): ${spec_name}" \
+      --body """
+        ## Summary
 
-# Create and checkout
-git checkout -b "$branch_name"
-```
+        ${summary}
 
-**Output:**
+        ## Specification
 
-```
-🔀 Branch Created
+        Implements specification [\`${spec_id}-${spec_name}\`](docs/specs/${spec_id}-${slug}/).
 
-Branch: [branch-name]
-Base: [base-branch]
-Context: [spec/feature/migrate/refactor]
+        ## Changes
 
-Ready to proceed.
-```
+        [Auto-generated from git diff summary]
 
-### Operation 3: Spec Commit
+        ## Test Plan
 
-**When**: After creating/updating specification documents
+        - [ ] All existing tests pass
+        - [ ] New tests added for new functionality
+        - [ ] Manual verification completed
 
-**Input Required:**
+        ## Checklist
 
-- `spec_id`: Spec identifier (e.g., "001")
-- `spec_name`: Spec name
-- `phase`: "prd" | "sdd" | "plan" | "all"
-
-**Commit Messages by Phase:**
-
-```bash
-# PRD phase
-git commit -m "docs(spec-${spec_id}): Add product requirements
-
-Defines requirements for ${spec_name}.
-
-See: docs/specs/${spec_id}-${spec_name_slug}/product-requirements.md
-
-Co-authored-by: Opencode <claude@anthropic.com>"
-
-# SDD phase
-git commit -m "docs(spec-${spec_id}): Add solution design
-
-Architecture and technical design for ${spec_name}.
-
-See: docs/specs/${spec_id}-${spec_name_slug}/solution-design.md
-
-Co-authored-by: Opencode <claude@anthropic.com>"
-
-# PLAN phase
-git commit -m "docs(spec-${spec_id}): Add implementation plan
-
-Phased implementation tasks for ${spec_name}.
-
-See: docs/specs/${spec_id}-${spec_name_slug}/implementation-plan.md
-
-Co-authored-by: Opencode <claude@anthropic.com>"
-
-# All phases (initial spec)
-git commit -m "docs(spec-${spec_id}): Create specification for ${spec_name}
-
-Complete specification including:
-- Product requirements (PRD)
-- Solution design (SDD)
-- Implementation plan (PLAN)
-
-See: docs/specs/${spec_id}-${spec_name_slug}/
-
-Co-authored-by: Opencode <claude@anthropic.com>"
-```
-
-### Operation 4: Implementation Commit
-
-**When**: After implementing spec phases
-
-**Input Required:**
-
-- `spec_id`: Spec identifier
-- `spec_name`: Spec name
-- `phase`: Current implementation phase
-- `summary`: Brief description of changes
-
-**Commit Message:**
-
-```bash
-git commit -m "feat(${spec_id}): ${summary}
-
-Implements phase ${phase} of specification ${spec_id}-${spec_name}.
-
-See: docs/specs/${spec_id}-${spec_name_slug}/
-
-Co-authored-by: Opencode <claude@anthropic.com>"
-```
-
-### Operation 5: Pull Request Creation
-
-**When**: After completing spec or implementation
-
-**Input Required:**
-
-- `context`: "spec" | "feature"
-- `spec_id`: Spec identifier
-- `spec_name`: Spec name
-- `summary`: Executive summary (from PRD if available)
-
-**PR Templates:**
-
-#### For Specification PR:
-
-```bash
-gh pr create \
-  --title "docs(spec-${spec_id}): ${spec_name}" \
-  --body "$(cat <<'EOF'
-## Specification: ${spec_name}
-
-${summary}
-
-## Documents
-
-- [ ] Product Requirements (PRD)
-- [ ] Solution Design (SDD)
-- [ ] Implementation Plan (PLAN)
-
-## Review Checklist
-
-- [ ] Requirements are clear and testable
-- [ ] Architecture is sound and scalable
-- [ ] Implementation plan is actionable
-- [ ] No [NEEDS CLARIFICATION] markers remain
-
-## Related
-
-- Spec Directory: \`docs/specs/${spec_id}-${spec_name_slug}/\`
-EOF
-)"
-```
-
-#### For Implementation PR:
-
-```bash
-gh pr create \
-  --title "feat(${spec_id}): ${spec_name}" \
-  --body "$(cat <<'EOF'
-## Summary
-
-${summary}
-
-## Specification
-
-Implements specification [\`${spec_id}-${spec_name}\`](docs/specs/${spec_id}-${spec_name_slug}/).
-
-## Changes
-
-[Auto-generated from git diff summary]
-
-## Test Plan
-
-- [ ] All existing tests pass
-- [ ] New tests added for new functionality
-- [ ] Manual verification completed
-
-## Checklist
-
-- [ ] Code follows project conventions
-- [ ] Documentation updated if needed
-- [ ] No breaking changes (or migration path provided)
-- [ ] Specification compliance verified
-EOF
-)"
+        - [ ] Code follows project conventions
+        - [ ] Documentation updated if needed
+        - [ ] No breaking changes (or migration path provided)
+        - [ ] Specification compliance verified
+      """
+  }
+}
 ```
 
 ---
 
 ## User Interaction
 
-### Branch Creation Options
+```sudolang
+UserPrompts {
+  BranchCreationOptions {
+    question: "This work could benefit from version control tracking."
+    options: [
+      { key: 1, label: "Create [context] branch (Recommended)", action: "/createBranch" },
+      { key: 2, label: "Work on current branch", action: "continue" },
+      { key: 3, label: "Skip git integration", action: "skip" }
+    ]
+  }
 
-When branch creation is appropriate, present options via `question`:
+  UncommittedChangesOptions {
+    question: "[N] files have uncommitted changes."
+    severity: "warning"
+    options: [
+      { key: 1, label: "Stash changes (Recommended)", action: "stash" },
+      { key: 2, label: "Commit changes first", action: "commit" },
+      { key: 3, label: "Proceed anyway", action: "proceed" },
+      { key: 4, label: "Cancel", action: "cancel" }
+    ]
+  }
 
-```
-🔀 Git Workflow
-
-This work could benefit from version control tracking.
-
-Options:
-1. Create [context] branch (Recommended)
-   → Creates [branch-name] from [base-branch]
-
-2. Work on current branch
-   → Continue on [current-branch]
-
-3. Skip git integration
-   → No branch management
-```
-
-### Uncommitted Changes Handling
-
-When uncommitted changes exist:
-
-```
-⚠️ Uncommitted Changes Detected
-
-[N] files have uncommitted changes.
-
-Options:
-1. Stash changes (Recommended)
-   → Save changes, create branch, restore later
-
-2. Commit changes first
-   → Commit current work, then create branch
-
-3. Proceed anyway
-   → Create branch with uncommitted changes
-
-4. Cancel
-   → Abort branch creation
-```
-
-### PR Creation Options
-
-When work is complete:
-
-```
-🎉 Work Complete
-
-Ready to create a pull request?
-
-Options:
-1. Create PR (Recommended)
-   → Push branch and create PR with description
-
-2. Commit only
-   → Commit changes without PR
-
-3. Push only
-   → Push branch without PR
-
-4. Skip
-   → Leave changes uncommitted
+  PRCreationOptions {
+    question: "Ready to create a pull request?"
+    options: [
+      { key: 1, label: "Create PR (Recommended)", action: "/createPR" },
+      { key: 2, label: "Commit only", action: "/commit" },
+      { key: 3, label: "Push only", action: "push" },
+      { key: 4, label: "Skip", action: "skip" }
+    ]
+  }
+}
 ```
 
 ---
@@ -379,64 +320,110 @@ Options:
 
 Call this skill for:
 
-1. **Branch check** at start → Offer to create `spec/[id]-[name]` branch
-2. **Commit** after each phase → Generate phase-specific commit
-3. **PR creation** at completion → Create spec review PR
+1. **Branch check** at start - Offer to create `spec/[id]-[name]` branch
+2. **Commit** after each phase - Generate phase-specific commit
+3. **PR creation** at completion - Create spec review PR
 
 ### With /implement
 
 Call this skill for:
 
-1. **Branch check** at start → Offer to create `feature/[id]-[name]` branch
-2. **Commit** after each phase → Generate implementation commit
-3. **PR creation** at completion → Create implementation PR
+1. **Branch check** at start - Offer to create `feature/[id]-[name]` branch
+2. **Commit** after each phase - Generate implementation commit
+3. **PR creation** at completion - Create implementation PR
 
 ### With /refactor
 
 Call this skill for:
 
-1. **Branch check** at start → Offer to create `refactor/[scope]` branch
-2. **Commit** after each refactoring → Generate refactor commit
-3. **Migration branches** → Create `migrate/[from]-to-[to]` for migrations
+1. **Branch check** at start - Offer to create `refactor/[scope]` branch
+2. **Commit** after each refactoring - Generate refactor commit
+3. **Migration branches** - Create `migrate/[from]-to-[to]` for migrations
 
 ---
 
 ## Output Format
 
-### After Branch Operation
+```sudolang
+OutputTemplates {
+  branchOperationComplete(operation, branch, details, next) {
+    """
+    Git Operation Complete
 
-```
-🔀 Git Operation Complete
+    Operation: ${operation}
+    Branch: ${branch}
+    Status: Success
 
-Operation: [Branch Created / Commit Made / PR Created]
-Branch: [branch-name]
-Status: [Success / Failed]
+    ${details}
 
-[Context-specific details]
+    Next: ${next}
+    """
+  }
 
-Next: [What happens next]
-```
+  prCreated(number, title, url, source, target) {
+    """
+    Pull Request Created
 
-### After PR Creation
+    PR: #${number} - ${title}
+    URL: ${url}
+    Branch: ${source} -> ${target}
 
-```
-🎉 Pull Request Created
-
-PR: #[number] - [title]
-URL: [github-url]
-Branch: [source] → [target]
-
-Status: Ready for review
-
-Reviewers: [if auto-assigned]
-Labels: [if auto-added]
+    Status: Ready for review
+    """
+  }
+}
 ```
 
 ---
 
 ## Error Handling
 
-### Common Issues
+```sudolang
+GitError {
+  type: "not_git_repo" | "branch_exists" | "uncommitted_changes" | "no_remote" | "gh_not_installed"
+  message
+  context?
+}
+
+GitErrorHandling {
+  handleError(error) {
+    match error.type {
+      "not_git_repo" => {
+        warn "Not a git repository"
+        options: ["Skip git operations", "Initialize git repo"]
+      }
+      "branch_exists" => {
+        warn "Branch already exists"
+        options: ["Checkout existing branch", "Rename new branch"]
+      }
+      "uncommitted_changes" => {
+        warn "Uncommitted changes detected"
+        options: ["Stash", "Commit", "Proceed anyway"]
+      }
+      "no_remote" => {
+        warn "No remote configured"
+        options: ["Skip push/PR", "Configure remote"]
+      }
+      "gh_not_installed" => {
+        warn "GitHub CLI not installed"
+        options: ["Use git push", "Skip PR creation"]
+      }
+    }
+  }
+
+  gracefulDegradation(issue, impact, alternatives) {
+    warn """
+      Git Operation Limited
+
+      Issue: ${issue}
+      Impact: ${impact}
+
+      Available Options:
+      ${alternatives |> map((alt, i) => "${i+1}. ${alt}") |> join("\n")}
+    """
+  }
+}
+```
 
 | Error                   | Cause              | Resolution                  |
 | ----------------------- | ------------------ | --------------------------- |
@@ -445,17 +432,3 @@ Labels: [if auto-added]
 | "Uncommitted changes"   | Dirty working tree | Stash, commit, or proceed   |
 | "No remote configured"  | No upstream        | Skip push/PR or configure   |
 | "gh not installed"      | Missing GitHub CLI | Use git push, skip PR       |
-
-### Graceful Degradation
-
-```
-⚠️ Git Operation Limited
-
-Issue: [What's wrong]
-Impact: [What can't be done]
-
-Available Options:
-1. [Alternative 1]
-2. [Alternative 2]
-3. Proceed without git integration
-```

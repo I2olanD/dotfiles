@@ -23,235 +23,260 @@ A specialized skill for systematic security evaluation of code, architecture, an
 
 ## Threat Modeling with STRIDE
 
-STRIDE is a threat modeling framework that categorizes threats by their nature. Apply this model during architecture review and feature design.
+```sudolang
+See: skill/shared/interfaces.sudo.md
 
-### Spoofing (Authentication)
+ThreatAnalysis {
+  category
+  threat
+  questions
+  mitigations
+}
 
-Threat: Attacker pretends to be another user or system.
+STRIDECategory = "Spoofing" | "Tampering" | "Repudiation" |
+                 "InformationDisclosure" | "DenialOfService" | "ElevationOfPrivilege"
 
-Questions to ask:
-- How do we verify the identity of users and systems?
-- Can authentication tokens be stolen or forged?
-- Are there any authentication bypass paths?
+analyzeThreat(component) {
+  match component.securityConcern {
+    "authentication" => {
+      category: "Spoofing",
+      threat: "Attacker pretends to be another user or system",
+      questions: [
+        "How do we verify the identity of users and systems?",
+        "Can authentication tokens be stolen or forged?",
+        "Are there any authentication bypass paths?"
+      ],
+      mitigations: [
+        "Strong authentication mechanisms (MFA)",
+        "Secure token generation and validation",
+        "Session management with proper invalidation"
+      ]
+    }
 
-Mitigations:
-- Strong authentication mechanisms (MFA)
-- Secure token generation and validation
-- Session management with proper invalidation
+    "dataIntegrity" => {
+      category: "Tampering",
+      threat: "Attacker modifies data in transit or at rest",
+      questions: [
+        "Can data be modified between components?",
+        "Are database records protected from unauthorized changes?",
+        "Can configuration files be altered?"
+      ],
+      mitigations: [
+        "Input validation at all boundaries",
+        "Cryptographic signatures for critical data",
+        "Database integrity constraints and audit logs"
+      ]
+    }
 
-### Tampering (Integrity)
+    "auditability" => {
+      category: "Repudiation",
+      threat: "Attacker denies performing an action",
+      questions: [
+        "Can we prove who performed an action?",
+        "Are audit logs tamper-resistant?",
+        "Is there sufficient logging for forensics?"
+      ],
+      mitigations: [
+        "Comprehensive audit logging",
+        "Secure, immutable log storage",
+        "Digital signatures for critical operations"
+      ]
+    }
 
-Threat: Attacker modifies data in transit or at rest.
+    "confidentiality" => {
+      category: "InformationDisclosure",
+      threat: "Attacker gains access to sensitive information",
+      questions: [
+        "What sensitive data exists in this system?",
+        "How is data protected at rest and in transit?",
+        "Are error messages revealing internal details?"
+      ],
+      mitigations: [
+        "Encryption for sensitive data (TLS, AES)",
+        "Proper access controls and authorization",
+        "Sanitized error messages"
+      ]
+    }
 
-Questions to ask:
-- Can data be modified between components?
-- Are database records protected from unauthorized changes?
-- Can configuration files be altered?
+    "availability" => {
+      category: "DenialOfService",
+      threat: "Attacker makes the system unavailable",
+      questions: [
+        "What resources can be exhausted?",
+        "Are there rate limits on expensive operations?",
+        "How does the system handle malformed input?"
+      ],
+      mitigations: [
+        "Rate limiting and throttling",
+        "Input validation and size limits",
+        "Resource quotas and timeouts"
+      ]
+    }
 
-Mitigations:
-- Input validation at all boundaries
-- Cryptographic signatures for critical data
-- Database integrity constraints and audit logs
-
-### Repudiation (Non-repudiation)
-
-Threat: Attacker denies performing an action.
-
-Questions to ask:
-- Can we prove who performed an action?
-- Are audit logs tamper-resistant?
-- Is there sufficient logging for forensics?
-
-Mitigations:
-- Comprehensive audit logging
-- Secure, immutable log storage
-- Digital signatures for critical operations
-
-### Information Disclosure (Confidentiality)
-
-Threat: Attacker gains access to sensitive information.
-
-Questions to ask:
-- What sensitive data exists in this system?
-- How is data protected at rest and in transit?
-- Are error messages revealing internal details?
-
-Mitigations:
-- Encryption for sensitive data (TLS, AES)
-- Proper access controls and authorization
-- Sanitized error messages
-
-### Denial of Service (Availability)
-
-Threat: Attacker makes the system unavailable.
-
-Questions to ask:
-- What resources can be exhausted?
-- Are there rate limits on expensive operations?
-- How does the system handle malformed input?
-
-Mitigations:
-- Rate limiting and throttling
-- Input validation and size limits
-- Resource quotas and timeouts
-
-### Elevation of Privilege (Authorization)
-
-Threat: Attacker gains higher privileges than intended.
-
-Questions to ask:
-- Can users access resources beyond their role?
-- Are privilege checks performed consistently?
-- Can administrative functions be accessed by regular users?
-
-Mitigations:
-- Principle of least privilege
-- Role-based access control (RBAC)
-- Authorization checks at every layer
+    "authorization" => {
+      category: "ElevationOfPrivilege",
+      threat: "Attacker gains higher privileges than intended",
+      questions: [
+        "Can users access resources beyond their role?",
+        "Are privilege checks performed consistently?",
+        "Can administrative functions be accessed by regular users?"
+      ],
+      mitigations: [
+        "Principle of least privilege",
+        "Role-based access control (RBAC)",
+        "Authorization checks at every layer"
+      ]
+    }
+  }
+}
+```
 
 ## OWASP Top 10 Review Patterns
 
-Systematic patterns for identifying the most critical web application security risks.
+```sudolang
+OWASPReview {
+  category
+  reviewSteps
+  redFlags
+}
 
-### A01: Broken Access Control
+OWASPCategory = "A01" | "A02" | "A03" | "A04" | "A05" |
+               "A06" | "A07" | "A08" | "A09" | "A10"
 
-Review pattern:
-1. Identify all endpoints and their expected access levels
-2. Trace authorization logic from request to resource
-3. Test for horizontal privilege escalation (accessing other users' data)
-4. Test for vertical privilege escalation (accessing admin functions)
-5. Verify CORS configuration restricts origins appropriately
+reviewOWASP(category) {
+  match category {
+    "A01" => {  Broken Access Control
+      reviewSteps: [
+        "Identify all endpoints and their expected access levels",
+        "Trace authorization logic from request to resource",
+        "Test for horizontal privilege escalation (accessing other users' data)",
+        "Test for vertical privilege escalation (accessing admin functions)",
+        "Verify CORS configuration restricts origins appropriately"
+      ],
+      warn "Authorization based on client-side state" => critical.
+      warn "Direct object references without ownership verification" => high.
+      warn "Missing authorization checks on API endpoints" => critical.
+    }
 
-Red flags:
-- Authorization based on client-side state
-- Direct object references without ownership verification
-- Missing authorization checks on API endpoints
+    "A02" => {  Cryptographic Failures
+      reviewSteps: [
+        "Map all sensitive data flows (credentials, PII, financial)",
+        "Verify encryption at rest and in transit",
+        "Check for hardcoded secrets in code or configuration",
+        "Review cryptographic algorithm choices",
+        "Verify key management practices"
+      ],
+      warn "Sensitive data in logs or error messages" => high.
+      warn "Deprecated algorithms (MD5, SHA1, DES)" => critical.
+      warn "Secrets in source control" => critical.
+    }
 
-### A02: Cryptographic Failures
+    "A03" => {  Injection
+      reviewSteps: [
+        "Identify all user input entry points",
+        "Trace input flow to database queries, OS commands, LDAP",
+        "Verify parameterized queries or proper escaping",
+        "Check for dynamic code execution (eval, exec)",
+        "Review XML parsing for XXE vulnerabilities"
+      ],
+      warn "String concatenation in queries" => critical.
+      warn "User input in system commands" => critical.
+      warn "Disabled XML external entity protection" => high.
+    }
 
-Review pattern:
-1. Map all sensitive data flows (credentials, PII, financial)
-2. Verify encryption at rest and in transit
-3. Check for hardcoded secrets in code or configuration
-4. Review cryptographic algorithm choices
-5. Verify key management practices
+    "A04" => {  Insecure Design
+      reviewSteps: [
+        "Verify threat modeling was performed",
+        "Check for abuse case handling (rate limits, quantity limits)",
+        "Review business logic for security assumptions",
+        "Assess multi-tenancy isolation",
+        "Verify secure defaults"
+      ],
+      warn "No rate limiting on authentication" => high.
+      warn "Trust assumptions without verification" => medium.
+      warn "Security as an afterthought" => high.
+    }
 
-Red flags:
-- Sensitive data in logs or error messages
-- Deprecated algorithms (MD5, SHA1, DES)
-- Secrets in source control
+    "A05" => {  Security Misconfiguration
+      reviewSteps: [
+        "Review default configurations for security settings",
+        "Check for unnecessary features or services",
+        "Verify error handling does not expose details",
+        "Review security headers (CSP, HSTS, X-Frame-Options)",
+        "Check cloud resource permissions"
+      ],
+      warn "Debug mode in production" => critical.
+      warn "Default credentials unchanged" => critical.
+      warn "Overly permissive cloud IAM policies" => high.
+    }
 
-### A03: Injection
+    "A06" => {  Vulnerable Components
+      reviewSteps: [
+        "Inventory all dependencies and their versions",
+        "Check for known vulnerabilities (CVE databases)",
+        "Verify dependencies from trusted sources",
+        "Review for unused dependencies",
+        "Check for version pinning"
+      ],
+      warn "Unpinned dependencies" => medium.
+      warn "Known critical vulnerabilities" => critical.
+      warn "Dependencies from unofficial sources" => high.
+    }
 
-Review pattern:
-1. Identify all user input entry points
-2. Trace input flow to database queries, OS commands, LDAP
-3. Verify parameterized queries or proper escaping
-4. Check for dynamic code execution (eval, exec)
-5. Review XML parsing for XXE vulnerabilities
+    "A07" => {  Authentication Failures
+      reviewSteps: [
+        "Review password policy enforcement",
+        "Check session management implementation",
+        "Verify brute force protection",
+        "Review token generation and validation",
+        "Check credential storage mechanisms"
+      ],
+      warn "Weak password requirements" => medium.
+      warn "Sessions that do not invalidate on logout" => high.
+      warn "Predictable session tokens" => critical.
+    }
 
-Red flags:
-- String concatenation in queries
-- User input in system commands
-- Disabled XML external entity protection
+    "A08" => {  Integrity Failures
+      reviewSteps: [
+        "Review CI/CD pipeline security",
+        "Check for unsigned code or dependencies",
+        "Review deserialization of untrusted data",
+        "Verify update mechanism security",
+        "Check for code review requirements"
+      ],
+      warn "Deserialization without integrity checks" => critical.
+      warn "Unsigned updates or dependencies" => high.
+      warn "No code review before deployment" => medium.
+    }
 
-### A04: Insecure Design
+    "A09" => {  Logging and Monitoring Failures
+      reviewSteps: [
+        "Verify authentication events are logged",
+        "Check for authorization failure logging",
+        "Review log content for sensitive data",
+        "Verify log integrity protection",
+        "Check alerting configuration"
+      ],
+      warn "Missing authentication failure logs" => medium.
+      warn "Sensitive data in logs" => high.
+      warn "No alerting on suspicious patterns" => medium.
+    }
 
-Review pattern:
-1. Verify threat modeling was performed
-2. Check for abuse case handling (rate limits, quantity limits)
-3. Review business logic for security assumptions
-4. Assess multi-tenancy isolation
-5. Verify secure defaults
-
-Red flags:
-- No rate limiting on authentication
-- Trust assumptions without verification
-- Security as an afterthought
-
-### A05: Security Misconfiguration
-
-Review pattern:
-1. Review default configurations for security settings
-2. Check for unnecessary features or services
-3. Verify error handling does not expose details
-4. Review security headers (CSP, HSTS, X-Frame-Options)
-5. Check cloud resource permissions
-
-Red flags:
-- Debug mode in production
-- Default credentials unchanged
-- Overly permissive cloud IAM policies
-
-### A06: Vulnerable Components
-
-Review pattern:
-1. Inventory all dependencies and their versions
-2. Check for known vulnerabilities (CVE databases)
-3. Verify dependencies from trusted sources
-4. Review for unused dependencies
-5. Check for version pinning
-
-Red flags:
-- Unpinned dependencies
-- Known critical vulnerabilities
-- Dependencies from unofficial sources
-
-### A07: Authentication Failures
-
-Review pattern:
-1. Review password policy enforcement
-2. Check session management implementation
-3. Verify brute force protection
-4. Review token generation and validation
-5. Check credential storage mechanisms
-
-Red flags:
-- Weak password requirements
-- Sessions that do not invalidate on logout
-- Predictable session tokens
-
-### A08: Integrity Failures
-
-Review pattern:
-1. Review CI/CD pipeline security
-2. Check for unsigned code or dependencies
-3. Review deserialization of untrusted data
-4. Verify update mechanism security
-5. Check for code review requirements
-
-Red flags:
-- Deserialization without integrity checks
-- Unsigned updates or dependencies
-- No code review before deployment
-
-### A09: Logging and Monitoring Failures
-
-Review pattern:
-1. Verify authentication events are logged
-2. Check for authorization failure logging
-3. Review log content for sensitive data
-4. Verify log integrity protection
-5. Check alerting configuration
-
-Red flags:
-- Missing authentication failure logs
-- Sensitive data in logs
-- No alerting on suspicious patterns
-
-### A10: SSRF
-
-Review pattern:
-1. Identify all server-side URL fetching
-2. Verify URL validation against allowlist
-3. Check for internal network blocking
-4. Review URL scheme restrictions
-5. Verify response handling
-
-Red flags:
-- User-controlled URLs without validation
-- Internal addresses not blocked
-- Raw responses returned to users
+    "A10" => {  SSRF
+      reviewSteps: [
+        "Identify all server-side URL fetching",
+        "Verify URL validation against allowlist",
+        "Check for internal network blocking",
+        "Review URL scheme restrictions",
+        "Verify response handling"
+      ],
+      warn "User-controlled URLs without validation" => critical.
+      warn "Internal addresses not blocked" => high.
+      warn "Raw responses returned to users" => medium.
+    }
+  }
+}
+```
 
 ## Secure Coding Practices
 
@@ -325,58 +350,112 @@ try {
 }
 ```
 
-## Infrastructure Security Considerations
+## Infrastructure Security
 
-### Network Security
+```sudolang
+InfrastructureSecurity {
+  Constraints {
+    Network segmentation required to limit blast radius.
+    Private subnets required for internal services.
+    Network policies required in Kubernetes.
+    Egress traffic restricted to known destinations.
+  }
 
-- Segment networks to limit blast radius
-- Use private subnets for internal services
-- Implement network policies in Kubernetes
-- Restrict egress traffic to known destinations
+  require Minimal base images (distroless, Alpine).
+  require Non-root user execution.
+  require Image vulnerability scanning.
+  warn Read-only root filesystem where possible.
+  warn Limited container capabilities.
 
-### Container Security
+  require Secret management services (Vault, AWS Secrets Manager).
+  require Secrets injected as environment variables.
+  require Regular secret rotation.
+  require Secret access auditing.
 
-- Use minimal base images (distroless, Alpine)
-- Run as non-root user
-- Set read-only root filesystem where possible
-- Scan images for vulnerabilities
-- Limit container capabilities
+  require Principle of least privilege for cloud IAM.
+  require Service accounts with minimal permissions.
+  require Regular IAM policy audits.
+  require Avoiding root or admin accounts for routine operations.
+}
+```
 
-### Secrets in Infrastructure
+## Code Review Security Focus
 
-- Use secret management services (Vault, AWS Secrets Manager)
-- Inject secrets as environment variables, not files
-- Rotate secrets regularly
-- Audit secret access
+```sudolang
+SecurityReviewArea {
+  priority
+  focus
+  checkpoints
+}
 
-### Cloud IAM
+CodeReviewSecurity {
+  State {
+    findings
+  }
 
-- Apply principle of least privilege
-- Use service accounts with minimal permissions
-- Audit IAM policies regularly
-- Avoid using root/admin accounts for routine operations
+  prioritizeReview() => [
+    { priority: 1, focus: "Authentication and session management",
+      checkpoints: ["Token generation", "Validation", "Session lifecycle"] },
+    { priority: 2, focus: "Authorization checks",
+      checkpoints: ["Access control at all layers"] },
+    { priority: 3, focus: "Input handling",
+      checkpoints: ["All user input paths"] },
+    { priority: 4, focus: "Data exposure",
+      checkpoints: ["Logs", "Errors", "API responses"] },
+    { priority: 5, focus: "Cryptography usage",
+      checkpoints: ["Algorithm selection", "Key management"] },
+    { priority: 6, focus: "Third-party integrations",
+      checkpoints: ["Data sharing", "Authentication"] },
+    { priority: 7, focus: "Error handling",
+      checkpoints: ["Information leakage", "Fail-secure behavior"] }
+  ]
 
-## Code Review Security Focus Areas
+  assessFindings(findings) {
+    match findings {
+      f if any have severity "critical" => {
+        verdict: "BLOCK",
+        action: "Critical security issues must be resolved"
+      }
+      f if more than 2 have severity "high" => {
+        verdict: "BLOCK",
+        action: "Multiple high-severity security issues"
+      }
+      f if any have severity "high" => {
+        verdict: "REVIEW_REQUIRED",
+        action: "High-severity issues need attention before merge"
+      }
+      _ => {
+        verdict: "PASS",
+        action: "Security review complete"
+      }
+    }
+  }
+}
+```
 
-Priority areas for security-focused code review:
+## Security Best Practices
 
-1. **Authentication and session management** - Token generation, validation, session lifecycle
-2. **Authorization checks** - Access control at all layers
-3. **Input handling** - All user input paths
-4. **Data exposure** - Logs, errors, API responses
-5. **Cryptography usage** - Algorithm selection, key management
-6. **Third-party integrations** - Data sharing, authentication
-7. **Error handling** - Information leakage, fail-secure behavior
+```sudolang
+SecurityPractices {
+  Constraints {
+    Threat modeling required before implementation.
+    Defense in depth with multiple security layers.
+    Assume breach design for detection and containment.
+    Automated security testing in CI/CD.
+    Dependencies updated and audited.
+    Security decisions documented with accepted risks.
+    Developer training on secure coding practices.
+  }
 
-## Best Practices
-
-- Perform threat modeling before implementation
-- Apply defense in depth (multiple security layers)
-- Assume breach: design for detection and containment
-- Automate security testing in CI/CD
-- Keep dependencies updated and audited
-- Document security decisions and accepted risks
-- Train developers on secure coding practices
+  principles {
+    "Defense in Depth" => "Never rely on a single security control"
+    "Least Privilege" => "Grant minimum permissions necessary"
+    "Fail Secure" => "Default to denied access on errors"
+    "Zero Trust" => "Verify everything, trust nothing"
+    "Separation of Duties" => "Critical actions require multiple parties"
+  }
+}
+```
 
 ## References
 

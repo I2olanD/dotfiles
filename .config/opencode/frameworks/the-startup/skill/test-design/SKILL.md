@@ -21,6 +21,8 @@ A development skill that provides comprehensive testing methodology including te
 - Selecting appropriate testing frameworks
 - Planning test automation strategies
 
+**For test-first development (Red-Green-Refactor), see the [tdd skill](../tdd/SKILL.md).**
+
 ## Test Pyramid
 
 The test pyramid guides test distribution for optimal feedback speed and confidence:
@@ -42,11 +44,29 @@ The test pyramid guides test distribution for optimal feedback speed and confide
 
 ### Distribution Guidelines
 
-| Test Type   | Target % | Execution Time | Scope                    |
-|-------------|----------|----------------|--------------------------|
-| Unit        | 60-70%   | < 100ms each   | Single function/class    |
-| Integration | 20-30%   | < 5s each      | Service boundaries       |
-| E2E         | 5-10%    | < 30s each     | Critical user paths      |
+```sudolang
+TestDistribution {
+  getTestTypeSpec(testType) {
+    match testType {
+      "unit" => {
+        targetPercent: "60-70%",
+        maxExecutionTime: "< 100ms each",
+        scope: "Single function/class"
+      }
+      "integration" => {
+        targetPercent: "20-30%",
+        maxExecutionTime: "< 5s each",
+        scope: "Service boundaries"
+      }
+      "e2e" => {
+        targetPercent: "5-10%",
+        maxExecutionTime: "< 30s each",
+        scope: "Critical user paths"
+      }
+    }
+  }
+}
+```
 
 ## Core Patterns
 
@@ -172,15 +192,44 @@ def test_list_orders_empty():
 
 ## Coverage Targets
 
-### Recommended Coverage by Code Type
+```sudolang
+CoverageTargets {
+  getCoverageSpec(codeType) {
+    match codeType {
+      "business_logic" => {
+        statement: 90,
+        branch: 85,
+        priority: "high"
+      }
+      "api_controllers" => {
+        statement: 80,
+        branch: 75,
+        priority: "medium"
+      }
+      "utility_functions" => {
+        statement: 95,
+        branch: 90,
+        priority: "high"
+      }
+      "ui_components" => {
+        statement: 70,
+        branch: 65,
+        priority: "medium"
+      }
+      "generated_code" => {
+        statement: null,
+        branch: null,
+        priority: "skip"
+      }
+    }
+  }
 
-| Code Type          | Statement | Branch | Target |
-|--------------------|-----------|--------|--------|
-| Business Logic     | 90%       | 85%    | High   |
-| API Controllers    | 80%       | 75%    | Medium |
-| Utility Functions  | 95%       | 90%    | High   |
-| UI Components      | 70%       | 65%    | Medium |
-| Generated Code     | N/A       | N/A    | Skip   |
+  Constraints {
+    Coverage percentage alone is insufficient.
+    Prioritize: critical paths, edge cases, regression prevention, complex logic.
+  }
+}
+```
 
 ### Coverage Quality Over Quantity
 
@@ -194,6 +243,20 @@ Coverage percentage alone is insufficient. Prioritize:
 ## Framework-Specific Patterns
 
 ### Jest (JavaScript/TypeScript)
+
+```sudolang
+JestPatterns {
+  Co-located file structure: *.test.ts next to source.
+
+  Constraints {
+    Mock repository initialization belongs in beforeEach.
+    jest.clearAllMocks() belongs in afterEach.
+    Descriptive describe and it blocks required.
+  }
+
+  warn when mocking internal methods.
+}
+```
 
 ```typescript
 // File structure
@@ -241,6 +304,19 @@ describe('UserService', () => {
 ```
 
 ### Pytest (Python)
+
+```sudolang
+PytestPatterns {
+  Mirrored file structure: tests/ mirrors src/.
+
+  Constraints {
+    Fixtures via conftest.py for shared setup.
+    Mock with spec parameter for type-safe mocking.
+  }
+
+  warn when not using pytest.mark.parametrize for similar test cases.
+}
+```
 
 ```python
 # File structure
@@ -335,14 +411,18 @@ describe('LoginForm', () => {
 
 ## Test Organization
 
-### File Naming Conventions
-
-| Framework | Test File Pattern      | Example                    |
-|-----------|------------------------|----------------------------|
-| Jest      | `*.test.ts`            | `UserService.test.ts`      |
-| Pytest    | `test_*.py`            | `test_user_service.py`     |
-| Go        | `*_test.go`            | `user_service_test.go`     |
-| JUnit     | `*Test.java`           | `UserServiceTest.java`     |
+```sudolang
+TestFileNaming {
+  getFilePattern(framework) {
+    match framework {
+      "jest" => { pattern: "*.test.ts", example: "UserService.test.ts" }
+      "pytest" => { pattern: "test_*.py", example: "test_user_service.py" }
+      "go" => { pattern: "*_test.go", example: "user_service_test.go" }
+      "junit" => { pattern: "*Test.java", example: "UserServiceTest.java" }
+    }
+  }
+}
+```
 
 ### Directory Structure Patterns
 
@@ -375,18 +455,54 @@ tests/
 
 ## Best Practices
 
-- Run tests before committing; never commit failing tests
-- Keep unit tests under 100ms execution time
-- Mock external dependencies at service boundaries only
-- Use factories or fixtures for test data, not raw literals
-- Delete flaky tests or fix them immediately
-- Review tests during code review with same rigor as production code
-- Name tests as specifications that document behavior
-- Prefer real implementations over mocks when practical
-- Test edge cases: nulls, empty collections, boundaries
-- Avoid conditional logic in tests
+```sudolang
+TestBestPractices {
+  Constraints {
+    Tests must pass before committing.
+    Unit tests must complete in under 100ms.
+    Mock only at service boundaries.
+    Use factories or fixtures for test data, not raw literals.
+    Fix or delete flaky tests immediately.
+    Apply same review rigor for tests as production code.
+  }
+
+  warn when test names do not describe behavior.
+  warn when using mocks instead of real implementations unnecessarily.
+  warn when missing edge case coverage (nulls, empty collections, boundaries).
+  warn when tests contain conditional logic.
+}
+```
 
 ## Anti-Patterns to Avoid
+
+```sudolang
+TestAntiPatterns {
+  detectAntiPattern(testCode) {
+    match testCode {
+      code if accessesPrivateMembers(code) => {
+        antiPattern: "testing_implementation_details",
+        problem: "Brittle test that breaks on refactoring",
+        fix: "Test observable behavior through public API"
+      }
+      code if usesSharedMutableState(code) => {
+        antiPattern: "shared_mutable_state",
+        problem: "Tests interfere with each other",
+        fix: "Use fresh fixtures per test via setup methods"
+      }
+      code if mocksSystemUnderTest(code) => {
+        antiPattern: "over_mocking",
+        problem: "Test doesn't verify real behavior",
+        fix: "Mock dependencies, not the system under test"
+      }
+      code if hasDuplicatedTestCases(code) => {
+        antiPattern: "test_duplication",
+        problem: "Redundant maintenance burden",
+        fix: "Use parameterized tests"
+      }
+    }
+  }
+}
+```
 
 ### Testing Implementation Details
 
@@ -448,3 +564,8 @@ def test_validate_email_rejects_invalid_formats(invalid_email):
 ## References
 
 - `examples/test-pyramid.md` - Detailed test pyramid implementation guide with framework examples
+
+## Related Skills
+
+- **tdd**: Red-Green-Refactor cycle, test-first methodology, when to use TDD
+- **testing**: Layer-specific mocking rules, test execution, debugging failures

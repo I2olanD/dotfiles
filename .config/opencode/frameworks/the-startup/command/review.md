@@ -19,103 +19,242 @@ You are a code review orchestrator that coordinates comprehensive review feedbac
 
 ## Review Perspectives
 
-Code review should cover these perspectives. For each, launch a task with clear intent - Opencode will route to the appropriate specialist subagent.
+```sudolang
+ReviewPerspective {
+  emoji
+  name
+  intent
+  lookFor
+  required
+  condition  // When to include, for conditional perspectives
+}
 
-### Always Review
+CorePerspectives = [
+  {
+    emoji: "LOCK"
+    name: "Security"
+    intent: "Find vulnerabilities before they reach production"
+    lookFor: ["Auth/authz gaps", "Injection risks", "Hardcoded secrets",
+              "Input validation", "CSRF", "Cryptographic weaknesses"]
+    required: true
+  },
+  {
+    emoji: "WRENCH"
+    name: "Simplification"
+    intent: "Aggressively challenge unnecessary complexity"
+    lookFor: ["YAGNI violations", "Over-engineering", "Premature abstraction",
+              "Dead code", "Clever code that should be obvious"]
+    required: true
+  },
+  {
+    emoji: "ZAP"
+    name: "Performance"
+    intent: "Identify efficiency issues"
+    lookFor: ["N+1 queries", "Algorithm complexity", "Resource leaks",
+              "Blocking operations", "Caching opportunities"]
+    required: true
+  },
+  {
+    emoji: "MEMO"
+    name: "Quality"
+    intent: "Ensure code meets standards"
+    lookFor: ["SOLID violations", "Naming issues", "Error handling gaps",
+              "Pattern inconsistencies", "Code smells"]
+    required: true
+  },
+  {
+    emoji: "TEST_TUBE"
+    name: "Testing"
+    intent: "Verify adequate coverage"
+    lookFor: ["Missing tests for new code paths", "Edge cases not covered",
+              "Test quality issues"]
+    required: true
+  }
+]
 
-| Perspective           | Intent                                            | What to Look For                                                                                           |
-| --------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| 🔐 **Security**       | Find vulnerabilities before they reach production | Auth/authz gaps, injection risks, hardcoded secrets, input validation, CSRF, cryptographic weaknesses      |
-| 🔧 **Simplification** | Aggressively challenge unnecessary complexity     | YAGNI violations, over-engineering, premature abstraction, dead code, "clever" code that should be obvious |
-| ⚡ **Performance**    | Identify efficiency issues                        | N+1 queries, algorithm complexity, resource leaks, blocking operations, caching opportunities              |
-| 📝 **Quality**        | Ensure code meets standards                       | SOLID violations, naming issues, error handling gaps, pattern inconsistencies, code smells                 |
-| 🧪 **Testing**        | Verify adequate coverage                          | Missing tests for new code paths, edge cases not covered, test quality issues                              |
-
-### Review When Applicable
-
-| Perspective          | Intent                                | When to Include                                                     |
-| -------------------- | ------------------------------------- | ------------------------------------------------------------------- |
-| 🧵 **Concurrency**   | Find race conditions and async issues | Code uses async/await, threading, shared state, parallel operations |
-| 📦 **Dependencies**  | Assess supply chain security          | Changes to package.json, requirements.txt, go.mod, Cargo.toml, etc. |
-| 🔄 **Compatibility** | Detect breaking changes               | Modifications to public APIs, database schemas, config formats      |
-| ♿ **Accessibility** | Ensure inclusive design               | Frontend/UI component changes                                       |
-| 📜 **Constitution**  | Check project rules compliance        | Project has CONSTITUTION.md                                         |
+ConditionalPerspectives = [
+  {
+    emoji: "THREAD", name: "Concurrency"
+    intent: "Find race conditions and async issues"
+    lookFor: ["Race conditions", "Deadlocks", "Async/await issues", "Shared state problems"]
+    condition: "Code uses async/await, threading, shared state, parallel operations"
+  },
+  {
+    emoji: "PACKAGE", name: "Dependencies"
+    intent: "Assess supply chain security"
+    lookFor: ["Vulnerable packages", "Outdated deps", "License issues"]
+    condition: "Changes to package.json, requirements.txt, go.mod, Cargo.toml, etc."
+  },
+  {
+    emoji: "ARROWS_COUNTERCLOCKWISE", name: "Compatibility"
+    intent: "Detect breaking changes"
+    lookFor: ["API breaks", "Schema migrations", "Config format changes"]
+    condition: "Modifications to public APIs, database schemas, config formats"
+  },
+  {
+    emoji: "WHEELCHAIR", name: "Accessibility"
+    intent: "Ensure inclusive design"
+    lookFor: ["ARIA labels", "Keyboard navigation", "Color contrast", "Screen reader support"]
+    condition: "Frontend/UI component changes"
+  },
+  {
+    emoji: "SCROLL", name: "Constitution"
+    intent: "Check project rules compliance"
+    lookFor: ["CONSTITUTION.md rule violations"]
+    condition: "Project has CONSTITUTION.md"
+  }
+]
+```
 
 ## Workflow
 
+```sudolang
+ReviewWorkflow {
+  // Reference shared interfaces
+  See: skill/shared/interfaces.sudo.md (ReviewFindings, determineVerdict, TaskPrompt)
+
+  State {
+    current: "gather"
+    completed: []
+    phases: ["gather", "review", "synthesize", "next_steps"]
+  }
+
+  Constraints {
+    require skill({ name: "code-review" }) called before review phase.
+    require all CorePerspectives reviewed.
+    warn if applicable ConditionalPerspectives skipped.
+  }
+}
+```
+
 ### Phase 1: Gather Changes & Context
 
-1. Parse `$ARGUMENTS` to determine review target:
-   - PR number → fetch PR diff via `gh pr diff`
-   - Branch name → diff against main/master
-   - `staged` → use `git diff --cached`
-   - File path → read file and recent changes
+```sudolang
+parseTarget(arguments) {
+  match arguments {
+    /^\d+$/                  => { type: "pr", action: "gh pr diff $arguments" }
+    "staged"                 => { type: "staged", action: "git diff --cached" }
+    /^[a-zA-Z][\w\-\/]+$/   => { type: "branch", action: "git diff main...$arguments" }
+    default                  => { type: "file", action: "read $arguments with recent changes" }
+  }
+}
 
-2. Retrieve full file contents for context (not just diff)
+determineApplicablePerspectives(changes) {
+  applicable = [...CorePerspectives]
 
-3. Analyze changes to determine which conditional perspectives apply:
-   - Contains async/await, Promise, threading → include Concurrency
-   - Modifies dependency files → include Dependencies
-   - Changes public API/schema → include Compatibility
-   - Modifies frontend components → include Accessibility
-   - Project has CONSTITUTION.md → include Constitution
+  for each ConditionalPerspective {
+    match changes {
+      (contains async code) && perspective is "Concurrency" => add to applicable
+      (modifies dependency file) && perspective is "Dependencies" => add to applicable
+      (modifies public API) && perspective is "Compatibility" => add to applicable
+      (modifies frontend) && perspective is "Accessibility" => add to applicable
+      (has constitution) && perspective is "Constitution" => add to applicable
+    }
+  }
+
+  applicable
+}
+```
 
 ### Phase 2: Launch Review Activities
 
 Launch ALL applicable review activities in parallel (single response with multiple task calls).
 
-**For each perspective, describe the review intent:**
+```sudolang
+ReviewTask {
+  // Composes TaskPrompt with review-specific context
+  perspective
 
-```
-Review this code for [PERSPECTIVE]:
+  Constraints {
+    Each review task focuses on ONE perspective only.
+    Findings must include location, severity, and fix.
+    No code changes - findings and recommendations only.
+  }
+}
 
-CONTEXT:
-- Files changed: [list]
-- Changes: [the diff or code]
-- Full file context: [surrounding code]
-- Project standards: [from CLAUDE.md, Agent.md, .editorconfig, etc.]
+createReviewTask(perspective, context) {
+  TaskPrompt {
+    focus: "Review code for $perspective.name"
+    deliverables: [
+      "Findings formatted per Finding interface",
+      "Severity classification for each issue",
+      "Specific fix recommendations"
+    ]
+    exclude: ["Other review perspectives", "Making code changes"]
+    context: [
+      "Files changed: $context.files",
+      "Changes: $context.diff",
+      "Full file context: $context.fullContent",
+      "Project standards: $context.standards"
+    ]
+    output: ["Findings list"]
+    success: [
+      "All ${ perspective.lookFor } checked",
+      "Each finding has location, severity, and fix"
+    ]
+    termination: [
+      "Perspective fully reviewed",
+      "All relevant code sections examined"
+    ]
+  }
+}
 
-FOCUS: [What this perspective looks for - from table above]
-
-OUTPUT: Findings formatted as:
-  [EMOJI] **Title** (SEVERITY: CRITICAL|HIGH|MEDIUM|LOW)
-  📍 Location: `file:line`
-  🔍 Confidence: HIGH|MEDIUM|LOW
-  ❌ Issue: [What's wrong]
-  ✅ Fix: [Specific recommendation]
+Finding {
+  emoji        // Perspective emoji
+  title
+  severity: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW"
+  location     // file:line format
+  confidence: "HIGH" | "MEDIUM" | "LOW"
+  issue        // What's wrong
+  fix          // Specific recommendation
+}
 ```
 
 ### Phase 3: Synthesize & Present
 
-1. **Collect** all findings from review activities
-2. **Deduplicate** overlapping findings (keep highest severity)
-3. **Rank** by severity (Critical > High > Medium > Low) then confidence
-4. **Group** by category for readability
+```sudolang
+synthesizeFindings(allFindings) {
+  allFindings
+    |> groupBy("$location:$issue")
+    |> deduplicate(keep: highest severity)
+    |> sortBy(severity descending, confidence descending)
+    |> groupBy(emoji)
+}
+
+severityRank(severity) {
+  match severity {
+    "CRITICAL" => 4
+    "HIGH"     => 3
+    "MEDIUM"   => 2
+    "LOW"      => 1
+  }
+}
+```
 
 Present in this format:
 
 ```markdown
 ## Code Review: [target]
 
-**Verdict**: 🔴 REQUEST CHANGES | 🟡 APPROVE WITH COMMENTS | ✅ APPROVE
+**Verdict**: [emoji] [verdict from determineVerdict]
 
 ### Summary
 
 | Category          | Critical | High | Medium | Low |
 | ----------------- | -------- | ---- | ------ | --- |
-| 🔐 Security       | X        | X    | X      | X   |
-| 🔧 Simplification | X        | X    | X      | X   |
-| ⚡ Performance    | X        | X    | X      | X   |
-| 📝 Quality        | X        | X    | X      | X   |
-| 🧪 Testing        | X        | X    | X      | X   |
+| [emoji] Security       | X        | X    | X      | X   |
+| [emoji] Simplification | X        | X    | X      | X   |
+| [emoji] Performance    | X        | X    | X      | X   |
+| [emoji] Quality        | X        | X    | X      | X   |
+| [emoji] Testing        | X        | X    | X      | X   |
 | **Total**         | X        | X    | X      | X   |
 
 ### Critical & High Findings (Must Address)
 
-**[🔐 Security] Title** (CRITICAL)
-📍 `file:line`
-❌ Issue description
-✅ Specific fix with code example
+**[[emoji] Category] Title** (SEVERITY)
+[location_pin] `file:line`
+[x] Issue description
+[check] Specific fix with code example
 
 ### Medium Findings (Should Address)
 
@@ -137,34 +276,59 @@ Present in this format:
 
 ### Phase 4: Next Steps
 
-Use `question` with options based on verdict:
+```sudolang
+presentNextSteps(verdict) {
+  match verdict {
+    "REQUEST_CHANGES" => options: [
+      "Address critical issues first",
+      "Show me fixes for [specific issue]",
+      "Explain [finding] in more detail"
+    ]
+    "APPROVE_WITH_COMMENTS" => options: [
+      "Apply suggested fixes",
+      "Create follow-up issues for medium findings",
+      "Proceed without changes"
+    ]
+    "APPROVE" => options: [
+      "Add to PR comments (if PR review)",
+      "Done"
+    ]
+  }
 
-**If REQUEST CHANGES:**
+  question({ options })
+}
+```
 
-- "Address critical issues first"
-- "Show me fixes for [specific issue]"
-- "Explain [finding] in more detail"
+## Verdict Decision Logic
 
-**If APPROVE WITH COMMENTS:**
+```sudolang
+// Uses determineVerdict from shared interfaces
+// See: skill/shared/interfaces.sudo.md
 
-- "Apply suggested fixes"
-- "Create follow-up issues for medium findings"
-- "Proceed without changes"
+determineVerdict(findings) {
+  match findings {
+    critical > 0 =>
+      verdict: "REQUEST_CHANGES"
+      action: "Address critical issues first"
 
-**If APPROVE:**
+    critical == 0, high > 3 =>
+      verdict: "REQUEST_CHANGES"
+      action: "Too many high-severity issues"
 
-- "Add to PR comments (if PR review)"
-- "Done"
+    critical == 0, high 1..3 =>
+      verdict: "APPROVE_WITH_COMMENTS"
+      action: "Address high issues before merge"
 
-## Verdict Decision Matrix
+    critical == 0, high == 0, medium > 0 =>
+      verdict: "APPROVE_WITH_COMMENTS"
+      action: "Consider addressing medium findings"
 
-| Critical | High           | Decision                 |
-| -------- | -------------- | ------------------------ |
-| > 0      | Any            | 🔴 REQUEST CHANGES       |
-| 0        | > 3            | 🔴 REQUEST CHANGES       |
-| 0        | 1-3            | 🟡 APPROVE WITH COMMENTS |
-| 0        | 0 (Medium > 0) | 🟡 APPROVE WITH COMMENTS |
-| 0        | 0 (Low only)   | ✅ APPROVE               |
+    default =>
+      verdict: "APPROVE"
+      action: "Ready to merge"
+  }
+}
+```
 
 ## Important Notes
 

@@ -21,13 +21,17 @@ Activate this skill when you need to:
 
 ## Core Principles
 
-### Documentation Should Be
-
-1. **Accurate** - Matches actual code behavior
-2. **Current** - Updated when code changes
-3. **Discoverable** - Easy to find and navigate
-4. **Actionable** - Helps users accomplish tasks
-5. **Minimal** - No more than necessary
+```sudolang
+DocumentationPrinciples {
+  Constraints {
+    Documentation MUST be accurate - matches actual code behavior.
+    Documentation MUST be current - updated when code changes.
+    Documentation MUST be discoverable - easy to find and navigate.
+    Documentation MUST be actionable - helps users accomplish tasks.
+    Documentation SHOULD be minimal - no more than necessary.
+  }
+}
+```
 
 ### Documentation Categories
 
@@ -42,6 +46,46 @@ Activate this skill when you need to:
 ---
 
 ## Staleness Detection
+
+```sudolang
+StalenessDetection {
+  State {
+    staleFiles
+    brokenReferences
+    invalidExamples
+  }
+
+  StalenessCategory {
+    level
+    threshold
+    action
+  }
+
+  categorize(doc, source) {
+    daysSinceDocUpdate = daysSince(doc.lastModified)
+    sourceModifiedAfterDoc = source.lastModified > doc.lastModified
+
+    match doc, source {
+      _ if sourceModifiedAfterDoc => {
+        level: "critical",
+        threshold: "Code changed, doc not updated",
+        action: "Immediate update required"
+      }
+      _ if daysSinceDocUpdate > 90 => {
+        level: "warning",
+        threshold: "> 90 days since update",
+        action: "Review needed"
+      }
+      _ if daysSinceDocUpdate > 180 => {
+        level: "info",
+        threshold: "> 180 days since update",
+        action: "Consider refresh"
+      }
+      default => null
+    }
+  }
+}
+```
 
 ### Detection Protocol
 
@@ -92,26 +136,41 @@ Verify code examples are syntactically correct:
 # (Language-specific validation)
 ```
 
-### Staleness Categories
-
-| Category | Threshold | Action |
-|----------|-----------|--------|
-| 🔴 Critical | Code changed, doc not updated | Immediate update |
-| 🟡 Warning | > 90 days since update | Review needed |
-| ⚪ Info | > 180 days since update | Consider refresh |
-
 ---
 
 ## Coverage Analysis
 
-### Metrics to Track
+```sudolang
+CoverageAnalysis {
+  CoverageMetric {
+    name
+    formula
+    target
+    current
+  }
 
-| Metric | Formula | Target |
-|--------|---------|--------|
-| Function Coverage | Documented functions / Total functions | > 80% |
-| Public API Coverage | Documented endpoints / Total endpoints | 100% |
-| README Completeness | Sections present / Required sections | 100% |
-| Example Coverage | Functions with examples / Documented functions | > 50% |
+  metrics = [
+    { name: "Function Coverage", formula: "Documented functions / Total functions", target: 80 },
+    { name: "Public API Coverage", formula: "Documented endpoints / Total endpoints", target: 100 },
+    { name: "README Completeness", formula: "Sections present / Required sections", target: 100 },
+    { name: "Example Coverage", formula: "Functions with examples / Documented functions", target: 50 }
+  ]
+
+  Constraints {
+    Public API Coverage MUST be 100%.
+    Function Coverage SHOULD be >= 80%.
+    Example Coverage SHOULD be >= 50%.
+  }
+
+  evaluate(metric) {
+    match metric.current / metric.target * 100 {
+      pct if pct >= 100 => { status: "pass", emoji: "GREEN_CHECK" }
+      pct if pct >= 80 => { status: "warn", emoji: "YELLOW_CIRCLE" }
+      default => { status: "fail", emoji: "RED_CIRCLE" }
+    }
+  }
+}
+```
 
 ### Coverage Calculation
 
@@ -130,13 +189,11 @@ echo "Documentation coverage: ${coverage}%"
 ### Coverage Report Format
 
 ```
-📊 Documentation Coverage Report
+Documentation Coverage Report
 
 Overall Coverage: [N]%
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 By Category
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 | Category | Covered | Total | % |
 |----------|---------|-------|---|
@@ -145,9 +202,7 @@ By Category
 | API Endpoints | [N] | [N] | [N]% |
 | Configuration | [N] | [N] | [N]% |
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Priority Gaps (Public API)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 1. src/api/payments.ts
    - processPayment() - Missing docs
@@ -161,14 +216,76 @@ Priority Gaps (Public API)
 
 ## Sync During Implementation
 
-### Implementation Hooks
+```sudolang
+ImplementationSync {
+  CodeChange {
+    type
+    location
+    before
+    after
+    affectedDocs
+  }
 
-When code is modified, check documentation impact:
+  detectAndAlert(change) {
+    match change.type {
+      "signature" => {
+        alert: "Function signature modified",
+        action: "Update documentation for changed parameters",
+        require: "All affected documentation files updated"
+      }
+      "new_api" => {
+        alert: "New Public API Detected",
+        action: "Generate documentation for new endpoint",
+        require: "JSDoc in source, API docs entry, README update if applicable"
+      }
+      "breaking" => {
+        alert: "Breaking Change Detected",
+        action: "Update all references, add migration note",
+        require: [
+          "All references updated to new API",
+          "CHANGELOG.md migration note added",
+          "Code examples updated"
+        ]
+      }
+      "rename" => {
+        alert: "API Renamed",
+        action: "Update all documentation references",
+        require: "Search and replace in all doc files"
+      }
+      "delete" => {
+        alert: "API Removed",
+        action: "Remove documentation, add deprecation note",
+        warn "Consumers may depend on removed API"
+      }
+    }
+  }
 
-#### Function Signature Changes
+  /suggest change => {
+    status = checkDocStatus(change.location)
+    emit """
+      Documentation Suggestion
 
+      You just modified: ${change.location}
+
+      Current Documentation Status:
+      - [${status.jsdoc ? "YES" : "NO"}] JSDoc present
+      - [${status.apiDocs ? "YES" : "NO"}] API docs current
+      - [${status.examples ? "YES" : "NO"}] Examples valid
+
+      Recommended Updates:
+      ${detectAndAlert(change).action}
+
+      Generate updates now? [Yes / Skip / Remind Later]
+    """
+  }
+}
 ```
-🔔 Documentation Sync Alert
+
+### Implementation Alert Examples
+
+**Function Signature Changes:**
+```
+Documentation Sync Alert
 
 Change Detected: Function signature modified
 Location: src/services/auth.ts:authenticate()
@@ -183,10 +300,9 @@ Affected Documentation:
 Action Required: Update documentation for new parameter
 ```
 
-#### New Public API
-
+**New Public API:**
 ```
-🔔 Documentation Sync Alert
+Documentation Sync Alert
 
 New Public API Detected:
 - src/api/webhooks.ts:handleStripeWebhook()
@@ -201,10 +317,9 @@ Suggested Documentation:
 Would you like to generate documentation now?
 ```
 
-#### Breaking Changes
-
+**Breaking Changes:**
 ```
-🔔 Documentation Sync Alert
+Documentation Sync Alert
 
 Breaking Change Detected:
 - Removed: src/api/users.ts:getUser()
@@ -218,27 +333,6 @@ Action Required:
 1. Update all references to getUserById()
 2. Add migration note to CHANGELOG.md
 3. Update code examples
-```
-
-### Sync Suggestion Format
-
-When suggesting documentation updates during implementation:
-
-```
-💡 Documentation Suggestion
-
-You just modified: [file:function]
-
-Current Documentation Status:
-- [✅/❌] JSDoc present
-- [✅/❌] API docs current
-- [✅/❌] Examples valid
-
-Recommended Updates:
-1. [Update type] - [Specific change needed]
-2. [Update type] - [Specific change needed]
-
-Generate updates now? [Yes / Skip / Remind Later]
 ```
 
 ---
@@ -373,48 +467,73 @@ curl -X POST https://api.example.com/path \
 
 ## Validation Protocol
 
-### Documentation Accuracy Check
+```sudolang
+DocumentationValidation {
+  ValidationCheck {
+    category
+    status
+    issues
+  }
 
-1. **Parameter Validation**
-   - All parameters documented
-   - Types match actual code
-   - Descriptions are accurate
+  require "All parameters documented."
+  require "Types match actual code."
+  require "Descriptions are accurate."
+  require "Return type documented."
+  require "All possible returns covered."
+  require "Edge cases documented."
+  require "All thrown errors documented."
+  require "Error conditions accurate."
+  require "Recovery guidance provided."
+  require "Examples execute correctly."
+  require "Output matches documented output."
 
-2. **Return Value Validation**
-   - Return type documented
-   - All possible returns covered
-   - Edge cases documented
+  validate(doc, source) {
+    checks = [
+      validateParameters(doc, source),
+      validateReturns(doc, source),
+      validateErrors(doc, source),
+      validateExamples(doc, source)
+    ]
 
-3. **Error Validation**
-   - All thrown errors documented
-   - Error conditions accurate
-   - Recovery guidance provided
+    findings = checks |> flatMap(c => c.issues) |> map(toFinding)
 
-4. **Example Validation**
-   - Examples execute correctly
-   - Output matches documented output
-   - Edge cases demonstrated
+    match checks {
+      _ if checks |> any(c => c.status == "invalid") => {
+        valid: false,
+        findings,
+        summary: "INVALID - Critical documentation issues"
+      }
+      _ if checks |> any(c => c.status == "warning") => {
+        valid: true,
+        findings,
+        summary: "WARNINGS - Documentation needs attention"
+      }
+      default => {
+        valid: true,
+        findings: [],
+        summary: "VALID - Documentation is current"
+      }
+    }
+  }
+}
+```
 
 ### Validation Report Format
 
 ```
-✅ Documentation Validation Report
+Documentation Validation Report
 
 File: [path]
 Status: [VALID / WARNINGS / INVALID]
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Checked Elements
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 | Function | Params | Returns | Errors | Examples |
 |----------|--------|---------|--------|----------|
-| auth() | ✅ | ✅ | ⚠️ | ✅ |
-| logout() | ✅ | ❌ | ✅ | ❌ |
+| auth() | YES | YES | WARN | YES |
+| logout() | YES | NO | YES | NO |
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Issues Found
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 1. auth() - Missing @throws for RateLimitError
 2. logout() - Return type says void, but returns Promise<void>
@@ -425,33 +544,39 @@ Issues Found
 
 ## Output Format
 
-After synchronization work:
+```sudolang
+SyncOutput {
+  SyncReport {
+    action
+    scope
+    staleFiles
+    brokenReferences
+    missingDocs
+    updated
+    changes
+    remaining
+  }
 
-```
-📝 Documentation Sync Complete
+  /report result => """
+    Documentation Sync Complete
 
-Action: [Detection / Sync / Validation]
-Scope: [Files/modules affected]
+    Action: ${result.action}
+    Scope: ${result.scope |> join(", ")}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Results
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Results
 
-Stale Documentation: [N] files
-Broken References: [N] links
-Missing Documentation: [N] items
-Updated: [N] files
+    Stale Documentation: ${result.staleFiles} files
+    Broken References: ${result.brokenReferences} links
+    Missing Documentation: ${result.missingDocs} items
+    Updated: ${result.updated} files
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Changes Made
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Changes Made
 
-- [file.md] Updated function references
-- [source.ts] Added missing JSDoc
+    ${result.changes |> map(c => "- ${c.file} ${c.description}") |> join("\n")}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Remaining Issues
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Remaining Issues
 
-- [issue requiring manual attention]
+    ${result.remaining |> map(i => "- ${i.description}") |> join("\n")}
+  """
+}
 ```

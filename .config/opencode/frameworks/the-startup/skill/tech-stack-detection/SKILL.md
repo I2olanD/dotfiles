@@ -18,45 +18,165 @@ metadata:
 - Identifying package manager for dependency operations
 - Understanding project architecture before making changes
 
-## Detection Methodology
+## Detection System
+
+```sudolang
+TechStackDetection {
+  State {
+    packageManager
+    ecosystem
+    frameworks
+    confidence: "high" | "medium" | "low"
+  }
+
+  PackageManager {
+    name
+    lockFile
+    ecosystem
+  }
+
+  Framework {
+    name
+    version
+    configFiles
+    conventions
+  }
+
+  Ecosystem = "nodejs" | "python" | "rust" | "go" | "ruby" | "php"
+
+  /detect => {
+    detectPackageManager()
+    analyzeConfigFiles()
+    identifyDirectoryPatterns()
+    matchFrameworkSignatures()
+    outputResults()
+  }
+}
+```
 
 ### Step 1: Package Manager Detection
 
 Check for package manager indicators in the project root:
 
-| File | Package Manager | Ecosystem |
-|------|-----------------|-----------|
-| `package-lock.json` | npm | Node.js |
-| `yarn.lock` | Yarn | Node.js |
-| `pnpm-lock.yaml` | pnpm | Node.js |
-| `bun.lockb` | Bun | Node.js |
-| `requirements.txt` | pip | Python |
-| `Pipfile.lock` | pipenv | Python |
-| `poetry.lock` | Poetry | Python |
-| `uv.lock` | uv | Python |
-| `Cargo.lock` | Cargo | Rust |
-| `go.sum` | Go Modules | Go |
-| `Gemfile.lock` | Bundler | Ruby |
-| `composer.lock` | Composer | PHP |
+```sudolang
+detectPackageManager(rootFiles) {
+  match rootFiles {
+    rootFiles has "package-lock.json" => {
+      name: "npm",
+      ecosystem: "nodejs"
+    }
+    rootFiles has "yarn.lock" => {
+      name: "Yarn",
+      ecosystem: "nodejs"
+    }
+    rootFiles has "pnpm-lock.yaml" => {
+      name: "pnpm",
+      ecosystem: "nodejs"
+    }
+    rootFiles has "bun.lockb" => {
+      name: "Bun",
+      ecosystem: "nodejs"
+    }
+    rootFiles has "requirements.txt" => {
+      name: "pip",
+      ecosystem: "python"
+    }
+    rootFiles has "Pipfile.lock" => {
+      name: "pipenv",
+      ecosystem: "python"
+    }
+    rootFiles has "poetry.lock" => {
+      name: "Poetry",
+      ecosystem: "python"
+    }
+    rootFiles has "uv.lock" => {
+      name: "uv",
+      ecosystem: "python"
+    }
+    rootFiles has "Cargo.lock" => {
+      name: "Cargo",
+      ecosystem: "rust"
+    }
+    rootFiles has "go.sum" => {
+      name: "Go Modules",
+      ecosystem: "go"
+    }
+    rootFiles has "Gemfile.lock" => {
+      name: "Bundler",
+      ecosystem: "ruby"
+    }
+    rootFiles has "composer.lock" => {
+      name: "Composer",
+      ecosystem: "php"
+    }
+    _ => null
+  }
+}
+```
 
 ### Step 2: Configuration File Analysis
 
 Examine root-level configuration files for framework indicators:
 
-1. **Read `package.json`** - Check `dependencies` and `devDependencies` for framework packages
-2. **Read `pyproject.toml`** - Check `[project.dependencies]` or `[tool.poetry.dependencies]`
-3. **Read framework-specific configs** - `next.config.js`, `vite.config.ts`, `angular.json`, etc.
+```sudolang
+ConfigAnalysis {
+  Constraints {
+    Read package.json dependencies and devDependencies for Node.js projects.
+    Read pyproject.toml project dependencies or tool.poetry.dependencies for Python.
+    Check framework-specific configs: next.config.js, vite.config.ts, angular.json.
+  }
+
+  analyzeManifest(ecosystem) {
+    match ecosystem {
+      "nodejs" => readPackageJson() |> extractDependencies
+      "python" => readPyprojectToml() |> extractDependencies
+      "rust" => readCargoToml() |> extractDependencies
+      "go" => readGoMod() |> extractDependencies
+      "ruby" => readGemfile() |> extractDependencies
+      "php" => readComposerJson() |> extractDependencies
+    }
+  }
+}
+```
 
 ### Step 3: Directory Structure Patterns
 
 Identify framework conventions:
 
-- `app/` or `src/app/` - Next.js App Router, Angular
-- `pages/` - Next.js Pages Router, Nuxt.js
-- `components/` - React/Vue component-based architecture
-- `routes/` - Remix, SvelteKit
-- `views/` - Django, Rails, Laravel
-- `controllers/` - MVC frameworks (Rails, Laravel, NestJS)
+```sudolang
+matchDirectoryPattern(directories) {
+  match directories {
+    directories has "app/" or "src/app/" => {
+      frameworks: ["Next.js App Router", "Angular"],
+      confidence: "medium"  Ambiguous, needs further verification
+    }
+    directories has "pages/" => {
+      frameworks: ["Next.js Pages Router", "Nuxt.js"],
+      confidence: "medium"
+    }
+    directories has "components/" => {
+      pattern: "component-based",
+      frameworks: ["React", "Vue", "Svelte"],
+      confidence: "low"  Very common pattern
+    }
+    directories has "routes/" => {
+      frameworks: ["Remix", "SvelteKit"],
+      confidence: "medium"
+    }
+    directories has "views/" => {
+      pattern: "MVC",
+      frameworks: ["Django", "Rails", "Laravel"],
+      confidence: "low"
+    }
+    directories has "controllers/" => {
+      pattern: "MVC",
+      frameworks: ["Rails", "Laravel", "NestJS"],
+      confidence: "medium"
+    }
+    _ => { frameworks: [], confidence: "low" }
+  }
+}
+```
 
 ### Step 4: Framework-Specific Patterns
 
@@ -64,45 +184,95 @@ Apply detection patterns from the framework signatures reference.
 
 ## Detection Workflow
 
-```
-START
-  |
-  v
-[Check lock files] --> Identify package manager
-  |
-  v
-[Read manifest] --> package.json / pyproject.toml / Cargo.toml
-  |
-  v
-[Check dependencies] --> Match against known frameworks
-  |
-  v
-[Check config files] --> Framework-specific configuration
-  |
-  v
-[Verify directory structure] --> Confirm framework conventions
-  |
-  v
-[Output] --> Framework, version, package manager, key patterns
+```sudolang
+DetectionWorkflow {
+  /execute => {
+    Step 1: Package manager from lock files
+    lockFiles = glob("*.lock*", "package-lock.json", "go.sum")
+    State.packageManager = detectPackageManager(lockFiles)
+    State.ecosystem = State.packageManager?.ecosystem
+
+    Step 2: Read manifest files
+    manifest = match State.ecosystem {
+      "nodejs" => read("package.json")
+      "python" => read("pyproject.toml")
+      "rust" => read("Cargo.toml")
+      "go" => read("go.mod")
+      "ruby" => read("Gemfile")
+      "php" => read("composer.json")
+      _ => null
+    }
+    dependencies = extractDependencies(manifest)
+
+    Step 3: Match against known frameworks
+    frameworkMatches = dependencies |> matchKnownFrameworks
+
+    Step 4: Check config files for confirmation
+    configFiles = glob("*.config.*", "angular.json", "nuxt.config.*")
+    confirmedFrameworks = verifyWithConfigs(frameworkMatches, configFiles)
+
+    Step 5: Verify with directory structure
+    directories = listDirectories(".")
+    structureMatches = matchDirectoryPattern(directories)
+
+    Final output
+    State.frameworks = crossReference(confirmedFrameworks, structureMatches)
+    State.confidence = calculateConfidence(State.frameworks)
+
+    outputResults(State)
+  }
+}
 ```
 
 ## Output Format
 
-When reporting detected framework, include:
+```sudolang
+DetectionOutput {
+  framework
+  version
+  packageManager
+  configFiles
+  directoryConventions
+  commonCommands
+}
 
-1. **Framework name and version** (if determinable)
-2. **Package manager** (with command examples)
-3. **Key configuration files** to be aware of
-4. **Directory conventions** the framework expects
-5. **Common commands** for development workflow
+Command {
+  purpose
+  command
+}
+
+outputResults(state) {
+  require state.packageManager is not null
+  require state.frameworks is not empty
+
+  return {
+    framework: state.frameworks first name,
+    version: state.frameworks first version,
+    packageManager: state.packageManager,
+    configFiles: state.frameworks |> flatMap configFiles,
+    directoryConventions: state.frameworks |> flatMap conventions,
+    commonCommands: generateCommands(state.packageManager, state.frameworks)
+  }
+}
+```
 
 ## Best Practices
 
-- Always verify detection by checking multiple indicators (config + dependencies + structure)
-- Report confidence level when patterns are ambiguous
-- Note when multiple frameworks are present (e.g., Next.js + Tailwind + Prisma)
-- Check for meta-frameworks built on top of base frameworks
-- Consider monorepo patterns where different packages may use different frameworks
+```sudolang
+DetectionBestPractices {
+  Constraints {
+    Always verify detection by checking multiple indicators (config, dependencies, structure).
+    Report confidence level when patterns are ambiguous.
+    Note when multiple frameworks are present (e.g., Next.js + Tailwind + Prisma).
+    Check for meta-frameworks built on top of base frameworks.
+    Consider monorepo patterns where different packages may use different frameworks.
+  }
+
+  warn Only one indicator matched means low confidence detection, verify manually.
+  warn Multiple conflicting frameworks detected means ambiguous setup, check configs.
+  warn No lock file found means package manager uncertain.
+}
+```
 
 ## References
 

@@ -21,38 +21,61 @@ metadata:
 
 ## Core Methodology
 
-### The Golden Rule: Measure First
+```sudolang
+PerformanceAnalysis {
+  State {
+    baseline
+    bottleneck
+    hypothesis
+    measurements
+  }
 
-Never optimize based on assumptions. Follow this order:
+  Constraints {
+    Never optimize based on assumptions.
+    Always measure before and after changes.
+    Profile in production-like environments.
+    Use percentiles (p95, p99) not averages for latency.
+  }
 
-1. **Measure** - Establish baseline metrics
-2. **Identify** - Find the actual bottleneck
-3. **Hypothesize** - Form a theory about the cause
-4. **Fix** - Implement targeted optimization
-5. **Validate** - Measure again to confirm improvement
-6. **Document** - Record findings and decisions
+  The Golden Rule: Measure First.
+
+  Workflow {
+    1. Measure   => Establish baseline metrics
+    2. Identify  => Find the actual bottleneck
+    3. Hypothesize => Form theory about cause
+    4. Fix       => Implement targeted optimization
+    5. Validate  => Measure again to confirm improvement
+    6. Document  => Record findings and decisions
+  }
+}
+```
 
 ### Profiling Hierarchy
 
 Profile at the right level to find the actual bottleneck:
 
-```
-Application Level
-    |-- Request/Response timing
-    |-- Function/Method profiling
-    |-- Memory allocation tracking
-    |
-System Level
-    |-- CPU utilization per process
-    |-- Memory usage patterns
-    |-- I/O wait times
-    |-- Network latency
-    |
-Infrastructure Level
-        |-- Database query performance
-        |-- Cache hit rates
-        |-- External service latency
-        |-- Resource saturation
+```sudolang
+ProfilingLevels {
+  ApplicationLevel {
+    - Request/Response timing
+    - Function/Method profiling
+    - Memory allocation tracking
+  }
+
+  SystemLevel {
+    - CPU utilization per process
+    - Memory usage patterns
+    - I/O wait times
+    - Network latency
+  }
+
+  InfrastructureLevel {
+    - Database query performance
+    - Cache hit rates
+    - External service latency
+    - Resource saturation
+  }
+}
 ```
 
 ## Profiling Patterns
@@ -65,10 +88,14 @@ Identify what code consumes CPU time:
 2. **Instrumentation profilers** - Exact counts, higher overhead
 3. **Flame graphs** - Visual representation of call stacks
 
-Key metrics:
-- Self time (time in function itself)
-- Total time (self time + time in called functions)
-- Call count and frequency
+```sudolang
+CPUMetrics {
+  selfTime        Time in function itself.
+  totalTime       Self time plus time in called functions.
+  callCount       Number of invocations.
+  frequency       Calls per second.
+}
+```
 
 ### Memory Profiling
 
@@ -78,11 +105,14 @@ Track allocation patterns and detect leaks:
 2. **Allocation tracking** - What allocates memory and when
 3. **Garbage collection analysis** - GC frequency and duration
 
-Key metrics:
-- Heap size over time
-- Object retention
-- Allocation rate
-- GC pause times
+```sudolang
+MemoryMetrics {
+  heapSize            Heap size over time.
+  objectRetention     Objects held in memory.
+  allocationRate      Bytes allocated per second.
+  gcPauseTimes        GC pause durations.
+}
+```
 
 ### I/O Profiling
 
@@ -92,10 +122,18 @@ Measure disk and network operations:
 2. **Network I/O** - Latency, bandwidth, connection count
 3. **Database I/O** - Query time, connection pool usage
 
-Key metrics:
-- Latency percentiles (p50, p95, p99)
-- Throughput (ops/sec, MB/sec)
-- Queue depth and wait times
+```sudolang
+IOMetrics {
+  latencyPercentiles {
+    p50
+    p95
+    p99
+  }
+  throughput
+  queueDepth
+  waitTimes
+}
+```
 
 ## Bottleneck Identification
 
@@ -115,25 +153,53 @@ For services, measure:
 
 ### Common Bottleneck Patterns
 
-| Pattern | Symptoms | Typical Causes |
-|---------|----------|----------------|
-| CPU-bound | High CPU, low I/O wait | Inefficient algorithms, tight loops |
-| Memory-bound | High memory, GC pressure | Memory leaks, large allocations |
-| I/O-bound | Low CPU, high I/O wait | Slow queries, network latency |
-| Lock contention | Low CPU, high wait time | Synchronization, connection pools |
-| N+1 queries | Many small DB queries | Missing joins, lazy loading |
+```sudolang
+identifyBottleneck(symptoms) {
+  match symptoms {
+    { cpu: high, ioWait: low } => {
+      type: "CPU-bound"
+      causes: ["Inefficient algorithms", "Tight loops"]
+      focus: "Algorithmic optimization"
+    }
+    { memory: high, gcPressure: high } => {
+      type: "Memory-bound"
+      causes: ["Memory leaks", "Large allocations"]
+      focus: "Memory profiling and leak detection"
+    }
+    { cpu: low, ioWait: high } => {
+      type: "I/O-bound"
+      causes: ["Slow queries", "Network latency"]
+      focus: "Query optimization, caching"
+    }
+    { cpu: low, waitTime: high } => {
+      type: "Lock contention"
+      causes: ["Synchronization", "Connection pools"]
+      focus: "Concurrency analysis"
+    }
+    { dbQueries: many, querySize: small } => {
+      type: "N+1 queries"
+      causes: ["Missing joins", "Lazy loading"]
+      focus: "Query batching, eager loading"
+    }
+  }
+}
+```
 
 ### Amdahl's Law
 
 Optimization impact is limited by the fraction of time affected:
 
-```
-If 90% of time is in function A and 10% in function B:
-- Optimizing A by 50% = 45% total improvement
-- Optimizing B by 50% = 5% total improvement
-```
+```sudolang
+calculateOptimizationImpact(fractionAffected, speedupFactor) {
+  If 90% of time is in function A:
+    Optimizing A by 50% = 45% total improvement.
+    Optimizing B (10%) by 50% = 5% total improvement.
 
-Focus on the biggest contributors first.
+  totalSpeedup = 1 / ((1 - fractionAffected) + (fractionAffected / speedupFactor))
+
+  warn if fractionAffected < 0.1: "Focus on the biggest contributors first"
+}
+```
 
 ## Capacity Planning
 
@@ -141,84 +207,140 @@ Focus on the biggest contributors first.
 
 Measure current capacity under production load:
 
-1. **Peak load metrics** - Maximum concurrent users, requests/sec
-2. **Resource headroom** - How close to limits at peak
-3. **Scaling patterns** - Linear, sub-linear, or super-linear
+```sudolang
+BaselineMetrics {
+  peakLoad {
+    concurrentUsers
+    requestsPerSec
+  }
+  resourceHeadroom {
+    cpu       How close to limits at peak.
+    memory
+    io
+  }
+  scalingPattern   "linear" | "sub-linear" | "super-linear"
+}
+```
 
 ### Load Testing Approach
 
-1. **Establish baseline** - Current performance at normal load
-2. **Ramp testing** - Gradually increase load to find limits
-3. **Stress testing** - Push beyond limits to understand failure modes
-4. **Soak testing** - Sustained load to find memory leaks, degradation
+```sudolang
+LoadTestingPhases {
+  1. EstablishBaseline => Current performance at normal load
+  2. RampTesting       => Gradually increase load to find limits
+  3. StressTesting     => Push beyond limits to understand failure modes
+  4. SoakTesting       => Sustained load to find memory leaks, degradation
+}
+```
 
 ### Capacity Metrics
 
-| Metric | What It Tells You |
-|--------|-------------------|
-| Throughput at saturation | Maximum system capacity |
-| Latency at 80% load | Performance before degradation |
-| Error rate under stress | Failure patterns |
-| Recovery time | How quickly system returns to normal |
+```sudolang
+interpretCapacityMetric(metric) {
+  match metric {
+    "throughputAtSaturation" => "Maximum system capacity"
+    "latencyAt80PercentLoad" => "Performance before degradation"
+    "errorRateUnderStress"   => "Failure patterns"
+    "recoveryTime"           => "How quickly system returns to normal"
+  }
+}
+```
 
 ### Growth Planning
 
-```
-Required Capacity = (Current Load x Growth Factor) + Safety Margin
+```sudolang
+calculateRequiredCapacity(currentLoad, growthFactor, safetyMargin = 0.30) {
+  Required Capacity = (Current Load x Growth Factor) + Safety Margin.
 
-Example:
-- Current: 1000 req/sec
-- Expected growth: 50% per year
-- Safety margin: 30%
+  projectedLoad = currentLoad * (1 + growthFactor)
+  requiredCapacity = projectedLoad * (1 + safetyMargin)
 
-Year 1 need = (1000 x 1.5) x 1.3 = 1950 req/sec
+  Example:
+    Current: 1000 req/sec.
+    Expected growth: 50% per year.
+    Safety margin: 30%.
+    Year 1 need = (1000 x 1.5) x 1.3 = 1950 req/sec.
+}
 ```
 
 ## Optimization Patterns
 
 ### Quick Wins
 
-1. **Enable caching** - Application, CDN, database query cache
-2. **Add indexes** - For slow queries identified in profiling
-3. **Compression** - Gzip/Brotli for responses
-4. **Connection pooling** - Reduce connection overhead
-5. **Batch operations** - Reduce round-trips
+```sudolang
+QuickWins {
+  1. EnableCaching      => "Application, CDN, database query cache"
+  2. AddIndexes         => "For slow queries identified in profiling"
+  3. Compression        => "Gzip/Brotli for responses"
+  4. ConnectionPooling  => "Reduce connection overhead"
+  5. BatchOperations    => "Reduce round-trips"
+}
+```
 
 ### Algorithmic Improvements
 
-1. **Reduce complexity** - O(n^2) to O(n log n)
-2. **Lazy evaluation** - Defer work until needed
-3. **Memoization** - Cache computed results
-4. **Pagination** - Limit data processed at once
+```sudolang
+AlgorithmicOptimizations {
+  1. ReduceComplexity   => "O(n^2) to O(n log n)"
+  2. LazyEvaluation     => "Defer work until needed"
+  3. Memoization        => "Cache computed results"
+  4. Pagination         => "Limit data processed at once"
+}
+```
 
 ### Architectural Changes
 
-1. **Horizontal scaling** - Add more instances
-2. **Async processing** - Queue background work
-3. **Read replicas** - Distribute read load
-4. **Caching layers** - Redis, Memcached
-5. **CDN** - Edge caching for static content
+```sudolang
+ArchitecturalScaling {
+  1. HorizontalScaling  => "Add more instances"
+  2. AsyncProcessing    => "Queue background work"
+  3. ReadReplicas       => "Distribute read load"
+  4. CachingLayers      => "Redis, Memcached"
+  5. CDN                => "Edge caching for static content"
+}
+```
 
 ## Best Practices
 
-- Profile in production-like environments; development can have different characteristics
-- Use percentiles (p95, p99) not averages for latency
-- Monitor continuously, not just during incidents
-- Set performance budgets and enforce them in CI
-- Document baseline metrics before making changes
-- Keep profiling overhead low in production
-- Correlate metrics across layers (application, database, infrastructure)
-- Understand the difference between latency and throughput
+```sudolang
+PerformanceBestPractices {
+  require {
+    Profile in production-like environments.
+    Use percentiles (p95, p99) not averages for latency.
+    Monitor continuously, not just during incidents.
+    Document baseline metrics before making changes.
+    Correlate metrics across layers.
+  }
+
+  warn {
+    Development can have different characteristics than production.
+    Profiling overhead should be low in production.
+    Latency and throughput are different concerns.
+  }
+
+  Constraints {
+    Set performance budgets and enforce them in CI.
+    Keep profiling overhead low in production.
+    Understand the difference between latency and throughput.
+  }
+}
+```
 
 ## Anti-Patterns
 
-- Optimizing without measurement
-- Using averages for latency metrics
-- Profiling only in development
-- Ignoring tail latencies (p99, p999)
-- Premature optimization of non-bottleneck code
-- Over-engineering for hypothetical scale
-- Caching without invalidation strategy
+```sudolang
+PerformanceAntiPatterns {
+  warn if any {
+    Optimizing without measurement.
+    Using averages for latency metrics.
+    Profiling only in development.
+    Ignoring tail latencies (p99, p999).
+    Premature optimization of non-bottleneck code.
+    Over-engineering for hypothetical scale.
+    Caching without invalidation strategy.
+  }
+}
+```
 
 ## References
 

@@ -19,13 +19,17 @@ You are an analysis orchestrator that discovers and documents business rules, te
 
 **Analysis Target**: $ARGUMENTS
 
-## Core Rules
-
-- **You are an orchestrator** - Delegate investigation tasks using specialized subagents
-- **Display ALL agent responses** - Show complete agent findings to user (not summaries)
-- **Call skill tool FIRST** - Before starting any analysis work for guidance
-- **Work iteratively** - Execute discovery → documentation → review cycles
-- **Wait for direction** - Get user input between each cycle
+```sudolang
+AnalyzeCommand {
+  Constraints {
+    You are an orchestrator - Delegate investigation tasks using specialized subagents.
+    Display ALL agent responses - Show complete agent findings to user (not summaries).
+    Call skill tool FIRST - Before starting any analysis work for guidance.
+    Work iteratively - Execute discovery, documentation, review cycles.
+    Wait for direction - Get user input between each cycle.
+  }
+}
+```
 
 ## Output Locations
 
@@ -38,103 +42,216 @@ Findings are persisted to appropriate directories based on content type:
 
 ## Analysis Perspectives
 
-Launch parallel agents for comprehensive codebase analysis. Select perspectives based on $ARGUMENTS focus area.
+```sudolang
+Perspective {
+  icon
+  name
+  intent
+  discovers
+  outputPath
+}
 
-| Perspective        | Intent                          | What to Discover                                                             |
-| ------------------ | ------------------------------- | ---------------------------------------------------------------------------- |
-| 📋 **Business**    | Understand domain logic         | Business rules, validation logic, workflows, state machines, domain entities |
-| 🏗️ **Technical**   | Map architecture                | Design patterns, conventions, module structure, dependency patterns          |
-| 🔐 **Security**    | Identify security model         | Auth flows, authorization rules, data protection, input validation           |
-| ⚡ **Performance** | Find optimization opportunities | Bottlenecks, caching patterns, query patterns, resource usage                |
-| 🔌 **Integration** | Map external boundaries         | External APIs, webhooks, data flows, third-party services                    |
+Perspectives {
+  business {
+    icon: "📋", name: "Business", intent: "Understand domain logic"
+    discovers: ["Business rules", "validation logic", "workflows", "state machines", "domain entities"]
+    outputPath: "docs/domain/"
+  }
 
-### Focus Area Mapping
+  technical {
+    icon: "🏗️", name: "Technical", intent: "Map architecture"
+    discovers: ["Design patterns", "conventions", "module structure", "dependency patterns"]
+    outputPath: "docs/patterns/"
+  }
 
-| Input                         | Perspectives to Launch    |
-| ----------------------------- | ------------------------- |
-| "business" or "domain"        | 📋 Business               |
-| "technical" or "architecture" | 🏗️ Technical              |
-| "security"                    | 🔐 Security               |
-| "performance"                 | ⚡ Performance            |
-| "integration" or "api"        | 🔌 Integration            |
-| Empty or broad request        | All relevant perspectives |
+  security {
+    icon: "🔐", name: "Security", intent: "Identify security model"
+    discovers: ["Auth flows", "authorization rules", "data protection", "input validation"]
+    outputPath: "docs/domain/"
+  }
+
+  performance {
+    icon: "⚡", name: "Performance", intent: "Find optimization opportunities"
+    discovers: ["Bottlenecks", "caching patterns", "query patterns", "resource usage"]
+    outputPath: "docs/patterns/"
+  }
+
+  integration {
+    icon: "🔌", name: "Integration", intent: "Map external boundaries"
+    discovers: ["External APIs", "webhooks", "data flows", "third-party services"]
+    outputPath: "docs/interfaces/"
+  }
+}
+
+selectPerspectives(input) {
+  match input {
+    "business" | "domain"          => [Perspectives.business]
+    "technical" | "architecture"   => [Perspectives.technical]
+    "security"                     => [Perspectives.security]
+    "performance"                  => [Perspectives.performance]
+    "integration" | "api"          => [Perspectives.integration]
+    (broad request)                => all Perspectives
+    default                        => infer relevant perspectives from input
+  }
+}
+```
 
 ### Parallel Task Execution
 
 **Decompose analysis into parallel activities.** Launch multiple specialist agents in a SINGLE response to investigate different areas simultaneously.
 
-**For each perspective, describe the analysis intent:**
+```sudolang
+AgentTask {
+  perspective
+  context {
+    target    // Code area to analyze
+    scope     // Module/feature boundaries
+    existingDocs
+  }
+}
 
+formatAgentPrompt(task) => """
+  Analyze codebase for $task.perspective.icon $task.perspective.name:
+
+  CONTEXT:
+  - Target: $task.context.target
+  - Scope: $task.context.scope
+  - Existing docs: ${ task.context.existingDocs |> join(", ") }
+
+  FOCUS: ${ task.perspective.discovers |> join(", ") }
+
+  OUTPUT: Findings formatted as:
+    **[Category]**
+    Discovery: [What was found]
+    Evidence: `file:line` references
+    Documentation: [Suggested doc content]
+    Location: $task.perspective.outputPath
+"""
+
+PerspectiveGuidance {
+  match perspective {
+    business    => "Find domain rules, document in docs/domain/, identify workflows and entities"
+    technical   => "Map patterns, document in docs/patterns/, note conventions and structures"
+    security    => "Trace auth flows, document sensitive paths, identify protection mechanisms"
+    performance => "Find hot paths, caching opportunities, expensive operations"
+    integration => "Map external APIs, document in docs/interfaces/, trace data flows"
+  }
+}
 ```
-Analyze codebase for [PERSPECTIVE]:
-
-CONTEXT:
-- Target: [code area to analyze]
-- Scope: [module/feature boundaries]
-- Existing docs: [relevant documentation]
-
-FOCUS: [What this perspective discovers - from table above]
-
-OUTPUT: Findings formatted as:
-  📂 **[Category]**
-  🔍 Discovery: [What was found]
-  📍 Evidence: `file:line` references
-  📝 Documentation: [Suggested doc content]
-  🗂️ Location: [Where to persist: docs/domain/, docs/patterns/, docs/interfaces/]
-```
-
-**Perspective-Specific Guidance:**
-
-| Perspective    | Agent Focus                                                                  |
-| -------------- | ---------------------------------------------------------------------------- |
-| 📋 Business    | Find domain rules, document in docs/domain/, identify workflows and entities |
-| 🏗️ Technical   | Map patterns, document in docs/patterns/, note conventions and structures    |
-| 🔐 Security    | Trace auth flows, document sensitive paths, identify protection mechanisms   |
-| ⚡ Performance | Find hot paths, caching opportunities, expensive operations                  |
-| 🔌 Integration | Map external APIs, document in docs/interfaces/, trace data flows            |
 
 ## Workflow
 
-### Phase 1: Initialize Analysis Scope
+```sudolang
+AnalysisWorkflow {
+  // Reference: skill/shared/interfaces.sudo.md#PhaseState
 
-- Call: `skill({ name: "codebase-analysis" })`
-- Determine scope from $ARGUMENTS (business, technical, security, performance, integration, or specific domain)
-- If unclear, ask user to clarify focus area
+  State {
+    phase: "init" | "discovery" | "synthesis" | "review" | "persist" | "summary"
+    completed: []
+    cycleCount: 0
+    findings: []
+  }
 
-### Phase 2: Iterative Discovery Cycles
+  Constraints {
+    Call skill({ name: "codebase-analysis" }) before any analysis work.
+    User confirmation required between phases.
+    Cannot persist without explicit user approval.
+    Display complete agent responses, never summaries.
+  }
 
-**For Each Cycle:**
+  Phase init {
+    require skill({ name: "codebase-analysis" }) is called.
 
-1. **Discovery** - Launch specialist agents for applicable perspectives (see Analysis Perspectives table)
-2. **Synthesize** - Collect findings, deduplicate overlapping discoveries, group by output location
-3. **Review** - Present ALL agent findings (complete responses). Wait for user confirmation.
-4. **Persist (Optional)** - Ask if user wants to save to appropriate docs/ location (see Output Locations)
+    perspectives = selectPerspectives($ARGUMENTS)
+    match perspectives {
+      (empty) => ask user to clarify focus area
+      default => advance to discovery
+    }
+  }
 
-### Phase 3: Analysis Summary
+  Phase discovery {
+    for each perspective in parallel {
+      launch specialist agent with formatAgentPrompt(task)
+    }
+    collect all findings
+    advance to synthesis
+  }
 
+  Phase synthesis {
+    deduplicate overlapping discoveries
+    group findings by outputPath
+    advance to review
+  }
+
+  Phase review {
+    require present ALL agent findings (complete responses).
+
+    display findings to user
+    await user confirmation
+    cycleCount += 1
+
+    /next => match userIntent {
+      "persist"  => advance to persist
+      "continue" => advance to discovery  // New cycle
+      "done"     => advance to summary
+    }
+  }
+
+  Phase persist {
+    Constraints {
+      Confirm before writing documentation - Always ask user first.
+    }
+
+    for each finding group {
+      ask user: "Save to $finding.outputPath?"
+      match response {
+        "yes"    => write to appropriate docs/ location
+        "skip"   => continue to next group
+        "export" => export as markdown
+      }
+    }
+    return to review for next action
+  }
+
+  Phase summary {
+    outputSummary(findings, completedDocs)
+  }
+}
 ```
-## Analysis: [area]
 
-### Discoveries
+### Analysis Summary Template
 
-**[Category]**
-- [pattern/rule name] - [description]
-  - Evidence: [file:line references]
+```sudolang
+outputSummary(findings, docs) => """
+  ## Analysis: $ARGUMENTS
 
-### Documentation
+  ### Discoveries
 
-- [docs/path/file.md] - [what was documented]
+  ${ findings |> groupBy(category) |> formatGroupedFindings }
 
-### Open Questions
+  ### Documentation
 
-- [unresolved items for future investigation]
+  ${ docs |> formatList }
+
+  ### Open Questions
+
+  ${ findings |> filter(unresolved) |> formatQuestions }
+"""
+
+DocumentationOptions {
+  present: ["Save to docs/", "Skip", "Export as markdown"]
+}
 ```
-
-- Offer documentation options: Save to docs/, Skip, or Export as markdown
 
 ## Important Notes
 
-- Each cycle builds on previous findings
-- Present conflicts or gaps for user resolution
-- Wait for user confirmation before proceeding to next cycle
-- **Confirm before writing documentation** - Always ask user first
+```sudolang
+AnalysisRules {
+  Constraints {
+    Each cycle builds on previous findings.
+    Present conflicts or gaps for user resolution.
+    Wait for user confirmation before proceeding to next cycle.
+    Confirm before writing documentation - Always ask user first.
+  }
+}
+```

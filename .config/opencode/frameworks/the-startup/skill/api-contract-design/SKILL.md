@@ -28,40 +28,73 @@ A comprehensive skill for designing, documenting, and implementing APIs that dev
 
 Define the API contract before implementation. This enables parallel development, clearer communication, and better documentation.
 
-```
-DESIGN SEQUENCE:
-1. IDENTIFY use cases and consumer needs
-2. MODEL resources and their relationships
-3. DEFINE operations (CRUD + custom actions)
-4. SPECIFY request/response schemas
-5. DOCUMENT error scenarios
-6. VALIDATE with consumers before implementing
+```sudolang
+ContractFirstDesign {
+  sequence: [
+    "IDENTIFY use cases and consumer needs",
+    "MODEL resources and their relationships",
+    "DEFINE operations (CRUD + custom actions)",
+    "SPECIFY request/response schemas",
+    "DOCUMENT error scenarios",
+    "VALIDATE with consumers before implementing"
+  ]
+
+  Constraints {
+    Contract must be defined before implementation begins.
+    Consumer needs drive API design, not implementation convenience.
+    All stakeholders must review before coding starts.
+  }
+}
 ```
 
 ### 2. Consistency Over Cleverness
 
 APIs should be predictable. Developers should be able to guess how an endpoint works based on patterns established elsewhere in the API.
 
-```
-CONSISTENCY CHECKLIST:
-- Naming conventions (plural nouns, kebab-case)
-- Response envelope structure
-- Error format across all endpoints
-- Pagination approach
-- Query parameter patterns
-- Date/time formatting (ISO 8601)
+```sudolang
+APIConsistency {
+  require Naming conventions follow plural nouns, kebab-case.
+  require Response envelope structure is uniform.
+  require Error format is identical across all endpoints.
+  require Pagination approach is consistent.
+  require Query parameter patterns are standardized.
+  require Date/time uses ISO 8601 format.
+
+  /validate(api) {
+    violations = []
+    for endpoint in api.endpoints {
+      endpoint.name |> checkPluralNoun |> collectViolation(violations)
+      endpoint.name |> checkKebabCase |> collectViolation(violations)
+      endpoint.errorFormat |> checkMatchesStandard(api.standardErrorFormat) |> collectViolation(violations)
+    }
+    return violations
+  }
+}
 ```
 
 ### 3. Design for Evolution
 
 APIs must evolve without breaking existing consumers. Plan for change from day one.
 
-```
-EVOLUTION STRATEGIES:
-- Additive changes only (new fields, endpoints)
-- Deprecation with sunset periods
-- Version negotiation (headers, URL paths)
-- Backward compatibility testing
+```sudolang
+APIEvolution {
+  strategies: [
+    "Additive changes only (new fields, endpoints)",
+    "Deprecation with sunset periods",
+    "Version negotiation (headers, URL paths)",
+    "Backward compatibility testing"
+  ]
+
+  Constraints {
+    Never remove fields without deprecation period.
+    Never change field types without versioning.
+    New required fields must have defaults.
+    Breaking changes require major version bump.
+  }
+
+  warn Removing optional fields should have 6-month sunset.
+  warn Changing semantics requires documentation update.
+}
 ```
 
 ## REST API Patterns
@@ -70,56 +103,98 @@ EVOLUTION STRATEGIES:
 
 Resources represent business entities. URLs should reflect the resource hierarchy.
 
-```
-GOOD:
-GET    /users                    # List users
-POST   /users                    # Create user
-GET    /users/{id}               # Get user
-PATCH  /users/{id}               # Partial update
-DELETE /users/{id}               # Delete user
-GET    /users/{id}/orders        # User's orders (sub-resource)
+```sudolang
+ResourceModeling {
+  require URLs use plural nouns for collections.
+  require Resource IDs appear in path, not query.
+  require Sub-resources reflect ownership relationship.
+  require Maximum 2 levels of nesting.
 
-AVOID:
-GET    /getUsers                 # Verbs in URLs
-POST   /createNewUser            # Redundant verbs
-GET    /user-list                # Inconsistent naming
-POST   /users/{id}/delete        # Wrong HTTP method
+  examples {
+    good: [
+      "GET    /users                    # List users",
+      "POST   /users                    # Create user",
+      "GET    /users/{id}               # Get user",
+      "PATCH  /users/{id}               # Partial update",
+      "DELETE /users/{id}               # Delete user",
+      "GET    /users/{id}/orders        # User's orders (sub-resource)"
+    ]
+    avoid: [
+      "GET    /getUsers                 # Verbs in URLs",
+      "POST   /createNewUser            # Redundant verbs",
+      "GET    /user-list                # Inconsistent naming",
+      "POST   /users/{id}/delete        # Wrong HTTP method"
+    ]
+  }
+}
 ```
 
 ### HTTP Method Semantics
 
-| Method | Usage | Idempotent | Safe |
-|--------|-------|------------|------|
-| GET | Retrieve resource(s) | Yes | Yes |
-| POST | Create resource, trigger action | No | No |
-| PUT | Replace entire resource | Yes | No |
-| PATCH | Partial update | Yes | No |
-| DELETE | Remove resource | Yes | No |
-| OPTIONS | CORS preflight, capability discovery | Yes | Yes |
+```sudolang
+selectHTTPMethod(operation) {
+  match operation {
+    "retrieve" => {
+      method: "GET",
+      idempotent: true,
+      safe: true
+    }
+    "create" | "trigger_action" => {
+      method: "POST",
+      idempotent: false,
+      safe: false
+    }
+    "replace_entire" => {
+      method: "PUT",
+      idempotent: true,
+      safe: false
+    }
+    "partial_update" => {
+      method: "PATCH",
+      idempotent: true,
+      safe: false
+    }
+    "remove" => {
+      method: "DELETE",
+      idempotent: true,
+      safe: false
+    }
+    "preflight" | "capability_discovery" => {
+      method: "OPTIONS",
+      idempotent: true,
+      safe: true
+    }
+  }
+}
+```
 
 ### Status Code Selection
 
-```
-SUCCESS:
-200 OK           - Successful GET, PUT, PATCH, DELETE
-201 Created      - Successful POST (include Location header)
-202 Accepted     - Async operation started
-204 No Content   - Success with no response body
+```sudolang
+selectStatusCode(result) {
+  match result {
+    Success codes
+    { type: "success", method: "GET" | "PUT" | "PATCH" | "DELETE" } => 200
+    { type: "success", method: "POST", created: true } => 201  (include Location header)
+    { type: "success", async: true } => 202
+    { type: "success", body: null } => 204
 
-CLIENT ERRORS:
-400 Bad Request  - Malformed request, validation failure
-401 Unauthorized - Missing or invalid authentication
-403 Forbidden    - Authenticated but not authorized
-404 Not Found    - Resource doesn't exist
-409 Conflict     - State conflict (duplicate, version mismatch)
-422 Unprocessable- Semantically invalid (business rule violation)
-429 Too Many     - Rate limit exceeded
+    Client errors
+    { type: "error", reason: "malformed" | "validation" } => 400
+    { type: "error", reason: "unauthenticated" } => 401
+    { type: "error", reason: "forbidden" } => 403
+    { type: "error", reason: "not_found" } => 404
+    { type: "error", reason: "conflict" | "duplicate" | "version_mismatch" } => 409
+    { type: "error", reason: "business_rule" } => 422
+    { type: "error", reason: "rate_limit" } => 429
 
-SERVER ERRORS:
-500 Internal     - Unexpected server error
-502 Bad Gateway  - Upstream service failure
-503 Unavailable  - Temporary overload or maintenance
-504 Gateway Timeout - Upstream timeout
+    Server errors
+    { type: "error", reason: "internal" } => 500
+    { type: "error", reason: "upstream_failure" } => 502
+    { type: "error", reason: "maintenance" | "overload" } => 503
+    { type: "error", reason: "upstream_timeout" } => 504
+  }
+}
 ```
 
 ### Error Response Format
@@ -145,58 +220,92 @@ Standardize error responses across all endpoints:
 }
 ```
 
-### Pagination Patterns
-
-#### Offset-Based (Simple, not for large datasets)
-
-```
-GET /users?offset=20&limit=10
-
-Response:
-{
-  "data": [...],
-  "pagination": {
-    "total": 150,
-    "offset": 20,
-    "limit": 10,
-    "hasMore": true
+```sudolang
+ErrorResponse {
+  error {
+    code          Machine-readable error code
+    message       Human-readable message
+    details       Field-level errors
+    requestId     Correlation ID for debugging
+    timestamp     When error occurred (ISO 8601)
+    documentation Link to error docs (optional)
   }
+}
+
+ErrorDetail {
+  field
+  code
+  message
 }
 ```
 
-#### Cursor-Based (Recommended for large datasets)
+### Pagination Patterns
 
-```
-GET /users?cursor=eyJpZCI6MTAwfQ&limit=10
+```sudolang
+PaginationStrategy {
+  selectStrategy(dataset) {
+    match dataset {
+      { size: "small", mutable: false } => "offset"
+      { size: "large" } => "cursor"
+      { realtime: true } => "cursor"
+      _ => "cursor"  Recommended default
+    }
+  }
 
-Response:
-{
-  "data": [...],
-  "pagination": {
-    "nextCursor": "eyJpZCI6MTEwfQ",
-    "prevCursor": "eyJpZCI6OTB9",
-    "hasMore": true
+  OffsetBased {
+    request: "GET /users?offset=20&limit=10"
+    response: {
+      data: [],
+      pagination: {
+        total, offset, limit, hasMore
+      }
+    }
+    warn Not suitable for large datasets (performance degrades).
+    warn Inconsistent results if data changes between pages.
+  }
+
+  CursorBased {
+    request: "GET /users?cursor=eyJpZCI6MTAwfQ&limit=10"
+    response: {
+      data: [],
+      pagination: {
+        nextCursor, prevCursor, hasMore
+      }
+    }
+    require Cursors must be opaque to clients.
+    require Cursors should encode sort position.
+    require Cursors must be URL-safe (base64).
   }
 }
 ```
 
 ### Filtering and Sorting
 
-```
-FILTERING:
-GET /users?status=active                    # Exact match
-GET /users?created_after=2025-01-01         # Date range
-GET /users?role=admin,moderator             # Multiple values
-GET /users?search=john                      # Full-text search
+```sudolang
+QueryPatterns {
+  filtering: {
+    exact_match: "GET /users?status=active",
+    date_range: "GET /users?created_after=2025-01-01",
+    multiple_values: "GET /users?role=admin,moderator",
+    full_text: "GET /users?search=john"
+  }
 
-SORTING:
-GET /users?sort=created_at                  # Ascending (default)
-GET /users?sort=-created_at                 # Descending (prefix -)
-GET /users?sort=status,-created_at          # Multiple fields
+  sorting: {
+    ascending: "GET /users?sort=created_at",
+    descending: "GET /users?sort=-created_at",
+    multiple: "GET /users?sort=status,-created_at"
+  }
 
-FIELD SELECTION:
-GET /users?fields=id,name,email             # Sparse fieldsets
-GET /users?expand=organization              # Include related
+  field_selection: {
+    sparse: "GET /users?fields=id,name,email",
+    expand: "GET /users?expand=organization"
+  }
+
+  require Sort direction indicated by prefix (- for descending).
+  require Multiple sort fields comma-separated.
+  require Field selection reduces payload size.
+  require Expand includes related resources inline.
+}
 ```
 
 ## GraphQL Patterns
@@ -300,122 +409,108 @@ type UserError {
 
 ### N+1 Query Prevention
 
-```
-STRATEGIES:
-1. DataLoader pattern for batching
-2. Query complexity analysis and limits
-3. Depth limiting
-4. Field-level cost calculation
-5. Persisted queries for production
+```sudolang
+N1Prevention {
+  strategies: [
+    "DataLoader pattern for batching",
+    "Query complexity analysis and limits",
+    "Depth limiting",
+    "Field-level cost calculation",
+    "Persisted queries for production"
+  ]
+
+  require DataLoader used for all relationship resolvers.
+  require Maximum query depth enforced (typically 5-10).
+  require Query complexity scoring implemented.
+
+  warn Deeply nested queries indicate schema design issues.
+  warn High complexity queries should be persisted.
+}
 ```
 
 ## API Versioning Strategies
 
-### URL Path Versioning
-
-```
-GET /v1/users
-GET /v2/users
-
-PROS:
-- Explicit and visible
-- Easy to route in infrastructure
-- Clear in logs and monitoring
-
-CONS:
-- URL pollution
-- Harder to deprecate gracefully
-```
-
-### Header Versioning
-
-```
-GET /users
-Accept: application/vnd.api+json; version=2
-
-PROS:
-- Clean URLs
-- Content negotiation friendly
-- Easier partial versioning
-
-CONS:
-- Less visible
-- Harder to test in browser
-```
-
-### Query Parameter Versioning
-
-```
-GET /users?api-version=2025-01-15
-
-PROS:
-- Easy to test
-- Visible in URLs
-- Date-based versions are intuitive
-
-CONS:
-- Clutters query strings
-- Easy to forget
-```
-
-### Recommended: Dual Approach
-
-```
-1. Major versions in URL path: /v1/, /v2/
-2. Minor versions via header: API-Version: 2025-01-15
-3. Default to latest minor within major
-4. Sunset headers for deprecation warnings
+```sudolang
+selectVersioningStrategy(requirements) {
+  match requirements {
+    { visibility: "high", infrastructure: "flexible" } => {
+      strategy: "url_path",
+      example: "GET /v1/users",
+      pros: ["Explicit and visible", "Easy to route", "Clear in logs"],
+      cons: ["URL pollution", "Harder to deprecate"]
+    }
+    { urls: "clean", content_negotiation: true } => {
+      strategy: "header",
+      example: "Accept: application/vnd.api+json; version=2",
+      pros: ["Clean URLs", "Content negotiation friendly", "Easier partial versioning"],
+      cons: ["Less visible", "Harder to test in browser"]
+    }
+    { testing: "easy", date_based: true } => {
+      strategy: "query_param",
+      example: "GET /users?api-version=2025-01-15",
+      pros: ["Easy to test", "Visible", "Date-based versions intuitive"],
+      cons: ["Clutters query strings", "Easy to forget"]
+    }
+    _ => {
+      strategy: "dual",
+      description: "Recommended approach combining multiple strategies",
+      rules: [
+        "Major versions in URL path: /v1/, /v2/",
+        "Minor versions via header: API-Version: 2025-01-15",
+        "Default to latest minor within major",
+        "Sunset headers for deprecation warnings"
+      ]
+    }
+  }
+}
 ```
 
 ## Authentication Patterns
 
-### API Keys
+```sudolang
+AuthenticationPatterns {
+  APIKeys {
+    usage: ["Server-to-server", "Rate limiting", "Analytics"]
+    transport: "Header (Authorization: ApiKey xxx) or query param"
 
-```
-USAGE: Server-to-server, rate limiting, analytics
-TRANSPORT: Header (Authorization: ApiKey xxx) or query param
+    require Rotate keys regularly.
+    require Different keys for each environment.
+    require Scope keys to specific operations.
+    require Never expose in client-side code.
+  }
 
-SECURITY:
-- Rotate keys regularly
-- Different keys for environments
-- Scope keys to specific operations
-- Never expose in client-side code
-```
+  OAuth2 {
+    selectFlow(client_type) {
+      match client_type {
+        "web_app" | "mobile_app" => "Authorization Code + PKCE"
+        "server" => "Client Credentials"
+        "cli" | "smart_tv" => "Device Code"
+      }
+    }
 
-### OAuth 2.0 / OIDC
+    require Access tokens short-lived (15-60 min).
+    require Refresh tokens for session extension.
+    require Token introspection endpoint available.
+    require Token revocation endpoint available.
+  }
 
-```
-FLOWS:
-- Authorization Code + PKCE: Web apps, mobile apps
-- Client Credentials: Server-to-server
-- Device Code: CLI tools, smart TVs
+  JWT {
+    claims: {
+      iss: "https://auth.example.com",
+      sub: "user_123",
+      aud: "api.example.com",
+      exp: 1705320000,
+      iat: 1705316400,
+      scope: "read:users write:users"
+    }
 
-TOKEN HANDLING:
-- Short-lived access tokens (15-60 min)
-- Refresh tokens for session extension
-- Token introspection for validation
-- Token revocation endpoint
-```
-
-### JWT Best Practices
-
-```
-CLAIMS:
-{
-  "iss": "https://auth.example.com",
-  "sub": "user_123",
-  "aud": "api.example.com",
-  "exp": 1705320000,
-  "iat": 1705316400,
-  "scope": "read:users write:users"
+    require Use asymmetric keys (RS256, ES256).
+    require Validate all claims.
+    require Check token expiration.
+    require Verify audience matches.
+    require Keep tokens stateless when possible.
+  }
 }
-
-SECURITY:
-- Use asymmetric keys (RS256, ES256)
-- Validate all claims
-- Check token expiration
-- Verify audience matches
-- Keep tokens stateless when possible
 ```
 
 ## OpenAPI/Swagger Patterns
@@ -511,31 +606,33 @@ components:
 
 ## Best Practices
 
-### Do
+```sudolang
+APIBestPractices {
+  require Design APIs for consumers, not implementation convenience.
+  require Use meaningful HTTP status codes.
+  require Provide idempotency keys for non-idempotent operations.
+  require Include rate limit headers (X-RateLimit-Limit, X-RateLimit-Remaining).
+  require Return Location header for created resources.
+  require Support CORS properly for browser clients.
+  require Document all error codes with resolution steps.
+  require Version your API from day one.
+  require Use HTTPS exclusively.
+  require Implement request validation with clear error messages.
 
-- Design APIs for consumers, not implementation convenience
-- Use meaningful HTTP status codes
-- Provide idempotency keys for non-idempotent operations
-- Include rate limit headers (X-RateLimit-Limit, X-RateLimit-Remaining)
-- Return Location header for created resources
-- Support CORS properly for browser clients
-- Document all error codes with resolution steps
-- Version your API from day one
-- Use HTTPS exclusively
-- Implement request validation with clear error messages
-
-### Avoid
-
-- Exposing internal implementation details (database IDs, stack traces)
-- Breaking changes without versioning
-- Inconsistent naming across endpoints
-- Deeply nested URLs (more than 2 levels)
-- Using GET for operations with side effects
-- Returning different structures for success/error
-- Ignoring backward compatibility
-- Over-fetching in GraphQL without limits
-- Authentication via query parameters (except OAuth callbacks)
-- Mixing REST and RPC styles in the same API
+  avoid {
+    Exposing internal implementation details (database IDs, stack traces).
+    Breaking changes without versioning.
+    Inconsistent naming across endpoints.
+    Deeply nested URLs (more than 2 levels).
+    Using GET for operations with side effects.
+    Returning different structures for success/error.
+    Ignoring backward compatibility.
+    Over-fetching in GraphQL without limits.
+    Authentication via query parameters (except OAuth callbacks).
+    Mixing REST and RPC styles in the same API.
+  }
+}
+```
 
 ## References
 

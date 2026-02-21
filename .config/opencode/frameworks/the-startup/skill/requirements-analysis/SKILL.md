@@ -33,133 +33,188 @@ The PRD template is at [template.md](template.md). Use this structure exactly.
 
 ## PRD Focus Areas
 
-When working on a PRD, focus on:
+```sudolang
+PRDScope {
+  include {
+    what   Features, capabilities to be built
+    why    Problem statement, value proposition
+    who    Personas, user journeys
+    when   Success metrics, acceptance criteria
+  }
 
-- **WHAT** needs to be built (features, capabilities)
-- **WHY** it matters (problem, value proposition)
-- **WHO** uses it (personas, journeys)
-- **WHEN** it succeeds (metrics, acceptance criteria)
-
-**Keep in SDD (not PRD):**
-
-- Technical implementation details
-- Architecture decisions
-- Database schemas
-- API specifications
-
-These belong in the Solution Design Document (SDD).
+  exclude {
+    technicalImplementation   Belongs in SDD
+    architectureDecisions     Belongs in SDD
+    databaseSchemas           Belongs in SDD
+    apiSpecifications         Belongs in SDD
+  }
+}
+```
 
 ## Cycle Pattern
 
 For each section requiring clarification, follow this iterative process:
 
-### 1. Discovery Phase
+```sudolang
+PRDCycleWorkflow {
+  State {
+    currentSection
+    clarificationsNeeded
+    agentFindings
+    userConfirmed
+  }
 
-- **Identify ALL activities needed** based on missing information
-- **Launch parallel specialist agents** to investigate:
-  - Market analysis for competitive landscape
-  - User research for personas and journeys
-  - Requirements clarification for edge cases
-- Consider relevant research areas, best practices, success criteria
+  Constraints {
+    Must identify ALL activities needed before proceeding.
+    Must launch parallel specialists for investigation.
+    Must present COMPLETE agent responses, not summaries.
+    Must receive user confirmation before next cycle.
+    Follow template structure exactly.
+  }
 
-### 2. Documentation Phase
+  Phase Discovery {
+    activities: [
+      "Identify missing information",
+      "Launch parallel specialist agents",
+      "Market analysis for competitive landscape",
+      "User research for personas and journeys",
+      "Requirements clarification for edge cases"
+    ]
 
-- **Update the PRD** with research findings
-- **Replace [NEEDS CLARIFICATION] markers** with actual content
-- Focus only on current section being processed
-- Follow template structure exactly—preserve all sections as defined
+    require ALL activities identified before documentation
+  }
 
-### 3. Review Phase
+  Phase Documentation {
+    activities: [
+      "Update PRD with research findings",
+      "Replace [NEEDS CLARIFICATION] markers with content",
+      "Focus on current section only",
+      "Preserve all template sections"
+    ]
+  }
 
-- **Present ALL agent findings** to user (complete responses, not summaries)
-- Show conflicting information or recommendations
-- Present proposed content based on research
-- Highlight questions needing user clarification
-- **Wait for user confirmation** before next cycle
+  Phase Review {
+    activities: [
+      "Present ALL agent findings to user",
+      "Show conflicting information or recommendations",
+      "Present proposed content based on research",
+      "Highlight questions needing user clarification"
+    ]
 
-**Ask yourself each cycle:**
+    require userConfirmed before advancing to next cycle
+  }
 
-1. Have I identified ALL activities needed for this section?
-2. Have I launched parallel specialist agents to investigate?
-3. Have I updated the PRD according to findings?
-4. Have I presented COMPLETE agent responses to the user?
-5. Have I received user confirmation before proceeding?
+  /selfCheck => {
+    questions: [
+      "Have I identified ALL activities needed for this section?",
+      "Have I launched parallel specialist agents to investigate?",
+      "Have I updated the PRD according to findings?",
+      "Have I presented COMPLETE agent responses to the user?",
+      "Have I received user confirmation before proceeding?"
+    ]
+    require all questions answered affirmatively
+  }
+}
+```
 
 ## Multi-Angle Final Validation
 
 Before completing the PRD, validate from multiple perspectives:
 
-### Context Review
+```sudolang
+PRDFinalValidation {
+  Phase ContextReview {
+    specialists: [
+      { focus: "Problem statement clarity", check: "specific and measurable" },
+      { focus: "User persona completeness", check: "understand our users" },
+      { focus: "Value proposition strength", check: "compelling" }
+    ]
+  }
 
-Launch specialists to verify:
+  Phase GapAnalysis {
+    specialists: [
+      { focus: "User journey gaps" },
+      { focus: "Missing edge cases" },
+      { focus: "Unclear acceptance criteria" },
+      { focus: "Contradictions between sections" }
+    ]
+  }
 
-- Problem statement clarity - is it specific and measurable?
-- User persona completeness - do we understand our users?
-- Value proposition strength - is it compelling?
+  Phase UserInput {
+    activities: [
+      "Formulate specific questions based on gaps",
+      "Probe alternative scenarios",
+      "Validate priority trade-offs",
+      "Confirm success criteria"
+    ]
+  }
 
-### Gap Analysis
-
-Launch specialists to identify:
-
-- Gaps in user journeys
-- Missing edge cases
-- Unclear acceptance criteria
-- Contradictions between sections
-
-### User Input
-
-Based on gaps found:
-
-- Formulate specific questions using question
-- Probe alternative scenarios
-- Validate priority trade-offs
-- Confirm success criteria
-
-### Coherence Validation
-
-Launch specialists to confirm:
-
-- Requirements completeness
-- Feasibility assessment
-- Alignment with stated goals
-- Edge case coverage
+  Phase CoherenceValidation {
+    specialists: [
+      { focus: "Requirements completeness" },
+      { focus: "Feasibility assessment" },
+      { focus: "Alignment with stated goals" },
+      { focus: "Edge case coverage" }
+    ]
+  }
+}
+```
 
 ## Validation Checklist
 
-See [validation.md](validation.md) for the complete checklist. Key gates:
+See [validation.md](validation.md) for the complete checklist.
 
-- [ ] All required sections are complete
-- [ ] No [NEEDS CLARIFICATION] markers remain
-- [ ] Problem statement is specific and measurable
-- [ ] Problem is validated by evidence (not assumptions)
-- [ ] Context → Problem → Solution flow makes sense
-- [ ] Every persona has at least one user journey
-- [ ] All MoSCoW categories addressed (Must/Should/Could/Won't)
-- [ ] Every feature has testable acceptance criteria
-- [ ] Every metric has corresponding tracking events
-- [ ] No feature redundancy (check for duplicates)
-- [ ] No contradictions between sections
-- [ ] No technical implementation details included
-- [ ] A new team member could understand this PRD
+```sudolang
+PRDValidation {
+  require {
+    All required sections are complete.
+    No [NEEDS CLARIFICATION] markers remain.
+
+    Problem statement is specific and measurable.
+    Problem is validated by evidence, not assumptions.
+    Context to Problem to Solution flow makes sense.
+
+    Every persona has at least one user journey.
+
+    All MoSCoW categories addressed (Must, Should, Could, Won't).
+    Every feature has testable acceptance criteria.
+    No feature redundancy; check for duplicates.
+
+    Every metric has corresponding tracking events.
+
+    No contradictions between sections.
+    No technical implementation details included.
+    A new team member could understand this PRD.
+  }
+}
+```
 
 ## Output Format
 
-After PRD work, report:
+```sudolang
+formatPRDStatus(specId, sections, validation) {
+  template: """
+    PRD Status: $specId
 
-```
-📝 PRD Status: [spec-id]-[name]
+    Sections Completed:
+    ${ sections |> map(s => formatSectionStatus(s)) |> join("\n") }
 
-Sections Completed:
-- [Section 1]: ✅ Complete
-- [Section 2]: ⚠️ Needs user input on [topic]
-- [Section 3]: 🔄 In progress
+    Validation Status:
+    - ${ validation.passed } items passed
+    - ${ validation.pending } items pending
 
-Validation Status:
-- [X] items passed
-- [Y] items pending
+    Next Steps:
+    ${ validation.nextSteps |> map(s => "- $s") |> join("\n") }
+  """
+}
 
-Next Steps:
-- [What needs to happen next]
+formatSectionStatus(section) {
+  match section.status {
+    "complete" => "- $section.name: Complete"
+    "needsInput" => "- $section.name: Needs user input on $section.topic"
+    "inProgress" => "- $section.name: In progress"
+  }
+}
 ```
 
 ## Examples

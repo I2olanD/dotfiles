@@ -19,6 +19,8 @@ How to write effective tests and run them successfully.
 - Reviewing test quality
 - Deciding what to mock vs use real implementations
 
+**For test-first development methodology, see the [tdd skill](../tdd/SKILL.md).**
+
 ---
 
 ## Layer Distribution
@@ -225,3 +227,10 @@ Always test:
 | Implementation testing | Breaks on refactoring |
 | Shared state | Test order affects results |
 | Test duplication | Use parameterized tests instead |
+
+---
+
+## Related Skills
+
+- **tdd**: Red-Green-Refactor cycle, test-first methodology, when to use TDD
+- **test-design**: Test pyramid, coverage targets, framework-specific patterns

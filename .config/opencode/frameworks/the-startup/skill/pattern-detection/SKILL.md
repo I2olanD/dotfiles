@@ -19,19 +19,49 @@ metadata:
 
 ## Core Methodology
 
-### Pattern Discovery Process
+```sudolang
+PatternDiscovery {
+  State {
+    representativeFiles
+    discoveredPatterns
+    patternSources
+  }
 
-1. **Survey representative files**: Read 3-5 files of the type you will create or modify
-2. **Identify recurring structures**: Note repeated patterns in naming, organization, imports
-3. **Verify intentionality**: Check if patterns are documented or consistently applied
-4. **Apply discovered patterns**: Use the same conventions in new code
+  Constraints {
+    Survey 3-5 representative files before writing new code.
+    Patterns must be verified for intentionality before applying.
+    Most authoritative source takes precedence.
+  }
 
-### Priority Order for Pattern Sources
+  /discover fileType => {
+    1. Survey 3-5 files of $fileType
+    2. Identify recurring structures in naming, organization, imports
+    3. Verify intentionality via documentation or consistent application
+    4. Catalog discovered patterns
+  }
 
-1. **Existing code in the same module/feature** - Most authoritative
-2. **Project style guides or CONTRIBUTING.md** - Explicit documentation
-3. **Test files** - Often reveal expected patterns and naming
-4. **Similar files in adjacent modules** - Fallback when no direct examples exist
+  /apply pattern, newCode => {
+    require pattern is verified
+    apply pattern conventions to newCode
+  }
+}
+
+PatternSourcePriority {
+  resolvePattern(query) {
+    match availableSources {
+      { sameModule: patterns } if patterns exist =>
+        patterns  Most authoritative
+      { styleGuide: documented } if documented =>
+        documented  Explicit documentation
+      { testFiles: patterns } if patterns exist =>
+        patterns  Often reveal expected patterns
+      { adjacentModules: patterns } if patterns exist =>
+        patterns  Fallback when no direct examples
+      _ => warn "No pattern sources found - document assumptions"
+    }
+  }
+}
+```
 
 ## Naming Convention Recognition
 
@@ -46,15 +76,41 @@ Detect and follow the project's file naming style:
 | snake_case | `user_profile.py` | Python |
 | camelCase | `userProfile.js` | Legacy JS, Java |
 
+```sudolang
+FileNamingDetector {
+  detectNamingPattern(files) {
+    patterns = files |> map(f => classifyNaming(f))
+    dominant = patterns |> groupBy identity |> maxBy count
+
+    match dominant {
+      "kebab-case" => { style: "kebab-case", example: "user-profile.ts" }
+      "PascalCase" => { style: "PascalCase", example: "UserProfile.tsx" }
+      "snake_case" => { style: "snake_case", example: "user_profile.py" }
+      "camelCase" => { style: "camelCase", example: "userProfile.js" }
+      _ => warn "Mixed naming conventions detected"
+    }
+  }
+}
+```
+
 ### Function/Method Naming
 
 Identify the project's verb conventions:
 
-- **get** vs **fetch** vs **retrieve** for data access
-- **create** vs **add** vs **new** for creation
-- **update** vs **set** vs **modify** for mutations
-- **delete** vs **remove** vs **destroy** for deletion
-- **is/has/can/should** prefixes for booleans
+```sudolang
+VerbConventions {
+  dataAccess: "get" | "fetch" | "retrieve"
+  creation: "create" | "add" | "new"
+  mutation: "update" | "set" | "modify"
+  deletion: "delete" | "remove" | "destroy"
+  booleanPrefixes: ["is", "has", "can", "should"]
+
+  detectVerbConvention(category, codebase) {
+    usages = codebase |> extractFunctions |> filterByCategory(category)
+    usages |> groupBy verb |> maxBy count |> first
+  }
+}
+```
 
 ### Variable Naming
 
@@ -70,13 +126,24 @@ Detect pluralization and specificity patterns:
 
 Recognize how the codebase separates concerns:
 
-```
-COMMON LAYERING PATTERNS:
-- MVC: controllers/, models/, views/
-- Clean Architecture: domain/, application/, infrastructure/
-- Hexagonal: core/, adapters/, ports/
-- Feature-based: features/auth/, features/billing/
-- Type-based: components/, services/, utils/
+```sudolang
+ArchitectureDetector {
+  detectLayeringPattern(structure) {
+    match structure.directories {
+      dirs if hasAll(dirs, ["controllers", "models", "views"]) =>
+        { pattern: "MVC", layers: ["controllers", "models", "views"] }
+      dirs if hasAll(dirs, ["domain", "application", "infrastructure"]) =>
+        { pattern: "Clean Architecture", layers: ["domain", "application", "infrastructure"] }
+      dirs if hasAll(dirs, ["core", "adapters", "ports"]) =>
+        { pattern: "Hexagonal", layers: ["core", "adapters", "ports"] }
+      dirs if any dir starts with "features/" =>
+        { pattern: "Feature-based", layers: extractFeatures(dirs) }
+      dirs if hasAll(dirs, ["components", "services", "utils"]) =>
+        { pattern: "Type-based", layers: ["components", "services", "utils"] }
+      _ => { pattern: "Unknown", layers: dirs }
+    }
+  }
+}
 ```
 
 ### Dependency Direction
@@ -108,13 +175,30 @@ Identify how tests are structured:
 | Mirror tree | `src/user.ts`, `tests/src/user.test.ts` | Traditional, Java-style |
 | Feature-based | `src/user/`, `src/user/__tests__/` | React, organized features |
 
-### Test Naming Conventions
+```sudolang
+TestPatternDetector {
+  detectTestOrganization(projectRoot) {
+    match projectRoot {
+      root if hasColocatedTests(root) =>
+        { organization: "co-located", testPath: "same directory as source" }
+      root if hasMirrorTree(root) =>
+        { organization: "mirror-tree", testPath: "tests/ mirrors src/" }
+      root if hasFeatureTests(root) =>
+        { organization: "feature-based", testPath: "__tests__/ in feature dirs" }
+      _ => warn "Test organization unclear - check existing tests"
+    }
+  }
 
-Detect the project's test description style:
-
-- **BDD style**: `it('should return user when found')`
-- **Descriptive**: `test('getUser returns user when id exists')`
-- **Function-focused**: `test_get_user_returns_user_when_found`
+  detectTestNamingStyle(testFiles) {
+    match testFiles |> extractDescriptions |> classify {
+      "BDD" => { style: "BDD", example: "it('should return user when found')" }
+      "descriptive" => { style: "descriptive", example: "test('getUser returns user when id exists')" }
+      "function-focused" => { style: "function-focused", example: "test_get_user_returns_user_when_found" }
+      _ => warn "Mixed test naming styles detected"
+    }
+  }
+}
+```
 
 ### Test Structure Patterns
 
@@ -130,12 +214,29 @@ Recognize Arrange-Act-Assert or Given-When-Then patterns:
 
 Identify import ordering and grouping:
 
-```
-COMMON IMPORT PATTERNS:
-1. External packages first, internal modules second
-2. Grouped by type (React, libraries, local)
-3. Alphabetized within groups
-4. Absolute imports vs relative imports preference
+```sudolang
+ImportPatternDetector {
+  commonPatterns: [
+    "External packages first, internal modules second",
+    "Grouped by type (React, libraries, local)",
+    "Alphabetized within groups",
+    "Absolute imports vs relative imports preference"
+  ]
+
+  detectImportPattern(files) {
+    imports = files |> flatMap(f => extractImports(f))
+
+    match imports {
+      i if hasExternalFirstPattern(i) =>
+        { ordering: "external-first", grouping: detectGrouping(i) }
+      i if hasTypeGrouping(i) =>
+        { ordering: "type-grouped", grouping: ["framework", "libraries", "local"] }
+      i if isAlphabetized(i) =>
+        { ordering: "alphabetized", grouping: "none" }
+      _ => { ordering: "unstructured", grouping: "none" }
+    }
+  }
+}
 ```
 
 ### Export Patterns
@@ -156,19 +257,57 @@ Identify documentation conventions:
 
 ## Best Practices
 
-- **Follow existing patterns even if imperfect** - Consistency trumps personal preference
-- **Document deviations explicitly** - When breaking patterns intentionally, explain why
-- **Pattern changes require migration** - Dont introduce new patterns without updating existing code
-- **Check tests for patterns too** - Test code often reveals expected conventions
-- **Prefer explicit over implicit** - When patterns are unclear, ask or document assumptions
+```sudolang
+PatternRecognitionRules {
+  Constraints {
+    Follow existing patterns even if imperfect - consistency trumps preference.
+    Document deviations explicitly when breaking patterns intentionally.
+    Pattern changes require migration - do not introduce without updating existing code.
+    Check tests for patterns too - test code reveals expected conventions.
+    Prefer explicit over implicit - when unclear, ask or document assumptions.
+  }
+
+  require New code matches discovered patterns.
+  require Deviations have documented justification.
+  require Migration plan exists before introducing new patterns.
+
+  warn Mixed naming conventions in same codebase.
+  warn New architectural patterns without team consensus.
+  warn Patterns assumed from other projects.
+  warn Test patterns ignored when writing implementation.
+  warn Special files that do not follow established structure.
+}
+```
 
 ## Anti-Patterns to Avoid
 
-- Mixing naming conventions in the same codebase
-- Introducing new architectural patterns without team consensus
-- Assuming patterns from other projects apply here
-- Ignoring test patterns when writing implementation
-- Creating "special" files that dont follow established structure
+```sudolang
+PatternAntiPatterns {
+  violations: [
+    "Mixing naming conventions in the same codebase",
+    "Introducing new architectural patterns without team consensus",
+    "Assuming patterns from other projects apply here",
+    "Ignoring test patterns when writing implementation",
+    "Creating 'special' files that don't follow established structure"
+  ]
+
+  checkForViolation(change) {
+    match change {
+      c if mixesNamingConventions(c) =>
+        { violation: true, type: "mixed-naming", action: "Use consistent naming" }
+      c if introducesNewPattern(c) and not hasTeamConsensus(c) =>
+        { violation: true, type: "unapproved-pattern", action: "Get team approval" }
+      c if assumesExternalPatterns(c) =>
+        { violation: true, type: "foreign-pattern", action: "Check local conventions" }
+      c if ignoresTestPatterns(c) =>
+        { violation: true, type: "test-mismatch", action: "Align with test patterns" }
+      c if createsSpecialFile(c) =>
+        { violation: true, type: "special-file", action: "Follow established structure" }
+      _ => { violation: false }
+    }
+  }
+}
+```
 
 ## References
 

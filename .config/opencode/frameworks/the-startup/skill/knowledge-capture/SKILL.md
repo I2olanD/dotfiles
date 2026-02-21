@@ -23,100 +23,161 @@ docs/
 
 ## Decision Tree: What Goes Where?
 
-### docs/domain/
-**Business rules and domain logic**
-- User permissions and authorization rules
-- Workflow state machines
-- Business validation rules
-- Domain entity behaviors
-- Industry-specific logic
+```sudolang
+KnowledgeCategory {
+  domain {
+    description: "Business rules and domain logic"
+    path: "docs/domain/"
+    includes: [
+      "User permissions and authorization rules",
+      "Workflow state machines",
+      "Business validation rules",
+      "Domain entity behaviors",
+      "Industry-specific logic"
+    ]
+    examples: [
+      "user-permissions.md - Who can do what",
+      "order-workflow.md - Order state transitions",
+      "pricing-rules.md - How prices are calculated"
+    ]
+  }
 
-**Examples:**
-- `user-permissions.md` - Who can do what
-- `order-workflow.md` - Order state transitions
-- `pricing-rules.md` - How prices are calculated
+  patterns {
+    description: "Technical and architectural patterns"
+    path: "docs/patterns/"
+    includes: [
+      "Code structure patterns",
+      "Architectural approaches",
+      "Design patterns in use",
+      "Data modeling strategies",
+      "Error handling patterns"
+    ]
+    examples: [
+      "repository-pattern.md - Data access abstraction",
+      "caching-strategy.md - How caching is implemented",
+      "error-handling.md - Standardized error responses"
+    ]
+  }
 
-### docs/patterns/
-**Technical and architectural patterns**
-- Code structure patterns
-- Architectural approaches
-- Design patterns in use
-- Data modeling strategies
-- Error handling patterns
+  interfaces {
+    description: "External service contracts"
+    path: "docs/interfaces/"
+    includes: [
+      "Third-party API integrations",
+      "Webhook specifications",
+      "External service authentication",
+      "Data exchange formats",
+      "Partner integrations"
+    ]
+    examples: [
+      "stripe-api.md - Payment processing integration",
+      "sendgrid-webhooks.md - Email event handling",
+      "oauth-providers.md - Authentication integrations"
+    ]
+  }
 
-**Examples:**
-- `repository-pattern.md` - Data access abstraction
-- `caching-strategy.md` - How caching is implemented
-- `error-handling.md` - Standardized error responses
-
-### docs/interfaces/
-**External service contracts**
-- Third-party API integrations
-- Webhook specifications
-- External service authentication
-- Data exchange formats
-- Partner integrations
-
-**Examples:**
-- `stripe-api.md` - Payment processing integration
-- `sendgrid-webhooks.md` - Email event handling
-- `oauth-providers.md` - Authentication integrations
+  categorize(knowledge) {
+    match knowledge {
+      k if k is business logic => domain
+      k if k is external service => interfaces
+      k if k is technical pattern => patterns
+      _ => warn "Unclear category - ask for clarification"
+    }
+  }
+}
+```
 
 ## Workflow
 
-### Step 0: DEDUPLICATION (REQUIRED - DO THIS FIRST)
+```sudolang
+KnowledgeCaptureWorkflow {
+  State {
+    existingDocs: []
+    targetCategory: null
+    action: "create" | "update"
+    filePath: null
+  }
 
-**Always check for existing documentation before creating new files:**
+  Constraints {
+    Deduplication check must run before any file creation.
+    Always prefer updating existing files over creating new ones.
+    Template structure must be followed for consistency.
+    Cross-references must be added for related documentation.
+  }
 
-```bash
-# Search for existing documentation
-grep -ri "main keyword" docs/domain/ docs/patterns/ docs/interfaces/
-find docs -name "*topic-keyword*"
+  /step0_deduplication topic => {
+    require search for existing documentation first
+
+    Search for keywords across docs/domain/, docs/patterns/, docs/interfaces/
+    Search for files matching the topic name
+
+    match searchResults {
+      results if results found => {
+        action: "update"
+        filePath: results.matchingFile
+        emit "Found existing documentation - will UPDATE instead of create"
+      }
+      results if results empty => {
+        action: "create"
+        emit "No existing documentation found - proceeding to categorization"
+      }
+    }
+  }
+
+  /step1_categorize knowledge => {
+    match knowledge {
+      k if isBusinessLogic(k) => {
+        targetCategory: "docs/domain/"
+        reason: "Business rule or domain logic"
+      }
+      k if isBuildProcess(k) => {
+        targetCategory: "docs/patterns/"
+        reason: "Technical or architectural pattern"
+      }
+      k if isExternalService(k) => {
+        targetCategory: "docs/interfaces/"
+        reason: "External service integration"
+      }
+    }
+  }
+
+  /step2_decide_action => {
+    match context {
+      ctx if ctx.noRelatedDocs => "create"
+      ctx if ctx.topicIsDistinct => "create"
+      ctx if ctx.wouldCauseConfusion => "create"
+      ctx if ctx.relatedDocsExist => "update"
+      ctx if ctx.enhancesExisting => "update"
+      ctx if ctx.sameCategory and ctx.closelyRelated => "update"
+      _ => "update"  Prefer updates when uncertain
+    }
+  }
+
+  /step3_naming filename => {
+    Constraints {
+      Must be descriptive and searchable.
+      Must clearly indicate content.
+      Must use full words, not abbreviations.
+    }
+
+    match filename {
+      "auth.md" => warn "Too vague - use 'authentication-flow.md'"
+      "db.md" => warn "Unclear - use 'database-migration-strategy.md'"
+      "api.md" => warn "Which API? Use 'stripe-payment-integration.md'"
+      f if descriptive and hyphenated => "Good naming"
+      _ => warn "Consider more descriptive name"
+    }
+  }
+
+  /step4_apply_template category => {
+    match category {
+      "patterns" => use("templates/pattern-template.md")
+      "interfaces" => use("templates/interface-template.md")
+      "domain" => use("templates/domain-template.md")
+    }
+  }
+}
 ```
-
-**Decision Tree**:
-- **Found similar documentation** → Use Edit to UPDATE existing file instead
-- **Found NO similar documentation** → Proceed to Step 1 (Determine Category)
-
-**Critical**: Always prefer updating existing files over creating new ones. Deduplication prevents documentation fragmentation.
-
-### Step 1: Determine Category
-
-Ask yourself:
-- **Is this about business logic?** → `docs/domain/`
-- **Is this about how we build?** → `docs/patterns/`
-- **Is this about external services?** → `docs/interfaces/`
-
-### Step 2: Choose: Create New or Update Existing
-
-**Create new** if:
-- No related documentation exists
-- Topic is distinct enough to warrant separation
-- Would create confusion to merge with existing doc
-
-**Update existing** if:
-- Related documentation already exists
-- New info enhances existing document
-- Same category and closely related topic
-
-### Step 3: Use Descriptive, Searchable Names
-
-**Good names:**
-- `authentication-flow.md` (clear, searchable)
-- `database-migration-strategy.md` (specific)
-- `stripe-payment-integration.md` (exact)
-
-**Bad names:**
-- `auth.md` (too vague)
-- `db.md` (unclear)
-- `api.md` (which API?)
-
-### Step 4: Follow the Template Structure
-
-Use the templates in `templates/` for consistent formatting:
-- `pattern-template.md` - For technical patterns
-- `interface-template.md` - For external integrations
-- `domain-template.md` - For business rules
 
 ## Document Structure Standards
 
@@ -130,48 +191,72 @@ Every document should include:
 
 ## Deduplication Protocol
 
-Before creating any documentation:
+```sudolang
+DeduplicationProtocol {
+  Constraints {
+    Search must happen before any file creation.
+    Multiple search strategies must be used.
+    Related files must be read before deciding.
+    Cross-references must link related docs.
+  }
 
-1. **Search by topic**: `grep -ri "topic" docs/`
-2. **Check category**: List files in target category
-3. **Read related files**: Verify no overlap
-4. **Decide**: Create new vs enhance existing
-5. **Cross-reference**: Link between related docs
+  checkForDuplicates(topic) {
+    searches: [
+      search recursively for topic in docs/,
+      list files in target category,
+      read related files
+    ]
+
+    match aggregateResults(searches) {
+      found if found.exactMatch => {
+        action: "enhance_existing"
+        target: found.file
+      }
+      found if found.partialMatch => {
+        action: "review_and_decide"
+        candidates: found.files
+      }
+      notFound => {
+        action: "create_new"
+        require addCrossReferences(relatedDocs)
+      }
+    }
+  }
+}
+```
 
 ## Examples in Action
 
-### Example 1: API Integration Discovery
+```sudolang
+analyzeScenario(scenario) {
+  match scenario {
+    "Stripe payment processing" => {
+      isExternalService: true
+      category: "docs/interfaces/"
+      checkExisting: search docs/interfaces for stripe
+      action: existingFound ? "update" : "create docs/interfaces/stripe-payments.md"
+      template: "interface-template.md"
+    }
 
-**Scenario:** Implementing Stripe payment processing
+    "Redis caching in auth module" => {
+      isExternalService: false
+      isBusinessRule: false
+      isTechnicalPattern: true
+      category: "docs/patterns/"
+      checkExisting: search docs/patterns for caching
+      action: existingFound ? "update caching-strategy.md" : "create docs/patterns/caching-strategy.md"
+    }
 
-**Analysis:**
-- External service? → YES → `docs/interfaces/`
-- Check existing: `find docs/interfaces -name "*stripe*"`
-- Not found? → Create `docs/interfaces/stripe-payments.md`
-- Use `interface-template.md`
-
-### Example 2: Caching Pattern Discovery
-
-**Scenario:** Found Redis caching in authentication module
-
-**Analysis:**
-- External service? → NO
-- Business rule? → NO
-- Technical pattern? → YES → `docs/patterns/`
-- Check existing: `find docs/patterns -name "*cach*"`
-- Found `caching-strategy.md`? → Update it
-- Not found? → Create `docs/patterns/caching-strategy.md`
-
-### Example 3: Permission Rule Discovery
-
-**Scenario:** Users can only edit their own posts
-
-**Analysis:**
-- Business rule? → YES → `docs/domain/`
-- External service? → NO
-- Check existing: `find docs/domain -name "*permission*"`
-- Found `user-permissions.md`? → Update it
-- Not found? → Create `docs/domain/user-permissions.md`
+    "Users can only edit their own posts" => {
+      isBusinessRule: true
+      isExternalService: false
+      category: "docs/domain/"
+      checkExisting: search docs/domain for permissions
+      action: existingFound ? "update user-permissions.md" : "create docs/domain/user-permissions.md"
+    }
+  }
+}
+```
 
 ## Cross-Referencing
 
@@ -187,22 +272,41 @@ When documentation relates to other docs:
 
 ## Quality Checklist
 
-Before finalizing any documentation:
+```sudolang
+QualityValidation {
+  require Checked for existing related documentation.
+  require Chosen correct category (domain, patterns, or interfaces).
+  require Used descriptive, searchable filename.
+  require Included title, context, details, and examples.
+  require Added cross-references to related docs.
+  require Used appropriate template structure.
+  require Verified no duplicate content.
 
-- [ ] Checked for existing related documentation
-- [ ] Chosen correct category (domain/patterns/interfaces)
-- [ ] Used descriptive, searchable filename
-- [ ] Included title, context, details, examples
-- [ ] Added cross-references to related docs
-- [ ] Used appropriate template structure
-- [ ] Verified no duplicate content
+  validate(document) {
+    violations = []
+
+    require checkedForExisting else add "Missing deduplication check" to violations
+    require correctCategory else add "Category may be incorrect" to violations
+    require searchableName else add "Filename not searchable" to violations
+    require completeStructure else add "Missing document sections" to violations
+    require crossReferenced else add "Missing cross-references" to violations
+    require templateFollowed else add "Template not followed" to violations
+    require noDuplicates else add "Potential duplicate content" to violations
+
+    match violations |> count {
+      0 => { valid: true, message: "Document ready" }
+      n => { valid: false, issues: violations }
+    }
+  }
+}
+```
 
 ## Output Format
 
 After documenting, always report:
 
 ```
-📝 Documentation Created/Updated:
+Documentation Created/Updated:
 - docs/[category]/[filename].md
   Purpose: [Brief description]
   Action: [Created new / Updated existing / Merged with existing]
@@ -212,41 +316,70 @@ After documenting, always report:
 
 Beyond creating documentation, maintain its accuracy over time.
 
-### Staleness Detection
+```sudolang
+StalenessDetection {
+  categories {
+    critical {
+      indicator: "Code changed, doc not updated"
+      action: "Update immediately"
+    }
+    warning {
+      indicator: "More than 90 days since doc update"
+      action: "Review needed"
+    }
+    info {
+      indicator: "More than 180 days since update"
+      action: "Consider refresh"
+    }
+  }
 
-Check for stale documentation when modifying code:
+  detectStaleness(docPath, relatedCodePaths) {
+    docModTime = getLastModified(docPath)
+    codeModTimes = relatedCodePaths |> map getLastModified
+    latestCodeChange = max(codeModTimes)
+    daysSinceUpdate = daysBetween(docModTime, now())
 
-1. **Git-based staleness**: Compare doc and code modification times
-   - If source file changed after related doc → flag for review
+    match true {
+      latestCodeChange > docModTime => categories.critical
+      daysSinceUpdate > 180 => categories.info
+      daysSinceUpdate > 90 => categories.warning
+      _ => null  Document is fresh
+    }
+  }
+}
 
-2. **Reference validation**: Verify documented items still exist
-   - Function names, API endpoints, configuration options
+SyncDuringImplementation {
+  Constraints {
+    Function signature changes require JSDoc or docstring updates.
+    New public APIs require documentation before PR.
+    Breaking changes require migration notes.
+  }
 
-3. **Example validation**: Confirm code examples still work
+  checkDocImpact(codeChange) {
+    match codeChange.type {
+      "signature_change" => {
+        require updateJSDoc(codeChange.target)
+        require updateAPIDoc(codeChange.target)
+      }
+      "new_public_api" => {
+        require createDocumentation() before createPR()
+      }
+      "breaking_change" => {
+        require updateAllReferences()
+        require addMigrationNotes()
+      }
+    }
+  }
+}
 
-### Staleness Categories
-
-| Category | Indicator | Action |
-|----------|-----------|--------|
-| 🔴 Critical | Code changed, doc not updated | Update immediately |
-| 🟡 Warning | > 90 days since doc update | Review needed |
-| ⚪ Info | > 180 days since update | Consider refresh |
-
-### Sync During Implementation
-
-When modifying code, proactively check documentation impact:
-
-**Function signature changes** → Update JSDoc/docstrings and API docs
-**New public API** → Create documentation before PR
-**Breaking changes** → Update all references, add migration notes
-
-### Documentation Quality Checklist
-
-- [ ] Parameters documented with correct types
-- [ ] Return values documented
-- [ ] Error conditions documented
-- [ ] Examples execute correctly
-- [ ] Cross-references are valid links
+DocumentationQualityChecklist {
+  require Parameters documented with correct types.
+  require Return values documented.
+  require Error conditions documented.
+  require Examples execute correctly.
+  require Cross-references are valid links.
+}
+```
 
 ## Remember
 

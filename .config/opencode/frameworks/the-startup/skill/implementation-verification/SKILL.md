@@ -36,6 +36,25 @@ docs/specs/[NNN]-[name]/
 
 ## Compliance Verification Process
 
+```sudolang
+SpecificationCompliance {
+  See: skill/shared/interfaces.sudo.md for ValidationResult.
+
+  State {
+    currentTask
+    sddReferences = []
+    verificationResults = []
+  }
+
+  Constraints {
+    Implementation must match specification exactly.
+    Deviations require explicit user acknowledgment.
+    Critical deviations block progress.
+    All SDD references must be validated.
+  }
+}
+```
+
 ### Pre-Implementation Check
 
 Before implementing any task:
@@ -51,13 +70,15 @@ Before implementing any task:
 
 ### During Implementation
 
-For each task, verify:
-
-- [ ] **Interface contracts match** - Function signatures, parameters, return types
-- [ ] **Data structures align** - Schema, types, relationships as specified
-- [ ] **Business logic follows** - Defined flows and rules from SDD
-- [ ] **Architecture respected** - Patterns, layers, dependencies as designed
-- [ ] **Quality met** - Performance, security requirements from SDD
+```sudolang
+ImplementationVerification {
+  require Interface contracts match - function signatures, parameters, return types.
+  require Data structures align - schema, types, relationships as specified.
+  require Business logic follows defined flows and rules from SDD.
+  require Architecture is respected - patterns, layers, dependencies as designed.
+  require Quality requirements are met - performance, security from SDD.
+}
+```
 
 ### Post-Implementation Validation
 
@@ -70,122 +91,201 @@ After task completion:
 
 ## Deviation Classification
 
-### Critical Deviations (🔴)
+```sudolang
+Deviation {
+  type      One of critical, notable, or acceptable.
+  description
+  impact
+  action
+}
 
-Must fix before proceeding:
-- Interface contract violations
-- Missing required functionality
-- Security requirement breaches
-- Breaking architectural constraints
-
-### Notable Deviations (🟡)
-
-Require acknowledgment:
-- Implementation differs but functionally equivalent
-- Enhancement beyond specification
-- Simplified approach with same outcome
-
-### Acceptable Variations (🟢)
-
-Can proceed:
-- Internal implementation details differ
-- Optimizations within spec boundaries
-- Naming/style variations
+DeviationClassification {
+  classify(deviation) {
+    match deviation.type {
+      "critical" => {
+        blocking: true,
+        action: "Must fix before proceeding",
+        examples: [
+          "Interface contract violations",
+          "Missing required functionality",
+          "Security requirement breaches",
+          "Breaking architectural constraints"
+        ]
+      }
+      "notable" => {
+        blocking: false,
+        requiresAck: true,
+        action: "Requires user acknowledgment",
+        examples: [
+          "Implementation differs but functionally equivalent",
+          "Enhancement beyond specification",
+          "Simplified approach with same outcome"
+        ]
+      }
+      "acceptable" => {
+        blocking: false,
+        requiresAck: false,
+        action: "Can proceed",
+        examples: [
+          "Internal implementation details differ",
+          "Optimizations within spec boundaries",
+          "Naming/style variations"
+        ]
+      }
+    }
+  }
+}
+```
 
 ## Compliance Report Format
 
 ### Per-Task Report
 
-```
-📋 Specification Compliance: [Task Name]
+```sudolang
+TaskComplianceReport {
+  template: """
+    Specification Compliance: $taskName
 
-SDD Reference: Section [X.Y]
+    SDD Reference: Section $sddSection
 
-Requirements Checked:
-✅ Interface: [function/endpoint] matches signature
-✅ Data: [model/schema] matches structure
-✅ Logic: [flow/rule] implemented correctly
-🟡 Enhancement: [description] - beyond spec but compatible
-🔴 Deviation: [description] - requires fix
+    Requirements Checked:
+    ${ checks |> map(c => "$c.status $c.type: $c.description") |> join("\n") }
 
-Status: [COMPLIANT / DEVIATION FOUND / NEEDS REVIEW]
+    Status: $status
+  """
+
+  determineStatus(checks) {
+    match checks {
+      any critical not passed => "DEVIATION FOUND"
+      any notable not passed => "NEEDS REVIEW"
+      default => "COMPLIANT"
+    }
+  }
+}
 ```
 
 ### Phase Completion Report
 
-```
-📊 Phase [X] Specification Compliance Summary
+```sudolang
+PhaseComplianceReport {
+  template: """
+    Phase $phaseNumber Specification Compliance Summary
 
-Tasks Validated: [N]
-- Fully Compliant: [X]
-- With Acceptable Variations: [Y]
-- With Notable Deviations: [Z]
-- Critical Issues: [W]
+    Tasks Validated: $totalTasks
+    - Fully Compliant: $compliantCount
+    - With Acceptable Variations: $acceptableCount
+    - With Notable Deviations: $notableCount
+    - Critical Issues: $criticalCount
 
-SDD Sections Covered:
-- Section 2.1: ✅ Compliant
-- Section 2.2: ✅ Compliant
-- Section 3.1: 🟡 Variation documented
+    SDD Sections Covered:
+    ${ sddSections |> map(s => "- Section $s.id: $s.status") |> join("\n") }
 
-Critical Issues (if any):
-1. [Description and required fix]
+    ${ criticalIssues is not empty then """
+    Critical Issues:
+    ${ criticalIssues |> mapWithIndex((issue, i) => "$(i+1). $issue") |> join("\n") }
+    """ else "" }
 
-Recommendation: [PROCEED / FIX REQUIRED / USER REVIEW]
+    Recommendation: $recommendation
+  """
+
+  determineRecommendation(report) {
+    match report {
+      criticalCount > 0 => "FIX REQUIRED"
+      notableCount > 0 => "USER REVIEW"
+      default => "PROCEED"
+    }
+  }
+}
 ```
 
 ## Interface Verification
 
 ### API Endpoints
 
-```
-Verifying: POST /api/users
-SDD Spec: Section 4.2.1
+```sudolang
+APIVerification {
+  template: """
+    Verifying: $method $endpoint
+    SDD Spec: Section $sddSection
 
-Request Schema:
-  ✅ body.email: string (required)
-  ✅ body.password: string (min 8 chars)
-  🔴 body.role: missing (spec requires optional role param)
+    Request Schema:
+    ${ requestFields |> map(f => "$f.status $f.path: $f.type $f.constraint") |> join("\n  ") }
 
-Response Schema:
-  ✅ 201: { id, email, createdAt }
-  ✅ 400: { error: string }
-  🟡 409: Added conflict handling (not in spec, beneficial)
+    Response Schema:
+    ${ responseFields |> map(f => "$f.status: $f.shape") |> join("\n  ") }
+  """
+
+  require All required request fields are present.
+  require Response status codes match specification.
+  require Error responses follow defined format.
+
+  warn Additional fields not in spec may be beneficial additions.
+  warn Extra status codes for edge cases may exist.
+}
 ```
 
 ### Data Models
 
-```
-Verifying: User Model
-SDD Spec: Section 3.1.2
+```sudolang
+ModelVerification {
+  template: """
+    Verifying: $modelName
+    SDD Spec: Section $sddSection
 
-Fields:
-  ✅ id: UUID (primary key)
-  ✅ email: string (unique)
-  ✅ passwordHash: string
-  🟡 lastLoginAt: timestamp (added, not in spec)
-  🔴 role: enum (missing from implementation)
+    Fields:
+    ${ fields |> map(f => "$f.status $f.name: $f.type $f.constraint") |> join("\n  ") }
 
-Relationships:
-  ✅ hasMany: sessions
-  ✅ belongsTo: organization
+    Relationships:
+    ${ relationships |> map(r => "$r.status $r.type: $r.target") |> join("\n  ") }
+  """
+
+  require All specified fields are present with correct types.
+  require Primary keys and constraints match.
+  require Required relationships are defined.
+
+  warn Additional fields not in spec may exist.
+  warn Extra indices or constraints may exist.
+}
 ```
 
 ## Architecture Decision Verification
 
-For each ADR in SDD:
+```sudolang
+ADRVerification {
+  template: """
+    ADR-$id: $title
+    Implementation Status:
 
-```
-ADR-1: [Decision Title]
-Implementation Status:
+    Decision: $decision
+    Evidence: $evidence
+    Compliance: $complianceStatus
 
-Decision: [What was decided]
-Evidence: [Where implemented]
-Compliance: [Matched / Deviated]
+    ${ deviated then """
+    Deviation: $deviationDescription
+    Impact: $impact
+    Action: $recommendedAction
+    """ else "" }
+  """
 
-If deviated:
-  Deviation: [What differs]
-  Impact: [Consequences]
-  Action: [Fix / Accept with rationale]
+  verifyADR(adr, implementation) {
+    match implementation {
+      matches decision => {
+        compliance: "Matched",
+        deviated: false
+      }
+      partially matches => {
+        compliance: "Partial",
+        deviated: true,
+        severity: "notable"
+      }
+      default => {
+        compliance: "Deviated",
+        deviated: true,
+        severity: "critical"
+      }
+    }
+  }
+}
 ```
 
 ## Validation Commands
@@ -208,58 +308,90 @@ npm run build
 
 ## Compliance Gates
 
-### Before Proceeding to Next Phase
+```sudolang
+ComplianceGates {
+  /beforeNextPhase {
+    require All critical deviations are resolved.
+    require Notable deviations are acknowledged by user.
+    require Validation commands pass.
+    require SDD coverage for phase is complete.
+  }
 
-All must be true:
-- [ ] All critical deviations resolved
-- [ ] Notable deviations acknowledged by user
-- [ ] Validation commands pass
-- [ ] SDD coverage for phase is complete
-
-### Before Final Completion
-
-- [ ] All phases compliant
-- [ ] All interfaces verified
-- [ ] All architecture decisions respected
-- [ ] Quality requirements met
-- [ ] User confirmed any variations
+  /beforeFinalCompletion {
+    require All phases are compliant.
+    require All interfaces are verified.
+    require All architecture decisions are respected.
+    require Quality requirements are met.
+    require User has confirmed any variations.
+  }
+}
+```
 
 ## Output Format
 
 When validating compliance:
 
-```
-📋 Specification Compliance Check
+```sudolang
+ComplianceOutput {
+  template: """
+    Specification Compliance Check
 
-Context: [What's being validated]
-SDD Reference: [Section(s)]
+    Context: $context
+    SDD Reference: $sddReference
 
-Verification Results:
-[List of checks with status]
+    Verification Results:
+    ${ results |> map(r => "$r.status $r.check") |> join("\n") }
 
-Deviations:
-[If any, with classification]
+    ${ deviations is not empty then """
+    Deviations:
+    ${ deviations |> map(d => "[$d.severity] $d.description") |> join("\n") }
+    """ else "" }
 
-Recommendation: [Action to take]
+    Recommendation: $recommendation
 
-Status: [COMPLIANT / NEEDS FIX / USER REVIEW]
+    Status: $status
+  """
+
+  determineStatus(results, deviations) {
+    match deviations {
+      any severity is critical => "NEEDS FIX"
+      any severity is notable => "USER REVIEW"
+      default => "COMPLIANT"
+    }
+  }
+}
 ```
 
 ## Quick Reference
 
 ### Always Check
-- Interface signatures match exactly
-- Required fields are present
-- Business logic follows specified flows
-- Architecture patterns are respected
+
+```sudolang
+AlwaysVerify {
+  require Interface signatures match exactly.
+  require Required fields are present.
+  require Business logic follows specified flows.
+  require Architecture patterns are respected.
+}
+```
 
 ### Document Deviations
+
 - What differs from spec
 - Why it differs (if known)
 - Impact assessment
 - Recommended action
 
 ### Gate Compliance
-- Critical = must fix
-- Notable = must acknowledge
-- Acceptable = can proceed
+
+```sudolang
+GateRules {
+  handleDeviation(deviation) {
+    match deviation.type {
+      "critical" => block and must fix
+      "notable" => warn and must acknowledge
+      "acceptable" => log and proceed
+    }
+  }
+}
+```
