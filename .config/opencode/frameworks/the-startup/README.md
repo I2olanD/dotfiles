@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./assets/logo.png" alt="Logo">
+  <img src="./../../assets/logo.png" alt="Logo">
 </div>
 
 # OpenCode Configuration
@@ -56,13 +56,13 @@ Designs and generates new Opencode sub-agents. Validates agent specifications an
 
 ### The Software Engineer Team
 
-| Agent                      | Purpose                                                          |
-| -------------------------- | ---------------------------------------------------------------- |
-| `api-development`          | Design REST/GraphQL APIs, documentation, SDK generation          |
-| `component-development`    | Design UI components, state management patterns                  |
-| `concurrency-review`       | Review code for race conditions, deadlocks, async anti-patterns  |
-| `domain-modeling`          | Model business domains, entities, persistence design             |
-| `performance-optimization` | Optimize bundle size, rendering, memory usage                    |
+| Agent                      | Purpose                                                         |
+| -------------------------- | --------------------------------------------------------------- |
+| `api-development`          | Design REST/GraphQL APIs, documentation, SDK generation         |
+| `component-development`    | Design UI components, state management patterns                 |
+| `concurrency-review`       | Review code for race conditions, deadlocks, async anti-patterns |
+| `domain-modeling`          | Model business domains, entities, persistence design            |
+| `performance-optimization` | Optimize bundle size, rendering, memory usage                   |
 
 ### The Platform Engineer Team
 
@@ -154,14 +154,14 @@ Universal skills available to all agents:
 
 ### Quality Skills
 
-| Skill                  | Purpose                                       |
-| ---------------------- | --------------------------------------------- |
-| `code-quality-review`  | Code smells, design patterns                  |
-| `code-review`          | Multi-agent code review coordination          |
-| `performance-analysis` | Profiling, bottleneck identification          |
-| `security-assessment`  | OWASP patterns, vulnerability review          |
-| `test-design`          | Test pyramid, coverage strategies             |
-| `testing`              | Writing and running effective tests           |
+| Skill                  | Purpose                                                           |
+| ---------------------- | ----------------------------------------------------------------- |
+| `code-quality-review`  | Code smells, design patterns                                      |
+| `code-review`          | Multi-agent code review coordination                              |
+| `performance-analysis` | Profiling, bottleneck identification                              |
+| `security-assessment`  | OWASP patterns, vulnerability review                              |
+| `test-design`          | Test pyramid, coverage strategies                                 |
+| `testing`              | Writing and running effective tests                               |
 | `vibe-security`        | Secure web app coding, OWASP compliance, XSS/CSRF/SSRF protection |
 
 ### Specification & Workflow Skills
