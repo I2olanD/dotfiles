@@ -24,20 +24,21 @@ metadata:
 ```sudolang
 PerformanceAnalysis {
   State {
-    baseline: Metrics?
-    bottleneck: Bottleneck?
-    hypothesis: String?
-    measurements: Measurement[]
+    baseline
+    bottleneck
+    hypothesis
+    measurements
   }
-  
-  constraints {
-    Never optimize based on assumptions
-    Always measure before and after changes
-    Profile in production-like environments
-    Use percentiles (p95, p99) not averages for latency
+
+  Constraints {
+    Never optimize based on assumptions.
+    Always measure before and after changes.
+    Profile in production-like environments.
+    Use percentiles (p95, p99) not averages for latency.
   }
-  
-  // The Golden Rule: Measure First
+
+  The Golden Rule: Measure First.
+
   Workflow {
     1. Measure   => Establish baseline metrics
     2. Identify  => Find the actual bottleneck
@@ -60,14 +61,14 @@ ProfilingLevels {
     - Function/Method profiling
     - Memory allocation tracking
   }
-  
+
   SystemLevel {
     - CPU utilization per process
     - Memory usage patterns
     - I/O wait times
     - Network latency
   }
-  
+
   InfrastructureLevel {
     - Database query performance
     - Cache hit rates
@@ -89,10 +90,10 @@ Identify what code consumes CPU time:
 
 ```sudolang
 CPUMetrics {
-  selfTime: Duration        // Time in function itself
-  totalTime: Duration       // Self time + time in called functions
-  callCount: Number         // Number of invocations
-  frequency: Number         // Calls per second
+  selfTime        Time in function itself.
+  totalTime       Self time plus time in called functions.
+  callCount       Number of invocations.
+  frequency       Calls per second.
 }
 ```
 
@@ -106,10 +107,10 @@ Track allocation patterns and detect leaks:
 
 ```sudolang
 MemoryMetrics {
-  heapSize: Bytes           // Heap size over time
-  objectRetention: Number   // Objects held in memory
-  allocationRate: BytesPerSec
-  gcPauseTimes: Duration[]  // GC pause durations
+  heapSize            Heap size over time.
+  objectRetention     Objects held in memory.
+  allocationRate      Bytes allocated per second.
+  gcPauseTimes        GC pause durations.
 }
 ```
 
@@ -123,14 +124,14 @@ Measure disk and network operations:
 
 ```sudolang
 IOMetrics {
-  latencyPercentiles: {
-    p50: Duration
-    p95: Duration
-    p99: Duration
+  latencyPercentiles {
+    p50
+    p95
+    p99
   }
-  throughput: OpsPerSec | BytesPerSec
-  queueDepth: Number
-  waitTimes: Duration[]
+  throughput
+  queueDepth
+  waitTimes
 }
 ```
 
@@ -153,31 +154,31 @@ For services, measure:
 ### Common Bottleneck Patterns
 
 ```sudolang
-fn identifyBottleneck(symptoms: SystemMetrics) {
-  match (symptoms) {
-    case { cpu: high, ioWait: low } => {
-      type: "CPU-bound",
-      causes: ["Inefficient algorithms", "Tight loops"],
+identifyBottleneck(symptoms) {
+  match symptoms {
+    { cpu: high, ioWait: low } => {
+      type: "CPU-bound"
+      causes: ["Inefficient algorithms", "Tight loops"]
       focus: "Algorithmic optimization"
     }
-    case { memory: high, gcPressure: high } => {
-      type: "Memory-bound",
-      causes: ["Memory leaks", "Large allocations"],
+    { memory: high, gcPressure: high } => {
+      type: "Memory-bound"
+      causes: ["Memory leaks", "Large allocations"]
       focus: "Memory profiling and leak detection"
     }
-    case { cpu: low, ioWait: high } => {
-      type: "I/O-bound",
-      causes: ["Slow queries", "Network latency"],
+    { cpu: low, ioWait: high } => {
+      type: "I/O-bound"
+      causes: ["Slow queries", "Network latency"]
       focus: "Query optimization, caching"
     }
-    case { cpu: low, waitTime: high } => {
-      type: "Lock contention",
-      causes: ["Synchronization", "Connection pools"],
+    { cpu: low, waitTime: high } => {
+      type: "Lock contention"
+      causes: ["Synchronization", "Connection pools"]
       focus: "Concurrency analysis"
     }
-    case { dbQueries: many, querySize: small } => {
-      type: "N+1 queries",
-      causes: ["Missing joins", "Lazy loading"],
+    { dbQueries: many, querySize: small } => {
+      type: "N+1 queries"
+      causes: ["Missing joins", "Lazy loading"]
       focus: "Query batching, eager loading"
     }
   }
@@ -189,18 +190,14 @@ fn identifyBottleneck(symptoms: SystemMetrics) {
 Optimization impact is limited by the fraction of time affected:
 
 ```sudolang
-fn calculateOptimizationImpact(
-  fractionAffected: Percentage,
-  speedupFactor: Number
-) => {
-  // If 90% of time is in function A:
-  // - Optimizing A by 50% = 45% total improvement
-  // - Optimizing B (10%) by 50% = 5% total improvement
-  
+calculateOptimizationImpact(fractionAffected, speedupFactor) {
+  If 90% of time is in function A:
+    Optimizing A by 50% = 45% total improvement.
+    Optimizing B (10%) by 50% = 5% total improvement.
+
   totalSpeedup = 1 / ((1 - fractionAffected) + (fractionAffected / speedupFactor))
-  
-  warn if fractionAffected < 0.1:
-    "Focus on the biggest contributors first"
+
+  warn if fractionAffected < 0.1: "Focus on the biggest contributors first"
 }
 ```
 
@@ -212,16 +209,16 @@ Measure current capacity under production load:
 
 ```sudolang
 BaselineMetrics {
-  peakLoad: {
-    concurrentUsers: Number
-    requestsPerSec: Number
+  peakLoad {
+    concurrentUsers
+    requestsPerSec
   }
-  resourceHeadroom: {
-    cpu: Percentage        // How close to limits at peak
-    memory: Percentage
-    io: Percentage
+  resourceHeadroom {
+    cpu       How close to limits at peak.
+    memory
+    io
   }
-  scalingPattern: "linear" | "sub-linear" | "super-linear"
+  scalingPattern   "linear" | "sub-linear" | "super-linear"
 }
 ```
 
@@ -239,12 +236,12 @@ LoadTestingPhases {
 ### Capacity Metrics
 
 ```sudolang
-fn interpretCapacityMetric(metric: String) {
-  match (metric) {
-    case "throughputAtSaturation" => "Maximum system capacity"
-    case "latencyAt80PercentLoad" => "Performance before degradation"
-    case "errorRateUnderStress"   => "Failure patterns"
-    case "recoveryTime"           => "How quickly system returns to normal"
+interpretCapacityMetric(metric) {
+  match metric {
+    "throughputAtSaturation" => "Maximum system capacity"
+    "latencyAt80PercentLoad" => "Performance before degradation"
+    "errorRateUnderStress"   => "Failure patterns"
+    "recoveryTime"           => "How quickly system returns to normal"
   }
 }
 ```
@@ -252,23 +249,17 @@ fn interpretCapacityMetric(metric: String) {
 ### Growth Planning
 
 ```sudolang
-fn calculateRequiredCapacity(
-  currentLoad: RequestsPerSec,
-  growthFactor: Percentage,
-  safetyMargin: Percentage = 0.30
-) => {
-  // Required Capacity = (Current Load x Growth Factor) + Safety Margin
-  
+calculateRequiredCapacity(currentLoad, growthFactor, safetyMargin = 0.30) {
+  Required Capacity = (Current Load x Growth Factor) + Safety Margin.
+
   projectedLoad = currentLoad * (1 + growthFactor)
   requiredCapacity = projectedLoad * (1 + safetyMargin)
-  
-  // Example:
-  // - Current: 1000 req/sec
-  // - Expected growth: 50% per year
-  // - Safety margin: 30%
-  // Year 1 need = (1000 x 1.5) x 1.3 = 1950 req/sec
-  
-  return requiredCapacity
+
+  Example:
+    Current: 1000 req/sec.
+    Expected growth: 50% per year.
+    Safety margin: 30%.
+    Year 1 need = (1000 x 1.5) x 1.3 = 1950 req/sec.
 }
 ```
 
@@ -314,23 +305,23 @@ ArchitecturalScaling {
 ```sudolang
 PerformanceBestPractices {
   require {
-    Profile in production-like environments
-    Use percentiles (p95, p99) not averages for latency
-    Monitor continuously, not just during incidents
-    Document baseline metrics before making changes
-    Correlate metrics across layers
+    Profile in production-like environments.
+    Use percentiles (p95, p99) not averages for latency.
+    Monitor continuously, not just during incidents.
+    Document baseline metrics before making changes.
+    Correlate metrics across layers.
   }
-  
+
   warn {
-    Development can have different characteristics than production
-    Profiling overhead should be low in production
-    Latency and throughput are different concerns
+    Development can have different characteristics than production.
+    Profiling overhead should be low in production.
+    Latency and throughput are different concerns.
   }
-  
-  constraints {
-    Set performance budgets and enforce them in CI
-    Keep profiling overhead low in production
-    Understand the difference between latency and throughput
+
+  Constraints {
+    Set performance budgets and enforce them in CI.
+    Keep profiling overhead low in production.
+    Understand the difference between latency and throughput.
   }
 }
 ```
@@ -340,13 +331,13 @@ PerformanceBestPractices {
 ```sudolang
 PerformanceAntiPatterns {
   warn if any {
-    Optimizing without measurement
-    Using averages for latency metrics
-    Profiling only in development
-    Ignoring tail latencies (p99, p999)
-    Premature optimization of non-bottleneck code
-    Over-engineering for hypothetical scale
-    Caching without invalidation strategy
+    Optimizing without measurement.
+    Using averages for latency metrics.
+    Profiling only in development.
+    Ignoring tail latencies (p99, p999).
+    Premature optimization of non-bottleneck code.
+    Over-engineering for hypothetical scale.
+    Caching without invalidation strategy.
   }
 }
 ```

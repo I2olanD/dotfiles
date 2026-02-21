@@ -23,12 +23,12 @@ You are a governance orchestrator that coordinates parallel pattern discovery to
 
 ```sudolang
 ConstitutionOrchestrator {
-  constraints {
-    You are an orchestrator - Delegate discovery tasks using specialized subagents
-    Parallel discovery - Launch ALL discovery perspectives simultaneously in a single response
-    Call skill tool FIRST - Load constitution-validation methodology
-    Discovery before rules - Explore codebase to understand actual patterns
-    User confirmation required - Present discovered rules for approval
+  Constraints {
+    You are an orchestrator - Delegate discovery tasks using specialized subagents.
+    Parallel discovery - Launch ALL discovery perspectives simultaneously in a single response.
+    Call skill tool FIRST - Load constitution-validation methodology.
+    Discovery before rules - Explore codebase to understand actual patterns.
+    User confirmation required - Present discovered rules for approval.
   }
 }
 ```
@@ -46,18 +46,16 @@ Pattern discovery should cover these categories. Launch parallel agents for comp
 
 ```sudolang
 DiscoveryPerspective {
-  State {
-    perspectives: ["Security", "Architecture", "Code Quality", "Testing"]
-  }
+  perspectives: ["Security", "Architecture", "Code Quality", "Testing"]
 
-  fn mapFocusArea(input: String) {
-    match (input.toLowerCase()) {
-      case "security" => ["Security"]
-      case "testing" => ["Testing"]
-      case "architecture" => ["Architecture"]
-      case "code quality" => ["Code Quality"]
-      case "" | "all" => perspectives  // All perspectives
-      case framework => selectRelevantSubset(framework)
+  mapFocusArea(input) {
+    match input {
+      "security"     => ["Security"]
+      "testing"      => ["Testing"]
+      "architecture" => ["Architecture"]
+      "code quality" => ["Code Quality"]
+      "" | "all"     => all perspectives
+      (framework)    => select relevant subset for framework
     }
   }
 }
@@ -69,25 +67,20 @@ DiscoveryPerspective {
 // Reference: skill/shared/interfaces.sudo.md (ConstitutionLevel, PhaseState)
 
 ConstitutionWorkflow {
-  State: PhaseState {
+  State {
     current: "check_existing"
     completed: []
     blockers: []
-    awaiting: null
+    awaiting
     constitutionExists: false
   }
 
-  Phases: [
-    "check_existing",
-    "create_or_update",
-    "write_constitution",
-    "validate_optional"
-  ]
+  Phases: ["check_existing", "create_or_update", "write_constitution", "validate_optional"]
 
-  constraints {
-    Must check existence before create/update decision
-    User must approve rules before writing
-    Validation phase is optional - user decides
+  Constraints {
+    Must check existence before create/update decision.
+    User must approve rules before writing.
+    Validation phase is optional - user decides.
   }
 }
 ```
@@ -98,17 +91,14 @@ Context: Determining whether to create new or update existing constitution.
 
 ```sudolang
 CheckExistingPhase {
-  require {
-    current == "check_existing"
-  }
+  require current == "check_existing"
 
   /check => {
-    exists = bash("test -f CONSTITUTION.md && echo 'exists' || echo 'not found'")
-    State.constitutionExists = (exists == "exists")
+    exists = check if CONSTITUTION.md exists
 
-    match (State.constitutionExists) {
-      case true => route to "update_flow"
-      case false => route to "create_flow"
+    match exists {
+      true  => route to "update_flow"
+      false => route to "create_flow"
     }
 
     advance to "create_or_update"
@@ -122,23 +112,17 @@ Context: No constitution exists, creating from scratch.
 
 ```sudolang
 CreateConstitutionPhase {
-  require {
-    current == "create_or_update"
-    State.constitutionExists == false
-  }
+  require constitutionExists == false
 
-  /init => {
-    skill({ name: "constitution-validation" })
-    // Skill provides template structure, discovery methodology, rule generation guidelines
-  }
+  /init => skill({ name: "constitution-validation" })
 
-  /launchDiscovery perspectives:String[] => {
+  /launchDiscovery perspectives => {
     // Launch ALL applicable discovery perspectives in parallel
     // Single response with multiple task calls
 
-    perspectives |> map(p => Task {
-      prompt: """
-        Discover $p patterns for constitution rules:
+    for each perspective in parallel {
+      task """
+        Discover $perspective patterns for constitution rules:
 
         CONTEXT:
         - Project root: [path]
@@ -151,33 +135,32 @@ CreateConstitutionPhase {
           **[Category]**
           Pattern: [What was discovered]
           Evidence: `file:line` references
-          Proposed Rule: [ConstitutionLevel.L1|L2|L3] [Rule statement]
+          Proposed Rule: [L1|L2|L3] [Rule statement]
       """
-    })
+    }
   }
 
   DiscoveryFocus {
-    Security => "Find auth patterns, secret handling, validation approaches, generate security rules"
+    Security    => "Find auth patterns, secret handling, validation approaches, generate security rules"
     Architecture => "Identify layer structure, module patterns, API design, generate architecture rules"
     CodeQuality => "Discover naming conventions, imports, error handling, generate quality rules"
-    Testing => "Find test framework, patterns, coverage setup, generate testing rules"
+    Testing     => "Find test framework, patterns, coverage setup, generate testing rules"
   }
 
-  /synthesize findings:Finding[] => {
+  /synthesize findings => {
     // Reference: ConstitutionLevel from shared/interfaces.sudo.md
 
     findings
       |> deduplicate overlapping patterns
       |> classify by level {
-           ConstitutionLevel.L1 => "Security critical, auto-fixable"
-           ConstitutionLevel.L2 => "Important, needs human judgment"
-           ConstitutionLevel.L3 => "Advisory, style preferences"
+           L1 => "Security critical, auto-fixable"
+           L2 => "Important, needs human judgment"
+           L3 => "Advisory, style preferences"
          }
       |> group by category
   }
 
-  /presentForApproval rules:Rule[] => {
-    // Present discovered rules in categories
+  /presentForApproval rules => {
     formatRulesForApproval(rules)
     question("Approve rules or modify")
   }
@@ -212,10 +195,7 @@ Context: Constitution exists, updating with new rules.
 
 ```sudolang
 UpdateConstitutionPhase {
-  require {
-    current == "create_or_update"
-    State.constitutionExists == true
-  }
+  require constitutionExists == true
 
   /init => {
     skill({ name: "constitution-validation" })
@@ -223,17 +203,11 @@ UpdateConstitutionPhase {
     existingRules = parseRules(constitution)
   }
 
-  UpdateOptions: [
-    "add_new_rules",      // To existing or new category
-    "modify_rules",       // Change existing rules
-    "remove_rules",       // Delete rules
-    "view_current"        // Display constitution
-  ]
+  UpdateOptions: ["add_new_rules", "modify_rules", "remove_rules", "view_current"]
 
-  /addRules focusAreas:String[] => {
-    require focusAreas is provided
+  /addRules focusAreas => {
+    require focusAreas is provided.
 
-    // Focus discovery on specified areas
     discoveries = launchDiscovery(focusAreas)
     newRules = generateRules(discoveries)
     mergedConstitution = merge(existingRules, newRules)
@@ -249,23 +223,19 @@ Context: User has approved the constitution content.
 
 ```sudolang
 WriteConstitutionPhase {
-  require {
-    current == "write_constitution"
-    rules have been approved by user
-  }
+  require rules have been approved by user.
 
-  /write approvedRules:Rule[] => {
+  /write approvedRules => {
     write("CONSTITUTION.md", formatConstitution(approvedRules))
 
-    // Confirmation output
     summary = {
-      location: "CONSTITUTION.md",
-      categories: countCategories(approvedRules),
+      location: "CONSTITUTION.md"
+      categories: count categories
       rules: {
-        total: approvedRules.length,
-        L1: countByLevel(approvedRules, ConstitutionLevel.L1),
-        L2: countByLevel(approvedRules, ConstitutionLevel.L2),
-        L3: countByLevel(approvedRules, ConstitutionLevel.L3)
+        total: approvedRules count
+        L1: count by level L1
+        L2: count by level L2
+        L3: count by level L3
       }
     }
 
@@ -297,22 +267,14 @@ Context: User may want to immediately check codebase compliance.
 
 ```sudolang
 ValidateOptionalPhase {
-  require {
-    current == "validate_optional"
-  }
-
-  /prompt => {
-    question("Run validation now or skip?")
-  }
+  /prompt => question("Run validation now or skip?")
 
   /validate => {
-    skill({ name: "constitution-validation" })  // Validation mode
+    skill({ name: "constitution-validation" })
     reportComplianceFindings()
   }
 
-  /skip => {
-    complete workflow
-  }
+  /skip => complete workflow
 }
 ```
 
@@ -320,29 +282,15 @@ ValidateOptionalPhase {
 
 ```sudolang
 FocusAreaMapping {
-  fn interpret(input: String) {
-    match (input) {
-      case "security" => {
-        focus: ["Authentication", "secrets", "injection", "XSS"]
-      }
-      case "testing" => {
-        focus: ["Test frameworks", "coverage", "patterns"]
-      }
-      case "architecture" => {
-        focus: ["Layers", "boundaries", "patterns"]
-      }
-      case "React" => {
-        focus: ["Hooks", "components", "state management"]
-      }
-      case "Next.js" => {
-        focus: ["Pages", "API routes", "SSR patterns"]
-      }
-      case "monorepo" => {
-        focus: ["Package boundaries", "shared code"]
-      }
-      case "API" => {
-        focus: ["Endpoints", "validation", "error handling"]
-      }
+  interpret(input) {
+    match input {
+      "security"     => focus: ["Authentication", "secrets", "injection", "XSS"]
+      "testing"      => focus: ["Test frameworks", "coverage", "patterns"]
+      "architecture" => focus: ["Layers", "boundaries", "patterns"]
+      "React"        => focus: ["Hooks", "components", "state management"]
+      "Next.js"      => focus: ["Pages", "API routes", "SSR patterns"]
+      "monorepo"     => focus: ["Package boundaries", "shared code"]
+      "API"          => focus: ["Endpoints", "validation", "error handling"]
     }
   }
 }
@@ -440,14 +388,14 @@ Would you like to:
 
 ```sudolang
 OutputSummary {
-  fn format(result: ConstitutionResult) => """
+  format(result) => """
     Constitution [$result.action]
 
     File: CONSTITUTION.md
     Total Rules: $result.totalRules
 
     Categories:
-    ${ result.categories |> map(c => "- $c.name: $c.count rules") |> join("\n") }
+    ${ result.categories |> formatList }
 
     Level Distribution:
     - L1 (Must, Autofix): $result.l1Count

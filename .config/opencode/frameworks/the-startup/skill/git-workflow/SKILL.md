@@ -24,11 +24,11 @@ Activate this skill when you need to:
 
 ```sudolang
 GitSafety {
-  constraints {
-    Never force push to main/master
-    Never modify git config unless explicitly requested
-    Always check repository status before operations
-    Create backups before destructive operations
+  Constraints {
+    Never force push to main or master.
+    Never modify git config unless explicitly requested.
+    Always check repository status before operations.
+    Create backups before destructive operations.
   }
 }
 ```
@@ -36,20 +36,20 @@ GitSafety {
 ### Branch Naming Convention
 
 ```sudolang
+BranchContext = "spec" | "feature" | "migrate" | "refactor"
+
 BranchNaming {
-  fn generateBranchName(context: BranchContext, identifier: String, name: String) {
+  generateBranchName(context, identifier, name) {
     slug = slugify(name)
-    
-    match (context) {
-      case "spec"     => "spec/${identifier}-${slug}"
-      case "feature"  => "feature/${identifier}-${slug}"
-      case "migrate"  => "migrate/${slug}"
-      case "refactor" => "refactor/${slug}"
+
+    match context {
+      "spec"     => "spec/${identifier}-${slug}"
+      "feature"  => "feature/${identifier}-${slug}"
+      "migrate"  => "migrate/${slug}"
+      "refactor" => "refactor/${slug}"
     }
   }
 }
-
-interface BranchContext = "spec" | "feature" | "migrate" | "refactor"
 ```
 
 | Context        | Pattern                  | Example                  |
@@ -63,8 +63,8 @@ interface BranchContext = "spec" | "feature" | "migrate" | "refactor"
 
 ```sudolang
 CommitMessage {
-  interface CommitType = "feat" | "fix" | "docs" | "refactor" | "test" | "chore"
-  
+  CommitType = "feat" | "fix" | "docs" | "refactor" | "test" | "chore"
+
   types {
     feat     => "New feature"
     fix      => "Bug fix"
@@ -73,13 +73,13 @@ CommitMessage {
     test     => "Adding tests"
     chore    => "Maintenance"
   }
-  
-  fn format(type: CommitType, scope: String, description: String, body: String?) {
+
+  format(type, scope, description, body?) {
     """
     ${type}(${scope}): ${description}
-    
+
     ${body ?? ""}
-    
+
     Co-authored-by: Opencode <claude@anthropic.com>
     """
   }
@@ -91,89 +91,91 @@ CommitMessage {
 ## Operations
 
 ```sudolang
+SpecPhase = "prd" | "sdd" | "plan" | "all"
+
 GitOperations {
   State {
-    isGitRepo: Boolean
-    currentBranch: String
-    baseBranch: String
-    uncommittedChanges: Number
-    remote: String?
+    isGitRepo
+    currentBranch
+    baseBranch
+    uncommittedChanges
+    remote?
   }
-  
+
   /checkRepository => {
     require git rev-parse --is-inside-work-tree succeeds
       else warn "Not a git repository"
-    
+
     State.currentBranch = git branch --show-current
     State.uncommittedChanges = git status --porcelain |> lineCount
     State.remote = git remote -v |> extractOrigin
     State.isGitRepo = true
-    
+
     emit """
       Repository Status
-      
+
       Repository: [OK] Git repository detected
       Current Branch: ${State.currentBranch}
       Remote: ${State.remote ?? "none"}
       Uncommitted Changes: ${State.uncommittedChanges} files
-      
+
       Ready for git operations: ${State.uncommittedChanges == 0 ? "Yes" : "No"}
     """
   }
-  
-  /createBranch context:BranchContext, identifier:String, name:String => {
+
+  /createBranch context, identifier, name => {
     require State.isGitRepo else abort "Not a git repository"
-    
-    match (State.uncommittedChanges) {
-      case 0 => continue
-      case _ => {
+
+    match State.uncommittedChanges {
+      0 => continue
+      _ => {
         choice = promptUser(UncommittedChangesOptions)
-        match (choice) {
-          case "stash"   => git stash push -m "Auto-stash for branch creation"
-          case "commit"  => /commit
-          case "proceed" => continue
-          case "cancel"  => abort "Branch creation cancelled"
+        match choice {
+          "stash"   => git stash push -m "Auto-stash for branch creation"
+          "commit"  => /commit
+          "proceed" => continue
+          "cancel"  => abort "Branch creation cancelled"
         }
       }
     }
-    
-    baseBranch = git symbolic-ref refs/remotes/origin/HEAD 
+
+    baseBranch = git symbolic-ref refs/remotes/origin/HEAD
       |> sed 's@^refs/remotes/origin/@@'
     branchName = BranchNaming.generateBranchName(context, identifier, name)
-    
+
     git checkout -b "${branchName}"
-    
+
     emit """
       Branch Created
-      
+
       Branch: ${branchName}
       Base: ${baseBranch}
       Context: ${context}
-      
+
       Ready to proceed.
     """
   }
-  
-  /commitSpec spec_id:String, spec_name:String, phase:SpecPhase => {
+
+  /commitSpec spec_id, spec_name, phase => {
     slug = slugify(spec_name)
-    
-    message = match (phase) {
-      case "prd" => CommitMessage.format(
+
+    message = match phase {
+      "prd" => CommitMessage.format(
         "docs", "spec-${spec_id}",
         "Add product requirements",
         "Defines requirements for ${spec_name}.\n\nSee: docs/specs/${spec_id}-${slug}/product-requirements.md"
       )
-      case "sdd" => CommitMessage.format(
+      "sdd" => CommitMessage.format(
         "docs", "spec-${spec_id}",
         "Add solution design",
         "Architecture and technical design for ${spec_name}.\n\nSee: docs/specs/${spec_id}-${slug}/solution-design.md"
       )
-      case "plan" => CommitMessage.format(
+      "plan" => CommitMessage.format(
         "docs", "spec-${spec_id}",
         "Add implementation plan",
         "Phased implementation tasks for ${spec_name}.\n\nSee: docs/specs/${spec_id}-${slug}/implementation-plan.md"
       )
-      case "all" => CommitMessage.format(
+      "all" => CommitMessage.format(
         "docs", "spec-${spec_id}",
         "Create specification for ${spec_name}",
         """
@@ -181,90 +183,88 @@ GitOperations {
         - Product requirements (PRD)
         - Solution design (SDD)
         - Implementation plan (PLAN)
-        
+
         See: docs/specs/${spec_id}-${slug}/
         """
       )
     }
-    
+
     git commit -m "${message}"
   }
-  
-  /commitImplementation spec_id:String, spec_name:String, phase:String, summary:String => {
+
+  /commitImplementation spec_id, spec_name, phase, summary => {
     slug = slugify(spec_name)
-    
+
     message = CommitMessage.format(
       "feat", spec_id,
       summary,
       "Implements phase ${phase} of specification ${spec_id}-${spec_name}.\n\nSee: docs/specs/${spec_id}-${slug}/"
     )
-    
+
     git commit -m "${message}"
   }
 }
-
-interface SpecPhase = "prd" | "sdd" | "plan" | "all"
 ```
 
 ### Pull Request Creation
 
 ```sudolang
 PullRequestOperations {
-  /createSpecPR spec_id:String, spec_name:String, summary:String => {
+  /createSpecPR spec_id, spec_name, summary => {
     slug = slugify(spec_name)
-    
+
     gh pr create \
       --title "docs(spec-${spec_id}): ${spec_name}" \
       --body """
         ## Specification: ${spec_name}
-        
+
         ${summary}
-        
+
         ## Documents
-        
+
         - [ ] Product Requirements (PRD)
         - [ ] Solution Design (SDD)
         - [ ] Implementation Plan (PLAN)
-        
+
         ## Review Checklist
-        
+
         - [ ] Requirements are clear and testable
         - [ ] Architecture is sound and scalable
         - [ ] Implementation plan is actionable
         - [ ] No [NEEDS CLARIFICATION] markers remain
-        
+
         ## Related
-        
+
         - Spec Directory: \`docs/specs/${spec_id}-${slug}/\`
       """
   }
-  
-  /createImplementationPR spec_id:String, spec_name:String, summary:String => {
+
+  /createImplementationPR spec_id, spec_name, summary => {
     slug = slugify(spec_name)
-    
+
     gh pr create \
       --title "feat(${spec_id}): ${spec_name}" \
       --body """
         ## Summary
-        
+
         ${summary}
-        
+
         ## Specification
-        
+
         Implements specification [\`${spec_id}-${spec_name}\`](docs/specs/${spec_id}-${slug}/).
-        
+
         ## Changes
-        
+
         [Auto-generated from git diff summary]
-        
+
         ## Test Plan
-        
+
         - [ ] All existing tests pass
         - [ ] New tests added for new functionality
         - [ ] Manual verification completed
-        
+
         ## Checklist
-        
+
         - [ ] Code follows project conventions
         - [ ] Documentation updated if needed
         - [ ] No breaking changes (or migration path provided)
@@ -288,7 +288,7 @@ UserPrompts {
       { key: 3, label: "Skip git integration", action: "skip" }
     ]
   }
-  
+
   UncommittedChangesOptions {
     question: "[N] files have uncommitted changes."
     severity: "warning"
@@ -299,7 +299,7 @@ UserPrompts {
       { key: 4, label: "Cancel", action: "cancel" }
     ]
   }
-  
+
   PRCreationOptions {
     question: "Ready to create a pull request?"
     options: [
@@ -346,28 +346,28 @@ Call this skill for:
 
 ```sudolang
 OutputTemplates {
-  fn branchOperationComplete(operation: String, branch: String, details: String, next: String) {
+  branchOperationComplete(operation, branch, details, next) {
     """
     Git Operation Complete
-    
+
     Operation: ${operation}
     Branch: ${branch}
     Status: Success
-    
+
     ${details}
-    
+
     Next: ${next}
     """
   }
-  
-  fn prCreated(number: Number, title: String, url: String, source: String, target: String) {
+
+  prCreated(number, title, url, source, target) {
     """
     Pull Request Created
-    
+
     PR: #${number} - ${title}
     URL: ${url}
     Branch: ${source} -> ${target}
-    
+
     Status: Ready for review
     """
   }
@@ -379,49 +379,49 @@ OutputTemplates {
 ## Error Handling
 
 ```sudolang
+GitError {
+  type: "not_git_repo" | "branch_exists" | "uncommitted_changes" | "no_remote" | "gh_not_installed"
+  message
+  context?
+}
+
 GitErrorHandling {
-  fn handleError(error: GitError) {
-    match (error.type) {
-      case "not_git_repo" => {
+  handleError(error) {
+    match error.type {
+      "not_git_repo" => {
         warn "Not a git repository"
         options: ["Skip git operations", "Initialize git repo"]
       }
-      case "branch_exists" => {
+      "branch_exists" => {
         warn "Branch already exists"
         options: ["Checkout existing branch", "Rename new branch"]
       }
-      case "uncommitted_changes" => {
+      "uncommitted_changes" => {
         warn "Uncommitted changes detected"
         options: ["Stash", "Commit", "Proceed anyway"]
       }
-      case "no_remote" => {
+      "no_remote" => {
         warn "No remote configured"
         options: ["Skip push/PR", "Configure remote"]
       }
-      case "gh_not_installed" => {
+      "gh_not_installed" => {
         warn "GitHub CLI not installed"
         options: ["Use git push", "Skip PR creation"]
       }
     }
   }
-  
-  fn gracefulDegradation(issue: String, impact: String, alternatives: String[]) {
+
+  gracefulDegradation(issue, impact, alternatives) {
     warn """
       Git Operation Limited
-      
+
       Issue: ${issue}
       Impact: ${impact}
-      
+
       Available Options:
       ${alternatives |> map((alt, i) => "${i+1}. ${alt}") |> join("\n")}
     """
   }
-}
-
-interface GitError {
-  type: "not_git_repo" | "branch_exists" | "uncommitted_changes" | "no_remote" | "gh_not_installed"
-  message: String
-  context: Object?
 }
 ```
 

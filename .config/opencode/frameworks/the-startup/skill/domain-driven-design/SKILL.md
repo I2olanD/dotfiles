@@ -53,29 +53,29 @@ Ask these questions to find context boundaries:
 
 ```sudolang
 ContextMapping {
-  fn selectPattern(relationship) {
-    match (relationship) {
-      case { collaboration: "close", team: "same" } => {
+  selectPattern(relationship) {
+    match relationship {
+      { collaboration: "close", team: "same" } => {
         pattern: "Shared Kernel",
         description: "Shared code between contexts"
       }
-      case { dependency: "clear", direction: "upstream-downstream" } => {
+      { dependency: "clear", direction: "upstream-downstream" } => {
         pattern: "Customer-Supplier",
         description: "Upstream/downstream relationship"
       }
-      case { negotiationPower: "none" } => {
+      { negotiationPower: "none" } => {
         pattern: "Conformist",
         description: "Downstream adopts upstream model"
       }
-      case { protection: "needed", externalModel: true } => {
+      { protection: "needed", externalModel: true } => {
         pattern: "Anti-Corruption Layer",
         description: "Translation layer between models"
       }
-      case { consumers: "multiple" } => {
+      { consumers: "multiple" } => {
         pattern: "Open Host Service",
         description: "Published API for integration"
       }
-      case { industryStandards: true } => {
+      { industryStandards: true } => {
         pattern: "Published Language",
         description: "Shared interchange format"
       }
@@ -190,20 +190,20 @@ class Money {
 #### When to Use Value Objects
 
 ```sudolang
-fn selectObjectType(requirements) {
-  match (requirements) {
-    case { trackOverTime: false, interchangeable: true } => {
+selectObjectType(requirements) {
+  match requirements {
+    { trackOverTime: false, interchangeable: true } => {
       type: "Value Object",
       examples: ["Money", "Address", "DateRange"]
     }
-    case { trackOverTime: true, uniqueIdentity: true } => {
+    { trackOverTime: true, uniqueIdentity: true } => {
       type: "Entity",
       examples: ["User", "Order", "Account"]
     }
-    case { definedBy: "attributes" } => {
+    { definedBy: "attributes" } => {
       type: "Value Object"
     }
-    case { definedBy: "continuity" } => {
+    { definedBy: "continuity" } => {
       type: "Entity"
     }
   }
@@ -247,20 +247,20 @@ Example:
 
 ```sudolang
 AggregateSizing {
-  constraints {
-    Start with single-entity aggregates
-    Expand only when invariants require it
+  Constraints {
+    Start with single-entity aggregates.
+    Expand only when invariants require it.
   }
 
-  fn diagnoseSize(aggregate) {
-    match (aggregate) {
-      case { lockConflicts: "frequent" } => warn "Too Large: Frequent optimistic lock conflicts"
-      case { dataLoad: "excessive" } => warn "Too Large: Loading too much data for simple operations"
-      case { concurrentEdits: true } => warn "Too Large: Multiple users editing simultaneously"
-      case { transactionFailures: "unrelated-data" } => warn "Too Large: Transactional failures across unrelated data"
-      case { invariantsProtected: false } => warn "Too Small: Invariants not protected"
-      case { rulesScattered: true } => warn "Too Small: Business rules scattered across services"
-      case { consistencyMismatch: "eventual-needs-immediate" } => warn "Too Small: Eventual consistency where immediate is required"
+  diagnoseSize(aggregate) {
+    match aggregate {
+      { lockConflicts: "frequent" } => warn "Too Large: Frequent optimistic lock conflicts"
+      { dataLoad: "excessive" } => warn "Too Large: Loading too much data for simple operations"
+      { concurrentEdits: true } => warn "Too Large: Multiple users editing simultaneously"
+      { transactionFailures: "unrelated-data" } => warn "Too Large: Transactional failures across unrelated data"
+      { invariantsProtected: false } => warn "Too Small: Invariants not protected"
+      { rulesScattered: true } => warn "Too Small: Business rules scattered across services"
+      { consistencyMismatch: "eventual-needs-immediate" } => warn "Too Small: Eventual consistency where immediate is required"
       default => "Aggregate size appears appropriate"
     }
   }
@@ -306,17 +306,17 @@ class OrderPlaced implements DomainEvent {
 #### Event Patterns
 
 ```sudolang
-fn selectEventPattern(requirements) {
-  match (requirements) {
-    case { coupling: "loose" } => {
+selectEventPattern(requirements) {
+  match requirements {
+    { coupling: "loose" } => {
       pattern: "Event Notification",
       description: "Minimal data, query for details"
     }
-    case { performance: "critical" } | { offline: true } => {
+    { performance: "critical" } | { offline: true } => {
       pattern: "Event-Carried State",
       description: "Full data in event"
     }
-    case { audit: true } | { temporalQueries: true } => {
+    { audit: true } | { temporalQueries: true } => {
       pattern: "Event Sourcing",
       description: "Events as source of truth"
     }
@@ -427,21 +427,21 @@ On failure at any step, execute compensation in reverse order.
 ### Choosing Consistency
 
 ```sudolang
-fn selectConsistencyStrategy(scenario) {
-  match (scenario) {
-    case { scope: "single-aggregate" } => {
+selectConsistencyStrategy(scenario) {
+  match scenario {
+    { scope: "single-aggregate" } => {
       strategy: "Transactional (ACID)",
       description: "Within single aggregate"
     }
-    case { scope: "cross-aggregate", service: "same" } => {
+    { scope: "cross-aggregate", service: "same" } => {
       strategy: "Eventual (domain events)",
       description: "Across aggregates, same service"
     }
-    case { scope: "cross-service" } => {
+    { scope: "cross-service" } => {
       strategy: "Saga with compensation",
       description: "Across services"
     }
-    case { type: "read-model" } => {
+    { type: "read-model" } => {
       strategy: "Eventual (projection)",
       description: "Read model updates"
     }
@@ -532,40 +532,32 @@ function createOrder(
 
 ```sudolang
 AggregateDesign {
-  constraints {
-    require "Single entity can be aggregate root"
-    require "Invariants are protected at boundary"
-    require "Other aggregates referenced by ID only"
-    require "Fits in memory comfortably"
-    require "One transaction per aggregate"
-  }
+  require "Single entity can be aggregate root."
+  require "Invariants are protected at boundary."
+  require "Other aggregates referenced by ID only."
+  require "Fits in memory comfortably."
+  require "One transaction per aggregate."
 }
 
 EntityImplementation {
-  constraints {
-    require "Has unique identifier"
-    require "Equality based on ID"
-    require "Encapsulates business rules"
-    require "State changes through methods"
-  }
+  require "Has unique identifier."
+  require "Equality based on ID."
+  require "Encapsulates business rules."
+  require "State changes through methods."
 }
 
 ValueObjectImplementation {
-  constraints {
-    require "All properties immutable"
-    require "Equality based on attributes"
-    require "Self-validating"
-    require "Operations return new instances"
-  }
+  require "All properties immutable."
+  require "Equality based on attributes."
+  require "Self-validating."
+  require "Operations return new instances."
 }
 
 RepositoryImplementation {
-  constraints {
-    require "One per aggregate"
-    require "Returns aggregate roots only"
-    require "Hides persistence details"
-    require "Supports queries needed by domain"
-  }
+  require "One per aggregate."
+  require "Returns aggregate roots only."
+  require "Hides persistence details."
+  require "Supports queries needed by domain."
 }
 ```
 

@@ -28,35 +28,35 @@ Activate this skill when you need to:
 See: `skill/shared/interfaces.sudo.md` for PhaseState, PhaseWorkflow
 
 ```sudolang
-interface SpecMetadata {
-  id: String               // e.g., "004"
-  name: String             // e.g., "feature-name"
-  dir: String              // e.g., "docs/specs/004-feature-name"
-  prd: String?             // Path to PRD if exists
-  sdd: String?             // Path to SDD if exists
-  plan: String?            // Path to PLAN if exists
-  files: String[]          // List of existing files
+SpecMetadata {
+  id               e.g., "004"
+  name             e.g., "feature-name"
+  dir              e.g., "docs/specs/004-feature-name"
+  prd              Path to PRD if exists
+  sdd              Path to SDD if exists
+  plan             Path to PLAN if exists
+  files            List of existing files
 }
 
-interface SpecDocument {
-  name: String
+SpecDocument {
+  name
   status: "pending" | "in_progress" | "completed" | "skipped"
-  notes: String?
+  notes
 }
 
-interface Decision {
-  date: String
-  decision: String
-  rationale: String
+Decision {
+  date
+  decision
+  rationale
 }
 
-interface SpecState {
-  id: String
-  name: String
+SpecState {
+  id
+  name
   phase: "initialization" | "prd" | "sdd" | "plan" | "implementation" | "complete"
-  documents: SpecDocument[]
-  decisions: Decision[]
-  context: String
+  documents
+  decisions
+  context
 }
 ```
 
@@ -64,7 +64,7 @@ interface SpecState {
 
 ```sudolang
 SpecWorkflow {
-  State: SpecState {
+  State {
     phase: "initialization"
     documents: [
       { name: "product-requirements.md", status: "pending" },
@@ -74,77 +74,77 @@ SpecWorkflow {
     decisions: []
     context: ""
   }
-  
-  constraints {
-    Phase transitions require user confirmation
-    Skipped phases must have documented rationale
-    README.md must be updated on every state change
-    Cannot advance to implementation without at least SDD or PLAN
+
+  Constraints {
+    Phase transitions require user confirmation.
+    Skipped phases must have documented rationale.
+    README.md must be updated on every state change.
+    Cannot advance to implementation without at least SDD or PLAN.
   }
-  
-  fn nextPhase(current: String) {
-    match (current) {
-      case "initialization" => "prd"
-      case "prd" => "sdd"
-      case "sdd" => "plan"
-      case "plan" => "implementation"
-      case "implementation" => "complete"
-      default => current
+
+  nextPhase(current) {
+    match current {
+      "initialization" => "prd"
+      "prd" => "sdd"
+      "sdd" => "plan"
+      "plan" => "implementation"
+      "implementation" => "complete"
+      _ => current
     }
   }
-  
-  fn suggestContinuation(metadata: SpecMetadata) {
-    match (metadata) {
-      case { plan: p } if p != null => {
+
+  suggestContinuation(metadata) {
+    match metadata {
+      { plan: p } if p exists => {
         message: "PLAN found. Proceed to implementation?",
         suggestedPhase: "implementation"
       }
-      case { sdd: s, plan: null } if s != null => {
+      { sdd: s, plan: null } if s exists => {
         message: "SDD found. Continue to PLAN?",
         suggestedPhase: "plan"
       }
-      case { prd: p, sdd: null } if p != null => {
+      { prd: p, sdd: null } if p exists => {
         message: "PRD found. Continue to SDD?",
         suggestedPhase: "sdd"
       }
-      default => {
+      _ => {
         message: "Start from PRD?",
         suggestedPhase: "prd"
       }
     }
   }
-  
-  /create name:String => {
+
+  /create name => {
     execute: "~/.config/opencode/skill/specification-management/spec.py '$name'"
     parse TOML output into SpecMetadata
     initialize README.md with template
     State.phase = "initialization"
     present spec directory and next steps
   }
-  
-  /read id:String => {
+
+  /read id => {
     execute: "~/.config/opencode/skill/specification-management/spec.py $id --read"
     parse TOML output into SpecMetadata
     present current state and suggestContinuation
   }
-  
-  /addTemplate id:String, template:String => {
+
+  /addTemplate id, template => {
     execute: "~/.config/opencode/skill/specification-management/spec.py $id --add $template"
     update State.documents status
     update README.md
   }
-  
-  /skip document:String, rationale:String => {
+
+  /skip document, rationale => {
     require rationale is not empty
-    State.documents.find(d => d.name == document).status = "skipped"
-    State.decisions.push({
+    find document in State.documents |> set status to "skipped"
+    State.decisions add {
       date: today(),
       decision: "$document skipped",
       rationale: rationale
-    })
+    }
     update README.md
   }
-  
+
   /advance => {
     require current phase work is complete OR skipped with rationale
     State.phase = nextPhase(State.phase)
@@ -159,22 +159,22 @@ SpecWorkflow {
 ```sudolang
 SpecValidation {
   require {
-    spec.py command executed successfully
-    README.md exists in spec directory
-    Current phase is correctly recorded in README.md
-    All decisions have been logged with date and rationale
+    spec.py command executed successfully.
+    README.md exists in spec directory.
+    Current phase is correctly recorded in README.md.
+    All decisions have been logged with date and rationale.
   }
-  
+
   warn {
-    More than 3 days since last README.md update
-    Phase marked complete without document validation
-    Skipping multiple consecutive phases
+    More than 3 days since last README.md update.
+    Phase marked complete without document validation.
+    Skipping multiple consecutive phases.
   }
-  
-  constraints {
-    Never proceed without user confirmation on phase transitions
-    Always update README.md before reporting completion
-    Decision log must include rationale, not just action
+
+  Constraints {
+    Never proceed without user confirmation on phase transitions.
+    Always update README.md before reporting completion.
+    Decision log must include rationale, not just action.
   }
 }
 ```
@@ -259,37 +259,37 @@ WorkflowHandoff {
     { phase: "sdd", skill: "architecture-design" },
     { phase: "plan", skill: "implementation-planning" }
   ]
-  
-  fn handoff(phase: String) {
-    match (phase) {
-      case "prd" => {
+
+  handoff(phase) {
+    match phase {
+      "prd" => {
         activate: "requirements-analysis",
         context: "Continue PRD creation for spec",
         returnTo: "specification-management on completion"
       }
-      case "sdd" => {
+      "sdd" => {
         activate: "architecture-design",
         context: "Continue SDD creation for spec",
         returnTo: "specification-management on completion"
       }
-      case "plan" => {
+      "plan" => {
         activate: "implementation-planning",
         context: "Continue PLAN creation for spec",
         returnTo: "specification-management on completion"
       }
-      case "implementation" => {
+      "implementation" => {
         activate: "agent-coordination",
         context: "Execute implementation from PLAN",
         returnTo: "specification-management on completion"
       }
     }
   }
-  
-  constraints {
-    Specification-management creates directory and README first
-    User confirms phase before handoff
-    Document skill activates for detailed guidance
-    On completion, context returns here for phase transition
+
+  Constraints {
+    Specification-management creates directory and README first.
+    User confirms phase before handoff.
+    Document skill activates for detailed guidance.
+    On completion, context returns here for phase transition.
   }
 }
 ```

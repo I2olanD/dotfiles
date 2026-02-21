@@ -28,13 +28,13 @@ Analysis is iterative. Each cycle builds on previous findings. Discover incremen
 ## Analysis Cycle Pattern
 
 ```sudolang
-interface AnalysisCycle {
-  cycleNumber: Number
-  area: AnalysisArea
+AnalysisCycle {
+  cycleNumber
+  area
   phase: "discovery" | "documentation" | "review"
-  findings: Finding[]
-  documentsUpdated: String[]
-  questionsRemaining: String[]
+  findings
+  documentsUpdated
+  questionsRemaining
 }
 
 AnalysisCycleWorkflow {
@@ -45,14 +45,14 @@ AnalysisCycleWorkflow {
     awaitingConfirmation: false
   }
 
-  constraints {
-    One area per cycle
-    Each cycle builds on previous findings
-    User confirmation required before next cycle
-    Parallel agent delegation mandatory in discovery
+  Constraints {
+    One area per cycle.
+    Each cycle builds on previous findings.
+    User confirmation required before next cycle.
+    Parallel agent delegation mandatory in discovery.
   }
 
-  /discovery area:AnalysisArea => {
+  /discovery area => {
     require activities identified for area
     warn if parallel agents not launched
 
@@ -62,7 +62,7 @@ AnalysisCycleWorkflow {
     incorporateUserFeedback()
   }
 
-  /documentation findings:Finding[] => {
+  /documentation findings => {
     require findings from discovery phase
     warn if category rules not applied
 
@@ -71,11 +71,11 @@ AnalysisCycleWorkflow {
     focusOnCurrentAreaOnly()
   }
 
-  /review findings:Finding[] => {
-    require all agent findings presented completely
-    require not summarized - present full responses
-    require conflicting information highlighted
-    require questions for clarification listed
+  /review findings => {
+    require all agent findings presented completely.
+    require not summarized - present full responses.
+    require conflicting information highlighted.
+    require questions for clarification listed.
 
     presentFindings(findings)
     awaitingConfirmation = true
@@ -83,11 +83,11 @@ AnalysisCycleWorkflow {
   }
 
   /nextCycle => {
-    require awaitingConfirmation == false
+    require awaitingConfirmation is false
     require user confirmed
 
-    currentCycle++
-    priorFindings.push(currentFindings)
+    currentCycle = currentCycle + 1
+    priorFindings = priorFindings combined with currentFindings
     phase = "discovery"
   }
 }
@@ -97,13 +97,13 @@ AnalysisCycleWorkflow {
 
 ```sudolang
 CycleChecklist {
-  /validate cycle:AnalysisCycle => {
-    require cycle.phase == "discovery" implies activitiesIdentified(cycle)
-    require cycle.phase == "discovery" implies parallelAgentsLaunched(cycle)
-    require cycle.phase == "documentation" implies docsUpdatedPerCategoryRules(cycle)
-    require cycle.phase == "review" implies completeResponsesPresented(cycle)
-    require cycle.phase == "review" implies userConfirmationReceived(cycle)
-    warn if moreAreasNeedInvestigation(cycle) && !userInputRequested
+  /validate cycle => {
+    require discovery phase implies activities identified.
+    require discovery phase implies parallel agents launched.
+    require documentation phase implies docs updated per category rules.
+    require review phase implies complete responses presented.
+    require review phase implies user confirmation received.
+    warn if more areas need investigation and user input not requested.
   }
 }
 ```
@@ -112,8 +112,8 @@ CycleChecklist {
 
 ```sudolang
 AnalysisArea {
-  match (type) {
-    case "business" => {
+  match type {
+    "business" => {
       activities: [
         "Extract business rules from codebase",
         "Research domain best practices",
@@ -121,7 +121,7 @@ AnalysisArea {
       ]
       documentIn: "docs/domain/"
     }
-    case "technical" => {
+    "technical" => {
       activities: [
         "Identify architectural patterns",
         "Analyze code structure and design patterns",
@@ -129,7 +129,7 @@ AnalysisArea {
       ]
       documentIn: "docs/patterns/"
     }
-    case "security" => {
+    "security" => {
       activities: [
         "Identify security patterns and vulnerabilities",
         "Analyze authentication and authorization approaches",
@@ -137,7 +137,7 @@ AnalysisArea {
       ]
       documentIn: "docs/patterns/ or docs/domain/"
     }
-    case "performance" => {
+    "performance" => {
       activities: [
         "Analyze performance patterns and bottlenecks",
         "Review optimization approaches",
@@ -145,7 +145,7 @@ AnalysisArea {
       ]
       documentIn: "docs/patterns/"
     }
-    case "integration" => {
+    "integration" => {
       activities: [
         "Analyze API design patterns",
         "Review service communication patterns",
@@ -172,26 +172,26 @@ docs/
 
 ```sudolang
 DocumentationDecision {
-  constraints {
-    Include in output only when ALL criteria met
-    Check existing docs before creating: grep -ri "keyword" docs/
+  Constraints {
+    Include in output only when all criteria are met.
+    Check existing docs before creating by searching docs/ for keywords.
   }
 
-  /shouldDocument finding:Finding => {
-    match (finding) {
-      case f if !isReusable(f) => {
+  /shouldDocument finding => {
+    match finding {
+      f if not reusable => {
         include: false,
-        reason: "Not reusable - pattern/interface/rule must be used in 2+ places OR clearly reusable"
+        reason: "Not reusable - pattern, interface, or rule must be used in 2+ places or be clearly reusable"
       }
-      case f if isStandardPractice(f) => {
+      f if is standard practice => {
         include: false,
         reason: "Standard practice - REST, MVC, CRUD are non-obvious"
       }
-      case f if isDuplicate(f) => {
+      f if is duplicate => {
         include: false,
         reason: "Duplicate - update existing docs instead"
       }
-      default => {
+      _ => {
         include: true,
         action: "Document in appropriate category"
       }
@@ -213,7 +213,7 @@ See: skill/shared/interfaces.sudo.md (TaskPrompt interface)
 
 ```sudolang
 DiscoveryDelegation {
-  /delegate activity:String, area:AnalysisArea, priorFindings:Finding[] => {
+  /delegate activity, area, priorFindings => {
     TaskPrompt {
       focus: activity
       deliverables: [
@@ -264,19 +264,19 @@ Cycle 2: Technical Patterns Discovery
 ## Findings Presentation Format
 
 ```sudolang
-interface CycleReport {
-  cycleNumber: Number
-  area: String
-  agentsLaunched: Number
-  keyFindings: FindingWithEvidence[]
-  patternsIdentified: Pattern[]
-  documentationChanges: String[]
-  questionsForClarification: String[]
-  nextStepOptions: String[]
+CycleReport {
+  cycleNumber
+  area
+  agentsLaunched
+  keyFindings
+  patternsIdentified
+  documentationChanges
+  questionsForClarification
+  nextStepOptions
 }
 
-/presentCycleComplete report:CycleReport => """
-🔍 Discovery Cycle ${report.cycleNumber} Complete
+/presentCycleComplete report => """
+Discovery Cycle ${report.cycleNumber} Complete
 
 Area: ${report.area}
 Agents Launched: ${report.agentsLaunched}
@@ -300,22 +300,22 @@ Should I continue to ${report.nextStepOptions[0]} or investigate ${report.nextSt
 ## Analysis Summary Format
 
 ```sudolang
-interface AnalysisSummary {
-  cyclesCompleted: Number
-  areasAnalyzed: String[]
-  documentationCreated: DocumentFile[]
-  majorFindings: String[]
-  gapsIdentified: String[]
-  recommendedNextSteps: String[]
+AnalysisSummary {
+  cyclesCompleted
+  areasAnalyzed
+  documentationCreated
+  majorFindings
+  gapsIdentified
+  recommendedNextSteps
 }
 
-/presentAnalysisComplete summary:AnalysisSummary => """
-📊 Analysis Complete
+/presentAnalysisComplete summary => """
+Analysis Complete
 
 Summary:
 - Cycles completed: ${summary.cyclesCompleted}
 - Areas analyzed: ${summary.areasAnalyzed |> join(", ")}
-- Documentation created: ${summary.documentationCreated.length} files
+- Documentation created: ${summary.documentationCreated |> count} files
 
 Documentation Created:
 ${summary.documentationCreated |> map(d => "- ${d.path} - ${d.description}") |> join("\n")}
@@ -334,17 +334,17 @@ ${summary.recommendedNextSteps |> enumerate |> map(s => "${s.index}. ${s.step}")
 ## Output Format
 
 ```sudolang
-interface ProgressReport {
-  currentCycle: Number
-  area: String
+ProgressReport {
+  currentCycle
+  area
   phase: "Discovery" | "Documentation" | "Review"
-  activities: ActivityStatus[]
-  findingsSoFar: String[]
-  next: String
+  activities
+  findingsSoFar
+  next
 }
 
-/presentProgress report:ProgressReport => """
-🔍 Analysis Progress
+/presentProgress report => """
+Analysis Progress
 
 Current Cycle: ${report.currentCycle}
 Area: ${report.area}
@@ -364,19 +364,19 @@ Next: ${report.next}
 
 ```sudolang
 QuickReference {
-  cyclePattern: "Discovery → Documentation → Review → (repeat)"
-  
-  constraints {
-    Always launch multiple agents for investigation (parallel-first)
-    Obtain user confirmation before proceeding to next cycle
-    Each cycle accumulates context from previous findings
+  cyclePattern: "Discovery -> Documentation -> Review -> (repeat)"
+
+  Constraints {
+    Always launch multiple agents for investigation in parallel.
+    Obtain user confirmation before proceeding to next cycle.
+    Each cycle accumulates context from previous findings.
   }
 
   documentationRouting {
-    match (findingType) {
-      case "business_rules" => "docs/domain/"
-      case "technical_patterns" => "docs/patterns/"
-      case "external_integrations" => "docs/interfaces/"
+    match findingType {
+      "business_rules" => "docs/domain/"
+      "technical_patterns" => "docs/patterns/"
+      "external_integrations" => "docs/interfaces/"
     }
   }
 }

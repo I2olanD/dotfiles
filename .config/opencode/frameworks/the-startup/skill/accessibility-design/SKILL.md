@@ -17,19 +17,19 @@ This skill provides comprehensive guidance for implementing WCAG 2.1 AA complian
 ```sudolang
 AccessibilityDesign {
   See: skill/shared/interfaces.sudo.md
-  
+
   State {
-    complianceLevel: "AA" | "AAA"
-    currentAudit: AuditResult?
-    violations: Violation[]
+    complianceLevel
+    currentAudit
+    violations
   }
-  
-  constraints {
-    WCAG 2.1 AA is the minimum compliance target
-    Semantic HTML must be used before ARIA
-    All interactive elements must be keyboard accessible
-    Color must never be the sole means of conveying information
-    Focus indicators must meet 3:1 contrast ratio
+
+  Constraints {
+    WCAG 2.1 AA is the minimum compliance target.
+    Semantic HTML must be used before ARIA.
+    All interactive elements must be keyboard accessible.
+    Color must never be the sole means of conveying information.
+    Focus indicators must meet 3:1 contrast ratio.
   }
 }
 ```
@@ -43,40 +43,36 @@ All accessibility work follows the four POUR principles:
 ```sudolang
 POURFramework {
   Perceivable {
-    description: "Information must be presentable in ways users can perceive"
-    require {
-      Text alternatives exist for all non-text content
-      Content is adaptable to different presentations
-      Content is distinguishable (color, contrast, audio control)
-    }
+    Information must be presentable in ways users can perceive.
+
+    require Text alternatives exist for all non-text content.
+    require Content is adaptable to different presentations.
+    require Content is distinguishable (color, contrast, audio control).
   }
-  
+
   Operable {
-    description: "Interface components must be operable by all users"
-    require {
-      All functionality is keyboard accessible
-      Sufficient time is provided to read and use content
-      Content does not cause seizures or physical reactions
-      Users can navigate, find content, and determine location
-    }
+    Interface components must be operable by all users.
+
+    require All functionality is keyboard accessible.
+    require Sufficient time is provided to read and use content.
+    require Content does not cause seizures or physical reactions.
+    require Users can navigate, find content, and determine location.
   }
-  
+
   Understandable {
-    description: "Information and operation must be understandable"
-    require {
-      Text is readable and understandable
-      Pages appear and operate predictably
-      Users can avoid and correct mistakes
-    }
+    Information and operation must be understandable.
+
+    require Text is readable and understandable.
+    require Pages appear and operate predictably.
+    require Users can avoid and correct mistakes.
   }
-  
+
   Robust {
-    description: "Content must be robust enough for diverse user agents"
-    require {
-      Compatible with current and future assistive technologies
-      Valid, semantic markup is used
-      Programmatic access exists for all functionality
-    }
+    Content must be robust enough for diverse user agents.
+
+    require Compatible with current and future assistive technologies.
+    require Valid, semantic markup is used.
+    require Programmatic access exists for all functionality.
   }
 }
 ```
@@ -97,26 +93,26 @@ Semantic HTML is the foundation of accessibility. ARIA should enhance, never rep
 
 ```sudolang
 SemanticHTMLRules {
-  constraints {
-    Use native HTML elements whenever possible
-    ARIA only fills gaps for complex widgets not covered by HTML
-    Never use ARIA to replace semantic HTML
+  Constraints {
+    Use native HTML elements whenever possible.
+    ARIA only fills gaps for complex widgets not covered by HTML.
+    Never use ARIA to replace semantic HTML.
   }
-  
-  fn selectElement(purpose: String) {
-    match (purpose) {
-      case "action" | "button" => "<button>"
-      case "navigation" | "link" => "<a href>"
-      case "text-input" => "<input type='text'>"
-      case "selection" => "<select>"
-      case "multiline-input" => "<textarea>"
-      case "landmark-nav" => "<nav>"
-      case "landmark-main" => "<main>"
-      case "landmark-aside" => "<aside>"
-      case "landmark-header" => "<header>"
-      case "landmark-footer" => "<footer>"
-      case "heading" => "<h1> through <h6>"
-      default => warn "Consider if a native element exists"
+
+  selectElement(purpose) {
+    match purpose {
+      "action" | "button" => "<button>"
+      "navigation" | "link" => "<a href>"
+      "text-input" => "<input type='text'>"
+      "selection" => "<select>"
+      "multiline-input" => "<textarea>"
+      "landmark-nav" => "<nav>"
+      "landmark-main" => "<main>"
+      "landmark-aside" => "<aside>"
+      "landmark-header" => "<header>"
+      "landmark-footer" => "<footer>"
+      "heading" => "<h1> through <h6>"
+      _ => warn "Consider if a native element exists"
     }
   }
 }
@@ -134,11 +130,11 @@ ProgressiveEnhancement {
     { level: 3, tech: "JavaScript", purpose: "Adds interactivity while maintaining keyboard access" },
     { level: 4, tech: "ARIA", purpose: "Fills gaps for complex widgets not covered by HTML" }
   ]
-  
-  constraints {
-    Each layer must build on previous without breaking accessibility
-    Higher layers must not remove functionality from lower layers
-    Base layer must remain functional when higher layers fail
+
+  Constraints {
+    Each layer must build on previous without breaking accessibility.
+    Higher layers must not remove functionality from lower layers.
+    Base layer must remain functional when higher layers fail.
   }
 }
 ```
@@ -180,18 +176,14 @@ Every page requires proper document structure:
 
 ```sudolang
 DocumentStructure {
-  require {
-    html element has lang attribute
-    Page has descriptive title
-    Skip link exists for keyboard users
-    Landmarks are properly defined (header, main, footer)
-    Single h1 exists per page
-  }
-  
-  warn {
-    Multiple nav elements should have unique aria-label
-    Main landmark should have id for skip link target
-  }
+  require html element has lang attribute.
+  require Page has descriptive title.
+  require Skip link exists for keyboard users.
+  require Landmarks are properly defined (header, main, footer).
+  require Single h1 exists per page.
+
+  warn Multiple nav elements should have unique aria-label.
+  warn Main landmark should have id for skip link target.
 }
 ```
 
@@ -211,20 +203,16 @@ Maintain logical heading order without skipping levels:
 
 ```sudolang
 HeadingHierarchy {
-  constraints {
-    Only one h1 per page
-    Headings must not skip levels (h1 -> h3 is invalid)
-    Heading level must reflect document outline
+  Constraints {
+    Only one h1 per page.
+    Headings must not skip levels (h1 -> h3 is invalid).
+    Heading level must reflect document outline.
   }
-  
-  fn validateHeadingOrder(headings: Heading[]) {
-    for (i in 1..headings.length) {
-      currentLevel = headings[i].level
-      previousLevel = headings[i-1].level
-      
-      require currentLevel <= previousLevel + 1 
-        else error "Heading level skipped: h${previousLevel} -> h${currentLevel}"
-    }
+
+  validateHeadingOrder(headings) {
+    For each consecutive pair of headings, the current level must not
+    exceed the previous level by more than one step.
+    require no level is skipped, else error describing which levels were skipped.
   }
 }
 ```
@@ -277,17 +265,15 @@ Focus indicators must be visible and meet contrast requirements:
 
 ```sudolang
 FocusManagement {
-  constraints {
-    Focus indicators must never be removed entirely
-    Focus indicator must have 3:1 contrast ratio minimum
-    Focus must be visible in all color modes
+  Constraints {
+    Focus indicators must never be removed entirely.
+    Focus indicator must have 3:1 contrast ratio minimum.
+    Focus must be visible in all color modes.
   }
-  
-  require {
-    All focusable elements have visible focus state
-    Focus order matches visual reading order
-    Programmatic focus changes are intentional and announced
-  }
+
+  require All focusable elements have visible focus state.
+  require Focus order matches visual reading order.
+  require Programmatic focus changes are intentional and announced.
 }
 ```
 
@@ -325,19 +311,19 @@ function trapFocus(element) {
 
 ```sudolang
 KeyboardPatterns {
-  fn handleKeyPress(key: String, context: String) {
-    match (key, context) {
-      case ("Tab", _) => "Move focus to next focusable element"
-      case ("Shift+Tab", _) => "Move focus to previous focusable element"
-      case ("Enter", "button" | "link") => "Activate element"
-      case ("Space", "button") => "Activate button"
-      case ("Space", "checkbox") => "Toggle checkbox"
-      case ("ArrowUp" | "ArrowDown", "menu" | "listbox") => "Navigate within component"
-      case ("ArrowLeft" | "ArrowRight", "tabs" | "radio") => "Navigate within component"
-      case ("Escape", "modal" | "menu" | "dropdown") => "Close and return focus"
-      case ("Home", "list") => "Move to first item"
-      case ("End", "list") => "Move to last item"
-      default => "No action"
+  handleKeyPress(key, context) {
+    match key, context {
+      "Tab", _ => "Move focus to next focusable element"
+      "Shift+Tab", _ => "Move focus to previous focusable element"
+      "Enter", "button" | "link" => "Activate element"
+      "Space", "button" => "Activate button"
+      "Space", "checkbox" => "Toggle checkbox"
+      "ArrowUp" | "ArrowDown", "menu" | "listbox" => "Navigate within component"
+      "ArrowLeft" | "ArrowRight", "tabs" | "radio" => "Navigate within component"
+      "Escape", "modal" | "menu" | "dropdown" => "Close and return focus"
+      "Home", "list" => "Move to first item"
+      "End", "list" => "Move to last item"
+      _ => "No action"
     }
   }
 }
@@ -362,19 +348,19 @@ Ensure logical tab order follows visual order:
 
 ```sudolang
 TabIndex {
-  constraints {
-    Never use positive tabindex values
-    tabindex="0" only to make non-interactive elements focusable
-    tabindex="-1" only for programmatic focus targets
-    Tab order must match visual reading order
+  Constraints {
+    Never use positive tabindex values.
+    tabindex="0" only to make non-interactive elements focusable.
+    tabindex="-1" only for programmatic focus targets.
+    Tab order must match visual reading order.
   }
-  
-  fn validateTabindex(value: Number) {
-    match (value) {
-      case 0 => "Valid: Element in natural tab order"
-      case -1 => "Valid: Programmatically focusable only"
-      case n if n > 0 => error "Invalid: Positive tabindex creates unpredictable order"
-      default => "Valid: Natural tab order"
+
+  validateTabindex(value) {
+    match value {
+      0 => "Valid: Element in natural tab order"
+      -1 => "Valid: Programmatically focusable only"
+      n if n > 0 => error "Invalid: Positive tabindex creates unpredictable order"
+      _ => "Valid: Natural tab order"
     }
   }
 }
@@ -394,22 +380,22 @@ ARIAUsage {
     "Relationships: connecting labels to complex controls",
     "States: expanded/collapsed, selected, pressed"
   ]
-  
-  constraints {
-    Native HTML elements are always preferred over ARIA
-    ARIA must not conflict with native semantics
-    All ARIA roles must have required states and properties
-    Dynamic ARIA attributes must be kept in sync with visual state
+
+  Constraints {
+    Native HTML elements are always preferred over ARIA.
+    ARIA must not conflict with native semantics.
+    All ARIA roles must have required states and properties.
+    Dynamic ARIA attributes must be kept in sync with visual state.
   }
-  
-  fn shouldUseARIA(element: Element, requirement: String) {
-    match (requirement) {
-      case r if nativeHTMLSufficient(r) => false
-      case "custom-widget" => true
-      case "dynamic-announcement" => true
-      case "relationship-mapping" => true
-      case "state-indication" => true
-      default => false
+
+  shouldUseARIA(element, requirement) {
+    match requirement {
+      r if nativeHTMLSufficient(r) => false
+      "custom-widget" => true
+      "dynamic-announcement" => true
+      "relationship-mapping" => true
+      "state-indication" => true
+      _ => false
     }
   }
 }
@@ -441,17 +427,17 @@ Common roles for custom widgets:
 
 ```sudolang
 ARIAAttributes {
-  fn selectAttribute(purpose: String, state: Any) {
-    match (purpose) {
-      case "expandable" => { attr: "aria-expanded", value: state.expanded }
-      case "selection" => { attr: "aria-selected", value: state.selected }
-      case "toggle" => { attr: "aria-pressed", value: state.pressed }
-      case "hide-from-at" => { attr: "aria-hidden", value: "true" }
-      case "live-polite" => { attr: "aria-live", value: "polite" }
-      case "live-assertive" => { attr: "aria-live", value: "assertive" }
-      case "description" => { attr: "aria-describedby", value: state.descriptionId }
-      case "label" => { attr: "aria-labelledby", value: state.labelId }
-      default => null
+  selectAttribute(purpose, state) {
+    match purpose {
+      "expandable" => { attr: "aria-expanded", value: state.expanded }
+      "selection" => { attr: "aria-selected", value: state.selected }
+      "toggle" => { attr: "aria-pressed", value: state.pressed }
+      "hide-from-at" => { attr: "aria-hidden", value: "true" }
+      "live-polite" => { attr: "aria-live", value: "polite" }
+      "live-assertive" => { attr: "aria-live", value: "assertive" }
+      "description" => { attr: "aria-describedby", value: state.descriptionId }
+      "label" => { attr: "aria-labelledby", value: state.labelId }
+      _ => null
     }
   }
 }
@@ -480,20 +466,18 @@ Announce dynamic content changes:
 
 ```sudolang
 LiveRegions {
-  fn selectPoliteness(messageType: String) {
-    match (messageType) {
-      case "error" | "critical" => "assertive"
-      case "success" | "info" | "status" => "polite"
-      case "progress" => "polite"
-      default => "polite"
+  selectPoliteness(messageType) {
+    match messageType {
+      "error" | "critical" => "assertive"
+      "success" | "info" | "status" => "polite"
+      "progress" => "polite"
+      _ => "polite"
     }
   }
-  
-  warn {
-    Assertive live regions should be used sparingly
-    Live regions should not update too frequently
-    Status messages should use role="status"
-  }
+
+  warn Assertive live regions should be used sparingly.
+  warn Live regions should not update too frequently.
+  warn Status messages should use role="status".
 }
 ```
 
@@ -521,17 +505,13 @@ Every form control requires a label:
 
 ```sudolang
 FormAccessibility {
-  require {
-    Every form control has an associated label
-    Labels use explicit for/id association
-    Related controls are grouped with fieldset/legend
-    Instructions appear before the input
-  }
-  
-  warn {
-    Placeholder text should not replace labels
-    Instructions should be associated via aria-describedby
-  }
+  require Every form control has an associated label.
+  require Labels use explicit for/id association.
+  require Related controls are grouped with fieldset/legend.
+  require Instructions appear before the input.
+
+  warn Placeholder text should not replace labels.
+  warn Instructions should be associated via aria-describedby.
 }
 ```
 
@@ -551,18 +531,16 @@ Provide clear, actionable error messages:
 
 ```sudolang
 FormErrorHandling {
-  require {
-    Error message identifies the field in error
-    Error message describes what went wrong
-    Error message provides guidance for correction
-    Field has aria-invalid="true" when invalid
-    Error is announced via live region or role="alert"
-  }
-  
-  fn validateErrorMessage(error: FormError) {
-    require error.fieldName != null else "Must identify field"
-    require error.description != null else "Must describe problem"
-    require error.guidance != null else "Must provide fix guidance"
+  require Error message identifies the field in error.
+  require Error message describes what went wrong.
+  require Error message provides guidance for correction.
+  require Field has aria-invalid="true" when invalid.
+  require Error is announced via live region or role="alert".
+
+  validateErrorMessage(error) {
+    require error has a field name, else "Must identify field"
+    require error has a description, else "Must describe problem"
+    require error has guidance, else "Must provide fix guidance"
   }
 }
 ```
@@ -583,36 +561,36 @@ FormErrorHandling {
 
 ```sudolang
 AlternativeText {
-  fn selectAltStrategy(imageType: String, context: ImageContext) {
-    match (imageType) {
-      case "informative" => {
+  selectAltStrategy(imageType, context) {
+    match imageType {
+      "informative" => {
         alt: describeContent(context),
         role: null
       }
-      case "decorative" => {
+      "decorative" => {
         alt: "",
         role: "presentation"
       }
-      case "functional" => {
+      "functional" => {
         alt: describeAction(context),
         role: null
       }
-      case "complex" => {
+      "complex" => {
         alt: briefDescription(context),
         ariaDescribedby: extendedDescriptionId
       }
-      default => {
+      _ => {
         alt: describeContent(context),
         role: null
       }
     }
   }
-  
-  constraints {
-    Informative images must have meaningful alt text
-    Decorative images must have empty alt and role="presentation"
-    Complex images need extended description via aria-describedby
-    Alt text should not start with "image of" or "picture of"
+
+  Constraints {
+    Informative images must have meaningful alt text.
+    Decorative images must have empty alt and role="presentation".
+    Complex images need extended description via aria-describedby.
+    Alt text should not start with "image of" or "picture of".
   }
 }
 ```
@@ -650,16 +628,12 @@ Provide meaningful alt text for informative images:
 
 ```sudolang
 MediaAccessibility {
-  require {
-    Video has captions track
-    Pre-recorded audio has transcript
-    Video controls are keyboard accessible
-  }
-  
-  warn {
-    Consider audio descriptions for video
-    Auto-play should be avoided
-  }
+  require Video has captions track.
+  require Pre-recorded audio has transcript.
+  require Video controls are keyboard accessible.
+
+  warn Consider audio descriptions for video.
+  warn Auto-play should be avoided.
 }
 ```
 
@@ -669,25 +643,25 @@ MediaAccessibility {
 
 ```sudolang
 ContrastRequirements {
-  fn getMinimumRatio(contentType: String, level: "AA" | "AAA") {
-    match (contentType, level) {
-      case ("normal-text", "AA") => 4.5
-      case ("normal-text", "AAA") => 7.0
-      case ("large-text", "AA") => 3.0
-      case ("large-text", "AAA") => 4.5
-      case ("ui-component", "AA") => 3.0
-      case ("ui-component", "AAA") => 3.0
-      case ("graphic", "AA") => 3.0
-      case ("graphic", "AAA") => 3.0
-      default => 4.5
+  getMinimumRatio(contentType, level) {
+    match contentType, level {
+      "normal-text", "AA" => 4.5
+      "normal-text", "AAA" => 7.0
+      "large-text", "AA" => 3.0
+      "large-text", "AAA" => 4.5
+      "ui-component", "AA" => 3.0
+      "ui-component", "AAA" => 3.0
+      "graphic", "AA" => 3.0
+      "graphic", "AAA" => 3.0
+      _ => 4.5
     }
   }
-  
-  fn isLargeText(size: Number, weight: String) {
-    match (size, weight) {
-      case (s, _) if s >= 18 => true
-      case (s, "bold") if s >= 14 => true
-      default => false
+
+  isLargeText(size, weight) {
+    match size, weight {
+      s, _ if s >= 18 => true
+      s, "bold" if s >= 14 => true
+      _ => false
     }
   }
 }
@@ -709,11 +683,11 @@ ContrastRequirements {
 
 ```sudolang
 ColorUsage {
-  constraints {
-    Color must never be the sole means of conveying information
-    Links must be distinguishable from surrounding text beyond color
-    Error states must include icon or text indicator
-    Charts must use patterns or labels in addition to color
+  Constraints {
+    Color must never be the sole means of conveying information.
+    Links must be distinguishable from surrounding text beyond color.
+    Error states must include icon or text indicator.
+    Charts must use patterns or labels in addition to color.
   }
 }
 ```
@@ -737,22 +711,18 @@ ColorUsage {
 
 ```sudolang
 MotionAccessibility {
-  constraints {
-    Respect prefers-reduced-motion media query
-    Auto-playing content must have pause controls
-    Animations over 5 seconds need stop mechanism
-    No content flashes more than 3 times per second
+  Constraints {
+    Respect prefers-reduced-motion media query.
+    Auto-playing content must have pause controls.
+    Animations over 5 seconds need stop mechanism.
+    No content flashes more than 3 times per second.
   }
-  
-  require {
-    Animation respects prefers-reduced-motion
-    Moving content has pause/stop control
-  }
-  
-  warn {
-    Avoid auto-playing video or audio
-    Consider providing reduced-motion alternatives
-  }
+
+  require Animation respects prefers-reduced-motion.
+  require Moving content has pause/stop control.
+
+  warn Avoid auto-playing video or audio.
+  warn Consider providing reduced-motion alternatives.
 }
 ```
 
@@ -775,15 +745,13 @@ Automated testing catches approximately 30-40% of issues.
 
 ```sudolang
 KeyboardTestingChecklist {
-  require {
-    All interactive elements reachable via Tab
-    Focus indicators visible on all focusable elements
-    Tab order matches visual reading order
-    All functionality operable without mouse
-    Escape closes modals and menus
-    No keyboard traps (except intentional modal traps)
-  }
-  
+  require All interactive elements reachable via Tab.
+  require Focus indicators visible on all focusable elements.
+  require Tab order matches visual reading order.
+  require All functionality operable without mouse.
+  require Escape closes modals and menus.
+  require No keyboard traps (except intentional modal traps).
+
   procedure: [
     "Disconnect or disable mouse",
     "Navigate entire page using Tab/Shift+Tab",
@@ -806,17 +774,15 @@ ScreenReaderTestMatrix {
     { platform: "iOS", reader: "VoiceOver", browsers: ["Safari"] },
     { platform: "Android", reader: "TalkBack", browsers: ["Chrome"] }
   ]
-  
-  require {
-    All images have appropriate alt text
-    Headings convey page structure
-    Links and buttons have descriptive names
-    Form fields have labels
-    Error messages are announced
-    Dynamic content updates are announced
-    Tables have proper headers
-    Custom widgets announce state changes
-  }
+
+  require All images have appropriate alt text.
+  require Headings convey page structure.
+  require Links and buttons have descriptive names.
+  require Form fields have labels.
+  require Error messages are announced.
+  require Dynamic content updates are announced.
+  require Tables have proper headers.
+  require Custom widgets announce state changes.
 }
 ```
 
@@ -824,12 +790,10 @@ ScreenReaderTestMatrix {
 
 ```sudolang
 VisualTestingChecklist {
-  require {
-    Content readable at 200% zoom without horizontal scroll
-    Content functional in high contrast mode
-    Content understandable with images disabled
-    Text readable with browser font size increased
-  }
+  require Content readable at 200% zoom without horizontal scroll.
+  require Content functional in high contrast mode.
+  require Content understandable with images disabled.
+  require Text readable with browser font size increased.
 }
 ```
 
@@ -852,13 +816,11 @@ Perform manual audit against WCAG 2.1 AA success criteria. See `checklists/wcag-
 
 ```sudolang
 ModalPattern {
-  require {
-    Focus moves to dialog when opened
-    Focus is trapped within dialog
-    Escape key closes dialog
-    Focus returns to trigger element on close
-    Background content has aria-hidden="true"
-  }
+  require Focus moves to dialog when opened.
+  require Focus is trapped within dialog.
+  require Escape key closes dialog.
+  require Focus returns to trigger element on close.
+  require Background content has aria-hidden="true".
 }
 ```
 
@@ -879,13 +841,11 @@ ModalPattern {
 
 ```sudolang
 AccordionPattern {
-  require {
-    Trigger is a button element
-    Button has aria-expanded state
-    Button has aria-controls pointing to panel
-    Panel has role="region" when content is significant
-    Only one panel expanded at a time (single-select) OR multiple allowed (multi-select)
-  }
+  require Trigger is a button element.
+  require Button has aria-expanded state.
+  require Button has aria-controls pointing to panel.
+  require Panel has role="region" when content is significant.
+  require Only one panel expanded at a time (single-select) OR multiple allowed (multi-select).
 }
 ```
 
@@ -910,13 +870,11 @@ AccordionPattern {
 
 ```sudolang
 NavigationPattern {
-  require {
-    Nav element has aria-label when multiple navs exist
-    Current page indicated with aria-current="page"
-    Dropdown triggers have aria-expanded
-    Dropdown triggers have aria-haspopup="true"
-    Submenus accessible via keyboard
-  }
+  require Nav element has aria-label when multiple navs exist.
+  require Current page indicated with aria-current="page".
+  require Dropdown triggers have aria-expanded.
+  require Dropdown triggers have aria-haspopup="true".
+  require Submenus accessible via keyboard.
 }
 ```
 
@@ -944,17 +902,13 @@ NavigationPattern {
 
 ```sudolang
 DataTablePattern {
-  require {
-    Table has caption or aria-label
-    Column headers have scope="col"
-    Row headers have scope="row"
-    Complex tables use headers attribute for cell associations
-  }
-  
-  warn {
-    Avoid using tables for layout
-    Consider responsive alternatives for complex tables
-  }
+  require Table has caption or aria-label.
+  require Column headers have scope="col".
+  require Row headers have scope="row".
+  require Complex tables use headers attribute for cell associations.
+
+  warn Avoid using tables for layout.
+  warn Consider responsive alternatives for complex tables.
 }
 ```
 

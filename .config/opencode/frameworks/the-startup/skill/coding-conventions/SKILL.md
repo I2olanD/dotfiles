@@ -26,16 +26,16 @@ A cross-cutting skill that enforces consistent security, performance, and qualit
 CodingConventions {
   State {
     domain: "security" | "performance" | "accessibility" | "error-handling"
-    findings: Finding[]
-    context: CodeContext
+    findings
+    context
   }
-  
-  constraints {
-    Apply security checks before performance optimization
-    Accessibility is a default, not an afterthought
-    Use checklists during code review, not just at the end
-    Document exceptions to standards with rationale
-    Automate checks where possible (linting, testing)
+
+  Constraints {
+    Apply security checks before performance optimization.
+    Accessibility is a default, not an afterthought.
+    Use checklists during code review, not just at the end.
+    Document exceptions to standards with rationale.
+    Automate checks where possible via linting and testing.
   }
 }
 ```
@@ -48,19 +48,15 @@ See: `checklists/security-checklist.md`
 
 ```sudolang
 SecurityValidation {
-  require {
-    All user input is validated at boundaries
-    Parameterized queries for database operations
-    Authentication tokens have expiration
-    Sensitive data encrypted at rest and in transit
-    No secrets hardcoded in source
-  }
-  
-  warn {
-    Missing rate limiting on public endpoints
-    Verbose error messages exposed to users
-    Overly permissive CORS configuration
-  }
+  require All user input is validated at boundaries.
+  require Parameterized queries for database operations.
+  require Authentication tokens have expiration.
+  require Sensitive data encrypted at rest and in transit.
+  require No secrets hardcoded in source.
+
+  warn Missing rate limiting on public endpoints.
+  warn Verbose error messages exposed to users.
+  warn Overly permissive CORS configuration.
 }
 ```
 
@@ -72,19 +68,15 @@ See: `checklists/performance-checklist.md`
 
 ```sudolang
 PerformanceValidation {
-  require {
-    Database queries use appropriate indexes
-    N+1 query patterns eliminated
-    Large payloads paginated
-    Expensive operations cached appropriately
-  }
-  
-  warn {
-    Synchronous operations that could be async
-    Missing lazy loading for non-critical resources
-    Unbounded loops or recursion
-    Missing connection pooling
-  }
+  require Database queries use appropriate indexes.
+  require N+1 query patterns eliminated.
+  require Large payloads paginated.
+  require Expensive operations cached appropriately.
+
+  warn Synchronous operations that could be async.
+  warn Missing lazy loading for non-critical resources.
+  warn Unbounded loops or recursion.
+  warn Missing connection pooling.
 }
 ```
 
@@ -96,20 +88,16 @@ See: `checklists/accessibility-checklist.md`
 
 ```sudolang
 AccessibilityValidation {
-  require {
-    All images have meaningful alt text
-    Keyboard navigation works for all interactions
-    Color contrast meets WCAG AA (4.5:1 for text)
-    Form inputs have associated labels
-    Focus states are visible
-  }
-  
-  warn {
-    Missing ARIA labels on interactive elements
-    Content not accessible via screen reader
-    Motion without reduced-motion support
-    Time-limited interactions without extensions
-  }
+  require All images have meaningful alt text.
+  require Keyboard navigation works for all interactions.
+  require Color contrast meets WCAG AA ratio of 4.5 to 1 for text.
+  require Form inputs have associated labels.
+  require Focus states are visible.
+
+  warn Missing ARIA labels on interactive elements.
+  warn Content not accessible via screen reader.
+  warn Motion without reduced-motion support.
+  warn Time-limited interactions without extensions.
 }
 ```
 
@@ -119,22 +107,22 @@ All agents should recommend these error handling approaches:
 
 ```sudolang
 ErrorHandlingPatterns {
-  constraints {
-    Validate inputs at system boundaries
-    Create domain-specific error types with context
-    Never expose internal error details to users
-    Log full context internally, sanitize externally
-    Define criticality levels for graceful degradation
+  Constraints {
+    Validate inputs at system boundaries.
+    Create domain-specific error types with context.
+    Never expose internal error details to users.
+    Log full context internally, sanitize externally.
+    Define criticality levels for graceful degradation.
   }
-  
-  fn selectPattern(scenario: ErrorScenario) {
-    match (scenario) {
-      case { location: "boundary", input: _ } => Pattern.FailFast
-      case { errorType: "domain-specific" } => Pattern.SpecificErrorTypes
-      case { audience: "user" } => Pattern.UserSafeMessages
-      case { criticality: "optional" } => Pattern.GracefulDegradation
-      case { failure: "transient" } => Pattern.RetryWithBackoff
-      default => Pattern.FailFast
+
+  selectPattern(scenario) {
+    match scenario {
+      { location: "boundary" } => FailFast
+      { errorType: "domain-specific" } => SpecificErrorTypes
+      { audience: "user" } => UserSafeMessages
+      { criticality: "optional" } => GracefulDegradation
+      { failure: "transient" } => RetryWithBackoff
+      _ => FailFast
     }
   }
 }
@@ -191,13 +179,13 @@ try {
 When non-critical operations fail, degrade gracefully rather than failing entirely. Define what is critical vs. optional.
 
 ```sudolang
-fn handleDegradation(results: SettledResult[]) {
-  match (results) {
-    case [{ status: "rejected", critical: true }, ...] => 
-      throw new Error("Cannot load - critical operation failed")
-    case [{ status: "rejected", critical: false }, ...rest] => 
+handleDegradation(results) {
+  match results {
+    [{ status: "rejected", critical: true }, ...] =>
+      throw "Cannot load - critical operation failed"
+    [{ status: "rejected", critical: false }, ...rest] =>
       continue with placeholders for failed optional operations
-    case [{ status: "fulfilled" }, ...] => 
+    [{ status: "fulfilled" }, ...] =>
       return all values
   }
 }
@@ -234,16 +222,16 @@ RetryStrategy {
     baseDelayMs: 100
     backoffMultiplier: 2
   }
-  
-  fn calculateDelay(attempt: Number) => 
-    Math.pow(config.backoffMultiplier, attempt) * config.baseDelayMs
-  
-  fn shouldRetry(error: Error, attempt: Number) {
-    match (error) {
-      case { type: "network" } if attempt < maxAttempts => true
-      case { status: 429 } if attempt < maxAttempts => true  // Rate limited
-      case { status: 503 } if attempt < maxAttempts => true  // Service unavailable
-      default => false
+
+  calculateDelay(attempt) =>
+    backoffMultiplier raised to the power of attempt, multiplied by baseDelayMs
+
+  shouldRetry(error, attempt) {
+    match error {
+      { type: "network" } if attempt < maxAttempts => true
+      { status: 429 } if attempt < maxAttempts => true
+      { status: 503 } if attempt < maxAttempts => true
+      _ => false
     }
   }
 }
@@ -265,20 +253,20 @@ async function fetchWithRetry(url, maxAttempts = 3) {
 ## Validation Workflow
 
 ```sudolang
-fn validateCode(code: Code, domains: String[]) {
+validateCode(code, domains) {
   findings = []
-  
-  domains |> forEach(domain => {
-    match (domain) {
-      case "security" => findings.push(...SecurityValidation.check(code))
-      case "performance" => findings.push(...PerformanceValidation.check(code))
-      case "accessibility" => findings.push(...AccessibilityValidation.check(code))
+
+  domains |> for each domain {
+    match domain {
+      "security" => findings = findings combined with SecurityValidation check on code
+      "performance" => findings = findings combined with PerformanceValidation check on code
+      "accessibility" => findings = findings combined with AccessibilityValidation check on code
     }
-  })
-  
+  }
+
   return {
-    valid: findings |> none(f => f.severity == "critical"),
-    findings: findings,
+    valid: findings |> none where severity is "critical",
+    findings,
     summary: generateSummary(findings)
   }
 }

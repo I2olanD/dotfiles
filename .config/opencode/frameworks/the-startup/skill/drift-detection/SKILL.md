@@ -38,28 +38,28 @@ The goal is **awareness and conscious decision-making**, not rigid compliance.
 ## Drift Domain Model
 
 ```sudolang
-interface DriftItem {
-  type: DriftType
-  description: String
-  location: String?
-  specReference: String?
-  justification: String?
+DriftItem {
+  type
+  description
+  location?
+  specReference?
+  justification?
 }
 
-interface DriftAnalysis {
-  phase: String
-  specId: String
-  aligned: Requirement[]
-  driftItems: DriftItem[]
-  alignmentPercentage: Number
+DriftAnalysis {
+  phase
+  specId
+  aligned
+  driftItems
+  alignmentPercentage
 }
 
-interface DriftDecision {
-  date: String
-  phase: String
-  driftType: DriftType
-  status: DriftStatus
-  notes: String
+DriftDecision {
+  date
+  phase
+  driftType
+  status
+  notes
 }
 ```
 
@@ -68,35 +68,35 @@ interface DriftDecision {
 ```sudolang
 DriftType {
   State: "scope_creep" | "missing" | "contradicts" | "extra"
-  
+
   scope_creep {
     description: "Implementation adds features not in spec"
     emoji: "ORANGE_DIAMOND"
     example: "Added pagination not specified in PRD"
   }
-  
+
   missing {
     description: "Spec requires feature not implemented"
     emoji: "RED_X"
     example: "Error handling specified but not done"
   }
-  
+
   contradicts {
     description: "Implementation conflicts with spec"
     emoji: "WARNING"
     example: "Spec says REST, code uses GraphQL"
   }
-  
+
   extra {
     description: "Unplanned work that may be valuable"
     emoji: "ORANGE_DIAMOND"
     example: "Added caching for performance"
   }
-  
-  constraints {
-    Every drift item must have exactly one type
-    Type determines available resolution actions
-    Missing and contradicts are higher priority than scope_creep and extra
+
+  Constraints {
+    Every drift item must have exactly one type.
+    Type determines available resolution actions.
+    Missing and contradicts are higher priority than scope_creep and extra.
   }
 }
 ```
@@ -106,34 +106,35 @@ DriftType {
 ```sudolang
 DriftStatus {
   State: "detected" | "acknowledged" | "updated" | "deferred"
-  
+
   detected {
     description: "Drift found, awaiting decision"
     transitions: [acknowledged, updated, deferred]
   }
-  
+
   acknowledged {
     description: "Drift noted, proceeding anyway"
     action: "Implementation continues as-is"
-    transitions: [updated]  // Can still be updated later
+    Can still be updated later.
+    transitions: [updated]
   }
-  
+
   updated {
     description: "Spec or implementation changed to align"
     action: "Drift resolved"
-    transitions: []  // Terminal state
+    This is a terminal state.
   }
-  
+
   deferred {
     description: "Decision postponed"
     action: "Will address in future phase"
     transitions: [acknowledged, updated]
   }
-  
-  constraints {
-    All drift must start in detected state
-    Terminal states cannot transition
-    Decision must be logged before transition
+
+  Constraints {
+    All drift must start in detected state.
+    Terminal states cannot transition.
+    Decision must be logged before transition.
   }
 }
 ```
@@ -167,35 +168,35 @@ For the current implementation phase, examine:
 ### Step 3: Compare and Categorize
 
 ```sudolang
-fn analyzeRequirement(requirement: Requirement, implementation: CodeArtifact[]) {
-  match (findImplementation(requirement, implementation)) {
-    case { found: true, matches: true } => {
+analyzeRequirement(requirement, implementation) {
+  match findImplementation(requirement, implementation) {
+    { found: true, matches: true } => {
       status: "aligned",
       emoji: "GREEN_CHECK"
     }
-    case { found: true, matches: false } => {
+    { found: true, matches: false } => {
       status: "contradicts",
       emoji: "WARNING",
       details: extractDifferences(requirement, implementation)
     }
-    case { found: false } => {
+    { found: false } => {
       status: "missing",
       emoji: "RED_X"
     }
   }
 }
 
-fn analyzeImplementation(artifact: CodeArtifact, spec: Specification) {
-  match (findSpecReference(artifact, spec)) {
-    case { found: true } => {
+analyzeImplementation(artifact, spec) {
+  match findSpecReference(artifact, spec) {
+    { found: true } => {
       status: "aligned",
       specRef: reference
     }
-    case { found: false, isFeature: true } => {
+    { found: false, isFeature: true } => {
       status: "scope_creep",
       emoji: "ORANGE_DIAMOND"
     }
-    case { found: false, isFeature: false } => {
+    { found: false, isFeature: false } => {
       status: "extra",
       emoji: "ORANGE_DIAMOND"
     }
@@ -239,59 +240,48 @@ Annotations are **optional**—drift detection works through heuristics when not
 
 ```sudolang
 HeuristicDetection {
-  constraints {
-    Test descriptions often reflect requirements
-    Function names should map to feature names
-    Comments may contain ticket or spec references
-    API endpoints should match spec interfaces
+  Constraints {
+    Test descriptions often reflect requirements.
+    Function names should map to feature names.
+    Comments may contain ticket or spec references.
+    API endpoints should match spec interfaces.
   }
-  
-  /findImplementedRequirements artifacts:CodeArtifact[] => {
-    // Test file analysis
+
+  /findImplementedRequirements artifacts => {
+    Test file analysis
     testMatches = artifacts
       |> filter(a => a.isTest)
       |> flatMap(extractTestDescriptions)
       |> mapToRequirements
-    
-    // Function/class naming
+
+    Function and class naming
     nameMatches = artifacts
       |> flatMap(extractPublicSymbols)
       |> mapToRequirements
-    
-    // Comment scanning
+
+    Comment scanning
     commentMatches = artifacts
       |> flatMap(extractComments)
-      |> filter(c => c.matches(/JIRA|spec|PRD|SDD|implements/i))
+      |> filter(c => c matches /JIRA|spec|PRD|SDD|implements/i)
       |> mapToRequirements
-    
-    return deduplicate(testMatches, nameMatches, commentMatches)
+
+    deduplicate(testMatches, nameMatches, commentMatches)
   }
-  
-  /findMissingRequirements spec:Specification, implemented:Requirement[] => {
+
+  /findMissingRequirements spec, implemented => {
     spec.requirements
-      |> filter(r => !implemented.includes(r))
+      |> filter(r => r not in implemented)
       |> map(r => { type: "missing", requirement: r })
   }
-  
-  /findContradictions spec:Specification, artifacts:CodeArtifact[] => {
-    contradictions = []
-    
-    // Configuration values
-    contradictions.push(
-      compareConfigValues(spec.config, artifacts |> extractConfig)
-    )
-    
-    // API contracts
-    contradictions.push(
-      compareApiContracts(spec.interfaces, artifacts |> extractApis)
-    )
-    
-    // Architecture patterns
-    contradictions.push(
-      compareArchitecture(spec.architecture, artifacts |> inferArchitecture)
-    )
-    
-    return contradictions |> flatten |> filter(c => c != null)
+
+  /findContradictions spec, artifacts => {
+    configContradictions = compareConfigValues(spec.config, artifacts |> extractConfig)
+    apiContradictions = compareApiContracts(spec.interfaces, artifacts |> extractApis)
+    archContradictions = compareArchitecture(spec.architecture, artifacts |> inferArchitecture)
+
+    [configContradictions, apiContradictions, archContradictions]
+      |> flatten
+      |> filter(c => c != null)
   }
 }
 ```
@@ -319,27 +309,27 @@ Add to spec README under `## Drift Log` section:
 ```sudolang
 DriftInteraction {
   State: "presenting" | "awaiting_decision" | "logging" | "complete"
-  
-  /presentDrift analysis:DriftAnalysis => {
-    require analysis.driftItems.length > 0
-    
+
+  /presentDrift analysis => {
+    require analysis has drift items
+
     emit """
       WARNING Drift Detected in $analysis.phase
-      
-      Found ${ analysis.driftItems.length } drift items:
-      
-      ${ analysis.driftItems |> enumerate |> map((item, i) => 
+
+      Found ${ analysis.driftItems |> count } drift items:
+
+      ${ analysis.driftItems |> enumerate |> map((item, i) =>
         "${ i + 1 }. ${ item.type.emoji } ${ item.type |> capitalize }: ${ item.description }
            Location: ${ item.location ?? 'N/A' }"
       ) |> join("\n\n") }
     """
-    
+
     State = "awaiting_decision"
   }
-  
+
   /promptDecision => {
     require State == "awaiting_decision"
-    
+
     emit """
       Options:
       1. Acknowledge and continue (log drift, proceed)
@@ -348,24 +338,24 @@ DriftInteraction {
       4. Defer decision (mark for later review)
     """
   }
-  
-  /handleDecision choice:Number, driftItem:DriftItem => {
-    match (choice) {
-      case 1 => {
+
+  /handleDecision choice, driftItem => {
+    match choice {
+      1 => {
         driftItem.status = "acknowledged"
         action: "Log and continue"
       }
-      case 2 => {
+      2 => {
         driftItem.status = "updated"
         action: "Modify implementation to align with spec"
         warn "Implementation changes required"
       }
-      case 3 => {
+      3 => {
         driftItem.status = "updated"
         action: "Modify spec to match implementation"
         warn "Spec changes require review"
       }
-      case 4 => {
+      4 => {
         driftItem.status = "deferred"
         action: "Mark for future review"
       }
@@ -374,14 +364,14 @@ DriftInteraction {
         return
       }
     }
-    
+
     State = "logging"
     /logDecision driftItem
     State = "complete"
   }
-  
-  /logDecision decision:DriftDecision => {
-    // Append to drift log in spec README
+
+  /logDecision decision => {
+    Append to drift log in spec README.
     appendToReadme(decision)
   }
 }
@@ -397,60 +387,60 @@ This skill is called by:
 ## Report Generation
 
 ```sudolang
-fn generatePhaseReport(analysis: DriftAnalysis) {
-  aligned = analysis.aligned.length
-  total = aligned + analysis.driftItems.length
+generatePhaseReport(analysis) {
+  aligned = analysis.aligned |> count
+  total = aligned + (analysis.driftItems |> count)
   percentage = (aligned / total * 100) |> round
-  
+
   missing = analysis.driftItems |> filter(d => d.type == "missing")
   contradicts = analysis.driftItems |> filter(d => d.type == "contradicts")
   scopeCreep = analysis.driftItems |> filter(d => d.type == "scope_creep")
   extra = analysis.driftItems |> filter(d => d.type == "extra")
-  
+
   emit """
     CHART Drift Analysis: $analysis.phase
-    
+
     Spec: $analysis.specId
     Phase: $analysis.phase
     Files Analyzed: ${ analysis.filesAnalyzed }
-    
+
     +-----------------------------------------------------+
     | ALIGNMENT SUMMARY                                   |
     +-----------------------------------------------------+
     | GREEN_CHECK Aligned:     $aligned requirements      |
-    | RED_X Missing:           ${ missing.length } requirements |
-    | WARNING Contradicts:     ${ contradicts.length } items    |
-    | ORANGE_DIAMOND Extra:    ${ extra.length + scopeCreep.length } items |
+    | RED_X Missing:           ${ missing |> count } requirements |
+    | WARNING Contradicts:     ${ contradicts |> count } items    |
+    | ORANGE_DIAMOND Extra:    ${ (extra |> count) + (scopeCreep |> count) } items |
     +-----------------------------------------------------+
-    
-    ${ missing.length > 0 ? generateMissingSection(missing) : "" }
-    ${ contradicts.length > 0 ? generateContradictSection(contradicts) : "" }
-    ${ (extra.length + scopeCreep.length) > 0 ? generateExtraSection(extra, scopeCreep) : "" }
-    
+
+    ${ missing |> count > 0 ? generateMissingSection(missing) : "" }
+    ${ contradicts |> count > 0 ? generateContradictSection(contradicts) : "" }
+    ${ (extra |> count) + (scopeCreep |> count) > 0 ? generateExtraSection(extra, scopeCreep) : "" }
+
     RECOMMENDATIONS:
     ${ generateRecommendations(analysis) }
   """
 }
 
-fn generateSummaryReport(analyses: DriftAnalysis[]) {
-  totalAligned = analyses |> map(a => a.aligned.length) |> sum
-  totalItems = analyses |> map(a => a.aligned.length + a.driftItems.length) |> sum
+generateSummaryReport(analyses) {
+  totalAligned = analyses |> map(a => a.aligned |> count) |> sum
+  totalItems = analyses |> map(a => (a.aligned |> count) + (a.driftItems |> count)) |> sum
   overallPercentage = (totalAligned / totalItems * 100) |> round
-  
+
   emit """
     CHART Drift Summary: ${ analyses[0].specId }
-    
+
     Overall Alignment: $overallPercentage%
-    
+
     | Phase | Aligned | Missing | Contradicts | Extra |
     |-------|---------|---------|-------------|-------|
     ${ analyses |> map(a => formatPhaseRow(a)) |> join("\n") }
-    
+
     Drift Decisions Made: ${ countDecisions(analyses) }
     - Acknowledged: ${ countByStatus(analyses, "acknowledged") }
     - Updated: ${ countByStatus(analyses, "updated") }
     - Deferred: ${ countByStatus(analyses, "deferred") }
-    
+
     Outstanding Items:
     ${ getOutstandingItems(analyses) |> map(i => "- $i") |> join("\n") }
   """
@@ -461,41 +451,32 @@ fn generateSummaryReport(analyses: DriftAnalysis[]) {
 
 ```sudolang
 DriftDetectionValidation {
-  require {
-    // Spec loading
-    "All spec documents loaded (PRD, SDD, PLAN)"
-    "Spec ID is valid and exists"
-    
-    // Analysis
-    "All files modified in phase have been analyzed"
-    "Each artifact categorized against spec"
-    
-    // Reporting
-    "All drift items categorized by type"
-    "Findings presented to user"
+  require "All spec documents loaded (PRD, SDD, PLAN)."
+  require "Spec ID is valid and exists."
+  require "All files modified in phase have been analyzed."
+  require "Each artifact categorized against spec."
+  require "All drift items categorized by type."
+  require "Findings presented to user."
+
+  warn "Heuristic detection may miss annotated requirements."
+  warn "Extra work detection depends on naming conventions."
+
+  Constraints {
+    Drift detection must complete before phase advances.
+    User must acknowledge or defer all detected drift.
+    All decisions must be logged to spec README.
+    Missing and contradicts require explicit resolution path.
   }
-  
-  warn {
-    "Heuristic detection may miss annotated requirements"
-    "Extra work detection depends on naming conventions"
-  }
-  
-  constraints {
-    Drift detection must complete before phase advances
-    User must acknowledge or defer all detected drift
-    All decisions must be logged to spec README
-    Missing and contradicts require explicit resolution path
-  }
-  
-  /validate analysis:DriftAnalysis => {
+
+  /validate analysis => {
     require analysis.specId != null
     require analysis.phase != null
     require analysis.driftItems |> all(d => d.type in DriftType.State)
-    
-    // All drift items must have a status after user interaction
-    require analysis.driftItems |> all(d => d.status != "detected") 
+
+    All drift items must have a status after user interaction.
+    require analysis.driftItems |> all(d => d.status != "detected")
       else warn "Not all drift items have been addressed"
-    
+
     emit "GREEN_CHECK Drift Detection Complete"
   }
 }

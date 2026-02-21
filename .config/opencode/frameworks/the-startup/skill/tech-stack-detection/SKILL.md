@@ -23,26 +23,26 @@ metadata:
 ```sudolang
 TechStackDetection {
   State {
-    packageManager: PackageManager?
-    ecosystem: Ecosystem?
-    frameworks: Framework[]
+    packageManager
+    ecosystem
+    frameworks
     confidence: "high" | "medium" | "low"
   }
 
-  interface PackageManager {
-    name: String
-    lockFile: String
-    ecosystem: Ecosystem
+  PackageManager {
+    name
+    lockFile
+    ecosystem
   }
 
-  interface Framework {
-    name: String
-    version: String?
-    configFiles: String[]
-    conventions: String[]
+  Framework {
+    name
+    version
+    configFiles
+    conventions
   }
 
-  Ecosystem: "nodejs" | "python" | "rust" | "go" | "ruby" | "php"
+  Ecosystem = "nodejs" | "python" | "rust" | "go" | "ruby" | "php"
 
   /detect => {
     detectPackageManager()
@@ -59,57 +59,57 @@ TechStackDetection {
 Check for package manager indicators in the project root:
 
 ```sudolang
-fn detectPackageManager(rootFiles: String[]) {
-  match (rootFiles) {
-    case files if files.includes("package-lock.json") => {
+detectPackageManager(rootFiles) {
+  match rootFiles {
+    rootFiles has "package-lock.json" => {
       name: "npm",
       ecosystem: "nodejs"
     }
-    case files if files.includes("yarn.lock") => {
+    rootFiles has "yarn.lock" => {
       name: "Yarn",
       ecosystem: "nodejs"
     }
-    case files if files.includes("pnpm-lock.yaml") => {
+    rootFiles has "pnpm-lock.yaml" => {
       name: "pnpm",
       ecosystem: "nodejs"
     }
-    case files if files.includes("bun.lockb") => {
+    rootFiles has "bun.lockb" => {
       name: "Bun",
       ecosystem: "nodejs"
     }
-    case files if files.includes("requirements.txt") => {
+    rootFiles has "requirements.txt" => {
       name: "pip",
       ecosystem: "python"
     }
-    case files if files.includes("Pipfile.lock") => {
+    rootFiles has "Pipfile.lock" => {
       name: "pipenv",
       ecosystem: "python"
     }
-    case files if files.includes("poetry.lock") => {
+    rootFiles has "poetry.lock" => {
       name: "Poetry",
       ecosystem: "python"
     }
-    case files if files.includes("uv.lock") => {
+    rootFiles has "uv.lock" => {
       name: "uv",
       ecosystem: "python"
     }
-    case files if files.includes("Cargo.lock") => {
+    rootFiles has "Cargo.lock" => {
       name: "Cargo",
       ecosystem: "rust"
     }
-    case files if files.includes("go.sum") => {
+    rootFiles has "go.sum" => {
       name: "Go Modules",
       ecosystem: "go"
     }
-    case files if files.includes("Gemfile.lock") => {
+    rootFiles has "Gemfile.lock" => {
       name: "Bundler",
       ecosystem: "ruby"
     }
-    case files if files.includes("composer.lock") => {
+    rootFiles has "composer.lock" => {
       name: "Composer",
       ecosystem: "php"
     }
-    default => null
+    _ => null
   }
 }
 ```
@@ -120,20 +120,20 @@ Examine root-level configuration files for framework indicators:
 
 ```sudolang
 ConfigAnalysis {
-  constraints {
-    Read package.json dependencies and devDependencies for Node.js projects
-    Read pyproject.toml [project.dependencies] or [tool.poetry.dependencies] for Python
-    Check framework-specific configs: next.config.js, vite.config.ts, angular.json
+  Constraints {
+    Read package.json dependencies and devDependencies for Node.js projects.
+    Read pyproject.toml project dependencies or tool.poetry.dependencies for Python.
+    Check framework-specific configs: next.config.js, vite.config.ts, angular.json.
   }
 
-  fn analyzeManifest(ecosystem: Ecosystem) {
-    match (ecosystem) {
-      case "nodejs" => readPackageJson() |> extractDependencies
-      case "python" => readPyprojectToml() |> extractDependencies
-      case "rust" => readCargoToml() |> extractDependencies
-      case "go" => readGoMod() |> extractDependencies
-      case "ruby" => readGemfile() |> extractDependencies
-      case "php" => readComposerJson() |> extractDependencies
+  analyzeManifest(ecosystem) {
+    match ecosystem {
+      "nodejs" => readPackageJson() |> extractDependencies
+      "python" => readPyprojectToml() |> extractDependencies
+      "rust" => readCargoToml() |> extractDependencies
+      "go" => readGoMod() |> extractDependencies
+      "ruby" => readGemfile() |> extractDependencies
+      "php" => readComposerJson() |> extractDependencies
     }
   }
 }
@@ -144,36 +144,36 @@ ConfigAnalysis {
 Identify framework conventions:
 
 ```sudolang
-fn matchDirectoryPattern(directories: String[]) {
-  match (directories) {
-    case dirs if dirs.includes("app/") || dirs.includes("src/app/") => {
+matchDirectoryPattern(directories) {
+  match directories {
+    directories has "app/" or "src/app/" => {
       frameworks: ["Next.js App Router", "Angular"],
-      confidence: "medium"  // Ambiguous, needs further verification
+      confidence: "medium"  Ambiguous, needs further verification
     }
-    case dirs if dirs.includes("pages/") => {
+    directories has "pages/" => {
       frameworks: ["Next.js Pages Router", "Nuxt.js"],
       confidence: "medium"
     }
-    case dirs if dirs.includes("components/") => {
+    directories has "components/" => {
       pattern: "component-based",
       frameworks: ["React", "Vue", "Svelte"],
-      confidence: "low"  // Very common pattern
+      confidence: "low"  Very common pattern
     }
-    case dirs if dirs.includes("routes/") => {
+    directories has "routes/" => {
       frameworks: ["Remix", "SvelteKit"],
       confidence: "medium"
     }
-    case dirs if dirs.includes("views/") => {
+    directories has "views/" => {
       pattern: "MVC",
       frameworks: ["Django", "Rails", "Laravel"],
       confidence: "low"
     }
-    case dirs if dirs.includes("controllers/") => {
+    directories has "controllers/" => {
       pattern: "MVC",
       frameworks: ["Rails", "Laravel", "NestJS"],
       confidence: "medium"
     }
-    default => { frameworks: [], confidence: "low" }
+    _ => { frameworks: [], confidence: "low" }
   }
 }
 ```
@@ -187,38 +187,38 @@ Apply detection patterns from the framework signatures reference.
 ```sudolang
 DetectionWorkflow {
   /execute => {
-    // Step 1: Package manager from lock files
+    Step 1: Package manager from lock files
     lockFiles = glob("*.lock*", "package-lock.json", "go.sum")
     State.packageManager = detectPackageManager(lockFiles)
     State.ecosystem = State.packageManager?.ecosystem
 
-    // Step 2: Read manifest files
-    manifest = match (State.ecosystem) {
-      case "nodejs" => read("package.json")
-      case "python" => read("pyproject.toml")
-      case "rust" => read("Cargo.toml")
-      case "go" => read("go.mod")
-      case "ruby" => read("Gemfile")
-      case "php" => read("composer.json")
-      default => null
+    Step 2: Read manifest files
+    manifest = match State.ecosystem {
+      "nodejs" => read("package.json")
+      "python" => read("pyproject.toml")
+      "rust" => read("Cargo.toml")
+      "go" => read("go.mod")
+      "ruby" => read("Gemfile")
+      "php" => read("composer.json")
+      _ => null
     }
     dependencies = extractDependencies(manifest)
 
-    // Step 3: Match against known frameworks
+    Step 3: Match against known frameworks
     frameworkMatches = dependencies |> matchKnownFrameworks
 
-    // Step 4: Check config files for confirmation
+    Step 4: Check config files for confirmation
     configFiles = glob("*.config.*", "angular.json", "nuxt.config.*")
     confirmedFrameworks = verifyWithConfigs(frameworkMatches, configFiles)
 
-    // Step 5: Verify with directory structure
+    Step 5: Verify with directory structure
     directories = listDirectories(".")
     structureMatches = matchDirectoryPattern(directories)
-    
-    // Final output
+
+    Final output
     State.frameworks = crossReference(confirmedFrameworks, structureMatches)
     State.confidence = calculateConfidence(State.frameworks)
-    
+
     outputResults(State)
   }
 }
@@ -227,30 +227,30 @@ DetectionWorkflow {
 ## Output Format
 
 ```sudolang
-interface DetectionOutput {
-  framework: String
-  version: String?
-  packageManager: PackageManager
-  configFiles: String[]
-  directoryConventions: String[]
-  commonCommands: Command[]
+DetectionOutput {
+  framework
+  version
+  packageManager
+  configFiles
+  directoryConventions
+  commonCommands
 }
 
-interface Command {
-  purpose: String
-  command: String
+Command {
+  purpose
+  command
 }
 
-fn outputResults(state: State) {
-  require state.packageManager != null
-  require state.frameworks.length > 0
+outputResults(state) {
+  require state.packageManager is not null
+  require state.frameworks is not empty
 
   return {
-    framework: state.frameworks[0].name,
-    version: state.frameworks[0].version,
+    framework: state.frameworks first name,
+    version: state.frameworks first version,
     packageManager: state.packageManager,
-    configFiles: state.frameworks |> flatMap(f => f.configFiles),
-    directoryConventions: state.frameworks |> flatMap(f => f.conventions),
+    configFiles: state.frameworks |> flatMap configFiles,
+    directoryConventions: state.frameworks |> flatMap conventions,
     commonCommands: generateCommands(state.packageManager, state.frameworks)
   }
 }
@@ -260,19 +260,17 @@ fn outputResults(state: State) {
 
 ```sudolang
 DetectionBestPractices {
-  constraints {
-    Always verify detection by checking multiple indicators (config + dependencies + structure)
-    Report confidence level when patterns are ambiguous
-    Note when multiple frameworks are present (e.g., Next.js + Tailwind + Prisma)
-    Check for meta-frameworks built on top of base frameworks
-    Consider monorepo patterns where different packages may use different frameworks
+  Constraints {
+    Always verify detection by checking multiple indicators (config, dependencies, structure).
+    Report confidence level when patterns are ambiguous.
+    Note when multiple frameworks are present (e.g., Next.js + Tailwind + Prisma).
+    Check for meta-frameworks built on top of base frameworks.
+    Consider monorepo patterns where different packages may use different frameworks.
   }
 
-  warn when {
-    Only one indicator matched => "Low confidence detection, verify manually"
-    Multiple conflicting frameworks detected => "Ambiguous setup, check configs"
-    No lock file found => "Package manager uncertain"
-  }
+  warn Only one indicator matched means low confidence detection, verify manually.
+  warn Multiple conflicting frameworks detected means ambiguous setup, check configs.
+  warn No lock file found means package manager uncertain.
 }
 ```
 

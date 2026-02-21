@@ -24,23 +24,21 @@ A specialized skill for systematic security evaluation of code, architecture, an
 ## Threat Modeling with STRIDE
 
 ```sudolang
-skill({ name: "security-assessment" })
-
 See: skill/shared/interfaces.sudo.md
 
-interface ThreatAnalysis {
-  category: STRIDECategory
-  threat: String
-  questions: String[]
-  mitigations: String[]
+ThreatAnalysis {
+  category
+  threat
+  questions
+  mitigations
 }
 
-STRIDECategory = "Spoofing" | "Tampering" | "Repudiation" | 
+STRIDECategory = "Spoofing" | "Tampering" | "Repudiation" |
                  "InformationDisclosure" | "DenialOfService" | "ElevationOfPrivilege"
 
-fn analyzeThreat(component: String) {
-  match (component.securityConcern) {
-    case "authentication" => {
+analyzeThreat(component) {
+  match component.securityConcern {
+    "authentication" => {
       category: "Spoofing",
       threat: "Attacker pretends to be another user or system",
       questions: [
@@ -54,8 +52,8 @@ fn analyzeThreat(component: String) {
         "Session management with proper invalidation"
       ]
     }
-    
-    case "dataIntegrity" => {
+
+    "dataIntegrity" => {
       category: "Tampering",
       threat: "Attacker modifies data in transit or at rest",
       questions: [
@@ -69,8 +67,8 @@ fn analyzeThreat(component: String) {
         "Database integrity constraints and audit logs"
       ]
     }
-    
-    case "auditability" => {
+
+    "auditability" => {
       category: "Repudiation",
       threat: "Attacker denies performing an action",
       questions: [
@@ -84,8 +82,8 @@ fn analyzeThreat(component: String) {
         "Digital signatures for critical operations"
       ]
     }
-    
-    case "confidentiality" => {
+
+    "confidentiality" => {
       category: "InformationDisclosure",
       threat: "Attacker gains access to sensitive information",
       questions: [
@@ -99,8 +97,8 @@ fn analyzeThreat(component: String) {
         "Sanitized error messages"
       ]
     }
-    
-    case "availability" => {
+
+    "availability" => {
       category: "DenialOfService",
       threat: "Attacker makes the system unavailable",
       questions: [
@@ -114,8 +112,8 @@ fn analyzeThreat(component: String) {
         "Resource quotas and timeouts"
       ]
     }
-    
-    case "authorization" => {
+
+    "authorization" => {
       category: "ElevationOfPrivilege",
       threat: "Attacker gains higher privileges than intended",
       questions: [
@@ -136,18 +134,18 @@ fn analyzeThreat(component: String) {
 ## OWASP Top 10 Review Patterns
 
 ```sudolang
-interface OWASPReview {
-  category: OWASPCategory
-  reviewSteps: String[]
-  redFlags: String[]
+OWASPReview {
+  category
+  reviewSteps
+  redFlags
 }
 
-OWASPCategory = "A01" | "A02" | "A03" | "A04" | "A05" | 
+OWASPCategory = "A01" | "A02" | "A03" | "A04" | "A05" |
                "A06" | "A07" | "A08" | "A09" | "A10"
 
-fn reviewOWASP(category: OWASPCategory) {
-  match (category) {
-    case "A01" => {  // Broken Access Control
+reviewOWASP(category) {
+  match category {
+    "A01" => {  Broken Access Control
       reviewSteps: [
         "Identify all endpoints and their expected access levels",
         "Trace authorization logic from request to resource",
@@ -155,14 +153,12 @@ fn reviewOWASP(category: OWASPCategory) {
         "Test for vertical privilege escalation (accessing admin functions)",
         "Verify CORS configuration restricts origins appropriately"
       ],
-      warn {
-        "Authorization based on client-side state" => critical
-        "Direct object references without ownership verification" => high
-        "Missing authorization checks on API endpoints" => critical
-      }
+      warn "Authorization based on client-side state" => critical.
+      warn "Direct object references without ownership verification" => high.
+      warn "Missing authorization checks on API endpoints" => critical.
     }
-    
-    case "A02" => {  // Cryptographic Failures
+
+    "A02" => {  Cryptographic Failures
       reviewSteps: [
         "Map all sensitive data flows (credentials, PII, financial)",
         "Verify encryption at rest and in transit",
@@ -170,14 +166,12 @@ fn reviewOWASP(category: OWASPCategory) {
         "Review cryptographic algorithm choices",
         "Verify key management practices"
       ],
-      warn {
-        "Sensitive data in logs or error messages" => high
-        "Deprecated algorithms (MD5, SHA1, DES)" => critical
-        "Secrets in source control" => critical
-      }
+      warn "Sensitive data in logs or error messages" => high.
+      warn "Deprecated algorithms (MD5, SHA1, DES)" => critical.
+      warn "Secrets in source control" => critical.
     }
-    
-    case "A03" => {  // Injection
+
+    "A03" => {  Injection
       reviewSteps: [
         "Identify all user input entry points",
         "Trace input flow to database queries, OS commands, LDAP",
@@ -185,14 +179,12 @@ fn reviewOWASP(category: OWASPCategory) {
         "Check for dynamic code execution (eval, exec)",
         "Review XML parsing for XXE vulnerabilities"
       ],
-      warn {
-        "String concatenation in queries" => critical
-        "User input in system commands" => critical
-        "Disabled XML external entity protection" => high
-      }
+      warn "String concatenation in queries" => critical.
+      warn "User input in system commands" => critical.
+      warn "Disabled XML external entity protection" => high.
     }
-    
-    case "A04" => {  // Insecure Design
+
+    "A04" => {  Insecure Design
       reviewSteps: [
         "Verify threat modeling was performed",
         "Check for abuse case handling (rate limits, quantity limits)",
@@ -200,14 +192,12 @@ fn reviewOWASP(category: OWASPCategory) {
         "Assess multi-tenancy isolation",
         "Verify secure defaults"
       ],
-      warn {
-        "No rate limiting on authentication" => high
-        "Trust assumptions without verification" => medium
-        "Security as an afterthought" => high
-      }
+      warn "No rate limiting on authentication" => high.
+      warn "Trust assumptions without verification" => medium.
+      warn "Security as an afterthought" => high.
     }
-    
-    case "A05" => {  // Security Misconfiguration
+
+    "A05" => {  Security Misconfiguration
       reviewSteps: [
         "Review default configurations for security settings",
         "Check for unnecessary features or services",
@@ -215,14 +205,12 @@ fn reviewOWASP(category: OWASPCategory) {
         "Review security headers (CSP, HSTS, X-Frame-Options)",
         "Check cloud resource permissions"
       ],
-      warn {
-        "Debug mode in production" => critical
-        "Default credentials unchanged" => critical
-        "Overly permissive cloud IAM policies" => high
-      }
+      warn "Debug mode in production" => critical.
+      warn "Default credentials unchanged" => critical.
+      warn "Overly permissive cloud IAM policies" => high.
     }
-    
-    case "A06" => {  // Vulnerable Components
+
+    "A06" => {  Vulnerable Components
       reviewSteps: [
         "Inventory all dependencies and their versions",
         "Check for known vulnerabilities (CVE databases)",
@@ -230,14 +218,12 @@ fn reviewOWASP(category: OWASPCategory) {
         "Review for unused dependencies",
         "Check for version pinning"
       ],
-      warn {
-        "Unpinned dependencies" => medium
-        "Known critical vulnerabilities" => critical
-        "Dependencies from unofficial sources" => high
-      }
+      warn "Unpinned dependencies" => medium.
+      warn "Known critical vulnerabilities" => critical.
+      warn "Dependencies from unofficial sources" => high.
     }
-    
-    case "A07" => {  // Authentication Failures
+
+    "A07" => {  Authentication Failures
       reviewSteps: [
         "Review password policy enforcement",
         "Check session management implementation",
@@ -245,14 +231,12 @@ fn reviewOWASP(category: OWASPCategory) {
         "Review token generation and validation",
         "Check credential storage mechanisms"
       ],
-      warn {
-        "Weak password requirements" => medium
-        "Sessions that do not invalidate on logout" => high
-        "Predictable session tokens" => critical
-      }
+      warn "Weak password requirements" => medium.
+      warn "Sessions that do not invalidate on logout" => high.
+      warn "Predictable session tokens" => critical.
     }
-    
-    case "A08" => {  // Integrity Failures
+
+    "A08" => {  Integrity Failures
       reviewSteps: [
         "Review CI/CD pipeline security",
         "Check for unsigned code or dependencies",
@@ -260,14 +244,12 @@ fn reviewOWASP(category: OWASPCategory) {
         "Verify update mechanism security",
         "Check for code review requirements"
       ],
-      warn {
-        "Deserialization without integrity checks" => critical
-        "Unsigned updates or dependencies" => high
-        "No code review before deployment" => medium
-      }
+      warn "Deserialization without integrity checks" => critical.
+      warn "Unsigned updates or dependencies" => high.
+      warn "No code review before deployment" => medium.
     }
-    
-    case "A09" => {  // Logging and Monitoring Failures
+
+    "A09" => {  Logging and Monitoring Failures
       reviewSteps: [
         "Verify authentication events are logged",
         "Check for authorization failure logging",
@@ -275,14 +257,12 @@ fn reviewOWASP(category: OWASPCategory) {
         "Verify log integrity protection",
         "Check alerting configuration"
       ],
-      warn {
-        "Missing authentication failure logs" => medium
-        "Sensitive data in logs" => high
-        "No alerting on suspicious patterns" => medium
-      }
+      warn "Missing authentication failure logs" => medium.
+      warn "Sensitive data in logs" => high.
+      warn "No alerting on suspicious patterns" => medium.
     }
-    
-    case "A10" => {  // SSRF
+
+    "A10" => {  SSRF
       reviewSteps: [
         "Identify all server-side URL fetching",
         "Verify URL validation against allowlist",
@@ -290,11 +270,9 @@ fn reviewOWASP(category: OWASPCategory) {
         "Review URL scheme restrictions",
         "Verify response handling"
       ],
-      warn {
-        "User-controlled URLs without validation" => critical
-        "Internal addresses not blocked" => high
-        "Raw responses returned to users" => medium
-      }
+      warn "User-controlled URLs without validation" => critical.
+      warn "Internal addresses not blocked" => high.
+      warn "Raw responses returned to users" => medium.
     }
   }
 }
@@ -376,81 +354,77 @@ try {
 
 ```sudolang
 InfrastructureSecurity {
-  constraints {
-    // Network Security
-    require network segmentation to limit blast radius
-    require private subnets for internal services
-    require network policies in Kubernetes
-    require egress traffic restricted to known destinations
-    
-    // Container Security
-    require minimal base images (distroless, Alpine)
-    require non-root user execution
-    require image vulnerability scanning
-    warn read-only root filesystem where possible
-    warn limited container capabilities
-    
-    // Secrets Management
-    require secret management services (Vault, AWS Secrets Manager)
-    require secrets injected as environment variables
-    require regular secret rotation
-    require secret access auditing
-    
-    // Cloud IAM
-    require principle of least privilege
-    require service accounts with minimal permissions
-    require regular IAM policy audits
-    require avoiding root/admin accounts for routine operations
+  Constraints {
+    Network segmentation required to limit blast radius.
+    Private subnets required for internal services.
+    Network policies required in Kubernetes.
+    Egress traffic restricted to known destinations.
   }
+
+  require Minimal base images (distroless, Alpine).
+  require Non-root user execution.
+  require Image vulnerability scanning.
+  warn Read-only root filesystem where possible.
+  warn Limited container capabilities.
+
+  require Secret management services (Vault, AWS Secrets Manager).
+  require Secrets injected as environment variables.
+  require Regular secret rotation.
+  require Secret access auditing.
+
+  require Principle of least privilege for cloud IAM.
+  require Service accounts with minimal permissions.
+  require Regular IAM policy audits.
+  require Avoiding root or admin accounts for routine operations.
 }
 ```
 
 ## Code Review Security Focus
 
 ```sudolang
-interface SecurityReviewArea {
-  priority: 1..7
-  focus: String
-  checkpoints: String[]
+SecurityReviewArea {
+  priority
+  focus
+  checkpoints
 }
 
 CodeReviewSecurity {
   State {
-    findings: Finding[]  // From interfaces.sudo.md
+    findings
   }
-  
-  fn prioritizeReview() => [
-    { priority: 1, focus: "Authentication and session management", 
+
+  prioritizeReview() => [
+    { priority: 1, focus: "Authentication and session management",
       checkpoints: ["Token generation", "Validation", "Session lifecycle"] },
-    { priority: 2, focus: "Authorization checks", 
+    { priority: 2, focus: "Authorization checks",
       checkpoints: ["Access control at all layers"] },
-    { priority: 3, focus: "Input handling", 
+    { priority: 3, focus: "Input handling",
       checkpoints: ["All user input paths"] },
-    { priority: 4, focus: "Data exposure", 
+    { priority: 4, focus: "Data exposure",
       checkpoints: ["Logs", "Errors", "API responses"] },
-    { priority: 5, focus: "Cryptography usage", 
+    { priority: 5, focus: "Cryptography usage",
       checkpoints: ["Algorithm selection", "Key management"] },
-    { priority: 6, focus: "Third-party integrations", 
+    { priority: 6, focus: "Third-party integrations",
       checkpoints: ["Data sharing", "Authentication"] },
-    { priority: 7, focus: "Error handling", 
+    { priority: 7, focus: "Error handling",
       checkpoints: ["Information leakage", "Fail-secure behavior"] }
   ]
-  
-  fn assessFindings(findings: Finding[]) {
-    match (findings) {
-      case f if f |> any(f => f.severity == "critical") => {
+
+  assessFindings(findings) {
+    match findings {
+      f if any have severity "critical" => {
         verdict: "BLOCK",
         action: "Critical security issues must be resolved"
       }
-      case f if f |> filter(f => f.severity == "high") |> length > 2 => {
+      f if more than 2 have severity "high" => {
         verdict: "BLOCK",
         action: "Multiple high-severity security issues"
       }
-      case f if f |> any(f => f.severity == "high") => {
+      f if any have severity "high" => {
         verdict: "REVIEW_REQUIRED",
         action: "High-severity issues need attention before merge"
       }
-      default => {
+      _ => {
         verdict: "PASS",
         action: "Security review complete"
       }
@@ -463,16 +437,16 @@ CodeReviewSecurity {
 
 ```sudolang
 SecurityPractices {
-  constraints {
-    require threat modeling before implementation
-    require defense in depth (multiple security layers)
-    require assume breach design (detection and containment)
-    require automated security testing in CI/CD
-    require dependencies updated and audited
-    require security decisions documented with accepted risks
-    require developer training on secure coding practices
+  Constraints {
+    Threat modeling required before implementation.
+    Defense in depth with multiple security layers.
+    Assume breach design for detection and containment.
+    Automated security testing in CI/CD.
+    Dependencies updated and audited.
+    Security decisions documented with accepted risks.
+    Developer training on secure coding practices.
   }
-  
+
   principles {
     "Defense in Depth" => "Never rely on a single security control"
     "Least Privilege" => "Grant minimum permissions necessary"

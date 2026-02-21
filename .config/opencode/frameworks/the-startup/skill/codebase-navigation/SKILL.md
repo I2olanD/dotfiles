@@ -27,31 +27,31 @@ Start broad, then narrow down. This three-step pattern works for any codebase.
 
 ```sudolang
 StructureAnalysis {
-  constraints {
-    Always start with project layout before diving into source
-    Read documentation files when present
-    Verify assumptions about structure
+  Constraints {
+    Always start with project layout before diving into source.
+    Read documentation files when present.
+    Verify assumptions about structure.
   }
 
   /analyzeLayout => {
-    // Step 1: Project Layout
-    ls -la                                          // Top-level structure
-    ls -la *.json *.yaml *.yml *.toml 2>/dev/null   // Config files (reveals tech stack)
-    ls -la README* CLAUDE.md Agent.md docs/ 2>/dev/null  // Documentation
+    Step 1: Project Layout
+    ls -la                                          Top-level structure
+    ls -la *.json *.yaml *.yml *.toml 2>/dev/null   Config files to reveal tech stack
+    ls -la README* CLAUDE.md Agent.md docs/ 2>/dev/null  Documentation
   }
 
   /analyzeSource => {
-    // Step 2: Source Organization
-    Glob: **/src/**/*.{ts,js,py,go,rs,java}         // Source directories
-    Glob: **/{test,tests,__tests__,spec}/**/*       // Test directories
-    Glob: **/index.{ts,js,py} | **/main.{ts,js,py,go,rs}  // Entry points
+    Step 2: Source Organization
+    Glob: **/src/**/*.{ts,js,py,go,rs,java}         Source directories
+    Glob: **/{test,tests,__tests__,spec}/**/*       Test directories
+    Glob: **/index.{ts,js,py} | **/main.{ts,js,py,go,rs}  Entry points
   }
 
   /analyzeConfig => {
-    // Step 3: Configuration Discovery
-    Glob: **/package.json | **/requirements.txt | **/go.mod | **/Cargo.toml  // Dependencies
-    Glob: **/{tsconfig,vite.config,webpack.config,jest.config}.*  // Build config
-    Glob: **/{.env*,docker-compose*,Dockerfile}     // Environment/deployment
+    Step 3: Configuration Discovery
+    Glob: **/package.json | **/requirements.txt | **/go.mod | **/Cargo.toml  Dependencies
+    Glob: **/{tsconfig,vite.config,webpack.config,jest.config}.*  Build config
+    Glob: **/{.env*,docker-compose*,Dockerfile}     Environment and deployment
   }
 }
 ```
@@ -60,34 +60,34 @@ StructureAnalysis {
 
 ```sudolang
 SearchStrategy {
-  /findImplementation target:String, language:String? => {
-    match (language) {
-      case "python" => Grep: def $target
-      case "go" => Grep: func $target
-      case "rust" => Grep: fn $target
-      default => {
-        // Generic patterns for JS/TS and others
+  /findImplementation target, language? => {
+    match language {
+      "python" => Grep: def $target
+      "go" => Grep: func $target
+      "rust" => Grep: fn $target
+      _ => {
+        Generic patterns for JS/TS and others
         Grep: (function|class|interface|type)\s+$target
         Grep: export\s+(default\s+)?(function|class|const)\s+$target
       }
     }
   }
 
-  /traceUsage target:String => {
-    Grep: import.*from\s+['"].*$target    // Find imports
-    Grep: $target\(                        // Find function calls
-    Grep: $target                          // Broad reference search
+  /traceUsage target => {
+    Grep: import.*from\s+['"].*$target    Find imports
+    Grep: $target\(                        Find function calls
+    Grep: $target                          Broad reference search
   }
 
   /mapArchitecture => {
-    // Routes
+    Routes
     Grep: (app\.(get|post|put|delete)|router\.)
-    
-    // Database models/schemas
+
+    Database models and schemas
     Grep: (Schema|Model|Entity|Table)\s*\(
     Glob: **/{models,entities,schemas}/**/*
-    
-    // Service boundaries
+
+    Service boundaries
     Glob: **/{services,controllers,handlers}/**/*
     Grep: (class|interface)\s+\w+Service
   }
@@ -98,38 +98,38 @@ SearchStrategy {
 
 ```sudolang
 ExplorationPatterns {
-  /findEntryPoints type:String => {
-    match (type) {
-      case "web" => {
+  /findEntryPoints type => {
+    match type {
+      "web" => {
         Grep: (Route|path|endpoint)
         Glob: **/routes/**/* | **/*router*
       }
-      case "cli" => {
+      "cli" => {
         Grep: (command|program\.)
         Glob: **/cli/**/* | **/commands/**/*
       }
-      case "events" => {
+      "events" => {
         Grep: (on|handle|subscribe)\s*\(
       }
     }
   }
 
   /findConfiguration => {
-    Grep: (process\.env|os\.environ|env\.)    // Environment variables
-    Grep: (feature|flag|toggle)                // Feature flags
-    Grep: (const|let)\s+(CONFIG|config|settings)  // Config objects
+    Grep: (process\.env|os\.environ|env\.)    Environment variables
+    Grep: (feature|flag|toggle)                Feature flags
+    Grep: (const|let)\s+(CONFIG|config|settings)  Config objects
     Glob: **/{config,constants}/**/*
   }
 
   /traceDataFlow => {
-    // Database queries
+    Database queries
     Grep: (SELECT|INSERT|UPDATE|DELETE|find|create|update)
     Grep: (prisma|sequelize|typeorm|mongoose)\.
-    
-    // API calls
+
+    API calls
     Grep: (fetch|axios|http\.|request\()
-    
-    // State management
+
+    State management
     Grep: (useState|useReducer|createStore|createSlice)
   }
 }
@@ -139,25 +139,26 @@ ExplorationPatterns {
 
 ```sudolang
 NavigationBestPractices {
-  constraints {
-    warn "Searching node_modules or vendor directories wastes time"
-    warn "Grepping common words without filters produces noise"
-    require "Read project documentation (README, CLAUDE.md, Agent.md) before exploring"
-    require "Verify assumptions about structure rather than assuming"
+  Constraints {
+    Read project documentation (README, CLAUDE.md, Agent.md) before exploring.
+    Verify assumptions about structure rather than assuming.
   }
 
+  warn Searching node_modules or vendor directories wastes time.
+  warn Grepping common words without filters produces noise.
+
   SearchEfficiency {
-    prefer Glob for file discovery         // Faster than grep for locating files
-    prefer Grep for content search         // Supports regex and context
-    narrow scope to specific directories when possible
-    use files_with_matches mode for discovery, content mode for analysis
+    Prefer Glob for file discovery as it is faster than grep for locating files.
+    Prefer Grep for content search as it supports regex and context.
+    Narrow scope to specific directories when possible.
+    Use files_with_matches mode for discovery, content mode for analysis.
   }
 
   MentalModelBuilding {
-    map layers: presentation, business_logic, data_access
-    identify patterns: repository, service, controller, etc
-    note conventions: naming, file_organization, code_style
-    document boundaries: where modules connect and separate
+    Map layers: presentation, business logic, data access.
+    Identify patterns: repository, service, controller, and others.
+    Note conventions: naming, file organization, code style.
+    Document boundaries: where modules connect and separate.
   }
 }
 ```
@@ -167,32 +168,32 @@ NavigationBestPractices {
 After exploration, summarize findings:
 
 ```sudolang
-interface CodebaseOverview {
-  techStack: String[]       // Languages, frameworks, tools
-  architecture: String      // Monolith, microservices, modular, etc.
-  entryPoints: String[]     // Main files, routes, handlers
-  keyDirectories: DirectoryInfo[]
-  conventions: ConventionsObserved
-  dependencies: DependencyInfo[]
+CodebaseOverview {
+  techStack            Languages, frameworks, tools
+  architecture         Monolith, microservices, modular, etc.
+  entryPoints          Main files, routes, handlers
+  keyDirectories       Each with path and purpose
+  conventions          Naming, file organization, testing
+  dependencies         Each with name and purpose
 }
 
-interface DirectoryInfo {
-  path: String
-  purpose: String
+DirectoryInfo {
+  path
+  purpose
 }
 
-interface ConventionsObserved {
-  naming: String
-  fileOrganization: String
-  testing: String
+ConventionsObserved {
+  naming
+  fileOrganization
+  testing
 }
 
-interface DependencyInfo {
-  name: String
-  purpose: String
+DependencyInfo {
+  name
+  purpose
 }
 
-fn formatOverview(overview: CodebaseOverview) => """
+formatOverview(overview) => """
   ## Codebase Overview
 
   **Tech Stack:** ${overview.techStack |> join(", ")}

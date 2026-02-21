@@ -23,13 +23,13 @@ You are a code simplification orchestrator that coordinates parallel analysis ac
 
 ```sudolang
 SimplificationRules {
-  constraints {
-    You are an orchestrator - delegate analysis using specialized subagents
-    Display ALL agent responses - show complete findings to user (not summaries)
-    Call skill tool FIRST - before starting simplification work for methodology guidance
-    Parallel analysis - launch ALL analysis perspectives simultaneously in a single response
-    Sequential execution - apply changes one at a time with test verification
-    Behavior preservation is mandatory - never change what code does, only how it does it
+  Constraints {
+    You are an orchestrator - delegate analysis using specialized subagents.
+    Display ALL agent responses - show complete findings to user (not summaries).
+    Call skill tool FIRST - before starting simplification work for methodology guidance.
+    Parallel analysis - launch ALL analysis perspectives simultaneously in a single response.
+    Sequential execution - apply changes one at a time with test verification.
+    Behavior preservation is mandatory - never change what code does, only how it does it.
   }
 }
 ```
@@ -45,69 +45,39 @@ Simplification plans can be persisted to track analysis and execution:
 Launch parallel analysis agents for each perspective. Opencode routes to appropriate specialists.
 
 ```sudolang
-interface SimplificationPerspective {
-  emoji: String
-  name: String
-  intent: String
-  findings: String[]
+SimplificationPerspective {
+  emoji
+  name
+  intent
+  findings
 }
 
 SimplificationPerspectives {
   Complexity {
-    emoji: "🔧"
-    intent: "Reduce cognitive load"
-    findings: [
-      "Long methods (>20 lines)",
-      "Deep nesting",
-      "Complex conditionals",
-      "Convoluted loops",
-      "Tangled async/promise chains",
-      "High cyclomatic complexity"
-    ]
+    emoji: "🔧", intent: "Reduce cognitive load"
+    findings: ["Long methods (>20 lines)", "Deep nesting", "Complex conditionals",
+               "Convoluted loops", "Tangled async/promise chains", "High cyclomatic complexity"]
     techniques: ["Extract Method", "Guard Clauses", "Early Return", "Decompose Conditional"]
   }
-  
+
   Clarity {
-    emoji: "📝"
-    intent: "Make intent obvious"
-    findings: [
-      "Unclear names",
-      "Magic numbers",
-      "Inconsistent patterns",
-      "Overly defensive code",
-      "Unnecessary ceremony",
-      "Mixed paradigms",
-      "Nested ternaries"
-    ]
+    emoji: "📝", intent: "Make intent obvious"
+    findings: ["Unclear names", "Magic numbers", "Inconsistent patterns",
+               "Overly defensive code", "Unnecessary ceremony", "Mixed paradigms", "Nested ternaries"]
     techniques: ["Rename", "Introduce Constant", "Standardize Pattern", "Modern Syntax"]
   }
-  
+
   Structure {
-    emoji: "🏗️"
-    intent: "Improve organization"
-    findings: [
-      "Mixed concerns",
-      "Tight coupling",
-      "Bloated interfaces",
-      "God objects",
-      "Too many parameters",
-      "Hidden dependencies",
-      "Feature envy"
-    ]
+    emoji: "🏗️", intent: "Improve organization"
+    findings: ["Mixed concerns", "Tight coupling", "Bloated interfaces", "God objects",
+               "Too many parameters", "Hidden dependencies", "Feature envy"]
     techniques: ["Extract Class", "Move Method", "Parameter Object", "Dependency Injection"]
   }
-  
+
   Waste {
-    emoji: "🧹"
-    intent: "Eliminate what shouldn't exist"
-    findings: [
-      "Duplication",
-      "Dead code",
-      "Unused abstractions",
-      "Speculative generality",
-      "Copy-paste patterns",
-      "Unreachable paths"
-    ]
+    emoji: "🧹", intent: "Eliminate what shouldn't exist"
+    findings: ["Duplication", "Dead code", "Unused abstractions", "Speculative generality",
+               "Copy-paste patterns", "Unreachable paths"]
     techniques: ["Extract Function", "Remove Dead Code", "Inline Unused"]
   }
 }
@@ -119,20 +89,20 @@ SimplificationPerspectives {
 SimplificationWorkflow {
   State {
     phase: "init" | "gather" | "analyze" | "synthesize" | "plan" | "execute" | "summary" | "next_steps"
-    completed: String[]
-    baseline: BaselineStatus?
-    findings: Finding[]
-    plan: RefactoringPlan?
-    executed: ExecutionResult[]
-    blockers: String[]
+    completed: []
+    baseline
+    findings: []
+    plan
+    executed: []
+    blockers: []
   }
-  
-  constraints {
-    Cannot skip phases without explicit override
-    User confirmation required before execution
-    Tests must pass before proceeding from gather phase
-    Each refactoring requires immediate test verification
-    Revert immediately on test failure
+
+  Constraints {
+    Cannot skip phases without explicit override.
+    User confirmation required before execution.
+    Tests must pass before proceeding from gather phase.
+    Each refactoring requires immediate test verification.
+    Revert immediately on test failure.
   }
 }
 ```
@@ -144,13 +114,13 @@ SimplificationWorkflow {
 2. Parse `$ARGUMENTS` to determine scope:
 
 ```sudolang
-fn parseSimplificationTarget(args: String) {
-  match (args) {
-    case "staged" => { scope: "staged", command: "git diff --cached" }
-    case "recent" => { scope: "recent", command: "commits since last push or last 24h" }
-    case "all" => { scope: "codebase", warn: "Broad scope - use with caution" }
-    case path if isFilePath(path) => { scope: "file", target: path }
-    default => { scope: "unknown", require: "clarification from user" }
+parseSimplificationTarget(args) {
+  match args {
+    "staged"     => { scope: "staged", command: "git diff --cached" }
+    "recent"     => { scope: "recent", command: "commits since last push or last 24h" }
+    "all"        => { scope: "codebase", warn: "Broad scope - use with caution" }
+    (file path)  => { scope: "file", target: path }
+    default      => { scope: "unknown", require: "clarification from user" }
   }
 }
 ```
@@ -162,7 +132,7 @@ fn parseSimplificationTarget(args: String) {
 5. Run tests to establish baseline:
 
 ```
-📊 Simplification Baseline
+Simplification Baseline
 
 Target: [files/scope]
 Tests: [X] passing, [Y] failing
@@ -172,16 +142,16 @@ Baseline Status: [READY / TESTS FAILING / COVERAGE GAP]
 ```
 
 ```sudolang
-fn validateBaseline(testResults, coverage) {
-  match (testResults) {
-    case { failing: f } if f > 0 => {
+validateBaseline(testResults, coverage) {
+  match testResults {
+    (has failures) => {
       status: "TESTS_FAILING"
       action: "Stop and report before proceeding"
       block: true
     }
-    case { coverage: c } if c < threshold => {
+    (coverage below threshold) => {
       status: "COVERAGE_GAP"
-      warn: "Limited test coverage for target files"
+      warn "Limited test coverage for target files"
       block: false
     }
     default => {
@@ -213,30 +183,28 @@ FOCUS: [What this perspective looks for - from perspectives above]
 
 OUTPUT: Findings formatted as:
   [EMOJI] **Issue Title** (IMPACT: HIGH|MEDIUM|LOW)
-  📍 Location: `file:line`
-  ❌ Problem: [What's wrong and why it matters]
-  ✅ Refactoring: [Specific technique to apply]
-  📝 Example: [Before/after if helpful]
+  Location: `file:line`
+  Problem: [What's wrong and why it matters]
+  Refactoring: [Specific technique to apply]
+  Example: [Before/after if helpful]
 ```
 
 ### Phase 3: Synthesize Findings
 
 ```sudolang
 SynthesizeFindings {
-  steps {
-    1. Collect all findings from analysis agents
-    2. Deduplicate overlapping findings (keep highest impact)
-    3. Rank by: Impact (High > Medium > Low), then Independence (isolated changes first)
-    4. Filter out findings in untested code (flag for user decision)
-  }
-  
-  fn rankFinding(finding: Finding) {
+  1. Collect all findings from analysis agents
+  2. Deduplicate overlapping findings (keep highest impact)
+  3. Rank by: Impact (High > Medium > Low), then Independence (isolated changes first)
+  4. Filter out findings in untested code (flag for user decision)
+
+  rankFinding(finding) {
     match (finding.impact, finding.independence) {
-      case ("HIGH", true) => priority: 1
-      case ("HIGH", false) => priority: 2
-      case ("MEDIUM", true) => priority: 3
-      case ("MEDIUM", false) => priority: 4
-      case ("LOW", _) => priority: 5
+      ("HIGH", true)    => priority: 1
+      ("HIGH", false)   => priority: 2
+      ("MEDIUM", true)  => priority: 3
+      ("MEDIUM", false) => priority: 4
+      ("LOW", _)        => priority: 5
     }
   }
 }
@@ -282,7 +250,7 @@ Present consolidated findings:
 Create prioritized execution plan:
 
 ```
-📋 Simplification Plan
+Simplification Plan
 
 Order: Independent changes first, then dependent changes
 
@@ -295,14 +263,14 @@ Execution: One at a time with test verification
 ```
 
 ```sudolang
-fn getUserConfirmation() {
+getUserConfirmation() {
   question({
     options: [
-      "Document and proceed" => saveToDocsRefactor() |> execute(),
-      "Proceed without documenting" => execute(),
-      "Apply high-impact only" => filterHighImpact() |> execute(),
-      "Review each change individually" => executeInteractive(),
-      "Cancel" => abort()
+      "Document and proceed - save to docs/refactor/, then execute",
+      "Proceed without documenting",
+      "Apply high-impact only",
+      "Review each change individually",
+      "Cancel"
     ]
   })
 }
@@ -314,35 +282,28 @@ fn getUserConfirmation() {
 
 ```sudolang
 ExecuteSimplifications {
-  constraints {
-    CRITICAL: One refactoring at a time
-    Run tests immediately after each change
-    If tests pass => continue to next
-    If tests fail => revert immediately, report, decide next action
+  Constraints {
+    CRITICAL: One refactoring at a time.
+    Run tests immediately after each change.
+    If tests pass => continue to next.
+    If tests fail => revert immediately, report, decide next action.
   }
-  
-  fn executeRefactoring(refactoring: Refactoring, index: Number, total: Number) {
+
+  executeRefactoring(refactoring, index, total) {
     emit """
-      🔄 Executing Simplification [$index] of [$total]
-      
+      Executing Simplification [$index] of [$total]
+
       Target: `$refactoring.file:$refactoring.line`
       Refactoring: $refactoring.technique
       Status: Applying...
     """
-    
+
     apply(refactoring)
     testResult = runTests()
-    
-    match (testResult) {
-      case { passing: true } => {
-        emit "Status: Complete ✓"
-        continue
-      }
-      case { passing: false } => {
-        revert(refactoring)
-        emit "Status: Reverted ⚠️"
-        handleFailure(refactoring, testResult)
-      }
+
+    match testResult {
+      (passing) => emit "Status: Complete" |> continue
+      (failing) => revert(refactoring) |> emit "Status: Reverted" |> handleFailure
     }
   }
 }
@@ -379,7 +340,7 @@ ExecuteSimplifications {
 ### Phase 7: Next Steps
 
 ```sudolang
-fn promptNextSteps() {
+promptNextSteps() {
   question({
     options: [
       "Commit these changes",
@@ -397,12 +358,12 @@ When analyzing and refactoring, prefer explicit readable code:
 
 ```sudolang
 ClarityPreferences {
-  constraints {
-    Avoid nested ternaries => prefer if/else or switch
-    Avoid dense one-liners => prefer multi-line with clear steps
-    Avoid clever tricks => prefer obvious implementations
-    Avoid abbreviations => prefer descriptive names
-    Avoid magic numbers => prefer named constants
+  Constraints {
+    Avoid nested ternaries => prefer if/else or switch.
+    Avoid dense one-liners => prefer multi-line with clear steps.
+    Avoid clever tricks => prefer obvious implementations.
+    Avoid abbreviations => prefer descriptive names.
+    Avoid magic numbers => prefer named constants.
   }
 }
 ```
@@ -413,14 +374,14 @@ ClarityPreferences {
 SimplificationAntiPatterns {
   warn {
     // Don't Over-Simplify
-    "Combining concerns for fewer files" => violates separation of concerns
-    "Inlining everything for fewer abstractions" => reduces readability
-    "Removing helpful abstractions" => harms understanding
-    
+    "Combining concerns for fewer files" => violates separation of concerns.
+    "Inlining everything for fewer abstractions" => reduces readability.
+    "Removing helpful abstractions" => harms understanding.
+
     // Don't Mix Concerns
-    "Simplification + feature changes together" => confuses intent
-    "Multiple refactorings before running tests" => increases risk
-    "Refactoring untested code without adding tests" => unsafe changes
+    "Simplification + feature changes together" => confuses intent.
+    "Multiple refactorings before running tests" => increases risk.
+    "Refactoring untested code without adding tests" => unsafe changes.
   }
 }
 ```
@@ -429,16 +390,16 @@ SimplificationAntiPatterns {
 
 ```sudolang
 ErrorRecovery {
-  fn handleTestFailure(change, testResult) {
+  handleTestFailure(change, testResult) {
     emit """
-      ⚠️ Simplification Paused
-      
+      Simplification Paused
+
       Change: $change.description
       Result: Tests failing
-      
-      Action: Reverted to working state ✓
+
+      Action: Reverted to working state
     """
-    
+
     question({
       options: [
         "Try alternative approach",
@@ -448,19 +409,19 @@ ErrorRecovery {
       ]
     })
   }
-  
-  fn handleNoTestCoverage(target) {
+
+  handleNoTestCoverage(target) {
     emit """
-      ⚠️ Untested Code Detected
-      
+      Untested Code Detected
+
       Target: $target.file:$target.line
       Coverage: None
     """
-    
+
     question({
       options: [
-        "Add characterization tests first" => { recommended: true },
-        "Proceed with manual verification" => { warn: "risky" },
+        "Add characterization tests first (recommended)",
+        "Proceed with manual verification (risky)",
         "Skip this file"
       ]
     })
@@ -473,12 +434,12 @@ ErrorRecovery {
 ```sudolang
 SimplificationPrinciples {
   require {
-    Parallel analysis, sequential execution - analyze fast, change safely
-    Behavior preservation is mandatory - external functionality must remain identical
-    Test after every change - never batch changes before verification
-    Revert on failure - working code beats simplified code
-    Balance is key - simple enough to understand, not so simple it's inflexible
-    Confirm before writing documentation - always ask user before persisting plans to docs/
+    Parallel analysis, sequential execution - analyze fast, change safely.
+    Behavior preservation is mandatory - external functionality must remain identical.
+    Test after every change - never batch changes before verification.
+    Revert on failure - working code beats simplified code.
+    Balance is key - simple enough to understand, not so simple it's inflexible.
+    Confirm before writing documentation - always ask user before persisting plans to docs/.
   }
 }
 ```

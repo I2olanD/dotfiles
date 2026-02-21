@@ -41,7 +41,7 @@ KnowledgeCategory {
       "pricing-rules.md - How prices are calculated"
     ]
   }
-  
+
   patterns {
     description: "Technical and architectural patterns"
     path: "docs/patterns/"
@@ -58,7 +58,7 @@ KnowledgeCategory {
       "error-handling.md - Standardized error responses"
     ]
   }
-  
+
   interfaces {
     description: "External service contracts"
     path: "docs/interfaces/"
@@ -75,13 +75,13 @@ KnowledgeCategory {
       "oauth-providers.md - Authentication integrations"
     ]
   }
-  
-  fn categorize(knowledge) {
-    match (knowledge) {
-      case k if k.isBusinessLogic => domain
-      case k if k.isExternalService => interfaces
-      case k if k.isTechnicalPattern => patterns
-      default => warn("Unclear category - ask for clarification")
+
+  categorize(knowledge) {
+    match knowledge {
+      k if k is business logic => domain
+      k if k is external service => interfaces
+      k if k is technical pattern => patterns
+      _ => warn "Unclear category - ask for clarification"
     }
   }
 }
@@ -97,84 +97,83 @@ KnowledgeCaptureWorkflow {
     action: "create" | "update"
     filePath: null
   }
-  
-  constraints {
-    Deduplication check MUST run before any file creation
-    Always prefer updating existing files over creating new ones
-    Template structure must be followed for consistency
-    Cross-references must be added for related documentation
+
+  Constraints {
+    Deduplication check must run before any file creation.
+    Always prefer updating existing files over creating new ones.
+    Template structure must be followed for consistency.
+    Cross-references must be added for related documentation.
   }
-  
-  /step0_deduplication topic:String => {
+
+  /step0_deduplication topic => {
     require search for existing documentation first
-    
-    // Search commands
-    searchKeywords: "grep -ri '$topic' docs/domain/ docs/patterns/ docs/interfaces/"
-    searchFiles: "find docs -name '*$topic*'"
-    
-    match (searchResults) {
-      case results if results.found => {
+
+    Search for keywords across docs/domain/, docs/patterns/, docs/interfaces/
+    Search for files matching the topic name
+
+    match searchResults {
+      results if results found => {
         action: "update"
         filePath: results.matchingFile
         emit "Found existing documentation - will UPDATE instead of create"
       }
-      case results if results.empty => {
+      results if results empty => {
         action: "create"
         emit "No existing documentation found - proceeding to categorization"
       }
     }
   }
-  
-  /step1_categorize knowledge:String => {
-    match (knowledge) {
-      case k if isBusinessLogic(k) => {
+
+  /step1_categorize knowledge => {
+    match knowledge {
+      k if isBusinessLogic(k) => {
         targetCategory: "docs/domain/"
         reason: "Business rule or domain logic"
       }
-      case k if isBuildProcess(k) => {
+      k if isBuildProcess(k) => {
         targetCategory: "docs/patterns/"
         reason: "Technical or architectural pattern"
       }
-      case k if isExternalService(k) => {
+      k if isExternalService(k) => {
         targetCategory: "docs/interfaces/"
         reason: "External service integration"
       }
     }
   }
-  
+
   /step2_decide_action => {
-    match (context) {
-      case ctx if ctx.noRelatedDocs => "create"
-      case ctx if ctx.topicIsDistinct => "create"
-      case ctx if ctx.wouldCauseConfusion => "create"
-      case ctx if ctx.relatedDocsExist => "update"
-      case ctx if ctx.enhancesExisting => "update"
-      case ctx if ctx.sameCategory && ctx.closelyRelated => "update"
-      default => "update"  // Prefer updates when uncertain
+    match context {
+      ctx if ctx.noRelatedDocs => "create"
+      ctx if ctx.topicIsDistinct => "create"
+      ctx if ctx.wouldCauseConfusion => "create"
+      ctx if ctx.relatedDocsExist => "update"
+      ctx if ctx.enhancesExisting => "update"
+      ctx if ctx.sameCategory and ctx.closelyRelated => "update"
+      _ => "update"  Prefer updates when uncertain
     }
   }
-  
-  /step3_naming filename:String => {
-    constraints {
-      Must be descriptive and searchable
-      Must clearly indicate content
-      Must use full words, not abbreviations
+
+  /step3_naming filename => {
+    Constraints {
+      Must be descriptive and searchable.
+      Must clearly indicate content.
+      Must use full words, not abbreviations.
     }
-    
-    match (filename) {
-      case "auth.md" => warn("Too vague - use 'authentication-flow.md'")
-      case "db.md" => warn("Unclear - use 'database-migration-strategy.md'")
-      case "api.md" => warn("Which API? Use 'stripe-payment-integration.md'")
-      case f if f.length > 5 && f.includes("-") => "Good naming"
-      default => warn("Consider more descriptive name")
+
+    match filename {
+      "auth.md" => warn "Too vague - use 'authentication-flow.md'"
+      "db.md" => warn "Unclear - use 'database-migration-strategy.md'"
+      "api.md" => warn "Which API? Use 'stripe-payment-integration.md'"
+      f if descriptive and hyphenated => "Good naming"
+      _ => warn "Consider more descriptive name"
     }
   }
-  
-  /step4_apply_template category:String => {
-    match (category) {
-      case "patterns" => use("templates/pattern-template.md")
-      case "interfaces" => use("templates/interface-template.md")
-      case "domain" => use("templates/domain-template.md")
+
+  /step4_apply_template category => {
+    match category {
+      "patterns" => use("templates/pattern-template.md")
+      "interfaces" => use("templates/interface-template.md")
+      "domain" => use("templates/domain-template.md")
     }
   }
 }
@@ -194,30 +193,30 @@ Every document should include:
 
 ```sudolang
 DeduplicationProtocol {
-  constraints {
-    Search MUST happen before any file creation
-    Multiple search strategies must be used
-    Related files must be read before deciding
-    Cross-references must link related docs
+  Constraints {
+    Search must happen before any file creation.
+    Multiple search strategies must be used.
+    Related files must be read before deciding.
+    Cross-references must link related docs.
   }
-  
-  fn checkForDuplicates(topic:String) {
+
+  checkForDuplicates(topic) {
     searches: [
-      grep("-ri", topic, "docs/"),
-      ls(targetCategory),
-      readRelatedFiles()
+      search recursively for topic in docs/,
+      list files in target category,
+      read related files
     ]
-    
-    match (aggregateResults(searches)) {
-      case found if found.exactMatch => {
+
+    match aggregateResults(searches) {
+      found if found.exactMatch => {
         action: "enhance_existing"
         target: found.file
       }
-      case found if found.partialMatch => {
+      found if found.partialMatch => {
         action: "review_and_decide"
         candidates: found.files
       }
-      case notFound => {
+      notFound => {
         action: "create_new"
         require addCrossReferences(relatedDocs)
       }
@@ -229,30 +228,30 @@ DeduplicationProtocol {
 ## Examples in Action
 
 ```sudolang
-fn analyzeScenario(scenario) {
-  match (scenario) {
-    case "Stripe payment processing" => {
+analyzeScenario(scenario) {
+  match scenario {
+    "Stripe payment processing" => {
       isExternalService: true
       category: "docs/interfaces/"
-      checkExisting: "find docs/interfaces -name '*stripe*'"
+      checkExisting: search docs/interfaces for stripe
       action: existingFound ? "update" : "create docs/interfaces/stripe-payments.md"
       template: "interface-template.md"
     }
-    
-    case "Redis caching in auth module" => {
+
+    "Redis caching in auth module" => {
       isExternalService: false
       isBusinessRule: false
       isTechnicalPattern: true
       category: "docs/patterns/"
-      checkExisting: "find docs/patterns -name '*cach*'"
+      checkExisting: search docs/patterns for caching
       action: existingFound ? "update caching-strategy.md" : "create docs/patterns/caching-strategy.md"
     }
-    
-    case "Users can only edit their own posts" => {
+
+    "Users can only edit their own posts" => {
       isBusinessRule: true
       isExternalService: false
       category: "docs/domain/"
-      checkExisting: "find docs/domain -name '*permission*'"
+      checkExisting: search docs/domain for permissions
       action: existingFound ? "update user-permissions.md" : "create docs/domain/user-permissions.md"
     }
   }
@@ -275,30 +274,28 @@ When documentation relates to other docs:
 
 ```sudolang
 QualityValidation {
-  require {
-    checkedForExisting: "Checked for existing related documentation"
-    correctCategory: "Chosen correct category (domain/patterns/interfaces)"
-    searchableName: "Used descriptive, searchable filename"
-    completeStructure: "Included title, context, details, examples"
-    crossReferenced: "Added cross-references to related docs"
-    templateFollowed: "Used appropriate template structure"
-    noDuplicates: "Verified no duplicate content"
-  }
-  
-  fn validate(document) {
+  require Checked for existing related documentation.
+  require Chosen correct category (domain, patterns, or interfaces).
+  require Used descriptive, searchable filename.
+  require Included title, context, details, and examples.
+  require Added cross-references to related docs.
+  require Used appropriate template structure.
+  require Verified no duplicate content.
+
+  validate(document) {
     violations = []
-    
-    require checkedForExisting else violations.push("Missing deduplication check")
-    require correctCategory else violations.push("Category may be incorrect")
-    require searchableName else violations.push("Filename not searchable")
-    require completeStructure else violations.push("Missing document sections")
-    require crossReferenced else violations.push("Missing cross-references")
-    require templateFollowed else violations.push("Template not followed")
-    require noDuplicates else violations.push("Potential duplicate content")
-    
-    match (violations.length) {
-      case 0 => { valid: true, message: "Document ready" }
-      case n => { valid: false, issues: violations }
+
+    require checkedForExisting else add "Missing deduplication check" to violations
+    require correctCategory else add "Category may be incorrect" to violations
+    require searchableName else add "Filename not searchable" to violations
+    require completeStructure else add "Missing document sections" to violations
+    require crossReferenced else add "Missing cross-references" to violations
+    require templateFollowed else add "Template not followed" to violations
+    require noDuplicates else add "Potential duplicate content" to violations
+
+    match violations |> count {
+      0 => { valid: true, message: "Document ready" }
+      n => { valid: false, issues: violations }
     }
   }
 }
@@ -309,7 +306,7 @@ QualityValidation {
 After documenting, always report:
 
 ```
-📝 Documentation Created/Updated:
+Documentation Created/Updated:
 - docs/[category]/[filename].md
   Purpose: [Brief description]
   Action: [Created new / Updated existing / Merged with existing]
@@ -323,54 +320,51 @@ Beyond creating documentation, maintain its accuracy over time.
 StalenessDetection {
   categories {
     critical {
-      emoji: "🔴"
       indicator: "Code changed, doc not updated"
       action: "Update immediately"
     }
     warning {
-      emoji: "🟡"
-      indicator: "> 90 days since doc update"
+      indicator: "More than 90 days since doc update"
       action: "Review needed"
     }
     info {
-      emoji: "⚪"
-      indicator: "> 180 days since update"
+      indicator: "More than 180 days since update"
       action: "Consider refresh"
     }
   }
-  
-  fn detectStaleness(docPath, relatedCodePaths) {
+
+  detectStaleness(docPath, relatedCodePaths) {
     docModTime = getLastModified(docPath)
-    codeModTimes = relatedCodePaths |> map(getLastModified)
+    codeModTimes = relatedCodePaths |> map getLastModified
     latestCodeChange = max(codeModTimes)
     daysSinceUpdate = daysBetween(docModTime, now())
-    
-    match (true) {
-      case latestCodeChange > docModTime => categories.critical
-      case daysSinceUpdate > 180 => categories.info
-      case daysSinceUpdate > 90 => categories.warning
-      default => null  // Document is fresh
+
+    match true {
+      latestCodeChange > docModTime => categories.critical
+      daysSinceUpdate > 180 => categories.info
+      daysSinceUpdate > 90 => categories.warning
+      _ => null  Document is fresh
     }
   }
 }
 
 SyncDuringImplementation {
-  constraints {
-    Function signature changes require JSDoc/docstring updates
-    New public APIs require documentation before PR
-    Breaking changes require migration notes
+  Constraints {
+    Function signature changes require JSDoc or docstring updates.
+    New public APIs require documentation before PR.
+    Breaking changes require migration notes.
   }
-  
-  fn checkDocImpact(codeChange) {
-    match (codeChange.type) {
-      case "signature_change" => {
+
+  checkDocImpact(codeChange) {
+    match codeChange.type {
+      "signature_change" => {
         require updateJSDoc(codeChange.target)
         require updateAPIDoc(codeChange.target)
       }
-      case "new_public_api" => {
+      "new_public_api" => {
         require createDocumentation() before createPR()
       }
-      case "breaking_change" => {
+      "breaking_change" => {
         require updateAllReferences()
         require addMigrationNotes()
       }
@@ -379,13 +373,11 @@ SyncDuringImplementation {
 }
 
 DocumentationQualityChecklist {
-  require {
-    parametersDocumented: "Parameters documented with correct types"
-    returnValuesDocumented: "Return values documented"
-    errorConditionsDocumented: "Error conditions documented"
-    examplesExecutable: "Examples execute correctly"
-    crossReferencesValid: "Cross-references are valid links"
-  }
+  require Parameters documented with correct types.
+  require Return values documented.
+  require Error conditions documented.
+  require Examples execute correctly.
+  require Cross-references are valid links.
 }
 ```
 

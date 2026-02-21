@@ -25,21 +25,21 @@ Systematic approaches for extracting actionable information from project documen
 
 ```sudolang
 DocumentReader {
-  constraints {
-    Read files completely - never skim or assume content
-    Verify before trusting - test documented commands and examples
-    Note contradictions immediately as discovered
-    Cross-reference constantly - docs without code verification are unreliable
+  Constraints {
+    Read files completely - never skim or assume content.
+    Verify before trusting - test documented commands and examples.
+    Note contradictions immediately as discovered.
+    Cross-reference constantly - docs without code verification are unreliable.
   }
 
-  /readDocument doc:Document => {
-    match (doc.type) {
-      case "readme" => ReadmeStrategy.extract(doc)
-      case "api" => ApiDocStrategy.extract(doc)
-      case "spec" => SpecificationStrategy.extract(doc)
-      case "config" => ConfigStrategy.extract(doc)
-      case "adr" => AdrStrategy.extract(doc)
-      default => GenericStrategy.extract(doc)
+  /readDocument(doc) {
+    match doc.type {
+      "readme" => ReadmeStrategy |> extract(doc)
+      "api" => ApiDocStrategy |> extract(doc)
+      "spec" => SpecificationStrategy |> extract(doc)
+      "config" => ConfigStrategy |> extract(doc)
+      "adr" => AdrStrategy |> extract(doc)
+      _ => GenericStrategy |> extract(doc)
     }
   }
 }
@@ -57,7 +57,7 @@ READMEs are entry points. Extract these elements in order:
 
 ```sudolang
 ReadmeStrategy {
-  fn extract(readme) => {
+  extract(readme) {
     1. Scan headings to build mental map (30 seconds)
     2. Read purpose/description section fully
     3. Locate quick start commands - test if they work
@@ -91,7 +91,7 @@ Extract information in this priority:
 
 ```sudolang
 ApiDocStrategy {
-  fn extract(apiDoc) => {
+  extract(apiDoc) {
     1. Find authentication section first - nothing works without it
     2. Locate a simple endpoint (health check, list operation)
     3. Trace a complete request/response cycle
@@ -100,16 +100,14 @@ ApiDocStrategy {
     6. Check for SDK/client library availability
   }
 
-  require {
-    Authentication method documented
-    At least one endpoint traceable end-to-end
-    Response schema verifiable against real responses
-  }
+  require Authentication method documented.
+  require At least one endpoint traceable end-to-end.
+  require Response schema verifiable against real responses.
 
-  /crossReference endpoint:Endpoint => {
-    Compare documented endpoints against actual network calls
-    Verify response schemas match real responses
-    Test documented error codes actually occur
+  /crossReference(endpoint) {
+    Compare documented endpoints against actual network calls.
+    Verify response schemas match real responses.
+    Test documented error codes actually occur.
   }
 }
 ```
@@ -126,7 +124,7 @@ Specifications define expected behavior. Extract:
 
 ```sudolang
 SpecificationStrategy {
-  fn extract(spec) => {
+  extract(spec) {
     1. Identify document type (PRD, SDD, RFC, ADR)
     2. Locate requirements or acceptance criteria section
     3. Extract testable assertions (MUST, SHALL, SHOULD language)
@@ -134,13 +132,13 @@ SpecificationStrategy {
     5. Note any open questions or TBD items
   }
 
-  fn verify(requirements) => {
+  verify(requirements) {
     requirements |> map(req => {
-      status: match (checkImplementation(req)) {
-        case found && matches => "Implemented"
-        case found && partial => "Partial"
-        case found && conflicts => "Contradicted"
-        case notFound => "Missing"
+      status: match checkImplementation(req) {
+        found && matches => "Implemented"
+        found && partial => "Partial"
+        found && conflicts => "Contradicted"
+        notFound => "Missing"
       },
       requirement: req,
       location: findImplementationLocation(req)
@@ -155,17 +153,17 @@ Configuration files control runtime behavior. Approach by file type:
 
 ```sudolang
 ConfigStrategy {
-  fn extract(config) => {
-    match (config.type) {
-      case "package_manifest" => extractPackageManifest(config)
-      case "environment" => extractEnvironmentConfig(config)
-      case "build_deploy" => extractBuildDeployConfig(config)
-      default => extractGenericConfig(config)
+  extract(config) {
+    match config.type {
+      "package_manifest" => extractPackageManifest(config)
+      "environment" => extractEnvironmentConfig(config)
+      "build_deploy" => extractBuildDeployConfig(config)
+      _ => extractGenericConfig(config)
     }
   }
 
-  fn extractPackageManifest(manifest) => {
-    // package.json, Cargo.toml, pyproject.toml
+  extractPackageManifest(manifest) {
+    package.json, Cargo.toml, pyproject.toml
     1. Project metadata: name, version, description
     2. Entry points: main, bin, exports
     3. Dependencies: runtime vs dev, version constraints
@@ -173,8 +171,8 @@ ConfigStrategy {
     5. Engine requirements: Node version, Python version
   }
 
-  fn extractEnvironmentConfig(env) => {
-    // .env, config.yaml, settings.json
+  extractEnvironmentConfig(env) {
+    .env, config.yaml, settings.json
     1. Required variables (those without defaults)
     2. Environment-specific overrides
     3. Secret references (never actual values)
@@ -182,8 +180,8 @@ ConfigStrategy {
     5. Service URLs and connection strings
   }
 
-  fn extractBuildDeployConfig(deploy) => {
-    // Dockerfile, CI configs, terraform
+  extractBuildDeployConfig(deploy) {
+    Dockerfile, CI configs, terraform
     1. Base images or providers
     2. Build stages and dependencies
     3. Environment variable injection points
@@ -191,7 +189,7 @@ ConfigStrategy {
     5. Output artifacts and destinations
   }
 
-  fn readingPattern(config) => {
+  readingPattern(config) {
     1. Identify configuration format and schema (if available)
     2. List all configurable options
     3. Determine which have defaults vs require values
@@ -213,7 +211,7 @@ ADRs capture why decisions were made. Extract:
 
 ```sudolang
 AdrStrategy {
-  fn extract(adr) => {
+  extract(adr) {
     1. Read context to understand the problem space
     2. Note alternatives that were considered
     3. Understand why current approach was chosen
@@ -221,12 +219,12 @@ AdrStrategy {
     5. Consider if context has changed since decision
   }
 
-  fn isRelevant(adr) => {
-    match (adr.status) {
-      case "Accepted" => true
-      case "Deprecated" => false
-      case "Superseded" => check(adr.supersededBy)
-      default => warn("Unknown ADR status")
+  isRelevant(adr) {
+    match adr.status {
+      "Accepted" => true
+      "Deprecated" => false
+      "Superseded" => check(adr.supersededBy)
+      _ => warn "Unknown ADR status"
     }
   }
 }
@@ -259,7 +257,7 @@ StalenessDetector {
       "Last updated 2+ years ago on active project"
   }
 
-  fn verify(doc) => {
+  verify(doc) {
     1. Check doc commit history vs code commit history
     2. Compare documented API against actual code signatures
     3. Run documented examples - do they work?
@@ -274,9 +272,9 @@ When multiple docs disagree:
 
 ```sudolang
 ConflictResolver {
-  fn resolve(sources: Source[]) => {
-    require sources.length >= 2
-    require sources |> any(s => s.content != sources[0].content)
+  resolve(sources) {
+    require at least 2 sources.
+    require sources contain conflicting content.
 
     1. Identify the conflict explicitly: Quote both sources
     2. Check timestamps: Newer usually wins
@@ -293,14 +291,14 @@ ConflictResolver {
     "Older official documentation"
   ]
 
-  fn determineAuthority(source) => {
-    match (source) {
-      case { type: "system_behavior" } => priority: 1
-      case { type: "official", recent: true } => priority: 2
-      case { type: "code_comment" } => priority: 3
-      case { type: "community" } => priority: 4
-      case { type: "official", recent: false } => priority: 5
-      default => priority: 99
+  determineAuthority(source) {
+    match source {
+      { type: "system_behavior" } => priority: 1
+      { type: "official", recent: true } => priority: 2
+      { type: "code_comment" } => priority: 3
+      { type: "community" } => priority: 4
+      { type: "official", recent: false } => priority: 5
+      _ => priority: 99
     }
   }
 }
@@ -342,7 +340,7 @@ GapDetector {
 
 ```sudolang
 CrossReferencer {
-  /traceRequirement req:Requirement => {
+  /traceRequirement(req) {
     1. Extract requirement ID or description
     2. Search codebase for requirement reference
     3. If not found, search for key domain terms
@@ -350,7 +348,7 @@ CrossReferencer {
     5. Document mapping: Requirement -> File:Line
   }
 
-  /validateApiDoc endpoint:Endpoint => {
+  /validateApiDoc(endpoint) {
     1. Find endpoint in documentation
     2. Locate route definition in code
     3. Compare: method, path, parameters
@@ -358,7 +356,7 @@ CrossReferencer {
     5. Verify response shape matches docs
   }
 
-  /traceConfig key:ConfigKey => {
+  /traceConfig(key) {
     1. Identify configuration key in docs
     2. Search for key in codebase
     3. Find where value is read/consumed
@@ -372,14 +370,12 @@ CrossReferencer {
 
 ```sudolang
 DocumentationExtractionPractices {
-  require {
-    Read completely before acting - avoid skimming that misses critical details
-    Verify before trusting - test documented commands and examples
-    Note contradictions immediately - document conflicts as discovered
-    Maintain a questions list - track unclear items for follow-up
-    Cross-reference constantly - docs without code verification are unreliable
-    Update as you learn - fix documentation issues discovered
-  }
+  require Read completely before acting - avoid skimming that misses critical details.
+  require Verify before trusting - test documented commands and examples.
+  require Note contradictions immediately - document conflicts as discovered.
+  require Maintain a questions list - track unclear items for follow-up.
+  require Cross-reference constantly - docs without code verification are unreliable.
+  require Update as you learn - fix documentation issues discovered.
 }
 ```
 
@@ -387,12 +383,12 @@ DocumentationExtractionPractices {
 
 ```sudolang
 DocumentationAntiPatterns {
-  constraints {
-    Never assume documentation is current - always verify against code
-    Never read without testing - documentation lies; code reveals truth
-    Never ignore "Notes" and "Warnings" - these often contain critical information
-    Never skip prerequisites - missing requirements cause cascading failures
-    Never trust examples blindly - examples may be simplified or outdated
+  Constraints {
+    Never assume documentation is current - always verify against code.
+    Never read without testing - documentation lies; code reveals truth.
+    Never ignore "Notes" and "Warnings" - these often contain critical information.
+    Never skip prerequisites - missing requirements cause cascading failures.
+    Never trust examples blindly - examples may be simplified or outdated.
   }
 }
 ```

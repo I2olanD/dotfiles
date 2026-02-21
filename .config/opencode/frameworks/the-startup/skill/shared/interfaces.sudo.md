@@ -9,43 +9,41 @@ Reusable interface definitions for the-startup framework.
 Used for task delegation with FOCUS/EXCLUDE pattern.
 
 ```sudolang
-interface TaskPrompt {
-  focus: String           // Required: What to accomplish
-  deliverables: String[]  // Required: Specific outcomes
-  exclude: String[]       // Required: Out of scope items
-  context: String[]       // Required: Background and constraints
-  output: String[]        // Required: Expected file paths
-  success: String[]       // Required: Completion criteria
-  termination: String[]   // Required: Stop conditions
-}
+TaskPrompt {
+  focus         // What to accomplish
+  deliverables  // Specific outcomes
+  exclude       // Out of scope items
+  context       // Background and constraints
+  output        // Expected file paths
+  success       // Completion criteria
+  termination   // Stop conditions
 
-TaskDelegation {
-  constraints {
-    FOCUS must be specific and measurable
-    EXCLUDE should prevent scope creep
-    OUTPUT must include exact paths when creating files
-    SUCCESS criteria must be objectively verifiable
-    All sections required unless explicitly optional
+  Constraints {
+    focus must be specific and measurable.
+    exclude should prevent scope creep.
+    output must include exact paths when creating files.
+    success criteria must be objectively verifiable.
+    All sections required unless explicitly optional.
   }
-  
-  /delegate task:TaskPrompt => """
+
+  /delegate task => """
     FOCUS: $task.focus
-      ${ task.deliverables |> map(d => "- $d") |> join("\n") }
-    
+      ${ task.deliverables |> formatList }
+
     EXCLUDE:
-      ${ task.exclude |> map(e => "- $e") |> join("\n") }
-    
+      ${ task.exclude |> formatList }
+
     CONTEXT:
-      ${ task.context |> map(c => "- $c") |> join("\n") }
-    
+      ${ task.context |> formatList }
+
     OUTPUT:
-      ${ task.output |> map(o => "- $o") |> join("\n") }
-    
+      ${ task.output |> formatList }
+
     SUCCESS:
-      ${ task.success |> map(s => "- $s") |> join("\n") }
-    
+      ${ task.success |> formatList }
+
     TERMINATION:
-      ${ task.termination |> map(t => "- $t") |> join("\n") }
+      ${ task.termination |> formatList }
   """
 }
 ```
@@ -55,18 +53,18 @@ TaskDelegation {
 Standard result structure for validation operations.
 
 ```sudolang
-interface ValidationResult {
-  valid: Boolean
-  findings: Finding[]
-  summary: String
+ValidationResult {
+  valid
+  findings
+  summary
 }
 
-interface Finding {
+Finding {
   severity: "critical" | "high" | "medium" | "low" | "info"
-  category: String
-  message: String
-  location: String?
-  suggestion: String?
+  category
+  message
+  location   // file:line format, optional
+  suggestion // optional
 }
 ```
 
@@ -80,31 +78,31 @@ ConstitutionLevel {
     name: "Must"
     blocking: true
     autofix: true
-    behavior: "AI automatically fixes before proceeding"
-    useCase: "Critical rules - security, correctness, architecture"
+    // AI automatically fixes before proceeding
+    // Use for: security, correctness, architecture
   }
-  
+
   L2 {
     name: "Should"
     blocking: true
     autofix: false
-    behavior: "Reports violation, requires human action"
-    useCase: "Important rules requiring manual attention"
+    // Reports violation, requires human action
+    // Use for: important rules requiring manual attention
   }
-  
+
   L3 {
     name: "May"
     blocking: false
     autofix: false
-    behavior: "Optional improvement, can be ignored"
-    useCase: "Advisory - style preferences, suggestions"
+    // Optional improvement, can be ignored
+    // Use for: style preferences, suggestions
   }
-  
-  fn enforce(rule, violation) {
-    match (rule.level) {
-      case L1 => autofix(violation) |> continue
-      case L2 => report(violation) |> block |> awaitHuman
-      case L3 => log(violation) |> continue
+
+  enforce(rule, violation) {
+    match rule.level {
+      L1 => autofix(violation) |> continue
+      L2 => report(violation) |> block |> awaitHuman
+      L3 => log(violation) |> continue
     }
   }
 }
@@ -115,48 +113,39 @@ ConstitutionLevel {
 State machine for workflow phases.
 
 ```sudolang
-interface PhaseState {
-  current: String
-  completed: String[]
-  blockers: String[]
-  awaiting: String?
-}
+PhaseState {
+  current: "init"
+  completed: []
+  blockers: []
+  awaiting   // null until waiting on user
 
-PhaseWorkflow {
-  State: PhaseState {
-    current: "init"
-    completed: []
-    blockers: []
-    awaiting: null
+  Constraints {
+    Cannot skip phases without explicit override.
+    User confirmation required at phase boundaries.
+    Blocked state requires explicit resolution.
+    Current phase must complete before advancing.
   }
-  
-  constraints {
-    Cannot skip phases without explicit override
-    User confirmation required at phase boundaries
-    Blocked state requires explicit resolution
-    Current phase must complete before advancing
-  }
-  
+
   /advance => {
     require current phase is complete
-    completed.push(current)
+    completed += current
     current = nextPhase(current)
   }
-  
-  /checkpoint message:String => {
+
+  /checkpoint message => {
     present phase summary to user
     awaiting = "user_confirmation"
   }
-  
-  /block reason:String => {
-    blockers.push(reason)
+
+  /block reason => {
+    blockers += reason
     present options: [retry, skip, abort, assist]
   }
-  
+
   /unblock => {
     require blockers is not empty
     resolution = await user decision
-    blockers.pop()
+    remove resolved blocker
   }
 }
 ```
@@ -166,35 +155,30 @@ PhaseWorkflow {
 Decision logic for code review verdicts.
 
 ```sudolang
-interface ReviewFindings {
-  critical: Number
-  high: Number
-  medium: Number
-  low: Number
+ReviewFindings {
+  critical: 0
+  high: 0
+  medium: 0
+  low: 0
 }
 
-fn determineVerdict(findings: ReviewFindings) {
-  match (findings) {
-    case { critical: c } if c > 0 => {
-      verdict: "REQUEST_CHANGES",
-      emoji: "RED_CIRCLE",
+determineVerdict(findings) {
+  match findings {
+    critical > 0 =>
+      verdict: "REQUEST_CHANGES"
       action: "Address critical issues first"
-    }
-    case { critical: 0, high: h } if h > 3 => {
-      verdict: "REQUEST_CHANGES",
-      emoji: "RED_CIRCLE",
+
+    critical == 0, high > 3 =>
+      verdict: "REQUEST_CHANGES"
       action: "Too many high-severity issues"
-    }
-    case { critical: 0, high: 1..3 } => {
-      verdict: "APPROVE_WITH_COMMENTS",
-      emoji: "YELLOW_CIRCLE",
+
+    critical == 0, high 1..3 =>
+      verdict: "APPROVE_WITH_COMMENTS"
       action: "Address high issues before merge"
-    }
-    default => {
-      verdict: "APPROVE",
-      emoji: "GREEN_CHECK",
+
+    default =>
+      verdict: "APPROVE"
       action: "Ready to merge"
-    }
   }
 }
 ```
@@ -204,28 +188,20 @@ fn determineVerdict(findings: ReviewFindings) {
 Decision logic for parallel vs sequential task execution.
 
 ```sudolang
-fn determineExecutionMode(tasks: Task[]) {
-  match (tasks) {
-    case tasks if hasFileDependencies(tasks) => "sequential"
-    case tasks if hasDataDependencies(tasks) => "sequential"
-    case tasks if allIndependent(tasks) => "parallel"
-    case tasks if tasks.length == 1 => "sequential"
+determineExecutionMode(tasks) {
+  match tasks {
+    (tasks have file dependencies) => "sequential"
+    (tasks have data dependencies) => "sequential"
+    (all tasks are independent) => "parallel"
+    (single task) => "sequential"
     default => "sequential"  // Safe default
   }
 }
 
-fn hasFileDependencies(tasks) {
-  outputPaths = tasks |> flatMap(t => t.output)
-  inputPaths = tasks |> flatMap(t => t.context |> extractPaths)
-  outputPaths |> any(p => inputPaths.includes(p))
-}
-
-fn hasDataDependencies(tasks) {
-  tasks |> any(t => t.dependsOn |> any(d => tasks.includes(d)))
-}
-
-fn allIndependent(tasks) {
-  !hasFileDependencies(tasks) && !hasDataDependencies(tasks)
+Constraints {
+  File dependencies exist when one task's output overlaps another's input paths.
+  Data dependencies exist when any task depends on another task's result.
+  Tasks are independent when neither file nor data dependencies exist.
 }
 ```
 

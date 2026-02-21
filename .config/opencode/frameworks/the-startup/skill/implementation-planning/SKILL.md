@@ -61,37 +61,33 @@ Keep plans **actionable and focused**:
 
 ```sudolang
 TaskGranularity {
-  constraints {
-    Track logical units that produce verifiable outcomes
-    TDD cycle is execution method, not separate tracked items
-    Each task must produce a testable deliverable
+  Constraints {
+    Track logical units that produce verifiable outcomes.
+    TDD cycle is the execution method, not separate tracked items.
+    Each task must produce a testable deliverable.
   }
-  
-  fn isValidTask(description: String) {
-    match (description) {
-      // Good: produces outcome
-      case d if producesArtifact(d) => true
-      case d if hasVerifiableResult(d) => true
-      
-      // Bad: too granular
-      case d if isPreparationOnly(d) => false   // "Read payment interface"
-      case d if isSingleTestCase(d) => false    // "Test X rejects Y"
-      case d if isValidationStep(d) => false    // "Run linting"
-      
-      default => false
+
+  isValidTask(description) {
+    match description {
+      Good: produces an artifact => true
+      Good: has a verifiable result => true
+      Bad: is preparation only => false
+      Bad: is a single test case => false
+      Bad: is a validation step only => false
+      _ => false
     }
   }
-  
+
   examples {
     good: [
-      "Payment Entity"        // Produces: working entity with tests
-      "Stripe Adapter"        // Produces: working integration with tests
-      "Payment Form Component" // Produces: working UI with tests
+      "Payment Entity"         Produces: working entity with tests
+      "Stripe Adapter"         Produces: working integration with tests
+      "Payment Form Component" Produces: working UI with tests
     ]
     bad: [
-      "Read payment interface contracts"        // Preparation, not deliverable
-      "Test Payment.validate() rejects amounts" // Part of larger outcome
-      "Run linting"                             // Validation step only
+      "Read payment interface contracts"        Preparation, not deliverable
+      "Test Payment.validate() rejects amounts" Part of larger outcome
+      "Run linting"                             Validation step only
     ]
   }
 }
@@ -116,26 +112,26 @@ The checkbox tracks "Payment Entity" as a unit. Prime/Test/Implement/Validate ar
 ## TDD Phase State Machine
 
 ```sudolang
-interface TDDPhase {
+TDDPhase {
   name: "prime" | "test" | "implement" | "validate"
-  description: String
-  artifacts: String[]
+  description
+  artifacts
 }
 
 TDDStateMachine {
   State {
-    current: TDDPhase
-    taskId: String
-    completed: TDDPhase[]
+    current
+    taskId
+    completed
   }
-  
-  constraints {
-    Must follow sequence: prime → test → implement → validate
-    Cannot skip phases without explicit deviation approval
-    Each phase must produce artifacts before advancing
-    Validate phase must pass before task completion
+
+  Constraints {
+    Must follow sequence: prime, then test, then implement, then validate.
+    Cannot skip phases without explicit deviation approval.
+    Each phase must produce artifacts before advancing.
+    Validate phase must pass before task completion.
   }
-  
+
   phases {
     prime {
       name: "Prime Context"
@@ -146,7 +142,7 @@ TDDStateMachine {
         "Load patterns and examples"
       ]
     }
-    
+
     test {
       name: "Write Tests (Red)"
       artifacts: ["failing tests", "test coverage plan"]
@@ -156,7 +152,7 @@ TDDStateMachine {
         "Cover happy path and edge cases"
       ]
     }
-    
+
     implement {
       name: "Implement (Green)"
       artifacts: ["passing code", "SDD-compliant structure"]
@@ -166,7 +162,7 @@ TDDStateMachine {
         "Use discovered patterns"
       ]
     }
-    
+
     validate {
       name: "Validate (Refactor)"
       artifacts: ["test results", "quality checks", "compliance verification"]
@@ -177,13 +173,12 @@ TDDStateMachine {
       ]
     }
   }
-  
+
   /advance => {
     require current phase artifacts exist
-    completed.push(current)
-    current = nextPhase(current)
+    current |> nextPhase
   }
-  
+
   /completeTask => {
     require current == "validate"
     require all validation checks pass
@@ -195,31 +190,31 @@ TDDStateMachine {
 ## Task Metadata
 
 ```sudolang
-interface TaskMetadata {
-  parallel: Boolean?      // Can run concurrently with other tasks
-  component: String?      // For multi-component features
-  ref: SpecReference?     // Links to specifications
-  activity: ActivityType? // Hint for specialist selection
+TaskMetadata {
+  parallel     Can run concurrently with other tasks
+  component    For multi-component features
+  ref          Links to specifications
+  activity     Hint for specialist selection
 }
 
-interface SpecReference {
+SpecReference {
   document: "PRD" | "SDD"
-  section: String
-  lines: Range?
+  section
+  lines
 }
 
-ActivityType = "domain-modeling" | "backend-api" | "frontend-ui" | 
+ActivityType = "domain-modeling" | "backend-api" | "frontend-ui" |
                "integration" | "e2e-testing" | "validate" | "infrastructure"
 
-fn formatTaskLine(id: String, description: String, meta: TaskMetadata) => {
+formatTaskLine(id, description, meta) {
   base = "- [ ] $id $description"
   annotations = []
-  
-  if meta.ref => annotations.push("[ref: $meta.ref.document/$meta.ref.section; lines: $meta.ref.lines]")
-  if meta.activity => annotations.push("[activity: $meta.activity]")
-  if meta.parallel => annotations.push("[parallel: true]")
-  if meta.component => annotations.push("[component: $meta.component]")
-  
+
+  if meta.ref => annotations add "[ref: $meta.ref.document/$meta.ref.section; lines: $meta.ref.lines]"
+  if meta.activity => annotations add "[activity: $meta.activity]"
+  if meta.parallel => annotations add "[parallel: true]"
+  if meta.component => annotations add "[component: $meta.component]"
+
   "$base `${annotations |> join(' ')}`"
 }
 ```
@@ -228,19 +223,19 @@ fn formatTaskLine(id: String, description: String, meta: TaskMetadata) => {
 
 ```sudolang
 PlanningCycle {
-  State: PhaseState {
+  State {
     current: "discovery"
-    completed: []
-    blockers: []
-    awaiting: null
+    completed
+    blockers
+    awaiting
   }
-  
-  constraints {
-    User confirmation required at phase boundaries
-    Cannot skip phases without explicit override
-    Each cycle must trace tasks to specifications
+
+  Constraints {
+    User confirmation required at phase boundaries.
+    Cannot skip phases without explicit override.
+    Each cycle must trace tasks to specifications.
   }
-  
+
   phases {
     discovery {
       actions: [
@@ -255,7 +250,7 @@ PlanningCycle {
         "Validation approaches"
       ]
     }
-    
+
     documentation {
       actions: [
         "Update the PLAN with task definitions"
@@ -264,7 +259,7 @@ PlanningCycle {
         "Follow template structure exactly"
       ]
     }
-    
+
     review {
       actions: [
         "Present task breakdown to user"
@@ -274,7 +269,7 @@ PlanningCycle {
       ]
     }
   }
-  
+
   /selfCheck => {
     require "Have I read the relevant PRD and SDD sections?"
     require "Do all tasks trace back to specification requirements?"
@@ -290,19 +285,19 @@ PlanningCycle {
 
 ```sudolang
 SpecificationCompliance {
-  constraints {
-    Every phase must include validation task
-    All tasks must trace to PRD or SDD
-    Deviations require explicit approval
+  Constraints {
+    Every phase must include a validation task.
+    All tasks must trace to PRD or SDD.
+    Deviations require explicit approval.
   }
-  
-  fn validationTask(phaseId: String) => """
+
+  validationTask(phaseId) => """
     - [ ] **T$phaseId.N Phase Validation** `[activity: validate]`
-    
-      Run all phase tests, linting, type checking. 
+
+      Run all phase tests, linting, type checking.
       Verify against SDD patterns and PRD acceptance criteria.
   """
-  
+
   DeviationProtocol {
     steps: [
       "Document the deviation with clear rationale"
@@ -310,8 +305,8 @@ SpecificationCompliance {
       "Update SDD when the deviation improves the design"
       "Record all deviations in the plan for traceability"
     ]
-    
-    /handleDeviation reason:String => {
+
+    /handleDeviation reason => {
       document(reason)
       approval = await user confirmation
       if approved => updateSDD()
@@ -328,34 +323,29 @@ See [validation.md](validation.md) for the complete checklist.
 ```sudolang
 PLANValidation {
   require {
-    // File integrity
-    "All specification file paths are correct and exist"
-    "Context priming section is complete"
-    
-    // Phase structure
-    "All implementation phases are defined"
-    "Each phase follows TDD: Prime → Test → Implement → Validate"
-    "Dependencies between phases are clear (no circular dependencies)"
-    
-    // Metadata completeness
-    "Parallel work is properly tagged with [parallel: true]"
-    "Activity hints provided for specialist selection [activity: type]"
-    "Every phase references relevant SDD sections"
-    "Every test references PRD acceptance criteria"
-    
-    // Coverage
-    "Integration & E2E tests defined in final phase"
-    "Project commands match actual project setup"
+    All specification file paths are correct and exist.
+    Context priming section is complete.
+
+    All implementation phases are defined.
+    Each phase follows TDD: Prime, Test, Implement, Validate.
+    Dependencies between phases are clear with no circular dependencies.
+
+    Parallel work is properly tagged with [parallel: true].
+    Activity hints provided for specialist selection [activity: type].
+    Every phase references relevant SDD sections.
+    Every test references PRD acceptance criteria.
+
+    Integration and E2E tests defined in final phase.
+    Project commands match actual project setup.
   }
-  
+
   warn {
-    "Phases without parallel task opportunities"
-    "Missing edge case coverage in test definitions"
-    "Large phases that could be decomposed further"
+    Phases without parallel task opportunities.
+    Missing edge case coverage in test definitions.
+    Large phases that could be decomposed further.
   }
-  
-  // Ultimate quality gate
-  require "A developer could follow this plan independently"
+
+  require "A developer could follow this plan independently."
 }
 ```
 

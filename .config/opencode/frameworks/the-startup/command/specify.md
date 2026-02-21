@@ -35,42 +35,42 @@ See: skill/shared/interfaces.sudo.md
 
 ```sudolang
 SpecificationWorkflow {
-  State: PhaseState {
+  State {
     current: "init"
     completed: []
     blockers: []
-    awaiting: null
+    awaiting
   }
-  
+
   Phases: ["init", "prd", "sdd", "plan", "finalize"]
-  
-  constraints {
-    require skill tool called before entering each phase
-    require user confirmation at phase boundaries
-    Cannot advance if current phase has unresolved blockers
-    Skipping phases requires explicit user decision AND logging in README
+
+  Constraints {
+    require skill tool called before entering each phase.
+    require user confirmation at phase boundaries.
+    Cannot advance if current phase has unresolved blockers.
+    Skipping phases requires explicit user decision AND logging in README.
   }
-  
+
   /initialize => {
     call skill({ name: "specification-management" })
     determine spec status (new vs existing)
     present options via question tool
     awaiting = "user_direction"
   }
-  
-  /advance targetPhase:String => {
-    require current phase complete OR user explicitly skipped
-    require targetPhase in Phases
-    require Phases.indexOf(targetPhase) > Phases.indexOf(current)
-    completed.push(current)
+
+  /advance targetPhase => {
+    require current phase complete OR user explicitly skipped.
+    require targetPhase in Phases.
+    require targetPhase comes after current phase.
+    completed += current
     current = targetPhase
   }
-  
-  /skip phase:String reason:String => {
+
+  /skip phase, reason => {
     log decision to README.md with reason
-    advance(nextPhase(phase))
+    advance to next phase after skipped one
   }
-  
+
   /checkpoint => {
     present phase summary to user
     awaiting = "user_confirmation"
@@ -85,11 +85,11 @@ Launch parallel research agents to gather comprehensive specification inputs.
 
 | Perspective         | Intent                        | What to Research                                                 |
 | ------------------- | ----------------------------- | ---------------------------------------------------------------- |
-| 📋 **Requirements** | Understand user needs         | User stories, stakeholder goals, acceptance criteria, edge cases |
-| 🏗️ **Technical**    | Evaluate architecture options | Patterns, technology choices, constraints, dependencies          |
-| 🔐 **Security**     | Identify protection needs     | Authentication, authorization, data protection, compliance       |
-| ⚡ **Performance**  | Define capacity targets       | Load expectations, latency targets, scalability requirements     |
-| 🔌 **Integration**  | Map external boundaries       | APIs, third-party services, data flows, contracts                |
+| Requirements        | Understand user needs         | User stories, stakeholder goals, acceptance criteria, edge cases |
+| Technical           | Evaluate architecture options | Patterns, technology choices, constraints, dependencies          |
+| Security            | Identify protection needs     | Authentication, authorization, data protection, compliance       |
+| Performance         | Define capacity targets       | Load expectations, latency targets, scalability requirements     |
+| Integration         | Map external boundaries       | APIs, third-party services, data flows, contracts                |
 
 ### Research Task Delegation
 
@@ -98,10 +98,10 @@ See: skill/shared/interfaces.sudo.md#TaskPrompt
 ```sudolang
 ResearchAgent {
   perspectives: ["requirements", "technical", "security", "performance", "integration"]
-  
-  fn buildResearchTask(perspective:String, description:String, codebaseContext:String[]) -> TaskPrompt {
-    match (perspective) {
-      case "requirements" => TaskPrompt {
+
+  buildResearchTask(perspective, description, codebaseContext) {
+    match perspective {
+      "requirements" => TaskPrompt {
         focus: "Research user needs and acceptance criteria for: $description"
         deliverables: [
           "User stories with personas",
@@ -115,8 +115,8 @@ ResearchAgent {
         success: ["All user stories have acceptance criteria", "Edge cases identified"]
         termination: ["Requirements scope defined", "No more user stories discovered"]
       }
-      
-      case "technical" => TaskPrompt {
+
+      "technical" => TaskPrompt {
         focus: "Analyze architecture options and constraints for: $description"
         deliverables: [
           "Existing patterns in codebase",
@@ -130,8 +130,8 @@ ResearchAgent {
         success: ["Architecture options evaluated", "Constraints documented"]
         termination: ["Technical approach clear", "Dependencies mapped"]
       }
-      
-      case "security" => TaskPrompt {
+
+      "security" => TaskPrompt {
         focus: "Assess security requirements for: $description"
         deliverables: [
           "Authentication needs",
@@ -145,8 +145,8 @@ ResearchAgent {
         success: ["Auth requirements clear", "Data protection needs defined"]
         termination: ["Security scope bounded", "Compliance requirements listed"]
       }
-      
-      case "performance" => TaskPrompt {
+
+      "performance" => TaskPrompt {
         focus: "Define performance requirements for: $description"
         deliverables: [
           "Load expectations",
@@ -160,8 +160,8 @@ ResearchAgent {
         success: ["SLOs defined", "Capacity targets set"]
         termination: ["Performance scope clear", "Metrics identified"]
       }
-      
-      case "integration" => TaskPrompt {
+
+      "integration" => TaskPrompt {
         focus: "Map integration boundaries for: $description"
         deliverables: [
           "External API dependencies",
@@ -177,10 +177,10 @@ ResearchAgent {
       }
     }
   }
-  
-  constraints {
-    require all perspectives launched in SINGLE response (parallel execution)
-    require complete findings displayed to user (no summaries)
+
+  Constraints {
+    require all perspectives launched in SINGLE response (parallel execution).
+    require complete findings displayed to user (no summaries).
   }
 }
 ```
@@ -200,10 +200,10 @@ After parallel research completes:
 
 ```sudolang
 PhaseExecution {
-  constraints {
-    require skill tool called BEFORE starting phase work
-    require question tool for user direction at phase boundaries
-    require decisions logged in README.md
+  Constraints {
+    require skill tool called BEFORE starting phase work.
+    require question tool for user direction at phase boundaries.
+    require decisions logged in README.md.
   }
 }
 ```
@@ -218,34 +218,34 @@ Context: Creating new spec or checking existing spec status.
 
 ```sudolang
 InitPhase {
-  fn execute() {
+  /execute => {
     call skill({ name: "specification-management" })
     specStatus = analyzeSpec($ARGUMENTS)
-    
-    match (specStatus) {
-      case { isNew: true } => presentNewSpecOptions()
-      case { isExisting: true } => presentContinuationOptions(specStatus)
+
+    match specStatus {
+      (new spec) => presentNewSpecOptions()
+      (existing spec) => presentContinuationOptions(specStatus)
     }
   }
-  
-  fn presentNewSpecOptions() {
+
+  presentNewSpecOptions() {
     question({
       options: [
-        { id: 1, label: "Start with PRD (Recommended)", description: "Define requirements first, then design, then plan" },
-        { id: 2, label: "Start with SDD", description: "Skip requirements, go straight to technical design" },
-        { id: 3, label: "Start with PLAN", description: "Skip to implementation planning" }
+        "Start with PRD (Recommended) - Define requirements first, then design, then plan",
+        "Start with SDD - Skip requirements, go straight to technical design",
+        "Start with PLAN - Skip to implementation planning"
       ]
     })
   }
-  
-  fn presentContinuationOptions(status) {
-    nextPhase = match (status) {
-      case { prdIncomplete: true } => "prd"
-      case { sddIncomplete: true } => "sdd"
-      case { planIncomplete: true } => "plan"
-      case { allComplete: true } => "finalize"
+
+  presentContinuationOptions(status) {
+    nextPhase = match status {
+      (PRD incomplete) => "prd"
+      (SDD incomplete) => "sdd"
+      (PLAN incomplete) => "plan"
+      (all complete) => "finalize"
     }
-    
+
     question({
       suggestion: "Continue with $nextPhase",
       options: analyzedOptions
@@ -265,21 +265,19 @@ Context: Working on product requirements, defining user stories, acceptance crit
 
 ```sudolang
 PRDPhase {
-  constraints {
-    require skill({ name: "requirements-analysis" }) called first
-    Focus on WHAT and WHY only
-    Defer technical HOW to SDD phase
-    require user confirmation before advancing
+  Constraints {
+    require skill({ name: "requirements-analysis" }) called first.
+    Focus on WHAT and WHY only.
+    Defer technical HOW to SDD phase.
+    require user confirmation before advancing.
   }
-  
-  fn onComplete() {
-    question({
-      options: [
-        { id: 1, label: "Continue to SDD (Recommended)", next: "sdd" },
-        { id: 2, label: "Finalize PRD only", next: "finalize" }
-      ]
-    })
-  }
+
+  /onComplete => question({
+    options: [
+      "Continue to SDD (Recommended)",
+      "Finalize PRD only"
+    ]
+  })
 }
 ```
 
@@ -294,28 +292,28 @@ Context: Working on solution design, designing architecture, defining interfaces
 
 ```sudolang
 SDDPhase {
-  constraints {
-    require skill({ name: "architecture-design" }) called first
-    Focus on HOW only
-    Defer implementation code to implement phase
-    require user confirmation before advancing
+  Constraints {
+    require skill({ name: "architecture-design" }) called first.
+    Focus on HOW only.
+    Defer implementation code to implement phase.
+    require user confirmation before advancing.
   }
-  
-  fn checkConstitution() {
-    if exists("CONSTITUTION.md") {
+
+  checkConstitution() {
+    if CONSTITUTION.md exists {
       call skill({ name: "constitution-validation" })
       verify architecture aligns with L1/L2 rules
       ensure ADRs consistent with constitution
       report conflicts for resolution
     }
   }
-  
-  fn onComplete() {
+
+  /onComplete => {
     checkConstitution()
     question({
       options: [
-        { id: 1, label: "Continue to PLAN (Recommended)", next: "plan" },
-        { id: 2, label: "Finalize SDD only", next: "finalize" }
+        "Continue to PLAN (Recommended)",
+        "Finalize SDD only"
       ]
     })
   }
@@ -333,21 +331,19 @@ Context: Working on implementation plan, planning phases, sequencing tasks.
 
 ```sudolang
 PLANPhase {
-  constraints {
-    require skill({ name: "implementation-planning" }) called first
-    Focus on sequencing and dependencies
-    Defer duration estimates
-    require user confirmation before advancing
+  Constraints {
+    require skill({ name: "implementation-planning" }) called first.
+    Focus on sequencing and dependencies.
+    Defer duration estimates.
+    require user confirmation before advancing.
   }
-  
-  fn onComplete() {
-    question({
-      options: [
-        { id: 1, label: "Finalize Specification (Recommended)", next: "finalize" },
-        { id: 2, label: "Revisit PLAN", next: "plan" }
-      ]
-    })
-  }
+
+  /onComplete => question({
+    options: [
+      "Finalize Specification (Recommended)",
+      "Revisit PLAN"
+    ]
+  })
 }
 ```
 
@@ -361,33 +357,33 @@ Context: Reviewing all documents, assessing implementation readiness.
 
 ```sudolang
 FinalizePhase {
-  constraints {
-    require skill({ name: "specification-management" }) called first
-    require all completed phases reviewed for consistency
+  Constraints {
+    require skill({ name: "specification-management" }) called first.
+    require all completed phases reviewed for consistency.
   }
-  
-  fn execute() {
+
+  /execute => {
     call skill({ name: "specification-management" })
     assessDrift()
     generateReadiness()
-    
+
     if gitEnabled {
       call skill({ name: "git-workflow" })
       offer commit and PR creation
     }
-    
+
     presentSummary()
   }
-  
-  fn presentSummary() => """
+
+  /summary => """
     Specification Complete
-    
+
     Spec: [NNN]-[name]
     Documents: PRD [status] | SDD [status] | PLAN [status]
-    
+
     Readiness: [HIGH/MEDIUM/LOW]
     Confidence: [N]%
-    
+
     Next Steps:
     1. /validate [ID] - Validate specification quality
     2. /implement [ID] - Begin implementation
@@ -409,13 +405,13 @@ docs/specs/[NNN]-[name]/
 
 ```sudolang
 DecisionLog {
-  constraints {
-    require all skipped phases logged with rationale
-    require all non-default choices logged
-    Log location: README.md in spec directory
+  Constraints {
+    require all skipped phases logged with rationale.
+    require all non-default choices logged.
+    Log location: README.md in spec directory.
   }
-  
-  fn log(decision:String, rationale:String) {
+
+  log(decision, rationale) {
     append to README.md:
     | [date] | $decision | $rationale |
   }

@@ -38,11 +38,11 @@ ContractFirstDesign {
     "DOCUMENT error scenarios",
     "VALIDATE with consumers before implementing"
   ]
-  
-  constraints {
-    Contract must be defined before implementation begins
-    Consumer needs drive API design, not implementation convenience
-    All stakeholders must review before coding starts
+
+  Constraints {
+    Contract must be defined before implementation begins.
+    Consumer needs drive API design, not implementation convenience.
+    All stakeholders must review before coding starts.
   }
 }
 ```
@@ -53,21 +53,19 @@ APIs should be predictable. Developers should be able to guess how an endpoint w
 
 ```sudolang
 APIConsistency {
-  require {
-    Naming conventions follow plural nouns, kebab-case
-    Response envelope structure is uniform
-    Error format is identical across all endpoints
-    Pagination approach is consistent
-    Query parameter patterns are standardized
-    Date/time uses ISO 8601 format
-  }
-  
-  /validate api:APISpec => {
+  require Naming conventions follow plural nouns, kebab-case.
+  require Response envelope structure is uniform.
+  require Error format is identical across all endpoints.
+  require Pagination approach is consistent.
+  require Query parameter patterns are standardized.
+  require Date/time uses ISO 8601 format.
+
+  /validate(api) {
     violations = []
     for endpoint in api.endpoints {
-      if !endpoint.name.isPluralNoun() => violations.push("Non-plural resource name")
-      if !endpoint.name.isKebabCase() => violations.push("Non-kebab-case naming")
-      if endpoint.errorFormat != api.standardErrorFormat => violations.push("Inconsistent error format")
+      endpoint.name |> checkPluralNoun |> collectViolation(violations)
+      endpoint.name |> checkKebabCase |> collectViolation(violations)
+      endpoint.errorFormat |> checkMatchesStandard(api.standardErrorFormat) |> collectViolation(violations)
     }
     return violations
   }
@@ -86,18 +84,16 @@ APIEvolution {
     "Version negotiation (headers, URL paths)",
     "Backward compatibility testing"
   ]
-  
-  constraints {
-    Never remove fields without deprecation period
-    Never change field types without versioning
-    New required fields must have defaults
-    Breaking changes require major version bump
+
+  Constraints {
+    Never remove fields without deprecation period.
+    Never change field types without versioning.
+    New required fields must have defaults.
+    Breaking changes require major version bump.
   }
-  
-  warn {
-    Removing optional fields should have 6-month sunset
-    Changing semantics requires documentation update
-  }
+
+  warn Removing optional fields should have 6-month sunset.
+  warn Changing semantics requires documentation update.
 }
 ```
 
@@ -109,13 +105,11 @@ Resources represent business entities. URLs should reflect the resource hierarch
 
 ```sudolang
 ResourceModeling {
-  require {
-    URLs use plural nouns for collections
-    Resource IDs appear in path, not query
-    Sub-resources reflect ownership relationship
-    Maximum 2 levels of nesting
-  }
-  
+  require URLs use plural nouns for collections.
+  require Resource IDs appear in path, not query.
+  require Sub-resources reflect ownership relationship.
+  require Maximum 2 levels of nesting.
+
   examples {
     good: [
       "GET    /users                    # List users",
@@ -138,34 +132,34 @@ ResourceModeling {
 ### HTTP Method Semantics
 
 ```sudolang
-fn selectHTTPMethod(operation) {
-  match (operation) {
-    case "retrieve" => {
+selectHTTPMethod(operation) {
+  match operation {
+    "retrieve" => {
       method: "GET",
       idempotent: true,
       safe: true
     }
-    case "create" | "trigger_action" => {
+    "create" | "trigger_action" => {
       method: "POST",
       idempotent: false,
       safe: false
     }
-    case "replace_entire" => {
+    "replace_entire" => {
       method: "PUT",
       idempotent: true,
       safe: false
     }
-    case "partial_update" => {
+    "partial_update" => {
       method: "PATCH",
       idempotent: true,
       safe: false
     }
-    case "remove" => {
+    "remove" => {
       method: "DELETE",
       idempotent: true,
       safe: false
     }
-    case "preflight" | "capability_discovery" => {
+    "preflight" | "capability_discovery" => {
       method: "OPTIONS",
       idempotent: true,
       safe: true
@@ -177,28 +171,28 @@ fn selectHTTPMethod(operation) {
 ### Status Code Selection
 
 ```sudolang
-fn selectStatusCode(result) {
-  match (result) {
-    // Success codes
-    case { type: "success", method: "GET" | "PUT" | "PATCH" | "DELETE" } => 200  // OK
-    case { type: "success", method: "POST", created: true } => 201  // Created (include Location header)
-    case { type: "success", async: true } => 202  // Accepted
-    case { type: "success", body: null } => 204  // No Content
-    
-    // Client errors
-    case { type: "error", reason: "malformed" | "validation" } => 400  // Bad Request
-    case { type: "error", reason: "unauthenticated" } => 401  // Unauthorized
-    case { type: "error", reason: "forbidden" } => 403  // Forbidden
-    case { type: "error", reason: "not_found" } => 404  // Not Found
-    case { type: "error", reason: "conflict" | "duplicate" | "version_mismatch" } => 409  // Conflict
-    case { type: "error", reason: "business_rule" } => 422  // Unprocessable Entity
-    case { type: "error", reason: "rate_limit" } => 429  // Too Many Requests
-    
-    // Server errors
-    case { type: "error", reason: "internal" } => 500  // Internal Server Error
-    case { type: "error", reason: "upstream_failure" } => 502  // Bad Gateway
-    case { type: "error", reason: "maintenance" | "overload" } => 503  // Service Unavailable
-    case { type: "error", reason: "upstream_timeout" } => 504  // Gateway Timeout
+selectStatusCode(result) {
+  match result {
+    Success codes
+    { type: "success", method: "GET" | "PUT" | "PATCH" | "DELETE" } => 200
+    { type: "success", method: "POST", created: true } => 201  (include Location header)
+    { type: "success", async: true } => 202
+    { type: "success", body: null } => 204
+
+    Client errors
+    { type: "error", reason: "malformed" | "validation" } => 400
+    { type: "error", reason: "unauthenticated" } => 401
+    { type: "error", reason: "forbidden" } => 403
+    { type: "error", reason: "not_found" } => 404
+    { type: "error", reason: "conflict" | "duplicate" | "version_mismatch" } => 409
+    { type: "error", reason: "business_rule" } => 422
+    { type: "error", reason: "rate_limit" } => 429
+
+    Server errors
+    { type: "error", reason: "internal" } => 500
+    { type: "error", reason: "upstream_failure" } => 502
+    { type: "error", reason: "maintenance" | "overload" } => 503
+    { type: "error", reason: "upstream_timeout" } => 504
   }
 }
 ```
@@ -227,21 +221,21 @@ Standardize error responses across all endpoints:
 ```
 
 ```sudolang
-interface ErrorResponse {
-  error: {
-    code: String           // Machine-readable error code
-    message: String        // Human-readable message
-    details: ErrorDetail[] // Field-level errors
-    requestId: String      // Correlation ID for debugging
-    timestamp: ISO8601     // When error occurred
-    documentation: URL?    // Link to error docs
+ErrorResponse {
+  error {
+    code          Machine-readable error code
+    message       Human-readable message
+    details       Field-level errors
+    requestId     Correlation ID for debugging
+    timestamp     When error occurred (ISO 8601)
+    documentation Link to error docs (optional)
   }
 }
 
-interface ErrorDetail {
-  field: String
-  code: String
-  message: String
+ErrorDetail {
+  field
+  code
+  message
 }
 ```
 
@@ -249,47 +243,38 @@ interface ErrorDetail {
 
 ```sudolang
 PaginationStrategy {
-  fn selectStrategy(dataset) {
-    match (dataset) {
-      case { size: "small", mutable: false } => "offset"
-      case { size: "large" } => "cursor"
-      case { realtime: true } => "cursor"
-      default => "cursor"  // Recommended default
+  selectStrategy(dataset) {
+    match dataset {
+      { size: "small", mutable: false } => "offset"
+      { size: "large" } => "cursor"
+      { realtime: true } => "cursor"
+      _ => "cursor"  Recommended default
     }
   }
-  
+
   OffsetBased {
     request: "GET /users?offset=20&limit=10"
     response: {
       data: [],
       pagination: {
-        total: Number,
-        offset: Number,
-        limit: Number,
-        hasMore: Boolean
+        total, offset, limit, hasMore
       }
     }
-    warn {
-      Not suitable for large datasets (performance degrades)
-      Inconsistent results if data changes between pages
-    }
+    warn Not suitable for large datasets (performance degrades).
+    warn Inconsistent results if data changes between pages.
   }
-  
+
   CursorBased {
     request: "GET /users?cursor=eyJpZCI6MTAwfQ&limit=10"
     response: {
       data: [],
       pagination: {
-        nextCursor: String?,
-        prevCursor: String?,
-        hasMore: Boolean
+        nextCursor, prevCursor, hasMore
       }
     }
-    require {
-      Cursors must be opaque to clients
-      Cursors should encode sort position
-      Cursors must be URL-safe (base64)
-    }
+    require Cursors must be opaque to clients.
+    require Cursors should encode sort position.
+    require Cursors must be URL-safe (base64).
   }
 }
 ```
@@ -304,24 +289,22 @@ QueryPatterns {
     multiple_values: "GET /users?role=admin,moderator",
     full_text: "GET /users?search=john"
   }
-  
+
   sorting: {
     ascending: "GET /users?sort=created_at",
     descending: "GET /users?sort=-created_at",
     multiple: "GET /users?sort=status,-created_at"
   }
-  
+
   field_selection: {
     sparse: "GET /users?fields=id,name,email",
     expand: "GET /users?expand=organization"
   }
-  
-  require {
-    Sort direction indicated by prefix (- for descending)
-    Multiple sort fields comma-separated
-    Field selection reduces payload size
-    Expand includes related resources inline
-  }
+
+  require Sort direction indicated by prefix (- for descending).
+  require Multiple sort fields comma-separated.
+  require Field selection reduces payload size.
+  require Expand includes related resources inline.
 }
 ```
 
@@ -435,44 +418,40 @@ N1Prevention {
     "Field-level cost calculation",
     "Persisted queries for production"
   ]
-  
-  require {
-    DataLoader used for all relationship resolvers
-    Maximum query depth enforced (typically 5-10)
-    Query complexity scoring implemented
-  }
-  
-  warn {
-    Deeply nested queries indicate schema design issues
-    High complexity queries should be persisted
-  }
+
+  require DataLoader used for all relationship resolvers.
+  require Maximum query depth enforced (typically 5-10).
+  require Query complexity scoring implemented.
+
+  warn Deeply nested queries indicate schema design issues.
+  warn High complexity queries should be persisted.
 }
 ```
 
 ## API Versioning Strategies
 
 ```sudolang
-fn selectVersioningStrategy(requirements) {
-  match (requirements) {
-    case { visibility: "high", infrastructure: "flexible" } => {
+selectVersioningStrategy(requirements) {
+  match requirements {
+    { visibility: "high", infrastructure: "flexible" } => {
       strategy: "url_path",
       example: "GET /v1/users",
       pros: ["Explicit and visible", "Easy to route", "Clear in logs"],
       cons: ["URL pollution", "Harder to deprecate"]
     }
-    case { urls: "clean", content_negotiation: true } => {
+    { urls: "clean", content_negotiation: true } => {
       strategy: "header",
       example: "Accept: application/vnd.api+json; version=2",
       pros: ["Clean URLs", "Content negotiation friendly", "Easier partial versioning"],
       cons: ["Less visible", "Harder to test in browser"]
     }
-    case { testing: "easy", date_based: true } => {
+    { testing: "easy", date_based: true } => {
       strategy: "query_param",
       example: "GET /users?api-version=2025-01-15",
       pros: ["Easy to test", "Visible", "Date-based versions intuitive"],
       cons: ["Clutters query strings", "Easy to forget"]
     }
-    default => {
+    _ => {
       strategy: "dual",
       description: "Recommended approach combining multiple strategies",
       rules: [
@@ -493,32 +472,28 @@ AuthenticationPatterns {
   APIKeys {
     usage: ["Server-to-server", "Rate limiting", "Analytics"]
     transport: "Header (Authorization: ApiKey xxx) or query param"
-    
-    require {
-      Rotate keys regularly
-      Different keys for each environment
-      Scope keys to specific operations
-      Never expose in client-side code
-    }
+
+    require Rotate keys regularly.
+    require Different keys for each environment.
+    require Scope keys to specific operations.
+    require Never expose in client-side code.
   }
-  
+
   OAuth2 {
-    fn selectFlow(client_type) {
-      match (client_type) {
-        case "web_app" | "mobile_app" => "Authorization Code + PKCE"
-        case "server" => "Client Credentials"
-        case "cli" | "smart_tv" => "Device Code"
+    selectFlow(client_type) {
+      match client_type {
+        "web_app" | "mobile_app" => "Authorization Code + PKCE"
+        "server" => "Client Credentials"
+        "cli" | "smart_tv" => "Device Code"
       }
     }
-    
-    require {
-      Access tokens short-lived (15-60 min)
-      Refresh tokens for session extension
-      Token introspection endpoint available
-      Token revocation endpoint available
-    }
+
+    require Access tokens short-lived (15-60 min).
+    require Refresh tokens for session extension.
+    require Token introspection endpoint available.
+    require Token revocation endpoint available.
   }
-  
+
   JWT {
     claims: {
       iss: "https://auth.example.com",
@@ -528,14 +503,12 @@ AuthenticationPatterns {
       iat: 1705316400,
       scope: "read:users write:users"
     }
-    
-    require {
-      Use asymmetric keys (RS256, ES256)
-      Validate all claims
-      Check token expiration
-      Verify audience matches
-      Keep tokens stateless when possible
-    }
+
+    require Use asymmetric keys (RS256, ES256).
+    require Validate all claims.
+    require Check token expiration.
+    require Verify audience matches.
+    require Keep tokens stateless when possible.
   }
 }
 ```
@@ -635,30 +608,28 @@ components:
 
 ```sudolang
 APIBestPractices {
-  require {
-    Design APIs for consumers, not implementation convenience
-    Use meaningful HTTP status codes
-    Provide idempotency keys for non-idempotent operations
-    Include rate limit headers (X-RateLimit-Limit, X-RateLimit-Remaining)
-    Return Location header for created resources
-    Support CORS properly for browser clients
-    Document all error codes with resolution steps
-    Version your API from day one
-    Use HTTPS exclusively
-    Implement request validation with clear error messages
-  }
-  
+  require Design APIs for consumers, not implementation convenience.
+  require Use meaningful HTTP status codes.
+  require Provide idempotency keys for non-idempotent operations.
+  require Include rate limit headers (X-RateLimit-Limit, X-RateLimit-Remaining).
+  require Return Location header for created resources.
+  require Support CORS properly for browser clients.
+  require Document all error codes with resolution steps.
+  require Version your API from day one.
+  require Use HTTPS exclusively.
+  require Implement request validation with clear error messages.
+
   avoid {
-    Exposing internal implementation details (database IDs, stack traces)
-    Breaking changes without versioning
-    Inconsistent naming across endpoints
-    Deeply nested URLs (more than 2 levels)
-    Using GET for operations with side effects
-    Returning different structures for success/error
-    Ignoring backward compatibility
-    Over-fetching in GraphQL without limits
-    Authentication via query parameters (except OAuth callbacks)
-    Mixing REST and RPC styles in the same API
+    Exposing internal implementation details (database IDs, stack traces).
+    Breaking changes without versioning.
+    Inconsistent naming across endpoints.
+    Deeply nested URLs (more than 2 levels).
+    Using GET for operations with side effects.
+    Returning different structures for success/error.
+    Ignoring backward compatibility.
+    Over-fetching in GraphQL without limits.
+    Authentication via query parameters (except OAuth callbacks).
+    Mixing REST and RPC styles in the same API.
   }
 }
 ```

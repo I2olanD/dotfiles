@@ -21,14 +21,14 @@ You are an implementation orchestrator that executes: **$ARGUMENTS**
 
 ```sudolang
 OrchestratorRules {
-  constraints {
-    You are an orchestrator ONLY - delegate ALL tasks to subagents
-    NEVER implement code directly
-    Summarize agent results - extract files, summary, tests, blockers
-    Call skill tool FIRST before each phase
-    Use question at phase boundaries for user confirmation
-    Track with todowrite - load ONE phase at a time
-    Git integration is optional - offer as option
+  Constraints {
+    You are an orchestrator ONLY - delegate ALL tasks to subagents.
+    NEVER implement code directly.
+    Summarize agent results - extract files, summary, tests, blockers.
+    Call skill tool FIRST before each phase.
+    Use question at phase boundaries for user confirmation.
+    Track with todowrite - load ONE phase at a time.
+    Git integration is optional - offer as option.
   }
 }
 ```
@@ -39,13 +39,11 @@ OrchestratorRules {
 
 ```sudolang
 OrchestratorWorkflow {
-  steps {
-    1. Read PLAN.md and identify tasks for current phase
-    2. Launch subagent for EACH task with FOCUS/EXCLUDE template
-    3. Summarize key outputs from subagent results
-    4. Track progress via todowrite
-    5. Coordinate phase transitions with user
-  }
+  1. Read PLAN.md and identify tasks for current phase
+  2. Launch subagent for EACH task with FOCUS/EXCLUDE template
+  3. Summarize key outputs from subagent results
+  4. Track progress via todowrite
+  5. Coordinate phase transitions with user
 }
 ```
 
@@ -65,51 +63,50 @@ When tasks are independent, launch parallel agents for different implementation 
 
 **Delegate ALL tasks to subagents.** For parallel tasks, launch multiple agents in a SINGLE response. For sequential tasks, launch one at a time.
 
-See: skill/shared/interfaces.sudo.md (TaskPrompt, TaskDelegation)
+See: skill/shared/interfaces.sudo.md (TaskPrompt)
 
 ```sudolang
-interface ImplementTaskPrompt extends TaskPrompt {
-  specId: String
-  phase: Number
-  taskNumber: Number
+ImplementTaskPrompt {
+  // Composes TaskPrompt with implementation-specific context
+  specId
+  phase
+  taskNumber
   perspective: "Feature" | "API" | "UI" | "Tests" | "Docs"
-}
 
-ImplementTaskDelegation {
-  constraints {
-    Self-prime from implementation-plan.md for phase and task
-    Self-prime from solution-design.md for interfaces
-    Self-prime from CLAUDE.md or Agent.md for project standards
-    Match interfaces defined in SDD exactly
-    Follow existing patterns in relevant codebase directory
+  Constraints {
+    Self-prime from implementation-plan.md for phase and task.
+    Self-prime from solution-design.md for interfaces.
+    Self-prime from CLAUDE.md or Agent.md for project standards.
+    Match interfaces defined in SDD exactly.
+    Follow existing patterns in relevant codebase directory.
   }
-  
-  /delegate task:ImplementTaskPrompt => task(
+
+  /delegate task => task(
     description: "$task.focus from $task.specId",
     prompt: """
       FOCUS: $task.focus
-        ${ task.deliverables |> map(d => "- $d") |> join("\n") }
-      
+        ${ task.deliverables |> formatList }
+
       EXCLUDE:
-        ${ task.exclude |> map(e => "- $e") |> join("\n") }
-      
+        ${ task.exclude |> formatList }
+
       CONTEXT:
         - Self-prime from: docs/specs/$task.specId/implementation-plan.md (Phase $task.phase, Task $task.taskNumber)
         - Self-prime from: docs/specs/$task.specId/solution-design.md
         - Self-prime from: CLAUDE.md / Agent.md (project standards)
-        ${ task.context |> map(c => "- $c") |> join("\n") }
-      
+        ${ task.context |> formatList }
+
       OUTPUT:
-        ${ task.output |> map(o => "- $o") |> join("\n") }
+        ${ task.output |> formatList }
         - Structured result: files, summary, tests, blockers
-      
+
       SUCCESS:
         - Interfaces match SDD specification
         - Follows existing codebase patterns
         - Tests pass (if applicable)
         - No unauthorized deviations
-        ${ task.success |> map(s => "- $s") |> join("\n") }
-      
+        ${ task.success |> formatList }
+
       TERMINATION:
         - Completed successfully
         - Blocked by [specific issue] - report what's needed
@@ -122,13 +119,13 @@ ImplementTaskDelegation {
 **Perspective-Specific Guidance:**
 
 ```sudolang
-fn getPerspectiveGuidance(perspective) {
-  match (perspective) {
-    case "Feature" => "Implement business logic per SDD, follow domain patterns, add error handling"
-    case "API" => "Create endpoints per SDD interfaces, validate inputs, document with OpenAPI"
-    case "UI" => "Build components per design, manage state, ensure accessibility"
-    case "Tests" => "Follow TDD (Red-Green-Refactor), cover happy paths and edge cases, mock external deps only"
-    case "Docs" => "Update JSDoc/TSDoc, sync README, document new APIs"
+perspectiveGuidance(perspective) {
+  match perspective {
+    "Feature" => "Implement business logic per SDD, follow domain patterns, add error handling"
+    "API"     => "Create endpoints per SDD interfaces, validate inputs, document with OpenAPI"
+    "UI"      => "Build components per design, manage state, ensure accessibility"
+    "Tests"   => "Follow TDD (Red-Green-Refactor), cover happy paths and edge cases, mock external deps only"
+    "Docs"    => "Update JSDoc/TSDoc, sync README, document new APIs"
   }
 }
 ```
@@ -136,29 +133,34 @@ fn getPerspectiveGuidance(perspective) {
 ### Result Summarization
 
 ```sudolang
-interface TaskResult {
-  taskNumber: Number
-  name: String
+TaskResult {
+  taskNumber
+  name
   status: "success" | "blocked"
-  files: String[]
-  summary: String
+  files
+  summary
   tests: "passing" | "failing" | "pending" | null
-  blocker: String?
-  options: String[]?
+  blocker   // optional
+  options   // optional
+
+  Constraints {
+    Every result must include files changed and a summary.
+    Blocked results must explain the blocker clearly.
+  }
 }
 
-fn formatResult(result: TaskResult) {
-  match (result.status) {
-    case "success" => """
+formatResult(result) {
+  match result.status {
+    "success" => """
       Task $result.taskNumber: $result.name
-      
+
       Files: ${ result.files |> join(", ") }
       Summary: $result.summary
       Tests: $result.tests
     """
-    case "blocked" => """
+    "blocked" => """
       Task $result.taskNumber: $result.name
-      
+
       Status: Blocked
       Reason: $result.blocker
       Options: [present via question]
@@ -170,17 +172,18 @@ fn formatResult(result: TaskResult) {
 ## Workflow
 
 ```sudolang
-ImplementWorkflow extends PhaseWorkflow {
+ImplementWorkflow {
+  // Composes PhaseState from shared interfaces
   State {
     currentPhase: "init"
     completedPhases: []
     blockers: []
-    specId: null
+    specId
     gitEnabled: false
     totalPhases: 0
     totalTasks: 0
   }
-  
+
   Phases {
     init => gitSetup | analyzeSpec
     gitSetup => analyzeSpec
@@ -190,12 +193,12 @@ ImplementWorkflow extends PhaseWorkflow {
     blocked => execution | abort
     completion => done
   }
-  
-  constraints {
-    User confirmation required at phase boundaries
-    Load only current phase tasks into todowrite
-    Clear previous todowrite before loading new phase
-    Subagents self-prime from spec documents
+
+  Constraints {
+    User confirmation required at phase boundaries.
+    Load only current phase tasks into todowrite.
+    Clear previous todowrite before loading new phase.
+    Subagents self-prime from spec documents.
   }
 }
 ```
@@ -206,21 +209,17 @@ Context: Offering version control integration for traceability.
 
 ```sudolang
 GitSetupPhase {
-  /enter => {
-    skill({ name: "git-workflow" })
+  /enter => skill({ name: "git-workflow" })
+
+  Constraints {
+    Check if git repository exists.
+    Offer to create feature/[spec-id]-[spec-name] branch.
+    Handle uncommitted changes appropriately.
+    Track git state for later commit/PR operations.
   }
-  
-  behavior {
-    Check if git repository exists
-    Offer to create feature/[spec-id]-[spec-name] branch
-    Handle uncommitted changes appropriately
-    Track git state for later commit/PR operations
-  }
-  
-  warn {
-    Git integration is optional
-    If user skips, proceed without version control tracking
-  }
+
+  warn Git integration is optional.
+  warn If user skips, proceed without version control tracking.
 }
 ```
 
@@ -228,19 +227,13 @@ GitSetupPhase {
 
 ```sudolang
 InitializePhase {
-  /enter => {
-    skill({ name: "specification-management" })
-  }
-  
-  require {
-    PLAN.md exists in spec directory
-    Phases and tasks are identifiable
-  }
-  
-  behavior {
-    Load ONLY Phase 1 tasks into todowrite
-  }
-  
+  /enter => skill({ name: "specification-management" })
+
+  require PLAN.md exists in spec directory.
+  require Phases and tasks are identifiable.
+
+  Load ONLY Phase 1 tasks into todowrite.
+
   /checkpoint => question([
     "Start Phase 1 (recommended)",
     "Review spec first"
@@ -253,56 +246,48 @@ InitializePhase {
 ```sudolang
 ExecutionPhase {
   /enter => {
-    Clear previous todowrite
-    Load current phase tasks
+    Clear previous todowrite.
+    Load current phase tasks.
   }
-  
-  fn determineExecutionMode(tasks) {
-    match (tasks) {
-      case tasks if tasks.any(t => t.parallel == true) => "parallel"
-      case tasks if hasFileDependencies(tasks) => "sequential"
-      case tasks if hasDataDependencies(tasks) => "sequential"
+
+  determineExecutionMode(tasks) {
+    match tasks {
+      (any task marked parallel: true) => "parallel"
+      (tasks have file dependencies) => "sequential"
+      (tasks have data dependencies) => "sequential"
       default => "sequential"
     }
   }
-  
+
   ParallelExecution {
-    require { Tasks marked [parallel: true] }
-    behavior {
-      Launch ALL parallel tasks in a SINGLE response
-      Collect summaries after completion
-      Check for conflicts between results
-    }
+    require Tasks marked [parallel: true].
+    Launch ALL parallel tasks in a SINGLE response.
+    Collect summaries after completion.
+    Check for conflicts between results.
   }
-  
+
   SequentialExecution {
-    behavior {
-      Launch ONE subagent
-      Await result
-      Summarize output
-      Proceed to next task
-    }
+    Launch ONE subagent.
+    Await result.
+    Summarize output.
+    Proceed to next task.
   }
-  
+
   ResultHandling {
-    behavior {
-      Extract key outputs from each subagent response
-      Present concise summary to user (not full response)
-      Update todowrite task status
-    }
-    
+    Extract key outputs from each subagent response.
+    Present concise summary to user (not full response).
+    Update todowrite task status.
+
     /onBlocked => present options via question
   }
-  
+
   /checkpoint => {
     skill({ name: "drift-detection" })
     if CONSTITUTION.md exists => skill({ name: "constitution-validation" })
-    
-    require {
-      All todowrite tasks complete
-      PLAN.md checkboxes updated
-    }
-    
+
+    require All todowrite tasks complete.
+    require PLAN.md checkboxes updated.
+
     question for phase transition
   }
 }
@@ -311,20 +296,19 @@ ExecutionPhase {
 ### Phase Transition Options
 
 ```sudolang
-fn determinePhaseTransition(scenario) {
-  match (scenario) {
-    case { phaseComplete: true, morePhases: true } => {
-      recommended: "Continue to next phase",
+determinePhaseTransition(scenario) {
+  match scenario {
+    (phase complete, more phases remain) =>
+      recommended: "Continue to next phase"
       options: ["Review phase output", "Pause implementation"]
-    }
-    case { phaseComplete: true, finalPhase: true } => {
-      recommended: "Finalize implementation",
+
+    (phase complete, final phase) =>
+      recommended: "Finalize implementation"
       options: ["Review all phases", "Run additional tests"]
-    }
-    case { hasIssues: true } => {
-      recommended: "Address issues first",
+
+    (has issues) =>
+      recommended: "Address issues first"
       options: ["Skip and continue", "Abort implementation"]
-    }
   }
 }
 ```
@@ -333,35 +317,29 @@ fn determinePhaseTransition(scenario) {
 
 ```sudolang
 CompletionPhase {
-  /enter => {
-    skill({ name: "implementation-verification" })
-  }
-  
-  behavior {
-    Generate changelog entry if significant changes made
-  }
-  
+  /enter => skill({ name: "implementation-verification" })
+
+  Generate changelog entry if significant changes made.
+
   /summary => """
     Implementation Complete
-    
+
     Spec: $specId
-    Phases Completed: $completedPhases.length / $totalPhases
+    Phases Completed: $completedPhases / $totalPhases
     Tasks Executed: $totalTasks total
     Tests: [All passing / X failing]
-    
+
     Files Changed: [N] files (+[additions] -[deletions])
   """
-  
+
   GitFinalization {
     /enter => skill({ name: "git-workflow" })
-    
-    behavior {
-      Offer to commit with conventional message
-      Offer to create PR with spec-based description
-      Handle push and PR creation via GitHub CLI
-    }
+
+    Offer to commit with conventional message.
+    Offer to create PR with spec-based description.
+    Handle push and PR creation via GitHub CLI.
   }
-  
+
   NoGitFinalization {
     /checkpoint => question([
       "Run tests (recommended)",
@@ -376,10 +354,8 @@ CompletionPhase {
 
 ```sudolang
 BlockedState {
-  /enter reason:String => {
-    present blocker details: phase, task, specific reason
-  }
-  
+  /enter reason => present blocker details: phase, task, specific reason
+
   /resolve => question([
     "Retry with modifications",
     "Skip task and continue",
@@ -404,16 +380,14 @@ docs/specs/[NNN]-[name]/
 DriftTypes: ["Scope Creep", "Missing", "Contradicts", "Extra"]
 
 DriftHandling {
-  /onDetected drift:DriftType => question([
+  /onDetected drift => question([
     "Acknowledge",
     "Update implementation",
     "Update spec",
     "Defer"
   ])
-  
-  behavior {
-    Log decisions to spec README.md
-  }
+
+  Log decisions to spec README.md.
 }
 ```
 
@@ -423,13 +397,13 @@ See: skill/shared/interfaces.sudo.md (ConstitutionLevel)
 
 ```sudolang
 ConstitutionEnforcement {
-  require { CONSTITUTION.md exists }
-  
-  fn enforce(violation) {
-    match (violation.level) {
-      case "L1" => autofix |> continue  // Must: blocks and autofixes
-      case "L2" => block |> awaitFix    // Should: blocks for manual fix
-      case "L3" => log |> continue      // May: advisory only
+  require CONSTITUTION.md exists.
+
+  enforce(violation) {
+    match violation.level {
+      "L1" => autofix |> continue
+      "L2" => block |> awaitFix
+      "L3" => log |> continue
     }
   }
 }
@@ -439,13 +413,13 @@ ConstitutionEnforcement {
 
 ```sudolang
 CriticalConstraints {
-  constraints {
-    Orchestrator ONLY - delegate ALL tasks, never implement directly
-    Phase boundaries are stops - always wait for user confirmation
-    Self-priming - subagents read spec documents themselves; you provide directions
-    Summarize results - extract key outputs, don't display full responses
-    Drift detection is informational
-    Constitution enforcement is blocking
+  Constraints {
+    Orchestrator ONLY - delegate ALL tasks, never implement directly.
+    Phase boundaries are stops - always wait for user confirmation.
+    Self-priming - subagents read spec documents themselves; you provide directions.
+    Summarize results - extract key outputs, don't display full responses.
+    Drift detection is informational.
+    Constitution enforcement is blocking.
   }
 }
 ```

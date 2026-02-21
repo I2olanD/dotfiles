@@ -46,19 +46,19 @@ The test pyramid guides test distribution for optimal feedback speed and confide
 
 ```sudolang
 TestDistribution {
-  fn getTestTypeSpec(testType: String) {
-    match (testType) {
-      case "unit" => {
+  getTestTypeSpec(testType) {
+    match testType {
+      "unit" => {
         targetPercent: "60-70%",
         maxExecutionTime: "< 100ms each",
         scope: "Single function/class"
       }
-      case "integration" => {
+      "integration" => {
         targetPercent: "20-30%",
         maxExecutionTime: "< 5s each",
         scope: "Service boundaries"
       }
-      case "e2e" => {
+      "e2e" => {
         targetPercent: "5-10%",
         maxExecutionTime: "< 30s each",
         scope: "Critical user paths"
@@ -194,39 +194,39 @@ def test_list_orders_empty():
 
 ```sudolang
 CoverageTargets {
-  fn getCoverageSpec(codeType: String) {
-    match (codeType) {
-      case "business_logic" => {
+  getCoverageSpec(codeType) {
+    match codeType {
+      "business_logic" => {
         statement: 90,
         branch: 85,
         priority: "high"
       }
-      case "api_controllers" => {
+      "api_controllers" => {
         statement: 80,
         branch: 75,
         priority: "medium"
       }
-      case "utility_functions" => {
+      "utility_functions" => {
         statement: 95,
         branch: 90,
         priority: "high"
       }
-      case "ui_components" => {
+      "ui_components" => {
         statement: 70,
         branch: 65,
         priority: "medium"
       }
-      case "generated_code" => {
+      "generated_code" => {
         statement: null,
         branch: null,
         priority: "skip"
       }
     }
   }
-  
-  constraints {
-    Coverage percentage alone is insufficient
-    Prioritize: critical paths, edge cases, regression prevention, complex logic
+
+  Constraints {
+    Coverage percentage alone is insufficient.
+    Prioritize: critical paths, edge cases, regression prevention, complex logic.
   }
 }
 ```
@@ -246,14 +246,15 @@ Coverage percentage alone is insufficient. Prioritize:
 
 ```sudolang
 JestPatterns {
-  fileStructure: "co-located"  // *.test.ts next to source
-  
-  constraints {
-    require mockRepo initialization in beforeEach
-    require jest.clearAllMocks() in afterEach
-    require descriptive describe/it blocks
-    warn when mocking internal methods
+  Co-located file structure: *.test.ts next to source.
+
+  Constraints {
+    Mock repository initialization belongs in beforeEach.
+    jest.clearAllMocks() belongs in afterEach.
+    Descriptive describe and it blocks required.
   }
+
+  warn when mocking internal methods.
 }
 ```
 
@@ -306,13 +307,14 @@ describe('UserService', () => {
 
 ```sudolang
 PytestPatterns {
-  fileStructure: "mirrored"  // tests/ mirrors src/
-  
-  constraints {
-    require fixtures via conftest.py for shared setup
-    require Mock(spec=...) for type-safe mocking
-    warn when not using @pytest.mark.parametrize for similar test cases
+  Mirrored file structure: tests/ mirrors src/.
+
+  Constraints {
+    Fixtures via conftest.py for shared setup.
+    Mock with spec parameter for type-safe mocking.
   }
+
+  warn when not using pytest.mark.parametrize for similar test cases.
 }
 ```
 
@@ -411,12 +413,12 @@ describe('LoginForm', () => {
 
 ```sudolang
 TestFileNaming {
-  fn getFilePattern(framework: String) {
-    match (framework) {
-      case "jest" => { pattern: "*.test.ts", example: "UserService.test.ts" }
-      case "pytest" => { pattern: "test_*.py", example: "test_user_service.py" }
-      case "go" => { pattern: "*_test.go", example: "user_service_test.go" }
-      case "junit" => { pattern: "*Test.java", example: "UserServiceTest.java" }
+  getFilePattern(framework) {
+    match framework {
+      "jest" => { pattern: "*.test.ts", example: "UserService.test.ts" }
+      "pytest" => { pattern: "test_*.py", example: "test_user_service.py" }
+      "go" => { pattern: "*_test.go", example: "user_service_test.go" }
+      "junit" => { pattern: "*Test.java", example: "UserServiceTest.java" }
     }
   }
 }
@@ -455,21 +457,19 @@ tests/
 
 ```sudolang
 TestBestPractices {
-  constraints {
-    require tests pass before committing
-    require unit tests complete in < 100ms
-    require mocking only at service boundaries
-    require factories/fixtures for test data (not raw literals)
-    require immediate fix or deletion of flaky tests
-    require same review rigor for tests as production code
+  Constraints {
+    Tests must pass before committing.
+    Unit tests must complete in under 100ms.
+    Mock only at service boundaries.
+    Use factories or fixtures for test data, not raw literals.
+    Fix or delete flaky tests immediately.
+    Apply same review rigor for tests as production code.
   }
-  
-  warn {
-    when test names don't describe behavior
-    when using mocks instead of real implementations unnecessarily
-    when missing edge case coverage (nulls, empty collections, boundaries)
-    when tests contain conditional logic
-  }
+
+  warn when test names do not describe behavior.
+  warn when using mocks instead of real implementations unnecessarily.
+  warn when missing edge case coverage (nulls, empty collections, boundaries).
+  warn when tests contain conditional logic.
 }
 ```
 
@@ -477,24 +477,24 @@ TestBestPractices {
 
 ```sudolang
 TestAntiPatterns {
-  fn detectAntiPattern(testCode: String) {
-    match (testCode) {
-      case code if accessesPrivateMembers(code) => {
+  detectAntiPattern(testCode) {
+    match testCode {
+      code if accessesPrivateMembers(code) => {
         antiPattern: "testing_implementation_details",
         problem: "Brittle test that breaks on refactoring",
         fix: "Test observable behavior through public API"
       }
-      case code if usesSharedMutableState(code) => {
+      code if usesSharedMutableState(code) => {
         antiPattern: "shared_mutable_state",
         problem: "Tests interfere with each other",
         fix: "Use fresh fixtures per test via setup methods"
       }
-      case code if mocksSystemUnderTest(code) => {
+      code if mocksSystemUnderTest(code) => {
         antiPattern: "over_mocking",
         problem: "Test doesn't verify real behavior",
         fix: "Mock dependencies, not the system under test"
       }
-      case code if hasDuplicatedTestCases(code) => {
+      code if hasDuplicatedTestCases(code) => {
         antiPattern: "test_duplication",
         problem: "Redundant maintenance burden",
         fix: "Use parameterized tests"

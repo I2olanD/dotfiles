@@ -18,7 +18,7 @@ A development methodology where tests are written before implementation code. Th
 
 ```sudolang
 TDDMandatory {
-  scenarios: [
+  scenarios [
     "New feature development with clear requirements",
     "Bug fixes (reproduce the bug with a failing test first)",
     "API contract implementation (test the contract before building)",
@@ -32,7 +32,7 @@ TDDMandatory {
 
 ```sudolang
 TDDOptional {
-  scenarios: [
+  scenarios [
     "Exploratory/spike work (prototype first, test later)",
     "UI layout (visual testing may be more appropriate)",
     "Generated code (test the generator, not the output)",
@@ -45,7 +45,7 @@ TDDOptional {
 
 ```sudolang
 SkipTDD {
-  scenarios: [
+  scenarios [
     "One-off scripts not meant for reuse",
     "Pure data migrations with rollback capability",
     "Third-party integrations with mocked tests already exist"
@@ -74,24 +74,24 @@ SkipTDD {
 
 ```sudolang
 RedPhase {
-  constraints {
-    Test MUST fail before proceeding
-    Test MUST fail for the RIGHT reason (missing implementation, not syntax error)
-    Test MUST be minimal - test ONE behavior
+  Constraints {
+    Test MUST fail before proceeding.
+    Test MUST fail for the RIGHT reason (missing implementation, not syntax error).
+    Test MUST be minimal - test ONE behavior.
   }
-  
-  steps: [
+
+  steps [
     "Write a test that describes the desired behavior",
     "Run the test - verify it FAILS",
     "Confirm failure is due to missing implementation"
   ]
-  
-  artifacts: ["failing test", "clear error message showing missing behavior"]
-  
+
+  artifacts ["failing test", "clear error message showing missing behavior"]
+
   /validate => {
-    require test.run().status == "FAIL"
-    require test.failureReason != "SyntaxError"
-    require test.failureReason != "ImportError"
+    require test runs and status is FAIL
+    require failure reason is not SyntaxError
+    require failure reason is not ImportError
   }
 }
 ```
@@ -103,9 +103,9 @@ RedPhase {
 describe('PaymentValidator', () => {
   it('rejects negative payment amounts', () => {
     const validator = new PaymentValidator();
-    
+
     const result = validator.validate({ amount: -50 });
-    
+
     expect(result.valid).toBe(false);
     expect(result.error).toBe('Amount must be positive');
   });
@@ -121,26 +121,26 @@ describe('PaymentValidator', () => {
 
 ```sudolang
 GreenPhase {
-  constraints {
-    Write ONLY enough code to pass the test
-    Do NOT optimize or refactor yet
-    Do NOT add features not covered by tests
-    Code can be ugly - that's OK for now
+  Constraints {
+    Write ONLY enough code to pass the test.
+    Do NOT optimize or refactor yet.
+    Do NOT add features not covered by tests.
+    Code can be ugly - that is OK for now.
   }
-  
-  steps: [
+
+  steps [
     "Write the simplest implementation that passes",
     "Run the test - verify it PASSES",
     "Do not add anything beyond what the test requires"
   ]
-  
-  artifacts: ["passing test", "minimal implementation"]
-  
+
+  artifacts ["passing test", "minimal implementation"]
+
   /validate => {
-    require test.run().status == "PASS"
+    require test runs and status is PASS
   }
-  
-  antiPatterns: [
+
+  antiPatterns [
     "Implementing multiple features at once",
     "Optimizing before tests pass",
     "Adding error handling not required by tests",
@@ -172,33 +172,33 @@ class PaymentValidator {
 
 ```sudolang
 RefactorPhase {
-  constraints {
-    All tests MUST remain passing
-    Improve structure without changing behavior
-    Apply design patterns where appropriate
-    Remove duplication
+  Constraints {
+    All tests MUST remain passing.
+    Improve structure without changing behavior.
+    Apply design patterns where appropriate.
+    Remove duplication.
   }
-  
-  steps: [
+
+  steps [
     "Identify code smells or improvements",
     "Make ONE small change",
     "Run tests - verify still PASSING",
     "Repeat until satisfied"
   ]
-  
-  artifacts: ["clean code", "all tests passing"]
-  
-  improvements: [
+
+  artifacts ["clean code", "all tests passing"]
+
+  improvements [
     "Extract methods/functions",
     "Rename for clarity",
     "Remove duplication",
     "Apply design patterns",
     "Improve error messages"
   ]
-  
+
   /validate => {
-    require allTests.run().status == "PASS"
-    require noNewBehaviorAdded()
+    require all tests run and status is PASS
+    require no new behavior added
   }
 }
 ```
@@ -224,15 +224,15 @@ class PaymentValidator {
     }
     return this.success();
   }
-  
+
   private isNegativeAmount(amount: number): boolean {
     return amount < 0;
   }
-  
+
   private success(): ValidationResult {
     return { valid: true };
   }
-  
+
   private failure(error: string): ValidationResult {
     return { valid: false, error };
   }
@@ -249,45 +249,45 @@ class PaymentValidator {
 ```sudolang
 TDDStateMachine {
   State {
-    phase: "red" | "green" | "refactor"
-    testCount: Number
-    cycleCount: Number
+    phase
+    testCount
+    cycleCount
   }
-  
+
   transitions {
-    red => green     // When test fails correctly
-    green => refactor // When test passes
-    refactor => red   // When starting new behavior
+    red => green       When test fails correctly.
+    green => refactor  When test passes.
+    refactor => red    When starting new behavior.
   }
-  
-  constraints {
-    Cannot skip phases
-    Must validate phase completion before transition
-    Each cycle produces one unit of tested behavior
+
+  Constraints {
+    Cannot skip phases.
+    Must validate phase completion before transition.
+    Each cycle produces one unit of tested behavior.
   }
-  
-  /startCycle behavior:String => {
+
+  /startCycle behavior => {
     phase = "red"
     cycleCount++
     write failing test for behavior
   }
-  
+
   /toGreen => {
     require phase == "red"
-    require currentTest.status == "FAIL"
-    require currentTest.failureReason == "missing implementation"
+    require currentTest status is FAIL
+    require currentTest failure reason is missing implementation
     phase = "green"
   }
-  
+
   /toRefactor => {
     require phase == "green"
-    require currentTest.status == "PASS"
+    require currentTest status is PASS
     phase = "refactor"
   }
-  
+
   /nextBehavior => {
     require phase == "refactor"
-    require allTests.status == "PASS"
+    require all tests status is PASS
     phase = "red"
   }
 }
@@ -304,8 +304,8 @@ UnitTDD {
   cycleTime: "1-5 minutes per cycle"
   scope: "Single function or method"
   mocking: "Mock at boundaries only (DB, APIs, filesystem)"
-  
-  workflow: [
+
+  workflow [
     "Write test for ONE behavior",
     "Implement in isolation",
     "Refactor internals only"
@@ -320,14 +320,14 @@ IntegrationTDD {
   cycleTime: "5-15 minutes per cycle"
   scope: "Component interactions"
   mocking: "Mock external services only"
-  
-  workflow: [
+
+  workflow [
     "Write test for component contract",
     "Implement with real dependencies",
     "Refactor component boundaries"
   ]
-  
-  considerations: [
+
+  considerations [
     "Setup/teardown test database",
     "Use transactions for isolation",
     "Test realistic data scenarios"
@@ -341,20 +341,20 @@ IntegrationTDD {
 ApiContractTDD {
   cycleTime: "10-20 minutes per cycle"
   scope: "HTTP endpoints"
-  
-  workflow: [
+
+  workflow [
     "Define API contract (request/response)",
     "Write test that calls endpoint",
     "Implement endpoint to satisfy contract",
     "Refactor handler and middleware"
   ]
-  
-  testStructure: """
+
+  testStructure """
     it('POST /payments creates payment and returns 201', async () => {
       const response = await request(app)
         .post('/payments')
         .send({ amount: 100, currency: 'USD' });
-      
+
       expect(response.status).toBe(201);
       expect(response.body.id).toBeDefined();
     });
@@ -368,28 +368,28 @@ ApiContractTDD {
 
 ```sudolang
 BugFixTDD {
-  workflow: [
+  workflow [
     "1. Write a test that reproduces the bug (RED)",
     "2. Verify test fails with the bug present",
     "3. Fix the bug (GREEN)",
     "4. Verify test passes",
     "5. Refactor if needed"
   ]
-  
-  /fixBug bug:BugReport => {
-    // Step 1: Reproduce
+
+  /fixBug bug => {
+    Step 1: Reproduce
     test = writeReproductionTest(bug)
-    require test.run().status == "FAIL"
-    
-    // Step 2: Fix
+    require test runs and status is FAIL
+
+    Step 2: Fix
     implementation = fixCode(bug)
-    require test.run().status == "PASS"
-    
-    // Step 3: Verify no regression
-    require allTests.run().status == "PASS"
+    require test runs and status is PASS
+
+    Step 3: Verify no regression
+    require all tests run and status is PASS
   }
-  
-  benefits: [
+
+  benefits [
     "Bug is documented as a test",
     "Regression is prevented forever",
     "Fix is verified to actually work"
@@ -405,7 +405,7 @@ BugFixTDD {
 it('applies 10% discount for exactly 10 items', () => {
   const cart = new Cart();
   cart.addItem({ price: 10, quantity: 10 });
-  
+
   expect(cart.total).toBe(90); // 10% off
 });
 // FAIL: Expected 90, received 100
@@ -424,30 +424,23 @@ it('applies 10% discount for exactly 10 items', () => {
 ```sudolang
 LegacyCodeTDD {
   challenge: "Code exists without tests"
-  
-  workflow: [
+
+  workflow [
     "1. Add characterization tests (capture current behavior)",
     "2. Verify tests pass with existing code",
     "3. Now safe to refactor or add features using TDD"
   ]
-  
-  characterizationTest: {
+
+  characterizationTest {
     purpose: "Document what code DOES, not what it SHOULD do"
     approach: "Call code, observe output, write test that expects that output"
   }
-  
-  /addCharacterizationTest function:Function => {
-    // Run function with known inputs
-    output = function(knownInputs)
-    
-    // Write test expecting that output
-    test = """
-      it('returns $output for $knownInputs', () => {
-        expect(function($knownInputs)).toBe($output);
-      });
-    """
-    
-    // Now behavior is locked, safe to refactor
+
+  /addCharacterizationTest targetFunction => {
+    Run targetFunction with known inputs.
+    Observe the output.
+    Write test expecting that output.
+    Now behavior is locked, safe to refactor.
   }
 }
 ```
@@ -460,19 +453,19 @@ LegacyCodeTDD {
 
 ```sudolang
 HardToTestCode {
-  symptoms: [
+  symptoms [
     "Need to mock many dependencies",
     "Test setup is complex",
     "Tests are brittle"
   ]
-  
-  solutions: [
+
+  solutions [
     "Extract dependencies to boundaries",
     "Use dependency injection",
     "Split large functions into smaller ones",
     "Consider if design is wrong"
   ]
-  
+
   principle: "If it's hard to test, the design may need improvement"
 }
 ```
@@ -481,14 +474,14 @@ HardToTestCode {
 
 ```sudolang
 TestDoubles {
-  types: {
-    stub: "Returns canned data",
-    mock: "Verifies interactions",
-    fake: "Working implementation (in-memory DB)",
+  types {
+    stub: "Returns canned data"
+    mock: "Verifies interactions"
+    fake: "Working implementation (in-memory DB)"
     spy: "Records calls for later verification"
   }
-  
-  guidelines: [
+
+  guidelines [
     "Prefer stubs over mocks (test behavior, not implementation)",
     "Mock at boundaries only (external services, databases)",
     "Use fakes for complex dependencies (in-memory DB)",
@@ -502,19 +495,19 @@ TestDoubles {
 ```sudolang
 IncrementSize {
   guideline: "As small as possible while still being meaningful"
-  
-  tooSmall: [
+
+  tooSmall [
     "Testing that a variable exists",
     "Testing constructor sets a field"
   ]
-  
-  appropriate: [
+
+  appropriate [
     "Testing one business rule",
     "Testing one error case",
     "Testing one transformation"
   ]
-  
-  tooLarge: [
+
+  tooLarge [
     "Testing entire feature at once",
     "Testing multiple behaviors in one test"
   ]
@@ -527,27 +520,27 @@ IncrementSize {
 
 ```sudolang
 TDDQualityCheck {
-  redPhase: [
+  redPhase [
     "Test fails before implementation?",
     "Failure is for the right reason?",
     "Test name describes the behavior?",
     "Test is minimal and focused?"
   ]
-  
-  greenPhase: [
+
+  greenPhase [
     "Implementation is minimal?",
     "No extra features added?",
     "Test passes?"
   ]
-  
-  refactorPhase: [
+
+  refactorPhase [
     "All tests still pass?",
     "Code is cleaner than before?",
     "No behavior changed?",
     "Duplication removed?"
   ]
-  
-  overall: [
+
+  overall [
     "Each test documents one behavior?",
     "Tests are independent?",
     "Tests are deterministic?",
@@ -564,22 +557,22 @@ TDD integrates with the implementation-planning skill through the Prime-Test-Imp
 
 ```sudolang
 TDDPlanIntegration {
-  mapping: {
+  mapping {
     "Prime" => "Understand context before writing tests"
     "Test" => "RED phase - write failing tests"
     "Implement" => "GREEN phase - make tests pass"
     "Validate" => "REFACTOR phase + quality checks"
   }
-  
-  taskStructure: """
+
+  taskStructure """
     - [ ] **Payment Validator** `[activity: domain-modeling]`
-    
+
       **Prime**: Read payment validation rules from SDD Section 4.2
-      
+
       **Test**: Validator rejects negative amounts; rejects zero; accepts positive; handles currency
-      
+
       **Implement**: Create PaymentValidator with validation logic
-      
+
       **Validate**: Run tests, lint, typecheck
   """
 }
@@ -600,26 +593,26 @@ TDDPlanIntegration {
 
 ```sudolang
 TDDQuickReference {
-  cycle: "RED → GREEN → REFACTOR → (repeat)"
-  
-  redRules: [
+  cycle: "RED => GREEN => REFACTOR => (repeat)"
+
+  redRules [
     "Write test first",
     "Test must fail",
     "Fail for right reason"
   ]
-  
-  greenRules: [
+
+  greenRules [
     "Minimal code only",
     "Make test pass",
     "No extras"
   ]
-  
-  refactorRules: [
+
+  refactorRules [
     "Keep tests green",
     "Improve structure",
     "No new behavior"
   ]
-  
+
   mantra: "Make it fail, make it pass, make it better"
 }
 ```

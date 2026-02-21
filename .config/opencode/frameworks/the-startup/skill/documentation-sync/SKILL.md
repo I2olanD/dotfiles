@@ -23,12 +23,12 @@ Activate this skill when you need to:
 
 ```sudolang
 DocumentationPrinciples {
-  constraints {
-    Documentation MUST be accurate - matches actual code behavior
-    Documentation MUST be current - updated when code changes
-    Documentation MUST be discoverable - easy to find and navigate
-    Documentation MUST be actionable - helps users accomplish tasks
-    Documentation SHOULD be minimal - no more than necessary
+  Constraints {
+    Documentation MUST be accurate - matches actual code behavior.
+    Documentation MUST be current - updated when code changes.
+    Documentation MUST be discoverable - easy to find and navigate.
+    Documentation MUST be actionable - helps users accomplish tasks.
+    Documentation SHOULD be minimal - no more than necessary.
   }
 }
 ```
@@ -50,33 +50,33 @@ DocumentationPrinciples {
 ```sudolang
 StalenessDetection {
   State {
-    staleFiles: File[]
-    brokenReferences: Reference[]
-    invalidExamples: Example[]
+    staleFiles
+    brokenReferences
+    invalidExamples
   }
 
-  interface StalenessCategory {
-    level: "critical" | "warning" | "info"
-    threshold: String
-    action: String
+  StalenessCategory {
+    level
+    threshold
+    action
   }
-  
-  fn categorize(doc: Document, source: Source) {
+
+  categorize(doc, source) {
     daysSinceDocUpdate = daysSince(doc.lastModified)
     sourceModifiedAfterDoc = source.lastModified > doc.lastModified
-    
-    match (doc, source) {
-      case _ if sourceModifiedAfterDoc => {
+
+    match doc, source {
+      _ if sourceModifiedAfterDoc => {
         level: "critical",
         threshold: "Code changed, doc not updated",
         action: "Immediate update required"
       }
-      case _ if daysSinceDocUpdate > 90 => {
+      _ if daysSinceDocUpdate > 90 => {
         level: "warning",
         threshold: "> 90 days since update",
         action: "Review needed"
       }
-      case _ if daysSinceDocUpdate > 180 => {
+      _ if daysSinceDocUpdate > 180 => {
         level: "info",
         threshold: "> 180 days since update",
         action: "Consider refresh"
@@ -142,30 +142,30 @@ Verify code examples are syntactically correct:
 
 ```sudolang
 CoverageAnalysis {
-  interface CoverageMetric {
-    name: String
-    formula: String
-    target: Number
-    current: Number?
+  CoverageMetric {
+    name
+    formula
+    target
+    current
   }
-  
-  metrics: CoverageMetric[] = [
+
+  metrics = [
     { name: "Function Coverage", formula: "Documented functions / Total functions", target: 80 },
     { name: "Public API Coverage", formula: "Documented endpoints / Total endpoints", target: 100 },
     { name: "README Completeness", formula: "Sections present / Required sections", target: 100 },
     { name: "Example Coverage", formula: "Functions with examples / Documented functions", target: 50 }
   ]
-  
-  constraints {
-    Public API Coverage MUST be 100%
-    Function Coverage SHOULD be >= 80%
-    Example Coverage SHOULD be >= 50%
+
+  Constraints {
+    Public API Coverage MUST be 100%.
+    Function Coverage SHOULD be >= 80%.
+    Example Coverage SHOULD be >= 50%.
   }
-  
-  fn evaluate(metric: CoverageMetric) {
-    match (metric.current / metric.target * 100) {
-      case pct if pct >= 100 => { status: "pass", emoji: "GREEN_CHECK" }
-      case pct if pct >= 80 => { status: "warn", emoji: "YELLOW_CIRCLE" }
+
+  evaluate(metric) {
+    match metric.current / metric.target * 100 {
+      pct if pct >= 100 => { status: "pass", emoji: "GREEN_CHECK" }
+      pct if pct >= 80 => { status: "warn", emoji: "YELLOW_CIRCLE" }
       default => { status: "fail", emoji: "RED_CIRCLE" }
     }
   }
@@ -218,27 +218,27 @@ Priority Gaps (Public API)
 
 ```sudolang
 ImplementationSync {
-  interface CodeChange {
-    type: "signature" | "new_api" | "breaking" | "rename" | "delete"
-    location: String
-    before: String?
-    after: String?
-    affectedDocs: String[]
+  CodeChange {
+    type
+    location
+    before
+    after
+    affectedDocs
   }
-  
-  fn detectAndAlert(change: CodeChange) {
-    match (change.type) {
-      case "signature" => {
+
+  detectAndAlert(change) {
+    match change.type {
+      "signature" => {
         alert: "Function signature modified",
         action: "Update documentation for changed parameters",
         require: "All affected documentation files updated"
       }
-      case "new_api" => {
+      "new_api" => {
         alert: "New Public API Detected",
         action: "Generate documentation for new endpoint",
         require: "JSDoc in source, API docs entry, README update if applicable"
       }
-      case "breaking" => {
+      "breaking" => {
         alert: "Breaking Change Detected",
         action: "Update all references, add migration note",
         require: [
@@ -247,34 +247,34 @@ ImplementationSync {
           "Code examples updated"
         ]
       }
-      case "rename" => {
+      "rename" => {
         alert: "API Renamed",
         action: "Update all documentation references",
         require: "Search and replace in all doc files"
       }
-      case "delete" => {
+      "delete" => {
         alert: "API Removed",
         action: "Remove documentation, add deprecation note",
-        warn: "Consumers may depend on removed API"
+        warn "Consumers may depend on removed API"
       }
     }
   }
-  
-  /suggest change:CodeChange => {
+
+  /suggest change => {
     status = checkDocStatus(change.location)
     emit """
       Documentation Suggestion
-      
+
       You just modified: ${change.location}
-      
+
       Current Documentation Status:
       - [${status.jsdoc ? "YES" : "NO"}] JSDoc present
       - [${status.apiDocs ? "YES" : "NO"}] API docs current
       - [${status.examples ? "YES" : "NO"}] Examples valid
-      
+
       Recommended Updates:
       ${detectAndAlert(change).action}
-      
+
       Generate updates now? [Yes / Skip / Remind Later]
     """
   }
@@ -469,43 +469,41 @@ curl -X POST https://api.example.com/path \
 
 ```sudolang
 DocumentationValidation {
-  interface ValidationCheck {
-    category: "parameters" | "returns" | "errors" | "examples"
-    status: "valid" | "warning" | "invalid"
-    issues: String[]
+  ValidationCheck {
+    category
+    status
+    issues
   }
-  
-  constraints {
-    require All parameters documented
-    require Types match actual code
-    require Descriptions are accurate
-    require Return type documented
-    require All possible returns covered
-    require Edge cases documented
-    require All thrown errors documented
-    require Error conditions accurate
-    require Recovery guidance provided
-    require Examples execute correctly
-    require Output matches documented output
-  }
-  
-  fn validate(doc: Document, source: Source): ValidationResult {
+
+  require "All parameters documented."
+  require "Types match actual code."
+  require "Descriptions are accurate."
+  require "Return type documented."
+  require "All possible returns covered."
+  require "Edge cases documented."
+  require "All thrown errors documented."
+  require "Error conditions accurate."
+  require "Recovery guidance provided."
+  require "Examples execute correctly."
+  require "Output matches documented output."
+
+  validate(doc, source) {
     checks = [
       validateParameters(doc, source),
       validateReturns(doc, source),
       validateErrors(doc, source),
       validateExamples(doc, source)
     ]
-    
+
     findings = checks |> flatMap(c => c.issues) |> map(toFinding)
-    
-    match (checks) {
-      case _ if checks |> any(c => c.status == "invalid") => {
+
+    match checks {
+      _ if checks |> any(c => c.status == "invalid") => {
         valid: false,
         findings,
         summary: "INVALID - Critical documentation issues"
       }
-      case _ if checks |> any(c => c.status == "warning") => {
+      _ if checks |> any(c => c.status == "warning") => {
         valid: true,
         findings,
         summary: "WARNINGS - Documentation needs attention"
@@ -548,36 +546,36 @@ Issues Found
 
 ```sudolang
 SyncOutput {
-  interface SyncReport {
-    action: "detection" | "sync" | "validation"
-    scope: String[]
-    staleFiles: Number
-    brokenReferences: Number
-    missingDocs: Number
-    updated: Number
-    changes: Change[]
-    remaining: Issue[]
+  SyncReport {
+    action
+    scope
+    staleFiles
+    brokenReferences
+    missingDocs
+    updated
+    changes
+    remaining
   }
-  
-  /report result:SyncReport => """
+
+  /report result => """
     Documentation Sync Complete
-    
+
     Action: ${result.action}
     Scope: ${result.scope |> join(", ")}
-    
+
     Results
-    
+
     Stale Documentation: ${result.staleFiles} files
     Broken References: ${result.brokenReferences} links
     Missing Documentation: ${result.missingDocs} items
     Updated: ${result.updated} files
-    
+
     Changes Made
-    
+
     ${result.changes |> map(c => "- ${c.file} ${c.description}") |> join("\n")}
-    
+
     Remaining Issues
-    
+
     ${result.remaining |> map(i => "- ${i.description}") |> join("\n")}
   """
 }
