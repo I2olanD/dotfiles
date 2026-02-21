@@ -127,7 +127,7 @@ fn getPerspectiveGuidance(perspective) {
     case "Feature" => "Implement business logic per SDD, follow domain patterns, add error handling"
     case "API" => "Create endpoints per SDD interfaces, validate inputs, document with OpenAPI"
     case "UI" => "Build components per design, manage state, ensure accessibility"
-    case "Tests" => "Cover happy paths and edge cases, mock external deps, assert behavior"
+    case "Tests" => "Follow TDD (Red-Green-Refactor), cover happy paths and edge cases, mock external deps only"
     case "Docs" => "Update JSDoc/TSDoc, sync README, document new APIs"
   }
 }

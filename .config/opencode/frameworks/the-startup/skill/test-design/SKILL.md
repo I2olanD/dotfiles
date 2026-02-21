@@ -21,6 +21,8 @@ A development skill that provides comprehensive testing methodology including te
 - Selecting appropriate testing frameworks
 - Planning test automation strategies
 
+**For test-first development (Red-Green-Refactor), see the [tdd skill](../tdd/SKILL.md).**
+
 ## Test Pyramid
 
 The test pyramid guides test distribution for optimal feedback speed and confidence:
@@ -562,3 +564,8 @@ def test_validate_email_rejects_invalid_formats(invalid_email):
 ## References
 
 - `examples/test-pyramid.md` - Detailed test pyramid implementation guide with framework examples
+
+## Related Skills
+
+- **tdd**: Red-Green-Refactor cycle, test-first methodology, when to use TDD
+- **testing**: Layer-specific mocking rules, test execution, debugging failures
