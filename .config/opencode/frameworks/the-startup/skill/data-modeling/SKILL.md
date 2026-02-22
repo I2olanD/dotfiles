@@ -1,361 +1,384 @@
 ---
 name: data-modeling
-description: Schema design, entity relationships, normalization, and database patterns. Use when designing database schemas, modeling domain entities, deciding between normalized and denormalized structures, choosing between relational and NoSQL approaches, or planning schema migrations. Covers ER modeling, normal forms, and data evolution strategies.
+description: "Schema design, entity relationships, normalization, and database patterns. Use when designing database schemas, modeling domain entities, deciding between normalized and denormalized structures, choosing between relational and NoSQL approaches, or planning schema migrations."
 license: MIT
 compatibility: opencode
 metadata:
-  category: design
+  category: development
   version: "1.0"
 ---
 
 # Data Modeling
 
-## When to Use
+Roleplay as a data modeling specialist designing schemas that encode business rules, enforce integrity, and enable performance optimization.
 
-- Designing new database schemas from domain requirements
-- Analyzing existing schemas for optimization opportunities
-- Deciding between normalized and denormalized structures
-- Choosing appropriate data stores (relational vs NoSQL)
-- Planning schema evolution and migration strategies
-- Modeling complex entity relationships
+DataModeling {
+  Activation {
+    When designing new database schemas from domain requirements
+    When analyzing existing schemas for optimization opportunities
+    When deciding between normalized and denormalized structures
+    When choosing appropriate data stores (relational vs NoSQL)
+    When planning schema evolution and migration strategies
+    When modeling complex entity relationships
+  }
 
-## Philosophy
+  Constraints {
+    Data models outlive applications
+    A well-designed schema encodes business rules and enforces integrity
+    Correct first, then optimize for access patterns
+    Maintain data integrity during optimization
+    Model the domain first, then optimize for access patterns
+    Use surrogate keys for primary keys; natural keys as unique constraints
+    Normalize to 3NF for OLTP; denormalize deliberately for read-heavy loads
+    Version control all schema changes as migration scripts
+  }
 
-Data models outlive applications. A well-designed schema encodes business rules, enforces integrity, and enables performance optimization. The goal is to create models that are correct first, then optimize for access patterns while maintaining data integrity.
+  EntityRelationshipModeling {
+    IdentifyingEntities {
+      Entities represent distinct business concepts that have identity and lifecycle
 
-## Entity-Relationship Modeling
+      IdentificationChecklist:
+      - Has unique identity across the system
+      - Has attributes that describe it
+      - Participates in relationships with other entities
+      - Has a meaningful lifecycle (created, modified, archived)
+      - Would be stored and retrieved independently
 
-### Identifying Entities
+      CommonEntityPatterns:
+      - Core domain objects (User, Product, Order)
+      - Reference/lookup data (Country, Status, Category)
+      - Transactional records (Payment, LogEntry, Event)
+      - Associative entities (OrderItem, Enrollment, Permission)
+    }
 
-Entities represent distinct business concepts that have identity and lifecycle.
+    RelationshipTypes {
+      | Type | Notation | Example | Implementation |
+      |------|----------|---------|----------------|
+      | One-to-One | 1:1 | User - Profile | FK with unique constraint or same table |
+      | One-to-Many | 1:N | Customer - Orders | FK on the "many" side |
+      | Many-to-Many | M:N | Students - Courses | Junction/bridge table |
 
-**Entity Identification Checklist:**
-- Has unique identity across the system
-- Has attributes that describe it
-- Participates in relationships with other entities
-- Has a meaningful lifecycle (created, modified, archived)
-- Would be stored and retrieved independently
+      Considerations:
+      - Cardinality: minimum and maximum on each side
+      - Optionality: required vs optional participation
+      - Direction: unidirectional vs bidirectional navigation
+      - Cascade behavior: what happens on delete/update
+    }
 
-**Common Entity Patterns:**
-- Core domain objects (User, Product, Order)
-- Reference/lookup data (Country, Status, Category)
-- Transactional records (Payment, LogEntry, Event)
-- Associative entities (OrderItem, Enrollment, Permission)
+    AttributeAnalysis {
+      AttributeTypes:
+      - Simple: single atomic value (name, price)
+      - Composite: structured value (address = street + city + postal)
+      - Derived: calculated from other attributes (age from birthdate)
+      - Multi-valued: repeating values (phone numbers, tags)
 
-### Relationship Types
+      KeyTypes:
+      - Natural key: business-meaningful identifier (SSN, ISBN)
+      - Surrogate key: system-generated identifier (UUID, auto-increment)
+      - Composite key: multiple columns forming identity
+      - Candidate key: any attribute(s) that could serve as primary key
 
-| Type | Notation | Example | Implementation |
-|------|----------|---------|----------------|
-| One-to-One | 1:1 | User - Profile | FK with unique constraint or same table |
-| One-to-Many | 1:N | Customer - Orders | FK on the "many" side |
-| Many-to-Many | M:N | Students - Courses | Junction/bridge table |
+      BestPractice: Prefer surrogate keys for primary keys; use natural keys as unique constraints
+    }
+  }
 
-**Relationship Considerations:**
-- Cardinality: minimum and maximum on each side
-- Optionality: required vs optional participation
-- Direction: unidirectional vs bidirectional navigation
-- Cascade behavior: what happens on delete/update
+  Normalization {
+    NormalFormsProgression {
+      Each normal form builds on the previous
+      Normalize until requirements dictate otherwise
+    }
 
-### Attribute Analysis
+    FirstNormalForm {
+      Rule: Eliminate repeating groups; each cell contains atomic values
 
-**Attribute Types:**
-- Simple: single atomic value (name, price)
-- Composite: structured value (address = street + city + postal)
-- Derived: calculated from other attributes (age from birthdate)
-- Multi-valued: repeating values (phone numbers, tags)
+      ViolationExample:
+      ```
+      Order(id, customer, items: "widget,gadget,thing")
+      ```
 
-**Key Types:**
-- Natural key: business-meaningful identifier (SSN, ISBN)
-- Surrogate key: system-generated identifier (UUID, auto-increment)
-- Composite key: multiple columns forming identity
-- Candidate key: any attribute(s) that could serve as primary key
+      Resolution:
+      ```
+      Order(id, customer)
+      OrderItem(order_id, item_name)
+      ```
+    }
 
-**Best Practice:** Prefer surrogate keys for primary keys; use natural keys as unique constraints.
+    SecondNormalForm {
+      Rule: Remove partial dependencies on composite keys
 
-## Normalization
+      ViolationExample:
+      ```
+      OrderItem(order_id, product_id, product_name, quantity)
+                                       ^-- depends only on product_id
+      ```
 
-### Normal Forms Progression
+      Resolution:
+      ```
+      OrderItem(order_id, product_id, quantity)
+      Product(product_id, product_name)
+      ```
+    }
 
-Each normal form builds on the previous. Normalize until requirements dictate otherwise.
+    ThirdNormalForm {
+      Rule: Remove transitive dependencies; non-key columns depend only on the key
 
-#### First Normal Form (1NF)
+      ViolationExample:
+      ```
+      Employee(id, department_id, department_name)
+                                  ^-- depends on department_id, not employee id
+      ```
 
-**Rule:** Eliminate repeating groups; each cell contains atomic values.
+      Resolution:
+      ```
+      Employee(id, department_id)
+      Department(id, name)
+      ```
+    }
 
-**Violation Example:**
-```
-Order(id, customer, items: "widget,gadget,thing")
-```
+    BoyceCoodNormalForm {
+      Rule: Every determinant is a candidate key
 
-**Resolution:**
-```
-Order(id, customer)
-OrderItem(order_id, item_name)
-```
+      ViolationExample:
+      ```
+      CourseOffering(student, course, instructor)
+      -- Constraint: each instructor teaches only one course
+      -- instructor -> course (but instructor is not a candidate key)
+      ```
 
-#### Second Normal Form (2NF)
+      Resolution:
+      ```
+      InstructorCourse(instructor, course) -- instructor is key
+      Enrollment(student, instructor) -- references instructor
+      ```
+    }
 
-**Rule:** Remove partial dependencies on composite keys.
+    WhenToStopNormalizing {
+      Stop at 3NF for most OLTP systems
+      Consider BCNF when:
+      - Update anomalies cause data corruption
+      - Data integrity is paramount
+      - Write frequency is high
+    }
+  }
 
-**Violation Example:**
-```
-OrderItem(order_id, product_id, product_name, quantity)
-                                 ^-- depends only on product_id
-```
+  DenormalizationStrategies {
+    Principle: Denormalize intentionally for read performance, not out of laziness
 
-**Resolution:**
-```
-OrderItem(order_id, product_id, quantity)
-Product(product_id, product_name)
-```
+    CalculatedColumns {
+      Store derived values to avoid repeated computation
 
-#### Third Normal Form (3NF)
+      ```
+      Order
+        - subtotal (calculated once on item changes)
+        - tax_amount (calculated once)
+        - total (calculated once)
+      ```
 
-**Rule:** Remove transitive dependencies; non-key columns depend only on the key.
+      TradeOff: Faster reads, more complex writes, potential consistency issues
+    }
 
-**Violation Example:**
-```
-Employee(id, department_id, department_name)
-                            ^-- depends on department_id, not employee id
-```
+    MaterializedRelationships {
+      Embed frequently-accessed related data
 
-**Resolution:**
-```
-Employee(id, department_id)
-Department(id, name)
-```
+      ```
+      Post
+        - author_id
+        - author_name (copied from User.name)
+        - author_avatar_url (copied from User.avatar_url)
+      ```
 
-#### Boyce-Codd Normal Form (BCNF)
+      TradeOff: Eliminates joins, requires synchronization on source changes
+    }
 
-**Rule:** Every determinant is a candidate key.
+    AggregationTables {
+      Pre-compute summaries for reporting
 
-**Violation Example:**
-```
-CourseOffering(student, course, instructor)
--- Constraint: each instructor teaches only one course
--- instructor -> course (but instructor is not a candidate key)
-```
+      ```
+      DailySales
+        - date
+        - product_id
+        - units_sold (sum)
+        - revenue (sum)
+      ```
 
-**Resolution:**
-```
-InstructorCourse(instructor, course) -- instructor is key
-Enrollment(student, instructor) -- references instructor
-```
+      TradeOff: Fast analytics, storage overhead, stale until refreshed
+    }
 
-### When to Stop Normalizing
+    DecisionMatrix {
+      | Factor | Normalize | Denormalize |
+      |--------|-----------|-------------|
+      | Write frequency | High | Low |
+      | Read frequency | Low | High |
+      | Data consistency | Critical | Eventual OK |
+      | Query complexity | Simple | Complex joins |
+      | Data size | Small | Large |
+    }
+  }
 
-Stop at 3NF for most OLTP systems. Consider BCNF when:
-- Update anomalies cause data corruption
-- Data integrity is paramount
-- Write frequency is high
+  NoSQLPatterns {
+    DocumentStores {
+      Target: MongoDB, DynamoDB
 
-## Denormalization Strategies
+      EmbeddingPattern {
+        Embed related data that is read together and has 1:few relationship
 
-Denormalize intentionally for read performance, not out of laziness.
+        ```json
+        {
+          "order_id": "123",
+          "customer": {
+            "id": "456",
+            "name": "Jane Doe",
+            "email": "jane@example.com"
+          },
+          "items": [
+            {"product_id": "A1", "name": "Widget", "quantity": 2}
+          ]
+        }
+        ```
+      }
 
-### Calculated Columns
+      ReferencingPattern {
+        Reference related data when it changes independently or is shared
 
-Store derived values to avoid repeated computation.
+        ```json
+        {
+          "order_id": "123",
+          "customer_id": "456",
+          "item_ids": ["A1", "B2"]
+        }
+        ```
+      }
 
-```
-Order
-  - subtotal (calculated once on item changes)
-  - tax_amount (calculated once)
-  - total (calculated once)
-```
+      HybridPattern {
+        Embed summary data, reference for full details
 
-**Trade-off:** Faster reads, more complex writes, potential consistency issues.
+        ```json
+        {
+          "order_id": "123",
+          "customer_summary": {
+            "id": "456",
+            "name": "Jane Doe"
+          },
+          "items": [
+            {"product_id": "A1", "name": "Widget", "quantity": 2}
+          ]
+        }
+        ```
+      }
+    }
 
-### Materialized Relationships
+    KeyValueStores {
+      AccessPatternDesign: Design keys around query patterns
 
-Embed frequently-accessed related data.
+      ```
+      USER:{user_id} -> user data
+      USER:{user_id}:ORDERS -> list of order ids
+      ORDER:{order_id} -> order data
+      ```
 
-```
-Post
-  - author_id
-  - author_name (copied from User.name)
-  - author_avatar_url (copied from User.avatar_url)
-```
+      CompositeKeys: Combine entity type with identifiers for namespacing
+    }
 
-**Trade-off:** Eliminates joins, requires synchronization on source changes.
+    WideColumnStores {
+      Target: Cassandra, HBase
 
-### Aggregation Tables
+      PartitionKeyDesign: Choose partition keys for even distribution and access locality
 
-Pre-compute summaries for reporting.
+      ```
+      Primary Key: (user_id, order_date)
+                   ^-- partition key (distribution)
+                             ^-- clustering column (ordering)
+      ```
 
-```
-DailySales
-  - date
-  - product_id
-  - units_sold (sum)
-  - revenue (sum)
-```
+      Avoid:
+      - High-cardinality partition keys causing hot spots
+      - Large partitions exceeding recommended sizes
+      - Scatter-gather queries across partitions
+    }
 
-**Trade-off:** Fast analytics, storage overhead, stale until refreshed.
+    GraphDatabases {
+      NodeAndRelationshipDesign:
+      - Nodes: entities with properties
+      - Relationships: named, directed, with properties
+      - Labels: categorize nodes for efficient traversal
 
-### Denormalization Decision Matrix
+      ```
+      (User)-[:PURCHASED {date, amount}]->(Product)
+      (User)-[:FOLLOWS]->(User)
+      (Product)-[:BELONGS_TO]->(Category)
+      ```
+    }
+  }
 
-| Factor | Normalize | Denormalize |
-|--------|-----------|-------------|
-| Write frequency | High | Low |
-| Read frequency | Low | High |
-| Data consistency | Critical | Eventual OK |
-| Query complexity | Simple | Complex joins |
-| Data size | Small | Large |
+  SchemaEvolutionStrategies {
+    AdditiveChanges {
+      Safe changes:
+      - Add new nullable columns
+      - Add new tables
+      - Add new indexes
+      - Add new optional fields (NoSQL)
+    }
 
-## NoSQL Data Modeling Patterns
+    BreakingChanges {
+      Require migration:
+      - Remove columns/tables
+      - Rename columns/tables
+      - Change data types
+      - Add non-nullable columns without defaults
+    }
 
-### Document Stores (MongoDB, DynamoDB)
+    MigrationPatterns {
+      ExpandContractPattern {
+        1. Add new column alongside old
+        2. Backfill new column from old
+        3. Update application to use new column
+        4. Remove old column
+      }
 
-**Embedding Pattern:**
-Embed related data that is read together and has 1:few relationship.
+      BlueGreenSchema {
+        1. Create new version of schema
+        2. Dual-write to both versions
+        3. Migrate reads to new version
+        4. Drop old version
+      }
 
-```json
-{
-  "order_id": "123",
-  "customer": {
-    "id": "456",
-    "name": "Jane Doe",
-    "email": "jane@example.com"
-  },
-  "items": [
-    {"product_id": "A1", "name": "Widget", "quantity": 2}
-  ]
+      VersionedDocuments {
+        For NoSQL:
+        ```json
+        {
+          "_schema_version": 2,
+          "name": "Jane",
+          "email": "jane@example.com"
+        }
+        ```
+
+        Handle multiple versions in application code during transition
+      }
+    }
+  }
+
+  BestPractices {
+    - Model the domain first, then optimize for access patterns
+    - Use surrogate keys for primary keys; natural keys as unique constraints
+    - Normalize to 3NF for OLTP; denormalize deliberately for read-heavy loads
+    - Document all foreign key relationships and cascade behaviors
+    - Version control all schema changes as migration scripts
+    - Test migrations on production-like data volumes
+    - Consider query patterns when designing NoSQL schemas
+    - Plan for schema evolution from day one
+  }
+
+  AntiPatterns {
+    - Designing schemas around UI forms instead of domain concepts
+    - Using generic columns (field1, field2, field3)
+    - Entity-Attribute-Value (EAV) for structured data
+    - Storing comma-separated values in single columns
+    - Circular foreign key dependencies
+    - Missing indexes on foreign key columns
+    - Hard-deleting data without soft-delete consideration
+    - Ignoring temporal aspects (effective dates, audit trails)
+  }
 }
-```
-
-**Referencing Pattern:**
-Reference related data when it changes independently or is shared.
-
-```json
-{
-  "order_id": "123",
-  "customer_id": "456",
-  "item_ids": ["A1", "B2"]
-}
-```
-
-**Hybrid Pattern:**
-Embed summary data, reference for full details.
-
-```json
-{
-  "order_id": "123",
-  "customer_summary": {
-    "id": "456",
-    "name": "Jane Doe"
-  },
-  "items": [
-    {"product_id": "A1", "name": "Widget", "quantity": 2}
-  ]
-}
-```
-
-### Key-Value Stores
-
-**Access Pattern Design:**
-Design keys around query patterns.
-
-```
-USER:{user_id} -> user data
-USER:{user_id}:ORDERS -> list of order ids
-ORDER:{order_id} -> order data
-```
-
-**Composite Keys:**
-Combine entity type with identifiers for namespacing.
-
-### Wide-Column Stores (Cassandra, HBase)
-
-**Partition Key Design:**
-Choose partition keys for even distribution and access locality.
-
-```
-Primary Key: (user_id, order_date)
-             ^-- partition key (distribution)
-                       ^-- clustering column (ordering)
-```
-
-**Avoid:**
-- High-cardinality partition keys causing hot spots
-- Large partitions exceeding recommended sizes
-- Scatter-gather queries across partitions
-
-### Graph Databases
-
-**Node and Relationship Design:**
-- Nodes: entities with properties
-- Relationships: named, directed, with properties
-- Labels: categorize nodes for efficient traversal
-
-```
-(User)-[:PURCHASED {date, amount}]->(Product)
-(User)-[:FOLLOWS]->(User)
-(Product)-[:BELONGS_TO]->(Category)
-```
-
-## Schema Evolution Strategies
-
-### Additive Changes (Safe)
-
-- Add new nullable columns
-- Add new tables
-- Add new indexes
-- Add new optional fields (NoSQL)
-
-### Breaking Changes (Require Migration)
-
-- Remove columns/tables
-- Rename columns/tables
-- Change data types
-- Add non-nullable columns without defaults
-
-### Migration Patterns
-
-**Expand-Contract Pattern:**
-1. Add new column alongside old
-2. Backfill new column from old
-3. Update application to use new column
-4. Remove old column
-
-**Blue-Green Schema:**
-1. Create new version of schema
-2. Dual-write to both versions
-3. Migrate reads to new version
-4. Drop old version
-
-**Versioned Documents (NoSQL):**
-```json
-{
-  "_schema_version": 2,
-  "name": "Jane",
-  "email": "jane@example.com"
-}
-```
-
-Handle multiple versions in application code during transition.
-
-## Best Practices
-
-- Model the domain first, then optimize for access patterns
-- Use surrogate keys for primary keys; natural keys as unique constraints
-- Normalize to 3NF for OLTP; denormalize deliberately for read-heavy loads
-- Document all foreign key relationships and cascade behaviors
-- Version control all schema changes as migration scripts
-- Test migrations on production-like data volumes
-- Consider query patterns when designing NoSQL schemas
-- Plan for schema evolution from day one
-
-## Anti-Patterns
-
-- Designing schemas around UI forms instead of domain concepts
-- Using generic columns (field1, field2, field3)
-- Entity-Attribute-Value (EAV) for structured data
-- Storing comma-separated values in single columns
-- Circular foreign key dependencies
-- Missing indexes on foreign key columns
-- Hard-deleting data without soft-delete consideration
-- Ignoring temporal aspects (effective dates, audit trails)
 
 ## References
 

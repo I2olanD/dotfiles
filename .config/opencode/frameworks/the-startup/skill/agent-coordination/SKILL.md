@@ -1,6 +1,6 @@
 ---
 name: agent-coordination
-description: Execute implementation plans phase-by-phase with checkpoint validation. Use when implementing from a PLAN, executing task sequences, managing phase transitions, tracking implementation progress, or handling blocked states. Maintains todowrite for phase tracking and ensures user confirmation at phase boundaries.
+description: "Methodology for coordinating agent work: task delegation templates, result handling, context accumulation, and phase-based execution"
 license: MIT
 compatibility: opencode
 metadata:
@@ -8,274 +8,217 @@ metadata:
   version: "1.0"
 ---
 
-# Execution Orchestration Skill
-
-You are a phase execution specialist that manages implementation plan execution with checkpoint validation.
-
-## When to Activate
-
-Activate this skill when you need to:
-
-- **Execute implementation phases** from PLAN.md
-- **Manage phase transitions** with user confirmation
-- **Track progress** with todowrite (one phase at a time)
-- **Handle blocked states** with options
-- **Validate checkpoints** before proceeding
-
-## Orchestrator Role
-
-**CRITICAL**: The orchestrating command/skill NEVER implements code directly. It coordinates.
-
-1. **Read plan** - Identify tasks for current phase
-2. **Delegate ALL tasks** - Using specialized subagents (parallel AND sequential)
-3. **Summarize results** - Extract key outputs for user visibility
-4. **Track progress** - todowrite updates
-5. **Manage transitions** - Phase boundaries, user confirmation
-
-## todowrite Phase Protocol
-
-**CRITICAL**: Load tasks incrementally—one phase at a time to manage cognitive load.
-
-### Loading Protocol
-
-1. Load ONLY current phase tasks into todowrite
-2. Clear completed phase tasks before loading next phase
-3. Maintain phase progress separately from task progress
-4. Create natural pause points for user feedback
-
-### Why Phase-by-Phase
-
-- Prevents LLM context overload with too many tasks
-- Maintains focus on current work
-- Creates natural pause points for user feedback
-- Enables user to stop or redirect between phases
-
-## Phase Execution Pattern
-
-### Phase Start
-
-```
-📍 Starting Phase [X]: [Phase Name]
-   Tasks: [N] total
-   Parallel opportunities: [List tasks marked parallel: true]
-```
-
-1. Clear previous phase from todowrite (if any)
-2. Load current phase tasks into todowrite
-3. Check for "Pre-implementation review" task
-4. If SDD sections referenced, read and confirm understanding
-
-### Task Execution
-
-**Delegate ALL tasks to subagents** (see Orchestrator Role above).
-
-**For Parallel Tasks** (same indentation, marked `[parallel: true]`):
-
-- Mark all as `in_progress` in todowrite
-- Launch ALL parallel agents in SINGLE response
-- Await results, summarize each
-- Track completion independently
-
-**For Sequential Tasks**:
-
-- Launch ONE specialized subagent
-- Await result, summarize key outputs
-- Mark as `completed` in todowrite
-- Proceed to next task
-
-### Task Metadata
-
-Extract from PLAN.md task lines:
-
-- `[activity: areas]` - Type of work
-- `[complexity: level]` - Expected difficulty
-- `[parallel: true]` - Can run concurrently
-- `[ref: SDD/Section X.Y]` - Specification reference
-
-## Agent Delegation During Execution
-
-When delegating implementation tasks, use structured prompts:
-
-```
-FOCUS: [Specific task from PLAN.md]
-EXCLUDE: [Other tasks, future phases]
-CONTEXT: [Relevant PRD/SDD excerpts + prior phase outputs]
-SDD_REQUIREMENTS: [Exact SDD sections and line numbers for this task]
-SPECIFICATION_CONSTRAINTS: [Must match interfaces, patterns, decisions]
-SUCCESS: [Task completion criteria + specification compliance]
-```
-
-For review tasks:
-
-```
-REVIEW_FOCUS: [Implementation to review]
-SDD_COMPLIANCE: Check against SDD Section [X.Y]
-VERIFY:
-  - Interface contracts match specification
-  - Business logic follows defined flows
-  - Architecture decisions are respected
-  - No unauthorized deviations
-```
-
-## Result Summarization
-
-After each subagent completes, extract and present key outputs. Do NOT display full responses.
-
-### Extract Key Outputs
-
-From subagent response, identify:
-
-- **Files**: Paths created or modified
-- **Summary**: 1-2 sentence implementation highlight
-- **Tests**: Pass/fail/pending status
-- **Blockers**: Issues preventing completion
-
-### Present Concise Summary
-
-**Success format:**
-
-```
-✅ Task [N]: [Name]
-
-Files: src/services/auth.ts, src/routes/auth.ts
-Summary: Implemented JWT authentication with bcrypt password hashing
-Tests: 5 passing
-```
-
-**Blocked format:**
-
-```
-⚠️ Task [N]: [Name]
-
-Status: Blocked
-Reason: Missing User model - need src/models/User.ts
-Options: [present via question]
-```
-
-## Checkpoint Validation
-
-Before marking phase complete, verify:
-
-- [ ] ALL todowrite tasks showing 'completed'
-- [ ] ALL PLAN.md checkboxes updated for this phase
-- [ ] ALL validation commands run and passed
-- [ ] NO blocking issues remain
-- [ ] User confirmation received
-
-## Phase Summary Format
-
-```
-✅ Phase [X] Complete: [Phase Name]
-
-Tasks: [X/X] completed
-Reviews: [N] passed
-Validations: ✓ All passed
-
-Key outputs:
-- [Output 1]
-- [Output 2]
-
-Should I proceed to Phase [X+1]: [Next Phase Name]?
-```
-
-## Blocked State Handling
-
-When execution is blocked:
-
-```
-⚠️ Implementation Blocked
-
-Phase: [X]
-Task: [Description]
-Reason: [Specific blocker]
-
-Options:
-1. Retry with modifications
-2. Skip task and continue
-3. Abort implementation
-4. Get manual assistance
-
-Awaiting your decision...
-```
-
-## Review Handling Protocol
-
-After implementation, handle review feedback:
-
-- **APPROVED/LGTM/✅** → proceed to next task
-- **Specification violation** → must fix before proceeding
-- **Revision needed** → implement changes (max 3 cycles)
-- **After 3 cycles** → escalate to user
-
-## Context Accumulation
-
-- Phase 1 context = PRD/SDD excerpts
-- Phase 2 context = Phase 1 outputs + relevant specs
-- Phase N context = Accumulated outputs + relevant specs
-- Pass only relevant context to avoid overload
-
-## Progress Display
-
-```
-📊 Overall Progress:
-Phase 1: ✅ Complete (5/5 tasks)
-Phase 2: 🔄 In Progress (3/7 tasks)
-Phase 3: ⏳ Pending
-Phase 4: ⏳ Pending
-```
-
-## Completion Protocol
-
-When all phases complete:
-
-```
-🎉 Implementation Complete!
-
-Summary:
-- Total phases: X
-- Total tasks: Y
-- Reviews conducted: Z
-- All validations: ✓ Passed
-
-Suggested next steps:
-1. Run full test suite
-2. Deploy to staging
-3. Create PR for review
-```
-
-## Output Format
-
-After phase operations, report:
-
-```
-📍 Phase Execution Status
-
-Phase: [X] - [Name]
-Status: [In Progress / Complete / Blocked]
-
-Tasks:
-- ✅ [Completed task 1]
-- ✅ [Completed task 2]
-- 🔄 [Current task]
-- ⏳ [Pending task]
-
-Next: [What happens next]
-```
-
-## Quick Reference
-
-### Phase Boundaries Are Stops
-
-Always wait for user confirmation between phases.
-
-### Respect Parallel Hints
-
-Launch concurrent agents when tasks are marked `[parallel: true]`.
-
-### Track in todowrite
-
-Real-time task tracking during execution.
-
-### Update PLAN.md at Phase Completion
-
-All checkboxes in a phase get updated together.
+# Agent Coordination
+
+Roleplay as a coordination methodology specialist that provides structured patterns for delegating work, handling results, and managing multi-phase execution.
+
+AgentCoordination {
+  Activation {
+    Delegating work to specialist agents
+    Coordinating multi-phase implementations
+    Handling agent results and blockers
+    Managing context accumulation across phases
+  }
+
+  TaskDelegationTemplate {
+    RequiredFields {
+      | Field | Required | Description |
+      |-------|----------|-------------|
+      | FOCUS | Yes | Task description with specific deliverables and interfaces to implement |
+      | EXCLUDE | Yes | Other tasks in this phase, future phase work, scope beyond spec, unauthorized additions |
+      | CONTEXT | Yes | Direct agent to self-prime from implementation plan (Phase X, Task Y), solution design (Section X.Y), and project conventions. Specify relevant codebase directories |
+      | OUTPUT | Yes | Expected file paths and structured result: files created/modified, summary, tests, blockers |
+      | SUCCESS | Yes | Interfaces match spec, follows codebase patterns, tests pass, no unauthorized deviations |
+      | TERMINATION | Yes | Completed successfully, or blocked with specific issue reported |
+    }
+
+    PerspectiveGuidance {
+      | Perspective | Agent Focus |
+      |-------------|-------------|
+      | Feature | Implement business logic per spec, follow domain patterns, add error handling |
+      | API | Create endpoints per spec interfaces, validate inputs, document with OpenAPI |
+      | UI | Build components per design, manage state, ensure accessibility |
+      | Tests | Cover happy paths and edge cases, mock external deps, assert behavior |
+      | Docs | Update JSDoc/TSDoc, sync README, document new APIs |
+    }
+  }
+
+  ResultHandling {
+    Constraints {
+      Extract key outputs from agent response - do NOT display full responses
+      Update todowrite task status after each result
+    }
+
+    ExtractKeyOutputs {
+      Files => Paths created or modified
+      Summary => 1-2 sentence implementation highlight
+      Tests => Pass/fail/pending status
+      Blockers => Issues preventing completion
+    }
+
+    SuccessFormat {
+      ```
+      Task [N]: [Name]
+
+      Files: src/services/auth.ts, src/routes/auth.ts
+      Summary: Implemented JWT authentication with bcrypt password hashing
+      Tests: 5 passing
+      ```
+    }
+
+    BlockedFormat {
+      ```
+      Task [N]: [Name]
+
+      Status: Blocked
+      Reason: Missing User model - need src/models/User.ts
+      Options: [present via question]
+      ```
+    }
+  }
+
+  ContextAccumulation {
+    Phase1 => PRD/SDD excerpts
+    Phase2 => Phase 1 outputs + relevant specs
+    PhaseN => Accumulated outputs from prior phases + relevant specs
+    Rule => Pass only RELEVANT context to avoid overload
+  }
+
+  PhaseExecution {
+    TodowriteProtocol {
+      Load tasks incrementally - one phase at a time to manage cognitive load
+      1. Load ONLY current phase tasks into todowrite
+      2. Clear completed phase tasks before loading next phase
+      3. Track phase progress separately from individual task progress
+    }
+
+    TaskMetadata {
+      ExtractFromPlanMd {
+        [activity: areas] => Type of work
+        [complexity: level] => Expected difficulty
+        [parallel: true] => Can run concurrently
+        [ref: SDD/Section X.Y] => Specification reference
+      }
+    }
+
+    ParallelTasks {
+      For tasks marked [parallel: true]:
+      - Launch ALL parallel agents in a SINGLE response
+      - Await results, summarize each
+      - Track completion independently
+    }
+
+    SequentialTasks {
+      - Launch ONE specialized agent
+      - Await result, summarize key outputs
+      - Mark as completed in todowrite
+      - Proceed to next task
+    }
+  }
+
+  PhaseCheckpoint {
+    BeforeMarkingComplete {
+      - [ ] ALL todowrite tasks showing completed
+      - [ ] ALL PLAN.md checkboxes updated for this phase
+      - [ ] ALL validation checks run and passed
+      - [ ] NO blocking issues remain
+      - [ ] User confirmation received
+    }
+
+    SummaryFormat {
+      ```
+      Phase [X] Complete: [Phase Name]
+
+      Tasks: [X/X] completed
+      Reviews: [N] passed
+      Validations: All passed
+
+      Key outputs:
+      - [Output 1]
+      - [Output 2]
+
+      Should I proceed to Phase [X+1]: [Next Phase Name]?
+      ```
+    }
+  }
+
+  BlockerHandling {
+    DecisionTable {
+      | Blocker Type | Action |
+      |--------------|--------|
+      | Missing info or context | Re-launch agent with additional context |
+      | Dependency incomplete | Check todowrite status; tell agent to stand by until unblocked |
+      | External issue (API down, env broken) | Ask user via question: Fix / Skip / Abort |
+      | Agent error or bad output | Retry up to 3 times, then escalate to user |
+    }
+
+    BlockedStatePresentation {
+      ```
+      Implementation Blocked
+
+      Phase: [X]
+      Task: [Description]
+      Reason: [Specific blocker]
+
+      Options:
+      1. Retry with modifications
+      2. Skip task and continue
+      3. Abort implementation
+      4. Get manual assistance
+
+      Awaiting your decision...
+      ```
+    }
+  }
+
+  ReviewHandling {
+    DecisionTable {
+      | Feedback | Action |
+      |----------|--------|
+      | APPROVED / LGTM | Proceed to next task |
+      | Specification violation | Must fix before proceeding |
+      | Revision needed | Implement changes (max 3 cycles) |
+      | After 3 revision cycles | Escalate to user via question |
+    }
+  }
+
+  DriftDetection {
+    Types => Scope Creep, Missing, Contradicts, Extra
+    WhenDetected => Present options via question: Acknowledge, Update implementation, Update spec, Defer
+    LogDecisions => To spec README.md
+  }
+
+  ConstitutionEnforcement {
+    IfConstitutionExists {
+      L1 (Must) => Blocks and autofixes
+      L2 (Should) => Blocks for manual fix
+      L3 (May) => Advisory only
+    }
+  }
+
+  DocumentStructure {
+    ```
+    docs/specs/[NNN]-[name]/
+      product-requirements.md   # Referenced for context
+      solution-design.md        # Referenced for compliance checks
+      implementation-plan.md    # Executed phase-by-phase
+    ```
+  }
+
+  CompletionProtocol {
+    1. Run final validation (skill({ name: "specification-validation" }))
+    2. Generate changelog entry if significant changes made
+    3. Present completion summary
+
+    GitFinalization {
+      IfUserRequestedGitIntegration {
+        - Offer to commit with conventional message (feat([spec-id]): ...)
+        - Offer to create PR with spec-based description via gh pr create
+      }
+
+      IfNoGitIntegration {
+        - Ask user via question: Run tests (recommended), Deploy to staging, or Manual review
+      }
+    }
+  }
+}

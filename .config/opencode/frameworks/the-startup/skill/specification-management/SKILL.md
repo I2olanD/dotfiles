@@ -1,178 +1,143 @@
 ---
 name: specification-management
-description: Initialize and manage specification directories with auto-incrementing IDs. Use when creating new specs, checking spec status, tracking user decisions, or managing the docs/specs/ directory structure. Maintains README.md in each spec to record decisions (e.g., PRD skipped), context, and progress. Orchestrates the specification workflow across PRD, SDD, and PLAN phases.
+description: "Provides methodology for scaffolding, status-checking, and managing specification directories including auto-incrementing IDs, README tracking, phase transitions, and decision logging"
 license: MIT
 compatibility: opencode
 metadata:
-  category: documentation
+  category: analysis
   version: "1.0"
 ---
 
-# Specification Management Skill
+# Specification Management
 
-You are a specification workflow orchestrator that manages specification directories and tracks user decisions throughout the PRD → SDD → PLAN workflow.
+Roleplay as a specification workflow orchestrator that manages specification directories and tracks user decisions throughout the PRD to SDD to PLAN workflow.
 
-## When to Activate
+SpecificationManagement {
+  Activation {
+    When to use this skill:
+    - Create a new specification directory with auto-incrementing ID
+    - Check specification status (what documents exist)
+    - Track user decisions (e.g., "PRD skipped because requirements in JIRA")
+    - Manage phase transitions (PRD to SDD to PLAN)
+    - Initialize or update README.md in spec directories
+    - Read existing spec metadata via spec.py
+  }
 
-Activate this skill when you need to:
+  SupportingFiles {
+    - [readme-template.md](readme-template.md) -- README template for spec directories
+    - [reference.md](reference.md) -- Extended specification metadata protocols
+    - [spec.py](spec.py) -- Script for directory creation and metadata reading
+  }
 
-- **Create a new specification** directory with auto-incrementing ID
-- **Check specification status** (what documents exist)
-- **Track user decisions** (e.g., "PRD skipped because requirements in JIRA")
-- **Manage phase transitions** (PRD → SDD → PLAN)
-- **Initialize or update README.md** in spec directories
-- **Read existing spec metadata** via spec.py
+  DirectoryManagement {
+    Constraints {
+      1. Use `spec.py` to create and read specification directories
+      2. The `spec.py` script is located in this skill's directory (alongside this SKILL.md file)
+      3. Resolve `spec.py` from this skill's directory; the full path depends on your framework installation location
+    }
 
-## Core Responsibilities
+    Commands {
+      ```bash
+      # Create new spec (auto-incrementing ID)
+      spec.py "feature-name"
 
-### 1. Directory Management
+      # Read existing spec metadata (TOML output)
+      spec.py 004 --read
 
-Use `spec.py` to create and read specification directories:
+      # Add template to existing spec
+      spec.py 004 --add product-requirements
+      ```
+    }
 
-```bash
-# Create new spec (auto-incrementing ID)
-~/.config/opencode/skill/specification-management/spec.py "feature-name"
+    TOMLOutputFormat {
+      ```toml
+      id = "004"
+      name = "feature-name"
+      dir = "docs/specs/004-feature-name"
 
-# Read existing spec metadata (TOML output)
-~/.config/opencode/skill/specification-management/spec.py 004 --read
+      [spec]
+      prd = "docs/specs/004-feature-name/product-requirements.md"
+      sdd = "docs/specs/004-feature-name/solution-design.md"
 
-# Add template to existing spec
-~/.config/opencode/skill/specification-management/spec.py 004 --add product-requirements
-```
+      files = [
+        "product-requirements.md",
+        "solution-design.md"
+      ]
+      ```
+    }
+  }
 
-**TOML Output Format:**
+  ReadmeManagement {
+    Constraints {
+      1. Every spec directory should have a `README.md` tracking decisions and progress
+      2. Create README.md when a new spec is created using the [readme-template.md](readme-template.md) template
+    }
 
-```toml
-id = "004"
-name = "feature-name"
-dir = "docs/specs/004-feature-name"
+    UpdateTriggers {
+      Update README.md when:
+      - Phase transitions occur (start, complete, skip)
+      - User makes workflow decisions
+      - Context needs to be recorded
+    }
+  }
 
-[spec]
-prd = "docs/specs/004-feature-name/product-requirements.md"
-sdd = "docs/specs/004-feature-name/solution-design.md"
+  PhaseTransitions {
+    Workflow {
+      1. Check existing state -- Use `spec.py [ID] --read`
+      2. Suggest continuation point based on existing documents (evaluate top-to-bottom, first match wins)
+      3. Record decisions in README.md
+      4. Update phase status as work progresses
+    }
 
-files = [
-  "product-requirements.md",
-  "solution-design.md"
-]
-```
+    ContinuationTable {
+      | IF state is | THEN suggest |
+      |---|---|
+      | `plan` exists | "PLAN found. Proceed to implementation?" |
+      | `sdd` exists but no `plan` | "SDD found. Continue to PLAN?" |
+      | `prd` exists but no `sdd` | "PRD found. Continue to SDD?" |
+      | No documents exist | "Start from PRD?" |
+    }
+  }
 
-### 2. README.md Management
+  DecisionTracking {
+    Constraints {
+      1. Log all significant decisions in README.md
+    }
 
-Every spec directory should have a `README.md` tracking decisions and progress.
+    Format {
+      ```markdown
+      ## Decisions Log
 
-**Create README.md** when a new spec is created:
+      | Date | Decision | Rationale |
+      |------|----------|-----------|
+      | 2025-12-10 | PRD skipped | Requirements documented in JIRA-1234 |
+      | 2025-12-10 | Start with SDD | Technical spike already completed |
+      ```
+    }
+  }
 
-```markdown
-# Specification: [NNN]-[name]
+  WorkflowIntegration {
+    RelatedSkills {
+      - `requirements-analysis` skill -- PRD creation and validation
+      - `architecture-design` skill -- SDD creation and validation
+      - `implementation-planning` skill -- PLAN creation and validation
+    }
 
-## Status
+    HandoffPattern {
+      1. Specification-management creates directory and README
+      2. User confirms phase to start
+      3. Context shifts to document-specific work
+      4. Document skill activates for detailed guidance
+      5. On completion, context returns here for phase transition
+    }
+  }
 
-| Field             | Value          |
-| ----------------- | -------------- |
-| **Created**       | [date]         |
-| **Current Phase** | Initialization |
-| **Last Updated**  | [date]         |
-
-## Documents
-
-| Document                | Status  | Notes |
-| ----------------------- | ------- | ----- |
-| product-requirements.md | pending |       |
-| solution-design.md      | pending |       |
-| implementation-plan.md  | pending |       |
-
-**Status values**: `pending` | `in_progress` | `completed` | `skipped`
-
-## Decisions Log
-
-| Date | Decision | Rationale |
-| ---- | -------- | --------- |
-
-## Context
-
-[Initial context from user request]
-
----
-
-_This file is managed by the specification-management skill._
-```
-
-**Update README.md** when:
-
-- Phase transitions occur (start, complete, skip)
-- User makes workflow decisions
-- Context needs to be recorded
-
-### 3. Phase Transitions
-
-Guide users through the specification workflow:
-
-1. **Check existing state** - Use `spec.py [ID] --read`
-2. **Suggest continuation point** based on existing documents:
-   - If `plan` exists: "PLAN found. Proceed to implementation?"
-   - If `sdd` exists but `plan` doesn't: "SDD found. Continue to PLAN?"
-   - If `prd` exists but `sdd` doesn't: "PRD found. Continue to SDD?"
-   - If no documents: "Start from PRD?"
-3. **Record decisions** in README.md
-4. **Update phase status** as work progresses
-
-### 4. Decision Tracking
-
-Log all significant decisions:
-
-```markdown
-## Decisions Log
-
-| Date       | Decision       | Rationale                            |
-| ---------- | -------------- | ------------------------------------ |
-| 2025-12-10 | PRD skipped    | Requirements documented in JIRA-1234 |
-| 2025-12-10 | Start with SDD | Technical spike already completed    |
-```
-
-## Workflow Integration
-
-This skill works with document-specific skills:
-
-- `product-requirements` skill - PRD creation and validation
-- `solution-design` skill - SDD creation and validation
-- `implementation-plan` skill - PLAN creation and validation
-
-**Handoff Pattern:**
-
-1. Specification-management creates directory and README
-2. User confirms phase to start
-3. Context shifts to document-specific work
-4. Document skill activates for detailed guidance
-5. On completion, context returns here for phase transition
-
-## Validation Checklist
-
-Before completing any operation:
-
-- [ ] spec.py command executed successfully
-- [ ] README.md exists and is up-to-date
-- [ ] Current phase is correctly recorded
-- [ ] All decisions have been logged
-- [ ] User has confirmed next steps
-
-## Output Format
-
-After spec operations, report:
-
-```
-📁 Specification: [NNN]-[name]
-📍 Directory: docs/specs/[NNN]-[name]/
-📋 Current Phase: [Phase]
-
-Documents:
-- product-requirements.md: [status]
-- solution-design.md: [status]
-- implementation-plan.md: [status]
-
-Recent Decisions:
-- [Decision 1]
-- [Decision 2]
-
-Next: [Suggested next step]
-```
+  ValidationChecklist {
+    Before completing any operation:
+    - [ ] spec.py command executed successfully
+    - [ ] README.md exists and is up-to-date
+    - [ ] Current phase is correctly recorded
+    - [ ] All decisions have been logged
+    - [ ] User has confirmed next steps
+  }
+}

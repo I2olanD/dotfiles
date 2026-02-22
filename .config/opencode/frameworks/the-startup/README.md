@@ -1,190 +1,203 @@
-<div align="center">
-  <img src="./../../assets/logo.png" alt="Logo">
-</div>
+# The Startup - OpenCode Framework
 
-# OpenCode Configuration
+> Migrated from [the-startup](https://github.com/rsmdt/the-startup) v3.2.1 (formerly a Claude Code plugin) to OpenCode framework format.
 
-> This is a copy of repo [https://github.com/rsmdt/the-startup]
+A multi-agent framework for software development providing 35 specialized agents, 42 reusable skills, and 10 workflow commands.
 
-A comprehensive AI Agent configuration providing specialized agents, reusable skills, and workflow commands for software development.
+---
 
 ## Agents
 
-Agents are specialized AI personas that handle specific domains. They're organized into teams:
+35 agents organized into 6 teams plus 2 top-level coordinators.
 
-### The Chief
+### Top-Level Agents
 
-**File:** `agent/the-chief.md`
+| Agent | File | Purpose |
+| --- | --- | --- |
+| The Chief | `agent/the-chief.md` | Rapid complexity assessment, routes work to specialists, identifies parallel execution |
+| The Meta-Agent | `agent/the-meta-agent.md` | Designs and generates new sub-agents, validates agent specifications |
 
-Project CTO that performs rapid complexity assessment and routes work to appropriate specialists. Identifies parallel execution opportunities and eliminates bottlenecks.
+### The Analyst (4 agents)
 
-### The Meta-Agent
+| Agent | Purpose |
+| --- | --- |
+| `feature-prioritization` | Prioritize features, evaluate trade-offs, establish success metrics |
+| `market-research` | Research market context, analyze competitors, evaluate positioning |
+| `project-coordination` | Break down projects, identify dependencies, coordinate work streams |
+| `requirements-analysis` | Clarify requirements, document specifications, define acceptance criteria |
 
-**File:** `agent/the-meta-agent.md`
+### The Architect (7 agents)
 
-Designs and generates new Opencode sub-agents. Validates agent specifications and refactors existing agents to follow best practices.
+| Agent | Purpose |
+| --- | --- |
+| `compatibility-review` | Review for breaking changes, API contracts, schema compatibility |
+| `complexity-review` | Review for unnecessary complexity, over-engineering, YAGNI violations |
+| `quality-review` | Architecture and code quality review, security assessments |
+| `security-review` | Security vulnerabilities, injection prevention, auth issues |
+| `system-architecture` | Design scalable systems, technology selection, deployment architecture |
+| `system-documentation` | Architectural docs, ADRs, integration guides, runbooks |
+| `technology-research` | Research solutions, evaluate technologies, proof-of-concept development |
 
-### The Analyst Team
+### The Designer (4 agents)
 
-| Agent                    | Purpose                                                                    |
-| ------------------------ | -------------------------------------------------------------------------- |
-| `feature-prioritization` | Prioritize features, evaluate trade-offs, establish success metrics        |
-| `market-research`        | Research market context, analyze competitors, evaluate product positioning |
-| `project-coordination`   | Break down projects, identify dependencies, coordinate work streams        |
-| `requirements-analysis`  | Clarify requirements, document specifications, define acceptance criteria  |
+| Agent | Purpose |
+| --- | --- |
+| `accessibility-implementation` | WCAG compliance, screen reader support |
+| `design-foundation` | Design systems, component libraries, style guides |
+| `interaction-architecture` | Navigation, user flows, wireframes |
+| `user-research` | User interviews, usability testing, persona creation |
 
-### The Architect Team
+### The Software Engineer (5 agents)
 
-| Agent                  | Purpose                                                                     |
-| ---------------------- | --------------------------------------------------------------------------- |
-| `compatibility-review` | Review code for breaking changes, API contracts, schema compatibility       |
-| `complexity-review`    | Review code for unnecessary complexity, over-engineering, YAGNI violations  |
-| `quality-review`       | Review architecture and code quality, security assessments                  |
-| `security-review`      | Review code for security vulnerabilities, injection prevention, auth issues |
-| `system-architecture`  | Design scalable systems, technology selection, deployment architecture      |
-| `system-documentation` | Create architectural docs, ADRs, integration guides, runbooks               |
-| `technology-research`  | Research solutions, evaluate technologies, proof-of-concept development     |
+| Agent | Purpose |
+| --- | --- |
+| `api-development` | REST/GraphQL APIs, documentation, SDK generation |
+| `component-development` | UI components, state management patterns |
+| `concurrency-review` | Race conditions, deadlocks, async anti-patterns |
+| `domain-modeling` | Business domains, entities, persistence design |
+| `performance-optimization` | Bundle size, rendering, memory usage |
 
-### The Designer Team
+### The Platform Engineer (9 agents)
 
-| Agent                          | Purpose                                                      |
-| ------------------------------ | ------------------------------------------------------------ |
-| `accessibility-implementation` | Implement WCAG compliance, screen reader support             |
-| `design-foundation`            | Create design systems, component libraries, style guides     |
-| `interaction-architecture`     | Design navigation, user flows, wireframes                    |
-| `user-research`                | Conduct user interviews, usability testing, persona creation |
+| Agent | Purpose |
+| --- | --- |
+| `ci-cd-pipelines` | CI/CD pipelines, deployment strategies, rollback |
+| `containerization` | Docker images, Kubernetes deployments, container workflows |
+| `data-architecture` | Schema modeling, migration planning, storage optimization |
+| `dependency-review` | Dependencies for security, licenses, supply chain risks |
+| `deployment-automation` | CI/CD pipelines, blue-green/canary deployments |
+| `infrastructure-as-code` | Terraform, CloudFormation, Pulumi modules |
+| `performance-tuning` | System profiling, database optimization, capacity planning |
+| `pipeline-engineering` | ETL/ELT workflows, stream processing, data quality |
+| `production-monitoring` | Metrics, logging, alerting, SLI/SLO definition |
 
-### The Software Engineer Team
+### The QA Engineer (4 agents)
 
-| Agent                      | Purpose                                                         |
-| -------------------------- | --------------------------------------------------------------- |
-| `api-development`          | Design REST/GraphQL APIs, documentation, SDK generation         |
-| `component-development`    | Design UI components, state management patterns                 |
-| `concurrency-review`       | Review code for race conditions, deadlocks, async anti-patterns |
-| `domain-modeling`          | Model business domains, entities, persistence design            |
-| `performance-optimization` | Optimize bundle size, rendering, memory usage                   |
-
-### The Platform Engineer Team
-
-| Agent                    | Purpose                                                        |
-| ------------------------ | -------------------------------------------------------------- |
-| `ci-cd-pipelines`        | Design CI/CD pipelines, deployment strategies, rollback        |
-| `containerization`       | Docker images, Kubernetes deployments, container workflows     |
-| `data-architecture`      | Schema modeling, migration planning, storage optimization      |
-| `dependency-review`      | Review dependencies for security, licenses, supply chain risks |
-| `deployment-automation`  | CI/CD pipelines, blue-green/canary deployments                 |
-| `infrastructure-as-code` | Terraform, CloudFormation, Pulumi modules                      |
-| `performance-tuning`     | System profiling, database optimization, capacity planning     |
-| `pipeline-engineering`   | ETL/ELT workflows, stream processing, data quality             |
-| `production-monitoring`  | Metrics, logging, alerting, SLI/SLO definition                 |
-
-### The QA Engineer Team
-
-| Agent                 | Purpose                                                     |
-| --------------------- | ----------------------------------------------------------- |
-| `exploratory-testing` | Manual testing, edge case discovery, usability validation   |
-| `performance-testing` | Load testing, stress testing, capacity planning             |
-| `quality-assurance`   | Test design, automation, edge case discovery, coverage      |
-| `test-execution`      | Test strategy, automation implementation, coverage analysis |
+| Agent | Purpose |
+| --- | --- |
+| `exploratory-testing` | Manual testing, edge case discovery, usability validation |
+| `performance-testing` | Load testing, stress testing, capacity planning |
+| `quality-assurance` | Test design, automation, edge case discovery, coverage |
+| `test-execution` | Test strategy, automation implementation, coverage analysis |
 
 ---
 
-## Commands
+## Commands (10)
 
 Workflow commands invoked via `/command-name`:
 
-| Command         | Description                                                     |
-| --------------- | --------------------------------------------------------------- |
-| `/specify`      | Create specifications (PRD → SDD → PLAN workflow)               |
-| `/implement`    | Execute implementation plans phase-by-phase                     |
-| `/review`       | Multi-agent code review (security, performance, quality, tests) |
-| `/analyze`      | Discover business rules, patterns, and interfaces               |
-| `/debug`        | Systematic bug diagnosis through conversation                   |
-| `/refactor`     | Safe code refactoring with behavior preservation                |
-| `/simplify`     | Simplify code for clarity while preserving functionality        |
-| `/validate`     | Validate specifications or implementations                      |
-| `/document`     | Generate documentation for code and APIs                        |
-| `/constitution` | Create and validate project governance rules                    |
+| Command | Description |
+| --- | --- |
+| `/analyze` | Discover business rules, patterns, and interfaces |
+| `/constitution` | Create and validate project governance rules |
+| `/debug` | Systematic bug diagnosis through conversation |
+| `/document` | Generate documentation for code and APIs |
+| `/implement` | Execute implementation plans phase-by-phase |
+| `/refactor` | Safe code refactoring with behavior preservation |
+| `/review` | Multi-agent code review (security, performance, quality, tests) |
+| `/simplify` | Simplify code for clarity while preserving functionality |
+| `/specify` | Create specifications (PRD, SDD, implementation plan) |
+| `/validate` | Validate specifications or implementations |
 
 ---
 
-## Skills
+## Skills (42)
 
-Reusable expertise modules loaded by agents. Organized by category:
+Reusable expertise modules loaded by agents via YAML frontmatter configuration.
 
-### Cross-Cutting Skills
+### Cross-Cutting (8)
 
 Universal skills available to all agents:
 
-| Skill                      | Purpose                                         |
-| -------------------------- | ----------------------------------------------- |
-| `codebase-navigation`      | Navigate and understand project structures      |
-| `coding-conventions`       | Security, performance, accessibility standards  |
-| `documentation-extraction` | Interpret docs, READMEs, specs, configs         |
-| `error-recovery`           | Error patterns, validation, recovery strategies |
-| `feature-prioritization`   | RICE/MoSCoW frameworks, KPIs, roadmaps          |
-| `pattern-detection`        | Identify existing codebase patterns             |
-| `requirements-elicitation` | Gather and clarify requirements                 |
-| `tech-stack-detection`     | Auto-detect project tech stacks                 |
+| Skill | Purpose |
+| --- | --- |
+| `codebase-navigation` | Navigate and understand project structures |
+| `coding-conventions` | Security, performance, accessibility standards |
+| `documentation-extraction` | Interpret docs, READMEs, specs, configs |
+| `error-recovery` | Error patterns, validation, recovery strategies |
+| `feature-prioritization` | RICE/MoSCoW frameworks, KPIs, roadmaps |
+| `pattern-detection` | Identify existing codebase patterns |
+| `requirements-elicitation` | Gather and clarify requirements |
+| `tech-stack-detection` | Auto-detect project tech stacks |
 
-### Design Skills
+### Design (3)
 
-| Skill                    | Purpose                                     |
-| ------------------------ | ------------------------------------------- |
-| `accessibility-design`   | WCAG 2.1 AA compliance, keyboard navigation |
-| `user-insight-synthesis` | Interview techniques, persona creation      |
-| `user-research`          | Research planning, participant recruitment  |
+| Skill | Purpose |
+| --- | --- |
+| `accessibility-design` | WCAG 2.1 AA compliance, keyboard navigation |
+| `user-insight-synthesis` | Interview techniques, persona creation |
+| `user-research` | Research planning, participant recruitment |
 
-### Development Skills
+### Development (5)
 
-| Skill                    | Purpose                              |
-| ------------------------ | ------------------------------------ |
-| `api-contract-design`    | REST/GraphQL patterns, OpenAPI specs |
-| `architecture-selection` | Architecture decision frameworks     |
-| `data-modeling`          | Schema design, entity relationships  |
-| `domain-driven-design`   | DDD patterns, bounded contexts       |
-| `technical-writing`      | ADRs, system docs, runbooks          |
+| Skill | Purpose |
+| --- | --- |
+| `api-contract-design` | REST/GraphQL patterns, OpenAPI specs |
+| `architecture-selection` | Architecture decision frameworks |
+| `data-modeling` | Schema design, entity relationships |
+| `domain-driven-design` | DDD patterns, bounded contexts |
+| `technical-writing` | ADRs, system docs, runbooks |
 
-### Infrastructure Skills
+### Infrastructure (2)
 
-| Skill                        | Purpose                                  |
-| ---------------------------- | ---------------------------------------- |
-| `deployment-pipeline-design` | Pipeline design, deployment strategies   |
-| `observability-design`       | Monitoring, distributed tracing, SLI/SLO |
+| Skill | Purpose |
+| --- | --- |
+| `deployment-pipeline-design` | Pipeline design, deployment strategies |
+| `observability-design` | Monitoring, distributed tracing, SLI/SLO |
 
-### Quality Skills
+### Quality (7)
 
-| Skill                  | Purpose                                                           |
-| ---------------------- | ----------------------------------------------------------------- |
-| `code-quality-review`  | Code smells, design patterns                                      |
-| `code-review`          | Multi-agent code review coordination                              |
-| `performance-analysis` | Profiling, bottleneck identification                              |
-| `security-assessment`  | OWASP patterns, vulnerability review                              |
-| `test-design`          | Test pyramid, coverage strategies                                 |
-| `testing`              | Writing and running effective tests                               |
-| `vibe-security`        | Secure web app coding, OWASP compliance, XSS/CSRF/SSRF protection |
+| Skill | Purpose |
+| --- | --- |
+| `code-quality-review` | Code smells, design patterns |
+| `code-review` | Multi-agent code review coordination |
+| `performance-analysis` | Profiling, bottleneck identification |
+| `security-assessment` | OWASP patterns, vulnerability review |
+| `test-design` | Test pyramid, coverage strategies |
+| `testing` | Writing and running effective tests |
+| `vibe-security` | Secure web app coding, OWASP compliance, XSS/CSRF/SSRF protection |
 
-### Specification & Workflow Skills
+### Specification and Workflow (17)
 
-| Skill                         | Purpose                                       |
-| ----------------------------- | --------------------------------------------- |
-| `agent-coordination`          | Execute implementation plans phase-by-phase   |
-| `architecture-design`         | Create and validate solution design docs      |
-| `bug-diagnosis`               | Scientific debugging methodology              |
-| `codebase-analysis`           | Discover patterns through iterative analysis  |
-| `constitution-validation`     | Create and validate project governance rules  |
-| `context-preservation`        | Preserve session context across conversations |
-| `documentation-sync`          | Maintain documentation freshness              |
-| `drift-detection`             | Detect spec/implementation divergence         |
-| `git-workflow`                | Manage git operations for spec development    |
-| `implementation-planning`     | Create and validate implementation plans      |
-| `implementation-verification` | Validate implementation against specs         |
-| `knowledge-capture`           | Document business rules and patterns          |
-| `requirements-analysis`       | Create and validate PRDs                      |
-| `safe-refactoring`            | Systematic code refactoring                   |
-| `specification-management`    | Initialize and manage spec directories        |
-| `specification-validation`    | Validate specs for completeness               |
-| `task-delegation`             | Generate structured agent prompts             |
+| Skill | Purpose |
+| --- | --- |
+| `agent-coordination` | Execute implementation plans phase-by-phase |
+| `architecture-design` | Create and validate solution design docs |
+| `bug-diagnosis` | Scientific debugging methodology |
+| `codebase-analysis` | Discover patterns through iterative analysis |
+| `constitution-validation` | Create and validate project governance rules |
+| `context-preservation` | Preserve session context across conversations |
+| `documentation-sync` | Maintain documentation freshness |
+| `drift-detection` | Detect spec/implementation divergence |
+| `git-workflow` | Manage git operations for spec development |
+| `implementation-planning` | Create and validate implementation plans |
+| `implementation-verification` | Validate implementation against specs |
+| `knowledge-capture` | Document business rules and patterns |
+| `requirements-analysis` | Create and validate PRDs |
+| `safe-refactoring` | Systematic code refactoring |
+| `specification-management` | Initialize and manage spec directories |
+| `specification-validation` | Validate specs for completeness |
+| `task-delegation` | Generate structured agent prompts |
+
+---
+
+## Directory Structure
+
+```
+the-startup/
+  agent/
+    the-chief.md
+    the-meta-agent.md
+    the-analyst/          (4 agents)
+    the-architect/        (7 agents)
+    the-designer/         (4 agents)
+    the-software-engineer/ (5 agents)
+    the-platform-engineer/ (9 agents)
+    the-qa-engineer/      (4 agents)
+  command/                (10 commands)
+  skill/                  (42 skills, each with SKILL.md)
+  docs/
+```
 
 ---
 
@@ -211,9 +224,7 @@ Skills are loaded automatically based on agent configuration in YAML frontmatter
 skills: codebase-navigation, tech-stack-detection, pattern-detection
 ```
 
----
-
-## Specification Workflow
+### Specification Workflow
 
 The recommended development workflow:
 

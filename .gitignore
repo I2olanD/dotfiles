@@ -78,6 +78,7 @@ mise.toml
 .config/mole/
 .config/nx/
 .config/uv/
+.config/opencode/memory/
 
 # Authentication and password managers
 .config/op/

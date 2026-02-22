@@ -5,7 +5,7 @@
 - **Format**: 3-digit zero-padded number (001, 002, ..., 999)
 - **Auto-incrementing**: Script scans existing directories to find next ID
 - **Directory naming**: `[NNN]-[sanitized-feature-name]`
-- **Sanitization**: Lowercase, special chars → hyphens, trim leading/trailing hyphens
+- **Sanitization**: Lowercase, special chars to hyphens, trim leading/trailing hyphens
 
 ## Directory Structure
 
@@ -13,9 +13,9 @@
 docs/specs/
 ├── 001-user-authentication/
 │   ├── README.md                 # Managed by specification-management skill
-│   ├── product-requirements.md   # Created by requirements-gathering-analysis skill
-│   ├── solution-design.md        # Created by technical-architecture-design skill
-│   └── implementation-plan.md    # Created by phased-implementation-planning skill
+│   ├── product-requirements.md   # Created by requirements-analysis skill
+│   ├── solution-design.md        # Created by architecture-design skill
+│   └── implementation-plan.md    # Created by implementation-planning skill
 ├── 002-payment-processing/
 │   └── ...
 └── 003-notification-system/
@@ -83,13 +83,13 @@ Templates are resolved in this order:
 
 ```
 Initialization
-    ↓
+    |
 PRD (Product Requirements)
-    ↓
+    |
 SDD (Solution Design)
-    ↓
+    |
 PLAN (Implementation Plan)
-    ↓
+    |
 Ready for Implementation
 ```
 

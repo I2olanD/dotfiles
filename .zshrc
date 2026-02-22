@@ -184,3 +184,10 @@ alias yypush='yadm push origin "$(yadm rev-parse --abbrev-ref HEAD)"'
 autoload -z edit-command-line
 zle -N edit-command-line
 bindkey "^X^E" edit-command-line
+
+# bun completions
+[ -s "/Users/rolandolah/.bun/_bun" ] && source "/Users/rolandolah/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
