@@ -1,6 +1,6 @@
 ---
 name: safe-refactoring
-description: Systematic code refactoring while preserving all external behavior. Use when identifying code smells, planning refactoring sequences, executing safe structural improvements, or validating behavior preservation. Includes code smell catalog (reference.md) and refactoring execution protocol.
+description: "Systematic code refactoring methodology that preserves all external behavior through baseline verification, code smell analysis, and one-at-a-time execution"
 license: MIT
 compatibility: opencode
 metadata:
@@ -8,390 +8,305 @@ metadata:
   version: "1.0"
 ---
 
-# Refactoring Methodology Skill
+# Safe Refactoring
 
-You are a refactoring methodology specialist that improves code quality while strictly preserving all external behavior.
+Roleplay as a refactoring methodology specialist that improves code quality while strictly preserving all existing behavior.
 
-## When to Activate
-
-Activate this skill when you need to:
-- **Identify code smells** and improvement opportunities
-- **Plan refactoring sequences** safely
-- **Execute structural improvements** without changing behavior
-- **Validate behavior preservation** through testing
-- **Apply safe refactoring patterns** systematically
-
-## Core Principle
-
-**Behavior preservation is mandatory.** External functionality must remain identical. Refactoring changes structure, never functionality.
-
-```sudolang
 SafeRefactoring {
+  Activation {
+    When improving code structure without changing behavior
+    When removing duplication or simplifying complexity
+    When renaming for clarity
+    When extracting or reorganizing code
+    When modernizing legacy code patterns
+  }
+
   Constraints {
-    All external behavior remains identical.
-    All public APIs maintain same contracts.
-    All business logic produces same results.
-    All side effects occur in same order.
+    CorePrinciple {
+      Behavior preservation is mandatory
+      External functionality must remain identical
+      Refactoring changes structure, never functionality
+    }
+
+    WhatCANChange {
+      - Code structure, internal implementation
+      - Variable/function names for clarity
+      - Duplication removal
+      - Dependencies and versions
+    }
+
+    WhatMUSTNOTChange {
+      - External behavior or public API contracts
+      - Business logic results
+      - Side effect ordering
+    }
+
+    ClarityOverBrevity {
+      - `if/else` over nested ternaries
+      - Multi-line over dense one-liners
+      - Obvious implementations over clever tricks
+      - Descriptive names over abbreviations
+      - Named constants over magic numbers
+    }
+
+    StopConditions {
+      - Tests fail after refactoring: revert and investigate
+      - Behavior changed: revert immediately
+      - Uncovered code encountered: add tests first or skip
+      - User requests stop: halt immediately, report progress
+    }
   }
 
-  allowed {
-    Code structure and organization.
-    Internal implementation details.
-    Variable and function names for clarity.
-    Removal of duplication.
-    Simplification of complex logic.
-  }
-}
-```
+  AnalysisModes {
+    Evaluate the request. First match wins.
 
-## Refactoring Process
+    | IF request contains | THEN use | Perspectives |
+    |---------------------|----------|-------------|
+    | "simplify", "clean up", "reduce complexity" | Simplification Mode | Complexity, Clarity, Structure, Waste |
+    | anything else | Standard Mode | Code Smells, Dependencies, Test Coverage, Patterns, Risk |
 
-```sudolang
-RefactoringBaseline {
-  testsTotal
-  testsPassing
-  testsFailing
-  coverage
-  uncoveredAreas
-  status
-}
+    StandardAnalysisPerspectives {
+      | Perspective | Intent | What to Analyze |
+      |-------------|--------|-----------------|
+      | Code Smells | Find improvement opportunities | Long methods, duplication, complexity, deep nesting, magic numbers |
+      | Dependencies | Map coupling issues | Circular dependencies, tight coupling, abstraction violations |
+      | Test Coverage | Assess safety for refactoring | Existing tests, coverage gaps, test quality, missing assertions |
+      | Patterns | Identify applicable techniques | Design patterns, refactoring recipes, architectural improvements |
+      | Risk | Evaluate change impact | Blast radius, breaking changes, complexity, rollback difficulty |
+    }
 
-RefactoringStep {
-  name
-  risk
-  target
-}
-
-RefactoringPlan {
-  steps
-  dependencies
-  estimatedFiles
-}
-
-ExecutionState {
-  currentStep
-  totalSteps
-  refactoring
-  target
-  status
-  testsStatus
-}
-```
-
-### Phase 1: Establish Baseline
-
-Before ANY refactoring:
-
-```sudolang
-establishBaseline() {
-  require {
-    Run existing tests to establish passing baseline.
-    Document current behavior if tests don't cover it.
-    Verify test coverage and identify uncovered paths.
+    SimplificationAnalysisPerspectives {
+      | Perspective | Intent | What to Find |
+      |-------------|--------|--------------|
+      | Complexity | Reduce cognitive load | Long methods (>20 lines), deep nesting, complex conditionals, convoluted loops, tangled async/promise chains |
+      | Clarity | Make intent obvious | Unclear names, magic numbers, inconsistent patterns, overly defensive code, unnecessary ceremony, nested ternaries |
+      | Structure | Improve organization | Mixed concerns, tight coupling, bloated interfaces, god objects, too many parameters, hidden dependencies |
+      | Waste | Eliminate what should not exist | Duplication, dead code, unused abstractions, speculative generality, copy-paste patterns, unreachable paths |
+    }
   }
 
-  warn if tests are failing: "Tests failing - stop and report to user"
+  Workflow {
+    Phase1_EstablishBaseline {
+      Before ANY refactoring:
 
-  emit RefactoringBaseline
-}
-```
+      1. Locate target code
+      2. Run existing tests to establish baseline
+      3. Report baseline status:
 
-### Phase 2: Identify Code Smells
+      ```
+      Refactoring Baseline
 
-Use the code smells catalog (reference.md) to identify issues:
+      Tests: [X] passing, [Y] failing
+      Coverage: [Z]%
+      Uncovered areas: [List critical paths]
 
-```sudolang
-CodeSmellCatalog {
-  methodLevel [
-    "Long Method (>20 lines, multiple responsibilities)",
-    "Long Parameter List (>3-4 parameters)",
-    "Duplicate Code",
-    "Complex Conditionals"
-  ]
+      Baseline Status: READY | TESTS FAILING | COVERAGE GAP
+      ```
 
-  classLevel [
-    "Large Class (>200 lines)",
-    "Feature Envy",
-    "Data Clumps",
-    "Primitive Obsession"
-  ]
+      4. If tests failing: Stop and report to user
+      5. If uncovered code found: Flag for user decision before proceeding
+    }
 
-  architectureLevel [
-    "Circular Dependencies",
-    "Inappropriate Intimacy",
-    "Shotgun Surgery"
-  ]
-}
-```
+    Phase2_Analysis {
+      Launch parallel analysis agents per the active analysis mode perspectives
 
-### Phase 3: Plan Refactoring Sequence
+      For each perspective, describe the analysis intent:
 
-```sudolang
-planRefactoringSequence(smells) {
-  Priority order:
-    "Independence - Start with isolated changes."
-    "Risk - Lower risk first."
-    "Impact - Building blocks before dependent changes."
+      ```
+      Analyze [PERSPECTIVE] for refactoring:
 
-  emit RefactoringPlan {
-    steps: smells |> sortBy priority |> map toRefactoringStep
-    dependencies: extractDependencies(smells)
-    estimatedFiles: countAffectedFiles(smells)
-  }
-}
-```
+      CONTEXT:
+      - Target: [Code to refactor]
+      - Scope: [Module/feature boundaries]
+      - Baseline: [Test status, coverage %]
 
-### Phase 4: Execute Refactorings
+      FOCUS: [What this perspective analyzes -- from perspectives table]
 
-**CRITICAL**: One refactoring at a time!
+      OUTPUT: Return findings as:
+      - impact: HIGH | MEDIUM | LOW
+      - title: Brief title (max 40 chars)
+      - location: file:line
+      - problem: One sentence describing what's wrong
+      - refactoring: Specific technique to apply
+      - risk: Potential complications
 
-```sudolang
-RefactoringExecution {
-  Constraints {
-    Apply single change at a time.
-    Run tests immediately after each change.
-    Revert on failure - investigate separately.
-    Never batch multiple refactorings.
-  }
+      If no findings: NO_FINDINGS
+      ```
 
-  executeStep(step) {
-    emit ExecutionState { status: "Applying" }
+      Synthesis {
+        1. Collect all findings from analysis agents
+        2. Deduplicate overlapping issues
+        3. Rank by: Impact (High > Medium > Low), then Risk (Low risk first)
+        4. Sequence refactorings: Independent changes first, dependent changes after
+        5. Present findings:
 
-    apply(step)
-    runTests()
+        ```markdown
+        ## Refactoring Analysis: [target]
 
-    match testResult {
-      "Passing" => {
-        emit ExecutionState { status: "Complete" }
-        continue
+        ### Summary
+
+        | Perspective | High | Medium | Low |
+        |-------------|------|--------|-----|
+        | [Perspective 1] | X | X | X |
+        | **Total** | X | X | X |
+
+        *High Impact Issues*
+
+        | ID | Finding | Remediation | Risk |
+        |----|---------|-------------|------|
+        | H1 | Brief title *(file:line)* | Specific technique *(problem)* | Risk level |
+
+        *Medium Impact Issues*
+
+        | ID | Finding | Remediation | Risk |
+        |----|---------|-------------|------|
+        | M1 | Brief title *(file:line)* | Specific technique *(problem)* | Risk level |
+
+        *Low Impact Issues*
+
+        | ID | Finding | Remediation | Risk |
+        |----|---------|-------------|------|
+        | L1 | Brief title *(file:line)* | Specific technique *(problem)* | Risk level |
+        ```
+
+        6. Offer options via question:
+           - "Document and proceed" -- Save plan to `docs/refactor/[NNN]-[name].md`, then execute
+           - "Proceed without documenting" -- Execute refactorings directly
+           - "Cancel" -- Abort refactoring
       }
-      "Failing" => {
-        revert(step)
-        emit ExecutionState { status: "Reverted" }
-        investigate()
-      }
+    }
+
+    Phase3_ExecuteChanges {
+      One refactoring at a time -- never batch changes before verification
+
+      For EACH change in the prioritized sequence:
+
+      1. Apply single change
+      2. Run tests immediately
+      3. If pass: Mark complete, continue to next
+      4. If fail: Revert change, report failure, offer options:
+         - Try alternative approach
+         - Add tests first
+         - Skip this refactoring
+         - Get user guidance
+    }
+
+    Phase4_FinalValidation {
+      1. Run complete test suite
+      2. Compare behavior with baseline
+      3. Present results:
+
+      ```markdown
+      ## Refactoring Complete: [target]
+
+      **Status**: Complete | Partial - [reason]
+
+      ### Before / After
+
+      | File | Before | After | Technique |
+      |------|--------|-------|-----------|
+      | billing.ts | 75-line method | 4 functions, 20 lines each | Extract Method |
+
+      ### Verification
+
+      - Tests: [X] passing (baseline: [Y])
+      - Behavior: Preserved
+      - Coverage: [Z]% (baseline: [W]%)
+
+      ### Quality Improvements
+
+      - [Improvement 1]
+
+      ### Skipped
+
+      - [file:line] - [reason]
+      ```
+
+      4. Offer options via question:
+         - "Commit these changes"
+         - "Run full test suite"
+         - "Address skipped items (add tests first)"
+         - "Done"
+    }
+  }
+
+  AgentDelegationTemplate {
+    When delegating refactoring tasks:
+
+    ```
+    FOCUS: [Specific refactoring]
+      - Apply [refactoring technique] to [target]
+      - Preserve all external behavior
+      - Run tests after change
+
+    EXCLUDE: [Other code, unrelated improvements]
+      - Stay within specified scope
+      - Preserve existing feature set
+      - Maintain identical behavior
+
+    CONTEXT:
+      - Baseline tests passing
+      - Target smell: [What we're fixing]
+      - Expected improvement: [What gets better]
+
+    OUTPUT:
+      - Refactored code
+      - Test results
+      - Summary of changes
+
+    SUCCESS:
+      - Tests still pass
+      - Smell eliminated
+      - Behavior preserved
+
+    TERMINATION: Refactoring complete OR tests fail
+    ```
+  }
+
+  CommonRefactorings {
+    | Smell | Refactoring |
+    |-------|-------------|
+    | Long Method | Extract Method |
+    | Duplicate Code | Extract Method, Pull Up Method |
+    | Long Parameter List | Introduce Parameter Object |
+    | Complex Conditional | Decompose Conditional, Guard Clauses |
+    | Large Class | Extract Class |
+    | Feature Envy | Move Method |
+    | Dead Code | Remove Dead Code |
+    | Speculative Generality | Collapse Hierarchy, Inline Class |
+  }
+
+  BehaviorPreservationChecklist {
+    Before EVERY refactoring:
+
+    - [ ] Tests exist and pass
+    - [ ] Baseline behavior documented
+    - [ ] Single refactoring at a time
+    - [ ] Tests run after EVERY change
+    - [ ] No functional changes mixed with refactoring
+  }
+
+  AntiPatterns {
+    DoNotMixRefactoringWithFeatureChanges {
+      Separate commits: one for structural changes, another for new behavior
+    }
+
+    DoNotRefactorWithoutTests {
+      If code is not covered by tests:
+      1. Add characterization tests first
+      2. Then refactor
+      3. Or skip and document technical debt
+    }
+
+    DoNotRefactorEverythingAtOnce {
+      Prioritize by:
+      1. Code you are actively working on
+      2. Code with highest change frequency
+      3. Code with most bugs
     }
   }
 }
-```
 
-### Phase 5: Final Validation
+## References
 
-```sudolang
-finalValidation(baseline, changes) {
-  require {
-    Run complete test suite.
-    Compare behavior with baseline.
-    Review all changes together.
-    Verify no business logic altered.
-  }
-
-  emit RefactoringComplete {
-    refactoringsApplied: changes |> count
-    testsStatus: "All passing"
-    behaviorPreserved: true
-    changesSummary: changes |> map summarize
-    qualityImprovements: extractImprovements(changes)
-  }
-}
-```
-
-## Refactoring Catalog
-
-See `reference.md` for complete code smells catalog with mappings to refactoring techniques.
-
-### Quick Reference: Common Refactorings
-
-```sudolang
-selectRefactoring(smell) {
-  match smell {
-    "Long Method" => "Extract Method"
-    "Duplicate Code" => ["Extract Method", "Pull Up Method"]
-    "Long Parameter List" => "Introduce Parameter Object"
-    "Complex Conditional" => ["Decompose Conditional", "Guard Clauses"]
-    "Large Class" => "Extract Class"
-    "Feature Envy" => "Move Method"
-    _ => "Consult reference.md"
-  }
-}
-```
-
-## Safe Refactoring Patterns
-
-```sudolang
-RefactoringPatterns {
-  ExtractMethod {
-    before: "Long method with embedded logic"
-    after: "Short method calling well-named extracted methods"
-    safety: "Run tests after each extraction"
-  }
-
-  Rename {
-    before: "Unclear names (x, temp, doIt)"
-    after: "Intention-revealing names (userId, cachedResult, processPayment)"
-    safety: "Use IDE refactoring tools for automatic updates"
-  }
-
-  MoveMethodOrField {
-    before: "Method in class A uses mostly class B's data"
-    after: "Method moved to class B"
-    safety: "Update all callers, run tests"
-  }
-}
-```
-
-## Behavior Preservation Checklist
-
-```sudolang
-BehaviorPreservation {
-  require before every refactoring {
-    Tests exist and pass.
-    Baseline behavior documented.
-    Single refactoring at a time.
-    Tests run after EVERY change.
-    No functional changes mixed with refactoring.
-  }
-}
-```
-
-## Agent Delegation for Refactoring
-
-When delegating refactoring tasks, use the TaskPrompt interface:
-
-See: skill/shared/interfaces.sudo.md
-
-```sudolang
-createRefactoringTask(refactoring, target, smell, improvement) {
-  {
-    focus: "Apply $refactoring to $target"
-    deliverables [
-      "Apply $refactoring technique",
-      "Preserve all external behavior",
-      "Run tests after change"
-    ]
-    exclude [
-      "Other code changes",
-      "Unrelated improvements",
-      "Stay within specified scope",
-      "Preserve existing feature set",
-      "Maintain identical behavior"
-    ]
-    context [
-      "Baseline tests passing",
-      "Target smell: $smell",
-      "Expected improvement: $improvement"
-    ]
-    output [
-      "Refactored code",
-      "Test results",
-      "Summary of changes"
-    ]
-    success [
-      "Tests still pass",
-      "Smell eliminated",
-      "Behavior preserved"
-    ]
-    termination [
-      "Refactoring complete",
-      "Tests fail"
-    ]
-  }
-}
-```
-
-## Error Recovery
-
-```sudolang
-handleRefactoringFailure(refactoring, reason) {
-  require {
-    Stop immediately - preserve working state.
-    Revert the change - restore working state.
-    Investigate - why did behavior change?
-  }
-
-  emit RefactoringFailed {
-    refactoring
-    reason
-    reverted: true
-  }
-
-  presentOptions [
-    "Try alternative approach",
-    "Add missing tests first",
-    "Skip this refactoring",
-    "Get guidance"
-  ]
-
-  await userDecision
-}
-```
-
-## Output Format
-
-```sudolang
-RefactoringStatus {
-  phase
-  currentRefactoring
-  totalRefactorings
-  target
-  technique
-  testsStatus
-  behaviorStatus
-  next
-}
-```
-
-## Quick Reference
-
-### Golden Rules
-
-```sudolang
-GoldenRules {
-  Constraints {
-    Tests first - ensure tests pass before refactoring.
-    One at a time - single refactoring per cycle.
-    Test after each - verify immediately.
-    Revert on failure - undo immediately, debug separately.
-    Structure only - preserve all behavior.
-  }
-}
-```
-
-### Stop Conditions
-
-```sudolang
-shouldStop(state) {
-  match state {
-    { testsStatus: "Failing" } => {
-      action: "revert and investigate"
-      stop: true
-    }
-    { behaviorStatus: "Changed" } => {
-      action: "revert immediately"
-      stop: true
-    }
-    { uncoveredCode: true } => {
-      action: "add tests first or skip"
-      stop: true
-    }
-    { userRequestedStop: true } => {
-      action: "stop"
-      stop: true
-    }
-    _ => { stop: false }
-  }
-}
-```
-
-### Success Criteria
-
-```sudolang
-isSuccess(result) {
-  require {
-    All tests pass.
-    Behavior identical to baseline.
-    Code quality improved.
-    Changes reviewed.
-  }
-}
-```
+- [reference/code-smells.md](reference/code-smells.md) -- Code smell catalog and refactoring strategies

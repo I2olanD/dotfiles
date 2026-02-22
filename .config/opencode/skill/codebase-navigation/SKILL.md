@@ -1,6 +1,6 @@
 ---
 name: codebase-navigation
-description: Navigate, search, and understand project structures. Use when onboarding to a codebase, locating implementations, tracing dependencies, or understanding architecture. Provides patterns for file searching with Glob, code searching with Grep, and systematic architecture analysis.
+description: "Navigate, search, and understand project structures for onboarding, locating implementations, tracing dependencies, and architecture analysis."
 license: MIT
 compatibility: opencode
 metadata:
@@ -8,213 +8,219 @@ metadata:
   version: "1.0"
 ---
 
-# Codebase Exploration
+# Codebase Navigation
 
-Systematic patterns for navigating and understanding codebases efficiently.
+Roleplay as a codebase navigation specialist providing systematic patterns for navigating and understanding codebases efficiently.
 
-## When to Use
+CodebaseNavigation {
+  Activation {
+    - Onboarding to a new codebase - Understanding project structure and conventions
+    - Locating specific implementations - Finding where functionality lives
+    - Tracing dependencies - Understanding how components connect
+    - Architecture analysis - Mapping system structure and boundaries
+    - Finding usage patterns - Discovering how APIs or functions are used
+    - Investigating issues - Tracing code paths for debugging
+  }
 
-- **Onboarding to a new codebase** - Understanding project structure and conventions
-- **Locating specific implementations** - Finding where functionality lives
-- **Tracing dependencies** - Understanding how components connect
-- **Architecture analysis** - Mapping system structure and boundaries
-- **Finding usage patterns** - Discovering how APIs or functions are used
-- **Investigating issues** - Tracing code paths for debugging
-
-## Quick Structure Analysis
-
-Start broad, then narrow down. This three-step pattern works for any codebase.
-
-```sudolang
-StructureAnalysis {
   Constraints {
-    Always start with project layout before diving into source.
-    Read documentation files when present.
-    Verify assumptions about structure.
+    1. Start broad, then narrow down
+    2. Use glob for file discovery - faster than grep
+    3. Use grep for content search - supports regex and context
+    4. Narrow scope - search in specific directories when possible
+    5. Never search entire node_modules/vendor directories
+    6. Never assume structure without verifying
+    7. Never skip reading project documentation (README, CLAUDE.md)
   }
 
-  /analyzeLayout => {
-    Step 1: Project Layout
-    ls -la                                          Top-level structure
-    ls -la *.json *.yaml *.yml *.toml 2>/dev/null   Config files to reveal tech stack
-    ls -la README* CLAUDE.md Agent.md docs/ 2>/dev/null  Documentation
-  }
+  QuickStructureAnalysis {
+    Step1_ProjectLayout {
+      ```bash
+      # Understand top-level structure
+      ls -la
 
-  /analyzeSource => {
-    Step 2: Source Organization
-    Glob: **/src/**/*.{ts,js,py,go,rs,java}         Source directories
-    Glob: **/{test,tests,__tests__,spec}/**/*       Test directories
-    Glob: **/index.{ts,js,py} | **/main.{ts,js,py,go,rs}  Entry points
-  }
+      # Find configuration files (reveals tech stack)
+      ls -la *.json *.yaml *.yml *.toml 2>/dev/null
 
-  /analyzeConfig => {
-    Step 3: Configuration Discovery
-    Glob: **/package.json | **/requirements.txt | **/go.mod | **/Cargo.toml  Dependencies
-    Glob: **/{tsconfig,vite.config,webpack.config,jest.config}.*  Build config
-    Glob: **/{.env*,docker-compose*,Dockerfile}     Environment and deployment
-  }
-}
-```
+      # Check for documentation
+      ls -la README* CLAUDE.md docs/ 2>/dev/null
+      ```
+    }
 
-## Deep Search Strategies
+    Step2_SourceOrganization {
+      ```
+      # Find source directories
+      glob: **/src/**/*.{ts,js,py,go,rs,java}
 
-```sudolang
-SearchStrategy {
-  /findImplementation target, language? => {
-    match language {
-      "python" => Grep: def $target
-      "go" => Grep: func $target
-      "rust" => Grep: fn $target
-      _ => {
-        Generic patterns for JS/TS and others
-        Grep: (function|class|interface|type)\s+$target
-        Grep: export\s+(default\s+)?(function|class|const)\s+$target
-      }
+      # Find test directories
+      glob: **/{test,tests,__tests__,spec}/**/*
+
+      # Find entry points
+      glob: **/index.{ts,js,py} | **/main.{ts,js,py,go,rs}
+      ```
+    }
+
+    Step3_ConfigurationDiscovery {
+      ```
+      # Package/dependency files
+      glob: **/package.json | **/requirements.txt | **/go.mod | **/Cargo.toml
+
+      # Build configuration
+      glob: **/{tsconfig,vite.config,webpack.config,jest.config}.*
+
+      # Environment/deployment
+      glob: **/{.env*,docker-compose*,Dockerfile}
+      ```
     }
   }
 
-  /traceUsage target => {
-    Grep: import.*from\s+['"].*$target    Find imports
-    Grep: $target\(                        Find function calls
-    Grep: $target                          Broad reference search
-  }
+  DeepSearchStrategies {
+    FindingImplementations {
+      When locating where something is implemented:
+      
+      ```
+      # Find function/class definitions
+      grep: (function|class|interface|type)\s+TargetName
 
-  /mapArchitecture => {
-    Routes
-    Grep: (app\.(get|post|put|delete)|router\.)
+      # Find exports
+      grep: export\s+(default\s+)?(function|class|const)\s+TargetName
 
-    Database models and schemas
-    Grep: (Schema|Model|Entity|Table)\s*\(
-    Glob: **/{models,entities,schemas}/**/*
+      # Find specific patterns (adjust for language)
+      grep: def target_name  # Python
+      grep: func TargetName  # Go
+      grep: fn target_name   # Rust
+      ```
+    }
 
-    Service boundaries
-    Glob: **/{services,controllers,handlers}/**/*
-    Grep: (class|interface)\s+\w+Service
-  }
-}
-```
+    TracingUsage {
+      When finding where something is used:
+      
+      ```
+      # Find imports of a module
+      grep: import.*from\s+['"].*target-module
 
-## Exploration Patterns by Goal
+      # Find function calls
+      grep: targetFunction\(
 
-```sudolang
-ExplorationPatterns {
-  /findEntryPoints type => {
-    match type {
-      "web" => {
-        Grep: (Route|path|endpoint)
-        Glob: **/routes/**/* | **/*router*
-      }
-      "cli" => {
-        Grep: (command|program\.)
-        Glob: **/cli/**/* | **/commands/**/*
-      }
-      "events" => {
-        Grep: (on|handle|subscribe)\s*\(
-      }
+      # Find references (broad search)
+      grep: TargetName
+      ```
+    }
+
+    ArchitectureMapping {
+      When understanding system structure:
+      
+      ```
+      # Find all route definitions
+      grep: (app\.(get|post|put|delete)|router\.)
+
+      # Find database models/schemas
+      grep: (Schema|Model|Entity|Table)\s*\(
+      glob: **/{models,entities,schemas}/**/*
+
+      # Find service boundaries
+      glob: **/{services,controllers,handlers}/**/*
+      grep: (class|interface)\s+\w+Service
+      ```
     }
   }
 
-  /findConfiguration => {
-    Grep: (process\.env|os\.environ|env\.)    Environment variables
-    Grep: (feature|flag|toggle)                Feature flags
-    Grep: (const|let)\s+(CONFIG|config|settings)  Config objects
-    Glob: **/{config,constants}/**/*
+  ExplorationPatternsByGoal {
+    UnderstandEntryPoints {
+      ```
+      # Web application routes
+      grep: (Route|path|endpoint)
+      glob: **/routes/**/* | **/*router*
+
+      # CLI commands
+      grep: (command|program\.)
+      glob: **/cli/**/* | **/commands/**/*
+
+      # Event handlers
+      grep: (on|handle|subscribe)\s*\(
+      ```
+    }
+
+    FindConfiguration {
+      ```
+      # Environment variables
+      grep: (process\.env|os\.environ|env\.)
+
+      # Feature flags
+      grep: (feature|flag|toggle)
+
+      # Constants/config objects
+      grep: (const|let)\s+(CONFIG|config|settings)
+      glob: **/{config,constants}/**/*
+      ```
+    }
+
+    UnderstandDataFlow {
+      ```
+      # Database queries
+      grep: (SELECT|INSERT|UPDATE|DELETE|find|create|update)
+      grep: (prisma|sequelize|typeorm|mongoose)\.
+
+      # API calls
+      grep: (fetch|axios|http\.|request\()
+
+      # State management
+      grep: (useState|useReducer|createStore|createSlice)
+      ```
+    }
   }
 
-  /traceDataFlow => {
-    Database queries
-    Grep: (SELECT|INSERT|UPDATE|DELETE|find|create|update)
-    Grep: (prisma|sequelize|typeorm|mongoose)\.
+  BestPractices {
+    SearchEfficiently {
+      1. Start with glob for file discovery - faster than grep for locating files
+      2. Use grep for content search - supports regex and context
+      3. Narrow scope - search in specific directories when possible
+      4. Check output modes - use `files_with_matches` for discovery, `content` for analysis
+    }
 
-    API calls
-    Grep: (fetch|axios|http\.|request\()
+    BuildMentalModels {
+      1. Map the layers - presentation, business logic, data access
+      2. Identify patterns - repository, service, controller, etc.
+      3. Note conventions - naming, file organization, code style
+      4. Document boundaries - where modules connect and separate
+    }
 
-    State management
-    Grep: (useState|useReducer|createStore|createSlice)
-  }
-}
-```
-
-## Best Practices
-
-```sudolang
-NavigationBestPractices {
-  Constraints {
-    Read project documentation (README, CLAUDE.md, Agent.md) before exploring.
-    Verify assumptions about structure rather than assuming.
-  }
-
-  warn Searching node_modules or vendor directories wastes time.
-  warn Grepping common words without filters produces noise.
-
-  SearchEfficiency {
-    Prefer Glob for file discovery as it is faster than grep for locating files.
-    Prefer Grep for content search as it supports regex and context.
-    Narrow scope to specific directories when possible.
-    Use files_with_matches mode for discovery, content mode for analysis.
+    AvoidCommonPitfalls {
+      - Do not search entire node_modules/vendor directories
+      - Do not assume structure without verifying
+      - Do not skip reading project documentation (README, CLAUDE.md)
+      - Do not grep for common words without filtering (use glob filters)
+    }
   }
 
-  MentalModelBuilding {
-    Map layers: presentation, business logic, data access.
-    Identify patterns: repository, service, controller, and others.
-    Note conventions: naming, file organization, code style.
-    Document boundaries: where modules connect and separate.
+  OutputFormat {
+    After exploration, summarize findings:
+    
+    ```
+    ## Codebase Overview
+
+    **Tech Stack:** [Languages, frameworks, tools]
+    **Architecture:** [Monolith, microservices, modular, etc.]
+    **Entry Points:** [Main files, routes, handlers]
+
+    ## Key Directories
+
+    - `src/` - [Purpose]
+    - `lib/` - [Purpose]
+    - `tests/` - [Purpose]
+
+    ## Conventions Observed
+
+    - Naming: [Pattern]
+    - File organization: [Pattern]
+    - Testing: [Pattern]
+
+    ## Dependencies
+
+    - [Key dependency]: [Purpose]
+    - [Key dependency]: [Purpose]
+    ```
   }
 }
-```
-
-## Output Format
-
-After exploration, summarize findings:
-
-```sudolang
-CodebaseOverview {
-  techStack            Languages, frameworks, tools
-  architecture         Monolith, microservices, modular, etc.
-  entryPoints          Main files, routes, handlers
-  keyDirectories       Each with path and purpose
-  conventions          Naming, file organization, testing
-  dependencies         Each with name and purpose
-}
-
-DirectoryInfo {
-  path
-  purpose
-}
-
-ConventionsObserved {
-  naming
-  fileOrganization
-  testing
-}
-
-DependencyInfo {
-  name
-  purpose
-}
-
-formatOverview(overview) => """
-  ## Codebase Overview
-
-  **Tech Stack:** ${overview.techStack |> join(", ")}
-  **Architecture:** ${overview.architecture}
-  **Entry Points:** ${overview.entryPoints |> join(", ")}
-
-  ## Key Directories
-
-  ${overview.keyDirectories |> map(d => "- `${d.path}` - ${d.purpose}") |> join("\n")}
-
-  ## Conventions Observed
-
-  - Naming: ${overview.conventions.naming}
-  - File organization: ${overview.conventions.fileOrganization}
-  - Testing: ${overview.conventions.testing}
-
-  ## Dependencies
-
-  ${overview.dependencies |> map(d => "- ${d.name}: ${d.purpose}") |> join("\n")}
-"""
-```
 
 ## References
 

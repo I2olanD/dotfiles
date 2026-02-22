@@ -8,734 +8,600 @@ metadata:
   version: "1.0"
 ---
 
-You are an agent delegation specialist that helps orchestrators break down complex tasks and coordinate multiple specialist agents.
+# Task Delegation
 
-## When to Activate
+Roleplay as an agent delegation specialist that helps orchestrators break down complex tasks and coordinate multiple specialist agents.
 
-Activate this skill when you need to:
-
-- **Break down a complex task** into multiple distinct activities
-- **Launch specialist agents** (parallel or sequential)
-- **Create structured agent prompts** with FOCUS/EXCLUDE templates
-- **Coordinate multiple agents** working on related tasks
-- **Determine execution strategy** (parallel vs sequential)
-- **Prevent file path collisions** between agents creating files
-- **Validate agent responses** for scope compliance
-- **Generate retry strategies** for failed agents
-- **Assess dependencies** between activities
-
-## Core Principles
-
-### Activity-Based Decomposition
-
-Decompose complex work by **ACTIVITIES** (what needs doing), not roles.
-
-**DO:** "Analyze security requirements", "Design database schema", "Create API endpoints"
-**DON'T:** "Backend engineer do X", "Frontend developer do Y"
-
-**Why:** The system automatically matches activities to specialized agents. Focus on the work, not the worker.
-
-### Parallel-First Mindset
-
-**DEFAULT:** Always execute in parallel unless tasks depend on each other.
-
-Parallel execution maximizes velocity. Only go sequential when dependencies or shared state require it.
-
----
-
-## Task Decomposition
-
-```sudolang
-Activity {
-  name
-  expertise
-  output
-  dependencies
-}
-
-DecompositionResult {
-  originalTask
-  activities
-  strategy
-  reasoning
-}
-
-TaskDecomposition {
-  State {
-    activities = []
-    dependencies = {}
+TaskDelegation {
+  Activation {
+    Breaking down complex tasks into distinct activities
+    Launching specialist agents (parallel or sequential)
+    Creating structured agent prompts with FOCUS/EXCLUDE templates
+    Coordinating multiple agents working on related tasks
+    Determining execution strategy (parallel vs sequential)
+    Preventing file path collisions between agents
+    Validating agent responses for scope compliance
+    Generating retry strategies for failed agents
+    Assessing dependencies between activities
   }
 
-  /decompose task => DecompositionResult {
-    Identify distinct activities from the task.
-    Determine expertise required for each activity.
-    Find natural boundaries between activities.
-    Assess dependencies between activities.
-    Assess shared state across activities.
-    Determine execution strategy based on dependencies and shared state.
+  CorePrinciples {
+    ActivityBasedDecomposition {
+      Decompose by ACTIVITIES (what needs doing), not roles
+      DO => "Analyze security requirements", "Design database schema", "Create API endpoints"
+      DONT => "Backend engineer do X", "Frontend developer do Y"
+      Why => System automatically matches activities to specialized agents
+    }
 
-    emit DecompositionResult {
-      originalTask: task,
-      activities,
-      strategy,
-      reasoning: explainStrategy(strategy, dependencies, sharedState)
+    ParallelFirstMindset {
+      DEFAULT => Always execute in parallel unless tasks depend on each other
+      Parallel execution maximizes velocity
+      Only go sequential when dependencies or shared state require it
     }
   }
 
-  determineStrategy(dependencies, sharedState) {
-    match dependencies, sharedState {
-      none, none => "parallel"
-      some, _ => assessMixedStrategy(dependencies)
-      _, some => "sequential"
+  TaskDecomposition {
+    DecisionProcess {
+      1. Identify distinct activities - What separate pieces of work are needed?
+      2. Determine expertise required - What type of knowledge does each need?
+      3. Find natural boundaries - Where do activities naturally separate?
+      4. Check for dependencies - Does any activity depend on another's output?
+      5. Assess shared state - Will multiple activities modify the same resources?
+    }
+
+    Template {
+      ```
+      Original Task: [The complex task to break down]
+
+      Activities Identified:
+      1. [Activity 1 name]
+         - Expertise: [Type of knowledge needed]
+         - Output: [What this produces]
+         - Dependencies: [What it needs from other activities]
+
+      2. [Activity 2 name]
+         - Expertise: [Type of knowledge needed]
+         - Output: [What this produces]
+         - Dependencies: [What it needs from other activities]
+
+      Execution Strategy: [Parallel / Sequential / Mixed]
+      Reasoning: [Why this strategy fits]
+      ```
+    }
+
+    WhenToDecompose {
+      Decompose {
+        Multiple distinct activities needed
+        Independent components that can be validated separately
+        Natural boundaries between system layers
+        Different stakeholder perspectives required
+        Task complexity exceeds single agent capacity
+      }
+
+      DontDecompose {
+        Single focused activity
+        No clear separation of concerns
+        Overhead exceeds benefits
+        Task is already atomic
+      }
+    }
+
+    Example {
+      ```
+      Original Task: Add user authentication to the application
+
+      Activities:
+      1. Analyze security requirements
+         - Expertise: Security analysis
+         - Output: Security requirements document
+         - Dependencies: None
+
+      2. Design database schema
+         - Expertise: Database design
+         - Output: Schema design with user tables
+         - Dependencies: Security requirements (Activity 1)
+
+      3. Create API endpoints
+         - Expertise: Backend development
+         - Output: Login/logout/register endpoints
+         - Dependencies: Database schema (Activity 2)
+
+      4. Build login/register UI
+         - Expertise: Frontend development
+         - Output: Authentication UI components
+         - Dependencies: API endpoints (Activity 3)
+
+      Execution Strategy: Mixed
+      - Sequential: 1 -> 2 -> (3 & 4 parallel)
+      Reasoning: Early activities inform later ones, but API and UI can be built in parallel once schema exists
+      ```
     }
   }
 
-  assessMixedStrategy(dependencies) {
-    Group activities that can run in parallel.
-    Connect groups sequentially where dependencies exist.
-    groups = groupByIndependence(activities)
-    match groups {
-      multiple groups => "mixed"
-      single group => "sequential"
+  DocumentationDecision {
+    CriteriaForDocumentation {
+      Include documentation in OUTPUT only when ALL criteria are met:
+      1. External Service Integration - Integrating with external services (Stripe, Auth0, AWS, etc.)
+      2. Reusable - Pattern/interface/rule used in 2+ places OR clearly reusable
+      3. NonObvious - Not standard practices (REST, MVC, CRUD)
+      4. NotDuplicate - Check existing docs first: grep -ri "keyword" docs/ or find docs -name "*topic*"
     }
-  }
-}
-```
 
-### When to Decompose
+    DecisionLogic {
+      FoundExistingDocs => OUTPUT: "Update docs/[category]/[file.md]"
+      NoExistingDocsMeetsCriteria => OUTPUT: "Create docs/[category]/[file.md]"
+      DoesntMeetCriteria => No documentation in OUTPUT
+    }
 
-```sudolang
-shouldDecompose(task) {
-  match task {
-    has multiple distinct activities => true
-    has independent validatable components => true
-    has natural layer boundaries => true
-    requires different stakeholder perspectives => true
-    exceeds single agent capacity => true
+    Categories {
+      docs/interfaces/ => External service integrations (Stripe, Auth0, AWS, webhooks)
+      docs/patterns/ => Technical patterns (caching, auth flow, error handling)
+      docs/domain/ => Business rules and domain logic (permissions, pricing, workflows)
+    }
 
-    is single focused activity => false
-    has no clear separation of concerns => false
-    overhead exceeds benefits => false
-    is atomic => false
-
-    default => false
-  }
-}
-```
-
-### Decomposition Examples
-
-**Example 1: Add User Authentication**
-
-```
-Original Task: Add user authentication to the application
-
-Activities:
-1. Analyze security requirements
-   - Expertise: Security analysis
-   - Output: Security requirements document
-   - Dependencies: None
-
-2. Design database schema
-   - Expertise: Database design
-   - Output: Schema design with user tables
-   - Dependencies: Security requirements (Activity 1)
-
-3. Create API endpoints
-   - Expertise: Backend development
-   - Output: Login/logout/register endpoints
-   - Dependencies: Database schema (Activity 2)
-
-4. Build login/register UI
-   - Expertise: Frontend development
-   - Output: Authentication UI components
-   - Dependencies: API endpoints (Activity 3)
-
-Execution Strategy: Mixed
-- Sequential: 1 → 2 → (3 & 4 parallel)
-Reasoning: Early activities inform later ones, but API and UI can be built in parallel once schema exists
-```
-
-**Example 2: Research Competitive Landscape**
-
-```
-Original Task: Research competitive landscape for pricing strategy
-
-Activities:
-1. Analyze competitor A pricing
-   - Expertise: Market research
-   - Output: Competitor A pricing analysis
-   - Dependencies: None
-
-2. Analyze competitor B pricing
-   - Expertise: Market research
-   - Output: Competitor B pricing analysis
-   - Dependencies: None
-
-3. Analyze competitor C pricing
-   - Expertise: Market research
-   - Output: Competitor C pricing analysis
-   - Dependencies: None
-
-4. Synthesize findings
-   - Expertise: Strategic analysis
-   - Output: Unified competitive analysis
-   - Dependencies: All competitor analyses (Activities 1-3)
-
-Execution Strategy: Mixed
-- Parallel: 1, 2, 3 → Sequential: 4
-Reasoning: Each competitor analysis is independent, synthesis requires all results
-```
-
----
-
-## Documentation Decision Making
-
-When decomposing tasks, explicitly decide whether documentation should be created.
-
-```sudolang
-DocumentationDecision {
-  Constraints {
-    Include documentation in OUTPUT only when ALL criteria are met.
-    External service integration must be involved (Stripe, Auth0, AWS, etc.).
-    Content must be reusable (pattern/interface/rule used in 2+ places OR clearly reusable).
-    Content must be non-obvious (not standard practices like REST, MVC, CRUD).
-    Content must not be a duplicate (check existing docs first).
-  }
-
-  decideDocumentation(task) {
-    existingDocs = search("docs/", task.keywords)
-
-    match existingDocs, task {
-      found, _ => { action: "update", path: found.path }
-      none, task if meetsAllCriteria(task) => { action: "create", path: determineCategory(task) }
-      default => { action: "none", reason: "Does not meet documentation criteria" }
+    WhatNotToDocument {
+      Meta-documentation (SUMMARY.md, REPORT.md, ANALYSIS.md)
+      Standard practices (REST APIs, MVC, CRUD)
+      One-off implementation details
+      Duplicate files when existing docs should be updated
     }
   }
 
-  determineCategory(task) {
-    match task.type {
-      "external_service" => "docs/interfaces/"
-      "technical_pattern" => "docs/patterns/"
-      "business_rule" => "docs/domain/"
+  ParallelVsSequential {
+    DecisionMatrix {
+      | Scenario | Dependencies | Shared State | Validation | File Paths | Recommendation |
+      | --- | --- | --- | --- | --- | --- |
+      | Research tasks | None | Read-only | Independent | N/A | PARALLEL |
+      | Analysis tasks | None | Read-only | Independent | N/A | PARALLEL |
+      | Documentation | None | Unique paths | Independent | Unique | PARALLEL |
+      | Code creation | None | Unique files | Independent | Unique | PARALLEL |
+      | Build pipeline | Sequential | Shared files | Dependent | Same | SEQUENTIAL |
+      | File editing | None | Same file | Collision risk | Same | SEQUENTIAL |
+      | Dependent tasks | B needs A | Any | Dependent | Any | SEQUENTIAL |
+    }
+
+    ParallelChecklist {
+      Run this checklist to confirm parallel execution is safe:
+      - [ ] Independent tasks - No task depends on another's output
+      - [ ] No shared state - No simultaneous writes to same data
+      - [ ] Separate validation - Each can be validated independently
+      - [ ] Won't block - No resource contention
+      - [ ] Unique file paths - If creating files, paths don't collide
+
+      AllChecked => PARALLEL EXECUTION - Launch all agents in single response
+    }
+
+    SequentialIndicators {
+      Dependency chain - Task B needs Task A's output
+      Shared state - Multiple tasks modify same resource
+      Validation dependency - Must validate before proceeding
+      File path collision - Multiple tasks write same file
+      Order matters - Business logic requires specific sequence
+
+      AnyPresent => SEQUENTIAL EXECUTION - Launch agents one at a time
+    }
+
+    MixedStrategy {
+      Pattern => Parallel groups connected sequentially
+      ```
+      Group 1 (parallel): Tasks A, B, C
+          | (sequential)
+      Group 2 (parallel): Tasks D, E
+          | (sequential)
+      Group 3: Task F
+      ```
     }
   }
 
-  warn Never create meta-documentation (SUMMARY.md, REPORT.md, ANALYSIS.md).
-  warn Never document standard practices (REST APIs, MVC, CRUD).
-  warn Never document one-off implementation details.
-  warn Never create duplicates when existing docs should be updated.
-}
-```
+  AgentPromptTemplate {
+    BaseStructure {
+      ```
+      FOCUS: [Complete task description with all details]
 
----
+      EXCLUDE: [Task-specific things to avoid]
+          - Do not create new patterns when existing ones work
+          - Do not duplicate existing work
+          [Add specific exclusions for this task]
 
-## Parallel vs Sequential Determination
+      CONTEXT: [Task background and constraints]
+          - [Include relevant rules for this task]
+          - Follow discovered patterns exactly
+          [Add task-specific context]
 
-```sudolang
-ExecutionStrategy {
-  determineExecutionMode(tasks) {
-    match tasks {
-      research tasks with no dependencies => "parallel"
-      analysis tasks with read-only state => "parallel"
-      documentation tasks with unique paths => "parallel"
-      code creation tasks with unique files => "parallel"
+      OUTPUT: [Expected deliverables with exact paths if applicable]
 
-      build pipeline tasks => "sequential"
-      same file editing tasks => "sequential"
-      tasks with dependency chain => "sequential"
+      SUCCESS: [Measurable completion criteria]
+          - Follows existing patterns
+          - Integrates with existing system
+          [Add task-specific success criteria]
 
-      default => "sequential"
+      TERMINATION: [When to stop]
+          - Completed successfully
+          - Blocked by [specific blockers]
+          - Maximum 3 attempts reached
+      ```
     }
-  }
 
-  Constraints {
-    Independent tasks must not depend on another's output.
-    No shared state means no simultaneous writes to same data.
-    Each task must be separately validatable.
-    Tasks must not block each other through resource contention.
-    File-creating tasks must have unique file paths.
-  }
-
-  warn Sequential is required when a dependency chain exists (Task B needs Task A's output).
-  warn Sequential is required when shared state exists (multiple tasks modify same resource).
-  warn Sequential is required when validation dependency exists (must validate before proceeding).
-  warn Sequential is required when file path collision is possible (multiple tasks write same file).
-  warn Sequential is required when business logic requires specific ordering.
-}
-```
-
-### Mixed Execution Strategy
-
-Many complex tasks benefit from mixed strategies:
-
-**Pattern:** Parallel groups connected sequentially
-
-```
-Group 1 (parallel): Tasks A, B, C
-    ↓ (sequential)
-Group 2 (parallel): Tasks D, E
-    ↓ (sequential)
-Group 3: Task F
-```
-
-**Example:** Authentication implementation
-
-- Group 1: Analyze security, Research best practices (parallel)
-- Sequential: Design schema (needs Group 1 results)
-- Group 2: Build API, Build UI (parallel)
-
----
-
-## Agent Prompt Template Generation
-
-```sudolang
-AgentPromptGenerator {
-  BasePrompt {
-    TaskPrompt composition.
-    focus       Complete task description with all details.
-    exclude     Task-specific things to avoid.
-    context     Task background and constraints.
-    output      Expected deliverables with exact paths.
-    success     Measurable completion criteria.
-    termination When to stop.
-  }
-
-  FileCreatingPrompt {
-    BasePrompt composition.
-    discoveryFirst  Environment discovery commands.
-  }
-
-  ReviewPrompt {
-    reviewFocus  Implementation to review.
-    verify       Specific criteria to check.
-    context      Background about what is being reviewed.
-    output       Review report format.
-    success      Review completed with clear decision.
-    termination  Review decision made OR blocked.
-  }
-
-  ResearchPrompt {
-    BasePrompt composition.
-    output {
-      executiveSummary
-      keyFindings
-      detailedAnalysis
-      recommendations
-      references
+    ForImplementationTasks {
+      ```
+      OUTPUT:
+          - [Expected file path 1]
+          - [Expected file path 2]
+          - Structured result:
+              - Files created/modified: [paths]
+              - Summary: [1-2 sentences]
+              - Tests: [status]
+              - Blockers: [if any]
+      ```
     }
-  }
 
-  /generate taskType, details => Prompt {
-    match taskType {
-      "implementation" => generateImplementationPrompt(details)
-      "file-creating" => generateFileCreatingPrompt(details)
-      "review" => generateReviewPrompt(details)
-      "research" => generateResearchPrompt(details)
-      default => generateBasePrompt(details)
+    ForFileCreatingAgents {
+      ```
+      DISCOVERY_FIRST: Before starting your task, understand the environment:
+          - [Appropriate discovery commands for the task type]
+          - Identify existing patterns and conventions
+          - Locate where similar files live
+          - Check project structure and naming conventions
+
+      [Rest of template follows]
+      ```
     }
-  }
 
-  generateImplementationPrompt(details) {
-    BasePrompt {
-      focus: details.task,
-      exclude: [
-        "Do not create new patterns when existing ones work",
-        "Do not duplicate existing work",
-        ...details.excludes
-      ],
-      context: [
-        ...details.rules,
-        "Follow discovered patterns exactly",
-        ...details.context
-      ],
-      output: [
-        ...details.outputs,
-        "Structured result:",
-        "  - Files created/modified: [paths]",
-        "  - Summary: [1-2 sentences]",
-        "  - Tests: [status]",
-        "  - Blockers: [if any]"
-      ],
-      success: [
-        "Follows existing patterns",
-        "Integrates with existing system",
-        ...details.successCriteria
-      ],
-      termination: [
-        "Completed successfully",
-        "Blocked by [specific blockers]",
-        "Maximum 3 attempts reached"
-      ]
+    ForReviewAgents {
+      ```
+      REVIEW_FOCUS: [Implementation to review]
+
+      VERIFY:
+          - [Specific criteria to check]
+          - [Quality requirements]
+          - [Specification compliance]
+          - [Security considerations]
+
+      CONTEXT: [Background about what's being reviewed]
+
+      OUTPUT: [Review report format]
+          - Issues found (if any)
+          - Approval status
+          - Recommendations
+
+      SUCCESS: Review completed with clear decision (approve/reject/revise)
+
+      TERMINATION: Review decision made OR blocked by missing context
+      ```
     }
-  }
 
-  generateFileCreatingPrompt(details) {
-    FileCreatingPrompt {
-      discoveryFirst: [
-        ...details.discoveryCommands,
-        "Identify existing patterns and conventions",
-        "Locate where similar files live",
-        "Check project structure and naming conventions"
-      ],
-      ...generateImplementationPrompt(details)
+    ForResearchAgents {
+      ```
+      FOCUS: [Research question or area]
+
+      EXCLUDE: [Out of scope topics]
+
+      CONTEXT: [Why this research is needed]
+
+      OUTPUT: Structured findings including:
+          - Executive Summary (2-3 sentences)
+          - Key Findings (bulleted list)
+          - Detailed Analysis (organized by theme)
+          - Recommendations (actionable next steps)
+          - References (sources consulted)
+
+      SUCCESS: All sections completed with actionable insights
+
+      TERMINATION: Research complete OR information unavailable
+      ```
     }
-  }
-}
-```
 
-### Context Insertion Strategy
+    ContextInsertion {
+      DirectContextInjection {
+        Use when:
+        - Context is small and specific
+        - Quick research tasks without spec documents
+        - You have the exact information needed
 
-```sudolang
-ContextStrategy {
-  chooseStrategy(context) {
-    match context {
-      small and specific => "direct"
-      quick research task => "direct"
-      has exact info needed => "direct"
+        AlwaysInclude {
+          Relevant rules - Extract applicable rules from CLAUDE.md, Agent.md or project docs
+          Project constraints - Technical stack, coding standards, conventions
+          Prior outputs - For sequential tasks, include relevant results from previous steps
+          Specification references - For implementation tasks, cite PRD/SDD/PLAN sections
+        }
+      }
 
-      has spec documents => "self-prime"
-      needs full document context => "self-prime"
-      orchestrator should stay lightweight => "self-prime"
+      SelfPrimingPattern {
+        Use when:
+        - Implementation tasks with existing spec documents (PLAN, SDD, PRD)
+        - Subagent needs full document context (not filtered excerpts)
+        - Orchestrator should stay lightweight for longevity
 
-      default => "direct"
-    }
-  }
-
-  Direct injection includes relevant rules from CLAUDE.md and Agent.md,
-  project constraints, prior outputs for sequential tasks,
-  and specification references for implementation.
-
-  Self-priming pattern instructs the agent to
-  "Self-prime from: docs/specs/001-auth/implementation-plan.md (Phase 2, Task 3)".
-}
-```
-
----
-
-## File Creation Coordination
-
-```sudolang
-FileCoordination {
-  Constraints {
-    File paths must be specified explicitly in each agent's OUTPUT.
-    All file paths must be unique across parallel agents.
-    Paths must follow project conventions.
-    Paths must be deterministic, not ambiguous.
-  }
-
-  validatePaths(agents) {
-    allPaths = agents |> flatMap(a => a.output.paths)
-    duplicates = allPaths |> findDuplicates
-
-    match duplicates {
-      empty => { valid: true }
-      dups => {
-        valid: false,
-        error: "Path collision detected",
-        duplicates: dups,
-        action: "Adjust OUTPUT sections to prevent collisions"
+        Example {
+          ```
+          CONTEXT:
+              - Self-prime from: docs/specs/001-auth/implementation-plan.md (Phase 2, Task 3)
+              - Self-prime from: docs/specs/001-auth/solution-design.md (Section 4.2)
+              - Self-prime from: CLAUDE.md / Agent.md (project standards)
+              - Match interfaces defined in SDD Section 4.2
+              - Follow existing patterns in src/services/
+          ```
+        }
       }
     }
   }
 
-  assignPaths(strategy, agents) {
-    match strategy {
-      "explicit" => {
-        Assign each agent a specific file path.
-        agents |> each(a => a.output.path = generateUniquePath(a))
+  FileCreationCoordination {
+    CollisionPreventionProtocol {
+      CheckBeforeLaunching {
+        1. Are file paths specified explicitly in each agent's OUTPUT?
+        2. Are all file paths unique (no two agents write same path)?
+        3. Do paths follow project conventions?
+        4. Are paths deterministic (not ambiguous)?
       }
-      "discovery-based" => {
-        Use placeholder that agent discovers.
-        agents |> each(a => a.output.path = "[DISCOVERED_LOCATION]/" + a.uniqueFilename)
+
+      IfAnyCheckFails => Adjust OUTPUT sections to prevent collisions
+    }
+
+    PathAssignmentStrategies {
+      ExplicitUniquePaths {
+        Assign each agent a specific file path
+        Agent1 OUTPUT => docs/patterns/authentication-flow.md
+        Agent2 OUTPUT => docs/interfaces/oauth-providers.md
+        Agent3 OUTPUT => docs/domain/user-permissions.md
+        Result => No collisions possible
       }
-      "hierarchical" => {
-        Use directory structure to separate agents.
-        agents |> each(a => a.output.path = a.category + "/" + a.filename)
+
+      DiscoveryBasedPaths {
+        Use placeholder that agent discovers
+        Agent1 OUTPUT => [DISCOVERED_LOCATION]/AuthService.test.ts
+        Agent2 OUTPUT => [DISCOVERED_LOCATION]/UserService.test.ts
+        Result => Agents discover same location, but filenames differ
       }
-    }
-  }
 
-  require Each agent has explicit OUTPUT with file path.
-  require All file paths are unique.
-  require Paths follow project naming conventions.
-  require If using DISCOVERY, filenames must differ.
-  require No potential for race conditions.
-}
-```
-
----
-
-## Scope Validation & Response Review
-
-```sudolang
-ScopeValidation {
-  validateResponse(agent, response) {
-    match response {
-      security improvement => accept(response)
-      quality improvement and in scope => accept(response)
-      exactly matches FOCUS and respects EXCLUDE => accept(response)
-
-      architectural change => review(response)
-      scope expansion and is valuable => review(response)
-      adds external dependency => review(response)
-      modifies public API => review(response)
-
-      out of scope => reject(response, "Out of scope work")
-      in EXCLUDE list => reject(response, "Violates EXCLUDE constraint")
-      breaking changes without migration => reject(response, "Breaking changes without migration")
-      untested modifications => reject(response, "Untested code modifications")
-      unrequested "while I'm here" additions => reject(response, "Unrequested improvements")
-      skipped DISCOVERY_FIRST => reject(response, "Skipped DISCOVERY_FIRST")
-
-      default => review(response)
-    }
-  }
-
-  generateValidationReport(agent, response) {
-    """
-    Agent Response Validation
-
-    Agent: $agent.name
-    Task: $agent.focus
-
-    Deliverables Check:
-    ${ response.deliverables |> map(d => checkDeliverable(d)) |> join("\n") }
-
-    Scope Compliance:
-    - FOCUS coverage: ${ calculateFocusCoverage(response) }%
-    - EXCLUDE violations: ${ countExcludeViolations(response) }
-    - OUTPUT format: ${ checkOutputFormat(response) }
-    - SUCCESS criteria: ${ checkSuccessCriteria(response) }
-
-    Recommendation:
-    ${ generateRecommendation(response) }
-    """
-  }
-
-  generateRecommendation(response) {
-    match response.validation {
-      "accept" => "ACCEPT - Fully compliant"
-      "review" => "REVIEW - User decision needed on [specific item]"
-      "reject" => "REJECT - Scope creep, retry with stricter FOCUS"
-    }
-  }
-}
-```
-
----
-
-## Failure Recovery & Retry Strategies
-
-```sudolang
-FailureRecovery {
-  State {
-    retryCount = 0
-    maxRetries = 3
-    failureHistory = []
-  }
-
-  Constraints {
-    Maximum retries is 3 attempts.
-    After 3 failed attempts, escalate to user.
-    Never infinite loop.
-  }
-
-  handleFailure(agent, error) {
-    diagnosis = diagnoseFailure(agent, error)
-
-    match diagnosis, State.retryCount {
-      _, count if count >= State.maxRetries => escalateToUser(agent, error)
-      "scope_creep", _ => retryWithRefinedFocus(agent)
-      "wrong_approach", _ => tryDifferentSpecialist(agent)
-      "incomplete_work", _ => breakIntoSmallerTasks(agent)
-      "blocked", _ => checkSequentialExecution(agent)
-      "wrong_output", _ => specifyExactFormat(agent)
-      "quality_issues", _ => addMoreContext(agent)
-      default => retryWithRefinements(agent)
-    }
-  }
-
-  diagnoseFailure(agent, error) {
-    match error {
-      has scope creep => "scope_creep"
-      wrong approach => "wrong_approach"
-      incomplete work => "incomplete_work"
-      is blocked => "blocked"
-      wrong output => "wrong_output"
-      has quality issues => "quality_issues"
-      default => "unknown"
-    }
-  }
-
-  getRetryAction(symptom) {
-    match symptom {
-      "scope_creep" => { action: "Refine FOCUS, expand EXCLUDE" }
-      "wrong_approach" => { action: "Try different agent type" }
-      "incomplete_work" => { action: "Break into smaller tasks" }
-      "blocked" => { action: "Check if should be sequential" }
-      "wrong_output" => { action: "Specify exact format/path" }
-      "quality_issues" => { action: "Add more constraints/examples" }
-    }
-  }
-
-  handlePartialSuccess(agent, results) {
-    completeDeliverables = results |> filter(r => r.complete)
-    missingDeliverables = results |> filter(r => not r.complete)
-
-    match completeDeliverables, missingDeliverables {
-      complete, missing if canShipPartial(complete) => {
-        action: "accept_partial",
-        next: launchNewAgentFor(missing)
-      }
-      _, missing if partialNotUseful(missing) => {
-        action: "retry_complete"
-      }
-      default => {
-        action: "sequential_completion",
-        buildOn: completeDeliverables
+      HierarchicalPaths {
+        Use directory structure to separate agents
+        Agent1 OUTPUT => docs/patterns/backend/api-versioning.md
+        Agent2 OUTPUT => docs/patterns/frontend/state-management.md
+        Agent3 OUTPUT => docs/patterns/database/migration-strategy.md
+        Result => Different directories prevent collisions
       }
     }
-  }
-}
 
-FallbackChain {
-  steps: [
-    { level: 1, action: "Retry with refined prompt", details: "More specific FOCUS, explicit EXCLUDE, better CONTEXT" },
-    { level: 2, action: "Try different specialist agent", details: "Different expertise angle, simpler task scope" },
-    { level: 3, action: "Break into smaller tasks", details: "Decompose further, sequential smaller steps" },
-    { level: 4, action: "Sequential instead of parallel", details: "Dependency might exist, coordination issue" },
-    { level: 5, action: "Handle directly (DIY)", details: "Task too specialized, agent limitation" },
-    { level: 6, action: "Escalate to user", details: "Present options, request guidance" }
-  ]
-
-  nextStep(currentLevel) {
-    steps |> find(s => s.level == currentLevel + 1)
-  }
-}
-```
-
----
-
-## Output Format
-
-After delegation work, always report using these formats:
-
-```sudolang
-OutputFormats {
-  taskDecompositionReport(result) {
-    """
-    Task Decomposition Complete
-
-    Original Task: $result.originalTask
-
-    Activities Identified: ${ result.activities |> count }
-    ${ result.activities |> mapWithIndex((a, i) => "${ i + 1 }. $a.name - [$a.executionMode]") |> join("\n") }
-
-    Execution Strategy: $result.strategy
-    Reasoning: $result.reasoning
-
-    Agent Prompts Generated: ${ result.promptsGenerated then "Yes" else "No" }
-    File Coordination: ${ result.hasFileCreation then "Checked" else "Not applicable" }
-    Ready to launch: ${ result.ready then "Yes" else "No - " + result.blocker }
-    """
+    CoordinationChecklist {
+      - [ ] Each agent has explicit OUTPUT with file path
+      - [ ] All file paths are unique
+      - [ ] Paths follow project naming conventions
+      - [ ] If using DISCOVERY, filenames differ
+      - [ ] No potential for race conditions
+    }
   }
 
-  scopeValidationReport(agent, result) {
-    """
-    Scope Validation Complete
+  ScopeValidation {
+    AutoAcceptCriteria {
+      Continue without user review when agent delivers:
 
-    Agent: $agent.name
-    Result: $result.verdict
+      SecurityImprovements {
+        Vulnerability fixes
+        Input validation additions
+        Authentication enhancements
+        Error handling improvements
+      }
 
-    Summary:
-    - Deliverables: $result.matched matched, $result.extra extra, $result.missing missing
-    - Scope compliance: $result.compliancePercent%
-    - Recommendation: $result.recommendation
+      QualityImprovements {
+        Code clarity enhancements
+        Documentation updates
+        Test coverage additions (if in scope)
+        Performance optimizations under 10 lines
+      }
 
-    ${ result.verdict != "ACCEPT" then result.details else "" }
-    """
+      SpecificationCompliance {
+        Exactly matches FOCUS requirements
+        Respects all EXCLUDE boundaries
+        Delivers expected OUTPUT format
+        Meets SUCCESS criteria
+      }
+    }
+
+    RequiresUserReview {
+      Present to user for confirmation when agent delivers:
+
+      ArchitecturalChanges {
+        New external dependencies added
+        Database schema modifications
+        Public API changes
+        Design pattern changes
+        Configuration file updates
+      }
+
+      ScopeExpansions {
+        Features beyond FOCUS (but valuable)
+        Additional improvements requested
+        Alternative approaches suggested
+      }
+    }
+
+    AutoRejectCriteria {
+      Reject as scope creep when agent delivers:
+
+      OutOfScopeWork {
+        Features not in requirements
+        Work explicitly in EXCLUDE list
+        Breaking changes without migration path
+        Untested code modifications
+      }
+
+      QualityIssues {
+        Missing required OUTPUT format
+        Doesn't meet SUCCESS criteria
+        "While I'm here" additions
+        Unrequested improvements
+      }
+
+      ProcessViolations {
+        Skipped DISCOVERY_FIRST when required
+        Ignored CONTEXT constraints
+        Exceeded TERMINATION conditions
+      }
+    }
+
+    ValidationReportFormat {
+      ```
+      Agent Response Validation
+
+      Agent: [Agent type/name]
+      Task: [Original FOCUS]
+
+      Deliverables Check:
+      [check] [Deliverable 1]: Matches OUTPUT requirement
+      [check] [Deliverable 2]: Matches OUTPUT requirement
+      [warn] [Deliverable 3]: Extra feature added (not in FOCUS)
+      [fail] [Deliverable 4]: Violates EXCLUDE constraint
+
+      Scope Compliance:
+      - FOCUS coverage: [%]
+      - EXCLUDE violations: [count]
+      - OUTPUT format: [matched/partial/missing]
+      - SUCCESS criteria: [met/partial/unmet]
+
+      Recommendation:
+      ACCEPT - Fully compliant
+      REVIEW - User decision needed on [specific item]
+      REJECT - Scope creep, retry with stricter FOCUS
+      ```
+    }
   }
 
-  retryStrategyReport(agent, attempt) {
-    """
-    Retry Strategy Generated
+  FailureRecovery {
+    FallbackChain {
+      1. Retry with refined prompt (more specific FOCUS, more explicit EXCLUDE, better CONTEXT)
+      2. Try different specialist agent (different expertise angle, simpler task scope)
+      3. Break into smaller tasks (decompose further, sequential smaller steps)
+      4. Sequential instead of parallel (dependency might exist, coordination issue)
+      5. Handle directly (DIY) (task too specialized, agent limitation)
+      6. Escalate to user (present options, request guidance)
+    }
 
-    Agent: $agent.name
-    Failure cause: $attempt.diagnosis
-    Retry approach: $attempt.approach
+    RetryDecisionTree {
+      | Symptom | Likely Cause | Solution |
+      | --- | --- | --- |
+      | Scope creep | FOCUS too vague | Refine FOCUS, expand EXCLUDE |
+      | Wrong approach | Wrong specialist | Try different agent type |
+      | Incomplete work | Task too complex | Break into smaller tasks |
+      | Blocked/stuck | Missing dependency | Check if should be sequential |
+      | Wrong output | OUTPUT unclear | Specify exact format/path |
+      | Quality issues | CONTEXT insufficient | Add more constraints/examples |
+    }
 
-    Template refinements:
-    - FOCUS: $attempt.focusChanges
-    - EXCLUDE: $attempt.excludeAdditions
-    - CONTEXT: $attempt.contextEnhancements
+    PartialSuccessHandling {
+      1. Assess what worked (which deliverables complete, which meet SUCCESS, what's missing)
+      2. Determine if acceptable (can we ship partial, is missing critical, can we iterate)
+      3. Options:
+         - Accept partial + new task => Ship what works, new agent for missing parts
+         - Retry complete task => If partial isn't useful
+         - Sequential completion => Build on partial results
+    }
 
-    Retry attempt: $attempt.number of 3
-    """
+    RetryLimit {
+      Maximum => 3 attempts
+      After3FailedAttempts {
+        Present to user - Explain what failed and why
+        Offer options - Different approaches to try
+        Get guidance - User decides next steps
+      }
+      Rule => Don't infinite loop - If not working after 3 tries, human input needed
+    }
   }
-}
-```
 
----
+  OutputFormat {
+    AfterDecomposition {
+      ```
+      Task Decomposition Complete
 
-## Quick Reference
+      Original Task: [The complex task]
 
-### When to Use This Skill
+      Activities Identified: [N]
+      1. [Activity 1] - [Parallel/Sequential]
+      2. [Activity 2] - [Parallel/Sequential]
+      3. [Activity 3] - [Parallel/Sequential]
 
-- "Break down this complex task"
-- "Launch parallel agents for these activities"
-- "Create agent prompts with FOCUS/EXCLUDE"
-- "Should these run in parallel or sequential?"
-- "Validate this agent response for scope"
-- "Generate retry strategy for failed agent"
-- "Coordinate file creation across agents"
+      Execution Strategy: [Parallel / Sequential / Mixed]
+      Reasoning: [Why this strategy]
 
-### Key Principles
+      Agent Prompts Generated: [Yes/No]
+      File Coordination: [Checked/Not applicable]
+      Ready to launch: [Yes/No - if No, explain blocker]
+      ```
+    }
 
-```sudolang
-KeyPrinciples {
-  Constraints {
-    Activity-based decomposition, not role-based.
-    Parallel-first mindset unless dependencies exist.
-    Explicit FOCUS/EXCLUDE with no ambiguity.
-    Unique file paths to prevent collisions.
-    Scope validation: auto-accept, review, or reject.
-    Maximum 3 retries, then escalate to user.
+    AfterScopeValidation {
+      ```
+      Scope Validation Complete
+
+      Agent: [Agent name]
+      Result: [ACCEPT / REVIEW NEEDED / REJECT]
+
+      Summary:
+      - Deliverables: [N matched, N extra, N missing]
+      - Scope compliance: [percentage]
+      - Recommendation: [Action to take]
+
+      [If REVIEW or REJECT, provide details]
+      ```
+    }
+
+    AfterRetryStrategy {
+      ```
+      Retry Strategy Generated
+
+      Agent: [Agent name]
+      Failure cause: [Diagnosis]
+      Retry approach: [What's different]
+
+      Template refinements:
+      - FOCUS: [What changed]
+      - EXCLUDE: [What was added]
+      - CONTEXT: [What was enhanced]
+
+      Retry attempt: [N of 3]
+      ```
+    }
   }
-}
-```
 
-### Template Checklist
+  QuickReference {
+    WhenToUse {
+      "Break down this complex task"
+      "Launch parallel agents for these activities"
+      "Create agent prompts with FOCUS/EXCLUDE"
+      "Should these run in parallel or sequential?"
+      "Validate this agent response for scope"
+      "Generate retry strategy for failed agent"
+      "Coordinate file creation across agents"
+    }
 
-```sudolang
-TemplateChecklist {
-  require FOCUS has a complete, specific task description.
-  require EXCLUDE has explicit boundaries.
-  require CONTEXT has relevant rules and constraints.
-  require OUTPUT has expected deliverables with paths.
-  require SUCCESS has measurable criteria.
-  require TERMINATION has clear stop conditions.
+    KeyPrinciples {
+      1. Activity-based decomposition (not role-based)
+      2. Parallel-first mindset (unless dependencies exist)
+      3. Explicit FOCUS/EXCLUDE (no ambiguity)
+      4. Unique file paths (prevent collisions)
+      5. Scope validation (auto-accept/review/reject)
+      6. Maximum 3 retries (then escalate to user)
+    }
 
-  DISCOVERY_FIRST is optional and used when creating files.
-}
-```
+    TemplateChecklist {
+      - [ ] FOCUS: Complete, specific task description
+      - [ ] EXCLUDE: Explicit boundaries
+      - [ ] CONTEXT: Relevant rules and constraints
+      - [ ] OUTPUT: Expected deliverables with paths
+      - [ ] SUCCESS: Measurable criteria
+      - [ ] TERMINATION: Clear stop conditions
+      - [ ] DISCOVERY_FIRST: If creating files (optional)
+    }
 
-### Parallel Execution Safety
+    ParallelSafety {
+      Verify before launching parallel agents:
+      - [ ] No dependencies between tasks
+      - [ ] No shared state modifications
+      - [ ] Independent validation possible
+      - [ ] Unique file paths if creating files
+      - [ ] No resource contention
 
-```sudolang
-ParallelSafetyCheck {
-  require No dependencies between tasks.
-  require No shared state modifications.
-  require Independent validation is possible.
-  require Unique file paths if creating files.
-  require No resource contention.
-
-  verify(tasks) {
-    allChecked = all requirements pass for tasks
-    match allChecked {
-      true => "PARALLEL SAFE"
-      false => "SEQUENTIAL REQUIRED"
+      AllChecked => PARALLEL SAFE
     }
   }
 }
-```

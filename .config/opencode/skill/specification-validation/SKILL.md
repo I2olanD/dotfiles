@@ -1,6 +1,6 @@
 ---
 name: specification-validation
-description: Validate specifications, implementations, or understanding for completeness, consistency, and correctness. Use when checking spec quality, comparing implementation against design, validating file contents, assessing readiness, or confirming understanding. Supports spec IDs, file paths, and freeform requests.
+description: "Validate specifications, implementations, or understanding for completeness, consistency, and correctness using the 3 Cs framework"
 license: MIT
 compatibility: opencode
 metadata:
@@ -8,543 +8,390 @@ metadata:
   version: "1.0"
 ---
 
-# Specification Validation Skill
+# Specification Validation
 
-You are a specification validation specialist that ensures quality using the 3 Cs framework: Completeness, Consistency, and Correctness.
+Roleplay as a specification validation specialist that ensures quality using the 3 Cs framework: Completeness, Consistency, and Correctness.
 
-## When to Activate
-
-Activate this skill when you need to:
-- **Validate spec documents** (PRD, SDD, PLAN quality)
-- **Compare implementation against spec** (code vs design)
-- **Validate file contents** (any file for quality/completeness)
-- **Check cross-document alignment** (PRD<->SDD<->PLAN traceability)
-- **Assess implementation readiness** (pre-implementation gate)
-- **Verify compliance** (post-implementation check)
-- **Validate understanding** (confirm correctness of approach/design)
-
-## Core Philosophy
-
-**Advisory, not blocking.** Validation provides recommendations to improve quality. The user decides whether to address issues.
-
-## Validation Framework
-
-```sudolang
 SpecificationValidation {
-  State {
-    mode
-    target
-    documents
-    findings = []
-    ambiguityScore = 0
+  Activation {
+    When to use this skill:
+    - Validate spec documents (PRD, SDD, PLAN quality)
+    - Compare implementation against spec (code vs design)
+    - Validate file contents (any file for quality/completeness)
+    - Check cross-document alignment (PRD to SDD to PLAN traceability)
+    - Assess implementation readiness (pre-implementation gate)
+    - Verify compliance (post-implementation check)
+    - Validate understanding (confirm correctness of approach/design)
   }
 
-  Constraints {
-    Advisory only - user decides on actions.
-    Always check for [NEEDS CLARIFICATION] markers.
-    Always check checklist completion status.
-    Cross-references must be validated.
-    Report ambiguity percentage for all text validations.
-  }
-}
-
-ValidationMode: "specification" | "file" | "comparison" | "understanding"
-
-Specification validates spec ID input (e.g., "005", "005-feature").
-File validates file path input (e.g., "src/auth.ts").
-Comparison validates "check X against Y" input.
-Understanding validates freeform requests.
-
-DocumentSet {
-  prd
-  sdd
-  plan
-  implementation
-  constitution
-}
-```
-
-## Mode Detection
-
-```sudolang
-detectMode(input) {
-  match input {
-    matches /^\d{3}(-|$)/ => ValidationMode.Specification
-    contains "/" or matches /\.\w+$/ => ValidationMode.File
-    contains "against", "matches", or "compare" => ValidationMode.Comparison
-    default => ValidationMode.Understanding
-  }
-}
-```
-
-## Mode A: Specification Validation
-
-**Input**: Spec ID like `005` or `005-feature-name`
-
-Validates specification documents for quality and readiness.
-
-```sudolang
-validateSpecification(specId) {
-  documents = loadSpecDocuments(specId)
-
-  subMode = match documents {
-    has prd only => "DocumentQuality"
-    has prd and sdd => "CrossDocumentAlignment"
-    has prd, sdd, and plan => "PreImplementationReadiness"
-    has prd, sdd, plan, and implementation => "PostImplementationCompliance"
+  CorePhilosophy {
+    Constraints {
+      1. Advisory, not blocking -- validation provides recommendations to improve quality
+      2. The user decides whether to address issues
+      3. Every finding must include file:line for location and a clear fix recommendation
+      4. No generic observations allowed
+    }
   }
 
-  validateBySubMode(subMode, documents)
-}
-```
-
-## Mode B: File Validation
-
-**Input**: File path like `src/auth.ts` or `docs/design.md`
-
-```sudolang
-validateFile(path) {
-  fileType = match path {
-    ends with ".md" and is spec file => "specification"
-    ends with ".md" => "documentation"
-    is code file => "implementation"
-    default => "other"
+  ReferenceMaterials {
+    See `reference/` directory for detailed methodology:
+    - [3cs-framework.md](reference/3cs-framework.md) -- Completeness, Consistency, Correctness validation
+    - [ambiguity-detection.md](reference/ambiguity-detection.md) -- Vague language patterns and scoring
+    - [drift-detection.md](reference/drift-detection.md) -- Spec-implementation alignment checking
+    - [constitution-validation.md](reference/constitution-validation.md) -- Governance rule enforcement
   }
 
-  match fileType {
-    "specification" => validateSpecFile(path)
-    "implementation" => validateCodeFile(path)
-    default => validateGenericFile(path)
-  }
-}
+  ValidationModes {
+    ModeA_SpecificationValidation {
+      Input: Spec ID like `005` or `005-feature-name`
+      Purpose: Validates specification documents for quality and readiness
 
-validateSpecFile(path) {
-  require file exists at path.
-
-  Check section completeness.
-  Check clarification markers.
-  Check checklist completion.
-  Detect ambiguity.
-
-  warn if clarification markers found =>
-    "Found [NEEDS CLARIFICATION] markers requiring resolution."
-
-  warn if checklist completion below 100 percent =>
-    "Incomplete checklist items found."
-}
-
-validateCodeFile(path) {
-  require file exists at path.
-
-  Check TODO markers.
-  Check code completeness.
-  Check spec correspondence.
-
-  warn if TODO count above 0 =>
-    "Found TODO/FIXME markers: $todoCount"
-}
-```
-
-## Mode C: Comparison Validation
-
-**Input**: "Check X against Y", "Validate X matches Y"
-
-```sudolang
-ComparisonValidation {
-  /validate source, reference => {
-    Extract requirements from reference:
-      functionalRequirements,
-      interfaceContracts,
-      dataModels,
-      businessRules,
-      qualityRequirements.
-
-    Check implementation coverage by mapping each requirement:
-    coverage = requirements |> map(req => {
-      implementation = findInSource(source, req)
-      match implementation {
-        found and behavior matches => { req, status: "covered", location: found.path }
-        found but deviates => { req, status: "deviated", location: found.path, deviation: describeDeviation(found, req) }
-        not found => { req, status: "missing", location: null }
+      SubModes {
+        - PRD only --> Document quality validation
+        - PRD + SDD --> Cross-document alignment
+        - PRD + SDD + PLAN --> Pre-implementation readiness
+        - All + implementation --> Post-implementation compliance
       }
-    })
-
-    Build traceability matrix from coverage.
-
-    deviations = coverage |> filter(c => c.status != "covered")
-
-    return {
-      coverage: calculateCoveragePercent(coverage),
-      matrix,
-      deviations
     }
-  }
-}
-```
 
-### Traceability Matrix Format
+    ModeB_FileValidation {
+      Input: File path like `src/auth.ts` or `docs/design.md`
+      Purpose: Validates individual files for quality and completeness
 
-```
-+-----------------+-----------------+--------+
-| Requirement     | Implementation  | Status |
-+-----------------+-----------------+--------+
-| User auth       | src/auth.ts     | [OK]   |
-| Password hash   | src/crypto.ts   | [OK]   |
-| Rate limiting   | NOT FOUND       | [X]    |
-+-----------------+-----------------+--------+
-```
+      ForSpecificationFiles {
+        - Structure and section completeness
+        - `[NEEDS CLARIFICATION]` markers
+        - Checklist completion
+        - Ambiguity detection
+      }
 
-## Mode D: Understanding Validation
-
-**Input**: Freeform like "Is my approach correct?"
-
-```sudolang
-validateUnderstanding(request) {
-  Identify the subject:
-    designApproach,
-    implementationStrategy,
-    businessLogicUnderstanding,
-    technicalDecision.
-
-  Gather context:
-    specificationDocuments,
-    existingImplementations,
-    relatedCode,
-    documentation.
-
-  Analyze correctness by comparing against:
-    documentedRequirements,
-    actualImplementation,
-    bestPractices,
-    technicalConstraints.
-
-  Categorize findings:
-  findings = analysis |> map(item => {
-    match item.alignment {
-      "correct" => { status: "correct", point: item.description }
-      "partial" => { status: "partial", point: item.description, clarification: item.clarification }
-      "misconception" => { status: "misconception", point: item.description, actual: item.correction }
+      ForImplementationFiles {
+        - TODO/FIXME markers
+        - Code completeness
+        - Correspondence to spec (if exists)
+        - Quality indicators
+      }
     }
-  })
 
-  return { findings, score: calculateUnderstandingScore(findings) }
-}
-```
+    ModeC_ComparisonValidation {
+      Input: "Check X against Y", "Validate X matches Y"
+      Purpose: Compares source (implementation) against reference (specification)
 
-## The 3 Cs Framework
+      Process {
+        1. Identify source and reference
+        2. Extract requirements/components from reference
+        3. Check each against source
+        4. Report coverage and deviations
+      }
+    }
 
-```sudolang
-ThreeCsFramework {
-  Completeness {
-    All required content is present and filled out.
+    ModeD_UnderstandingValidation {
+      Input: Freeform like "Is my approach correct?"
+      Purpose: Validates understanding, approach, or design decisions
 
-    require All sections exist and are non-empty.
-    require Clarification markers are resolved.
-    require Validation checklists are complete.
-    require TODO markers are resolved when validating implementation.
-    require Required artifacts are present.
-
-    /check document => {
-      sections = extractSections(document)
-      markers = findMarkers(document, "[NEEDS CLARIFICATION]")
-      checklists = findChecklists(document)
-      todos = findMarkers(document, /TODO|FIXME|XXX|HACK/)
-
-      return {
-        sectionsComplete: sections |> all(s => s.content is not empty),
-        markersResolved: markers is empty,
-        checklistsDone: checklists |> all(c => c.checked),
-        todosResolved: todos is empty
+      Process {
+        1. Identify subject of validation
+        2. Gather relevant context
+        3. Analyze correctness
+        4. Provide validation with explanations
       }
     }
   }
 
-  Consistency {
-    Content aligns internally and across documents.
+  The3CsFramework {
+    Completeness {
+      Definition: All required content is present and filled out
 
-    require Terminology is consistent.
-    require No contradictory statements.
-    require Cross-references are valid.
-    require PRD requirements trace to SDD.
-    require SDD components trace to plan.
-    require Implementation matches spec.
+      Checks {
+        - All sections exist and are non-empty
+        - No `[NEEDS CLARIFICATION]` markers
+        - Validation checklists complete
+        - No TODO/FIXME markers (for implementation)
+        - Required artifacts present
+      }
+    }
 
-    /check documents => {
-      terminology = extractTerminology(documents)
-      references = extractCrossReferences(documents)
+    Consistency {
+      Definition: Content aligns internally and across documents
 
-      return {
-        terminologyConsistent: terminology |> checkConsistency,
-        referencesValid: references |> all(validateReference),
-        traceabilityComplete: checkTraceability(documents)
+      Checks {
+        - Terminology used consistently
+        - No contradictory statements
+        - Cross-references are valid
+        - PRD requirements trace to SDD components
+        - SDD components trace to PLAN tasks
+        - Implementation matches specification
+      }
+    }
+
+    Correctness {
+      Definition: Content is accurate, confirmed, and implementable
+
+      Checks {
+        - ADRs confirmed by user
+        - Technical feasibility validated
+        - Dependencies are available
+        - Acceptance criteria testable
+        - Business logic is sound
+        - Interfaces match contracts
       }
     }
   }
 
-  Correctness {
-    Content is accurate, confirmed, and implementable.
+  ValidationPerspectives {
+    | Perspective | Intent | What to Validate |
+    |-------------|--------|------------------|
+    | Completeness | Ensure nothing missing | All sections filled, no TODO/FIXME, checklists complete, no `[NEEDS CLARIFICATION]` |
+    | Consistency | Check internal alignment | Terminology matches, cross-references valid, no contradictions |
+    | Alignment | Verify doc-code match | Documented patterns exist in code, no hallucinated implementations |
+    | Coverage | Assess specification depth | Requirements mapped, interfaces specified, edge cases addressed |
+    | Drift | Check spec-implementation divergence | Scope creep, missing features, contradictions, extra work |
+    | Constitution | Governance compliance | L1/L2/L3 rule violations, autofix opportunities |
+  }
 
-    require ADRs are confirmed by user.
-    require Technical feasibility is validated.
-    require Dependencies are available.
-    require Acceptance criteria are testable.
-    require Business logic is sound.
-    require Interfaces match contracts.
-
-    /check documents => {
-      adrs = extractAdrs(documents.sdd)
-      dependencies = extractDependencies(documents)
-      criteria = extractAcceptanceCriteria(documents.prd)
-
-      return {
-        adrsConfirmed: adrs |> all(a => a.status == "confirmed"),
-        depsAvailable: dependencies |> all(checkAvailability),
-        criteriaTestable: criteria |> all(isTestable)
-      }
+  AmbiguityDetection {
+    VagueLanguagePatterns {
+      | Pattern | Example | Recommendation |
+      |---------|---------|----------------|
+      | Hedge words | "should", "might", "could" | Use "must" or "will" |
+      | Vague quantifiers | "fast", "many", "various" | Specify metrics |
+      | Open-ended lists | "etc.", "and so on" | Enumerate all items |
+      | Undefined terms | "the system", "appropriate" | Define specifically |
+      | Passive voice | "errors are handled" | Specify who/what |
+      | Weak verbs | "support", "allow" | Use concrete actions |
     }
-  }
-}
-```
 
-## Ambiguity Detection
+    AmbiguityScore {
+      ```
+      ambiguity_score = vague_patterns / total_statements * 100
 
-```sudolang
-AmbiguityDetection {
-  VaguePatterns {
-    hedgeWords: ["should", "might", "could", "may"]
-      => recommendation: "Use 'must' or 'will'"
-
-    vagueQuantifiers: ["fast", "slow", "many", "few", "various"]
-      => recommendation: "Specify metrics"
-
-    openEndedLists: ["etc.", "and so on", "..."]
-      => recommendation: "Enumerate all items"
-
-    undefinedTerms: ["the system", "appropriate", "reasonable"]
-      => recommendation: "Define specifically"
-
-    passiveVoice: /errors are \w+ed/
-      => recommendation: "Specify who/what"
-
-    weakVerbs: ["support", "allow", "handle"]
-      => recommendation: "Use concrete actions"
-  }
-
-  calculateAmbiguityScore(text) {
-    vaguePatterns = countVaguePatterns(text)
-    totalStatements = countStatements(text)
-    score = (vaguePatterns / totalStatements) * 100
-
-    match score {
-      0..5 => { score, rating: "excellent", label: "[OK]" }
-      5..15 => { score, rating: "acceptable", label: "[~]" }
-      15..25 => { score, rating: "recommend_clarification", label: "[!]" }
-      _ => { score, rating: "high_ambiguity", label: "[X]" }
-    }
-  }
-}
-```
-
-## Constitution Integration
-
-```sudolang
-ConstitutionCheck {
-  /validateWithConstitution documents => {
-    constitutionPath = findProjectRoot() + "/CONSTITUTION.md"
-
-    match fileExists(constitutionPath) {
-      false => skip constitution check
-      true => {
-        constitution = parseConstitution(constitutionPath)
-
-        During Mode A (Specification Validation):
-        if documents.sdd exists {
-          adrs = extractAdrs(documents.sdd)
-          l1l2Violations = adrs |> flatMap(adr =>
-            checkAgainstRules(adr, constitution.l1Rules ++ constitution.l2Rules)
-          )
-          architectureViolations = checkArchitecture(documents.sdd, constitution)
-        }
-
-        During Mode C (Comparison Validation):
-        if documents.implementation exists {
-          codeViolations = documents.implementation |> flatMap(file =>
-            validateAgainstConstitution(file, constitution)
-          )
-
-          warn if code satisfies spec but violates constitution =>
-            "Code satisfies spec but violates constitution rules."
-        }
-
-        return categorizeViolations(violations)
-      }
+        0-5%:   Excellent clarity
+        5-15%:  Acceptable
+        15-25%: Recommend clarification
+        25%+:   High ambiguity
+      ```
     }
   }
 
-  categorizeViolations(violations) {
-    return {
-      l1: violations |> filter(v => v.level == "L1") |> "blocking, autofix available",
-      l2: violations |> filter(v => v.level == "L2") |> "blocking, manual fix required",
-      l3: violations |> filter(v => v.level == "L3") |> "optional improvements"
+  ComparisonValidationProcess {
+    Step1_ExtractRequirements {
+      From the reference document (spec), extract:
+      - Functional requirements
+      - Interface contracts
+      - Data models
+      - Business rules
+      - Quality requirements
+    }
+
+    Step2_CheckImplementation {
+      For each requirement:
+      - Search implementation for corresponding code
+      - Verify behavior matches specification
+      - Note any deviations or gaps
+    }
+
+    Step3_BuildTraceabilityMatrix {
+      ```
+      +-------------------+-------------------+--------+
+      | Requirement       | Implementation    | Status |
+      +-------------------+-------------------+--------+
+      | User auth         | src/auth.ts       | PASS   |
+      | Password hash     | src/crypto.ts     | PASS   |
+      | Rate limiting     | NOT FOUND         | FAIL   |
+      +-------------------+-------------------+--------+
+      ```
+    }
+
+    Step4_ReportDeviations {
+      For each deviation:
+      - What differs
+      - Where in code
+      - Where in spec
+      - Recommended action
+    }
+  }
+
+  UnderstandingValidationProcess {
+    Step1_IdentifySubject {
+      What is being validated:
+      - Design approach
+      - Implementation strategy
+      - Business logic understanding
+      - Technical decision
+    }
+
+    Step2_GatherContext {
+      Find relevant:
+      - Specification documents
+      - Existing implementations
+      - Related code
+      - Documentation
+    }
+
+    Step3_AnalyzeCorrectness {
+      Compare stated understanding against:
+      - Documented requirements
+      - Actual implementation
+      - Best practices
+      - Technical constraints
+    }
+
+    Step4_ReportFindings {
+      Categorize as:
+      - Correct understanding
+      - Partially correct (with clarification)
+      - Misconception (with correction)
+    }
+  }
+
+  AutomatedChecks {
+    FileExistenceAndContent {
+      ```bash
+      # Check file exists
+      test -f [path]
+
+      # Check for markers
+      grep -c "\[NEEDS CLARIFICATION" [file]
+
+      # Check checklist status
+      grep -c "\[x\]" [file]
+      grep -c "\[ \]" [file]
+
+      # Check for TODOs
+      grep -inE "(TODO|FIXME|XXX|HACK)" [file]
+      ```
+    }
+
+    AmbiguityScan {
+      ```bash
+      grep -inE "(should|might|could|may|various|etc\.|and so on|appropriate|reasonable|fast|slow|many|few)" [file]
+      ```
+    }
+
+    CrossReferenceCheck {
+      ```bash
+      # Find all requirement IDs in PRD
+      grep -oE "REQ-[0-9]+" prd.md
+
+      # Search for each in SDD
+      grep -l "REQ-001" sdd.md
+      ```
+    }
+  }
+
+  SynthesisAndReport {
+    DeduplicationAlgorithm {
+      1. Collect all findings from all perspectives
+      2. Group by location (file:line range overlap -- within 5 lines = potential overlap)
+      3. For overlapping findings: keep highest severity, merge complementary details, credit both perspectives
+      4. Sort by severity (FAIL > WARN > PASS)
+      5. Assign IDs: `F[N]` for failures, `W[N]` for warnings
+    }
+
+    ReportFormat {
+      ```
+      Validation: [target]
+
+      Mode: [Spec | File | Drift | Constitution | Comparison | Understanding]
+      Assessment: [Excellent | Good | Needs Attention | Critical]
+
+      Summary:
+
+      | Perspective | Pass | Warn | Fail |
+      |-------------|------|------|------|
+      | Completeness | X | X | X |
+      | Consistency | X | X | X |
+      | Alignment | X | X | X |
+      | Coverage | X | X | X |
+      | **Total** | X | X | X |
+
+      Failures (Must Fix):
+
+      | ID | Finding | Recommendation |
+      |----|---------|----------------|
+      | F1 | Brief title (file:line) | Fix recommendation (issue description) |
+
+      Warnings (Should Fix):
+
+      | ID | Finding | Recommendation |
+      |----|---------|----------------|
+      | W1 | Brief title (file:line) | Fix recommendation (issue description) |
+
+      Passes:
+
+      | Perspective | Verified |
+      |-------------|----------|
+      | Completeness | All sections populated, no TODO markers |
+
+      Verdict:
+      [What was validated and key conclusions]
+      ```
+    }
+  }
+
+  ConstitutionIntegration {
+    DuringSpecificationValidation_ModeA {
+      If `CONSTITUTION.md` exists at project root:
+      1. Parse constitution rules
+      2. Check SDD ADRs against L1/L2 rules
+      3. Verify proposed architecture doesn't violate constitutional constraints
+      4. Report any conflicts in validation output
+    }
+
+    DuringComparisonValidation_ModeC {
+      If comparing implementation against specification:
+      1. Also validate implementation against constitution
+      2. Include constitution violations in comparison report
+      3. Flag code that may satisfy spec but violates constitution
+    }
+
+    ConstitutionCheckOutput {
+      ```
+      Constitution Compliance
+
+      Status: [Compliant / Violations Found]
+
+      [If violations found:]
+      L1 Violations: [N] (blocking, autofix available)
+      L2 Violations: [N] (blocking, manual fix required)
+      L3 Advisories: [N] (optional improvements)
+
+      [Detailed violation list if any...]
+      ```
+    }
+  }
+
+  IntegrationWithOtherSkills {
+    Works alongside:
+    - `skill({ name: "specification-management" })` -- Read spec metadata
+    - `skill({ name: "implementation-verification" })` -- Detailed implementation verification
+    - `skill({ name: "constitution-validation" })` -- Constitutional rule compliance (when CONSTITUTION.md exists)
+    - `skill({ name: "drift-detection" })` -- Spec-implementation alignment (during implementation phases)
+  }
+
+  QuickReference {
+    InputDetection {
+      | Pattern | Mode |
+      |---------|------|
+      | `^\d{3}` or `^\d{3}-` | Specification |
+      | Contains `/` or `.ext` | File |
+      | Contains "against", "matches" | Comparison |
+      | Freeform text | Understanding |
+    }
+
+    AlwaysCheck {
+      - `[NEEDS CLARIFICATION]` markers
+      - Checklist completion
+      - ADR confirmation status
+      - Cross-document references
+      - TODO/FIXME markers
+    }
+
+    AmbiguityRedFlags {
+      - "should", "might", "could", "may"
+      - "fast", "slow", "many", "few"
+      - "etc.", "and so on", "..."
+      - "appropriate", "reasonable"
     }
   }
 }
-```
-
-## Report Formats
-
-```sudolang
-ReportFormats {
-  /specificationReport spec, results => """
-    Specification Validation: $spec
-    Mode: ${results.subMode}
-
-    Completeness: ${results.completeness.status}
-    Consistency: ${results.consistency.status}
-    Correctness: ${results.correctness.status}
-    Ambiguity: ${results.ambiguityScore}%
-
-    ${formatDetailedFindings(results.findings)}
-
-    Recommendations:
-    ${results.recommendations |> enumerate |> join("\n")}
-  """
-
-  /comparisonReport source, reference, results => """
-    Comparison Validation
-
-    Source: $source
-    Reference: $reference
-
-    Coverage: ${results.coveragePercent}% (${results.covered}/${results.total} items)
-
-    ${formatTraceabilityMatrix(results.matrix)}
-
-    Deviations:
-    ${results.deviations |> enumerate |> map(d => formatDeviation(d)) |> join("\n")}
-
-    Overall: ${results.overallStatus}
-  """
-
-  /understandingReport subject, findings => """
-    Understanding Validation
-
-    Subject: $subject
-
-    Correct:
-    ${findings |> filter(f => f.status == "correct") |> map(f => "- " + f.point) |> join("\n")}
-
-    Partially Correct:
-    ${findings |> filter(f => f.status == "partial") |> map(f => "- " + f.point + "\n  Clarification: " + f.clarification) |> join("\n")}
-
-    Misconceptions:
-    ${findings |> filter(f => f.status == "misconception") |> map(f => "- " + f.point + "\n  Actual: " + f.actual) |> join("\n")}
-
-    Score: ${calculateScore(findings)}%
-
-    Recommendations:
-    ${generateRecommendations(findings)}
-  """
-
-  /constitutionReport results => """
-    Constitution Compliance
-
-    Status: ${results.violations is empty then "[OK] Compliant" else "[!] Violations Found"}
-
-    ${match results.violations is not empty {
-      true => """
-        L1 Violations: ${results.l1 |> count} (blocking, autofix available)
-        L2 Violations: ${results.l2 |> count} (blocking, manual fix required)
-        L3 Advisories: ${results.l3 |> count} (optional improvements)
-
-        ${formatViolationDetails(results.violations)}
-      """
-      false => ""
-    }}
-  """
-
-  /finalReport mode, target, status, findings => """
-    Validation Complete
-
-    Mode: $mode
-    Target: $target
-    Status: $status
-
-    Key Findings:
-    ${findings |> take(5) |> map(f => "- " + f.message) |> join("\n")}
-
-    Recommendations:
-    ${generatePrioritizedRecommendations(findings)}
-
-    ${suggestNextAction(mode, status)}
-  """
-}
-```
-
-## Automated Checks
-
-```sudolang
-AutomatedChecks {
-  /checkFileExists path => bash("test -f $path")
-
-  /checkClarificationMarkers file =>
-    grep("[NEEDS CLARIFICATION]", file) |> count
-
-  /checkChecklistStatus file => {
-    checked = grep("[x]", file) |> count
-    unchecked = grep("[ ]", file) |> count
-    return { checked, unchecked, total: checked + unchecked }
-  }
-
-  /checkTodoMarkers file =>
-    grep(/TODO|FIXME|XXX|HACK/i, file) |> count
-
-  /scanAmbiguity file =>
-    grep(/should|might|could|may|various|etc\.|and so on|appropriate|reasonable|fast|slow|many|few/i, file)
-
-  /checkCrossReferences prd, sdd => {
-    reqIds = grep(/REQ-\d+/, prd) |> extractMatches
-    reqIds |> map(id => {
-      found = grep(id, sdd) |> exists
-      return { id, traceable: found }
-    })
-  }
-}
-```
-
-## Integration with Other Skills
-
-Works alongside:
-- **specification-management**: Read spec metadata
-- **implementation-verification**: Detailed implementation verification
-- **task-delegation**: Parallel validation checks
-- **constitution-validation**: Constitutional rule compliance (when CONSTITUTION.md exists)
-- **drift-detection**: Spec-implementation alignment (during implementation phases)
-
-## Quick Reference
-
-```sudolang
-QuickReference {
-  InputDetection {
-    /^\d{3}(-|$)/ => "Specification"
-    contains path separator => "File"
-    contains comparison keywords => "Comparison"
-    default => "Understanding"
-  }
-
-  AlwaysCheck: [
-    "[NEEDS CLARIFICATION] markers",
-    "Checklist completion",
-    "ADR confirmation status",
-    "Cross-document references",
-    "TODO/FIXME markers"
-  ]
-
-  AmbiguityRedFlags: [
-    "should, might, could, may",
-    "fast, slow, many, few",
-    "etc., and so on, ...",
-    "appropriate, reasonable"
-  ]
-}
-```

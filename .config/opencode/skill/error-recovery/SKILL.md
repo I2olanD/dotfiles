@@ -10,259 +10,152 @@ metadata:
 
 # Error Handling
 
-## When to Use
+Roleplay as an error handling specialist that designs consistent error patterns, validation approaches, and recovery strategies for robust systems.
 
-- Implementing input validation at system boundaries
-- Designing error responses for APIs or user interfaces
-- Building recovery mechanisms for transient failures
-- Establishing logging and monitoring patterns
-- Distinguishing between errors that need user action vs system intervention
-
-## Philosophy
-
-Errors are not exceptional - they are expected. Good error handling treats errors as first-class citizens of the system design, not afterthoughts. The goal is to fail safely, provide actionable feedback, and enable recovery.
-
-## Error Classification
-
-```sudolang
-ErrorType {
-  Operational {
-    description: "Runtime problems during normal operation - expected and must be handled"
-    characteristics: [
-      "External system failures (network, database, filesystem)",
-      "Invalid user input",
-      "Resource exhaustion (memory, disk, connections)",
-      "Timeout conditions",
-      "Rate limiting"
-    ]
-    response: "Handle gracefully, log appropriately, provide user feedback, implement recovery"
+ErrorRecovery {
+  Activation {
+    When implementing input validation at system boundaries
+    When designing error responses for APIs or user interfaces
+    When building recovery mechanisms for transient failures
+    When establishing logging and monitoring patterns
+    When distinguishing between errors that need user action vs system intervention
   }
 
-  Programmer {
-    description: "Bugs in code that should not happen if code is correct"
-    characteristics: [
-      "Type errors caught at runtime",
-      "Null/undefined access on required values",
-      "Failed assertions on invariants",
-      "Invalid internal state"
-    ]
-    response: "Fail fast, log full context, alert developers. Do not attempt recovery - fix the bug"
-  }
-
-  classify(error) {
-    match error {
-      { source: "external" } => Operational
-      { source: "user_input" } => Operational
-      { type: "timeout" | "rate_limit" } => Operational
-      { type: "resource_exhaustion" } => Operational
-      { type: "assertion" | "invariant" } => Programmer
-      { type: "type_error" | "null_access" } => Programmer
-      default => Operational
-    }
-  }
-}
-```
-
-## Core Patterns
-
-### Input Validation
-
-Validate early, validate completely, provide specific feedback.
-
-```sudolang
-FailFastValidation {
   Constraints {
-    Validate at system boundaries (API entry, user input, file reads).
-    Check all constraints before processing.
-    Return ALL validation errors, not just the first one.
-    Include field name, actual value (if safe), and expected format.
-    Never trust data from external sources.
+    Errors are not exceptional - they are expected
+    Good error handling treats errors as first-class citizens of system design
+    Fail safely, provide actionable feedback, and enable recovery
+    Fail fast on programmer errors - do not mask bugs
+    Handle operational errors gracefully with recovery options
   }
 
-  require "All required fields must be present."
-  require "All field types must match expected types."
-  require "All values must be within allowed ranges."
-  require "Formats must match expectations (email, URL, date)."
-  require "All business rules must be satisfied."
+  ErrorClassification {
+    OperationalErrors {
+      Runtime problems that occur during normal operation
+      These are expected and must be handled
 
-  validate(input, schema) {
-    errors = []
+      Characteristics:
+      - External system failures (network, database, filesystem)
+      - Invalid user input
+      - Resource exhaustion (memory, disk, connections)
+      - Timeout conditions
+      - Rate limiting
 
-    schema.fields |> each(field => {
-      match field, input[field.name] {
-        { required: true }, undefined =>
-          errors = errors + [{ field: field.name, error: "required" }]
-        { type: expected }, value if typeof(value) != expected =>
-          errors = errors + [{ field: field.name, error: "type_mismatch", expected, actual: typeof(value) }]
-        { min, max }, value if value < min || value > max =>
-          errors = errors + [{ field: field.name, error: "out_of_range", min, max, actual: value }]
-        { format: regex }, value if !regex.test(value) =>
-          errors = errors + [{ field: field.name, error: "format_invalid", expected: field.format }]
+      Response: Handle gracefully, log appropriately, provide user feedback, implement recovery
+    }
+
+    ProgrammerErrors {
+      Bugs in the code that should not happen if the code is correct
+
+      Characteristics:
+      - Type errors caught at runtime
+      - Null/undefined access on required values
+      - Failed assertions on invariants
+      - Invalid internal state
+
+      Response: Fail fast, log full context, alert developers. Do not attempt recovery - fix the bug
+    }
+  }
+
+  CorePatterns {
+    InputValidation {
+      Validate early, validate completely, provide specific feedback
+
+      FailFastValidation {
+        1. Validate at system boundaries (API entry, user input, file reads)
+        2. Check all constraints before processing
+        3. Return ALL validation errors, not just the first one
+        4. Include field name, actual value (if safe), and expected format
+        5. Never trust data from external sources
       }
-    })
 
-    { valid: errors |> count == 0, errors }
-  }
-}
-```
+      ValidationChecklist:
+      - Required fields present
+      - Types correct
+      - Values within allowed ranges
+      - Formats match expectations (email, URL, date)
+      - Business rules satisfied
+    }
 
-### Error Messages
+    ErrorMessages {
+      Different audiences need different information
 
-Different audiences need different information.
+      UserFacingErrors:
+      - Clear action the user can take
+      - No technical jargon or stack traces
+      - Consistent tone and format
+      - Localization-ready
 
-```sudolang
-ErrorMessage {
-  UserFacing {
-    require "Must include clear action the user can take."
-    require "No technical jargon or stack traces."
-    require "Consistent tone and format."
-    require "Localization-ready."
-  }
+      InternalLoggedErrors:
+      - Full technical context
+      - Request/correlation IDs
+      - Timestamp and service identifier
+      - Stack trace for programmer errors
+      - Sanitized sensitive data
+    }
 
-  Internal {
-    require "Full technical context."
-    require "Request and correlation IDs."
-    require "Timestamp and service identifier."
-    require "Stack trace for programmer errors."
-    require "Sensitive data must be sanitized."
-  }
-
-  format(error, audience) {
-    match audience {
-      "user" => {
-        message: error.userMessage || "An error occurred",
-        action: error.suggestedAction,
-        code: error.publicCode
+    RecoveryStrategies {
+      RetryWithBackoff {
+        For transient failures (network timeouts, rate limits)
+        - Exponential backoff with jitter
+        - Maximum retry count with circuit breaker
       }
-      "internal" => {
-        message: error.technicalMessage,
-        correlationId: error.correlationId,
-        timestamp: now(),
-        service: error.service,
-        stack: error.stack,
-        context: sanitize(error.context)
+
+      Fallback {
+        - Degraded functionality over complete failure
+        - Cached data when live data unavailable
+        - Default values when configuration missing
+      }
+
+      Compensation {
+        - Undo partial operations on failure
+        - Maintain consistency in distributed operations
+        - Saga pattern for multi-step processes
       }
     }
+
+    LoggingLevels {
+      | Level | Use For |
+      |-------|---------|
+      | ERROR | Operational errors requiring attention |
+      | WARN | Recoverable issues, degraded performance |
+      | INFO | Significant state changes, request lifecycle |
+      | DEBUG | Detailed flow for troubleshooting |
+
+      WhatToLog:
+      - Correlation/request ID
+      - User context (sanitized)
+      - Operation being attempted
+      - Error type and message
+      - Duration and timing
+
+      WhatNOTToLog:
+      - Passwords, tokens, secrets
+      - Full credit card numbers
+      - Personal identifiable information (PII)
+      - Raw request/response bodies containing sensitive data
+    }
+  }
+
+  BestPractices {
+    - Fail fast on programmer errors - do not mask bugs
+    - Handle operational errors gracefully with recovery options
+    - Provide correlation IDs for tracing requests across services
+    - Use structured logging (JSON) for machine parseability
+    - Centralize error handling logic - avoid scattered try/catch blocks
+    - Test error paths as rigorously as success paths
+    - Monitor error rates and set alerts for anomalies
+  }
+
+  AntiPatterns {
+    - Catching all exceptions silently (`catch {}`)
+    - Logging sensitive data in error messages
+    - Returning generic "Something went wrong" without context
+    - Retrying non-idempotent operations without safeguards
+    - Mixing validation errors with system errors in responses
+    - Treating all errors the same regardless of recoverability
   }
 }
-```
-
-### Recovery Strategies
-
-```sudolang
-RecoveryStrategy {
-  selectStrategy(error) {
-    match error {
-      { type: "network_timeout" | "rate_limit" | "transient" } =>
-        RetryWithBackoff
-      { type: "service_unavailable" | "data_stale" } =>
-        Fallback
-      { type: "partial_failure" | "distributed_operation" } =>
-        Compensation
-      { type: "programmer_error" } =>
-        FailFast
-      default =>
-        Fallback
-    }
-  }
-
-  RetryWithBackoff {
-    Constraints {
-      Use exponential backoff with jitter.
-      Implement maximum retry count.
-      Include circuit breaker pattern.
-    }
-
-    config {
-      maxRetries: 3
-      baseDelayMs: 100
-      maxDelayMs: 10000
-      jitterFactor: 0.1
-    }
-  }
-
-  Fallback {
-    Constraints {
-      Prefer degraded functionality over complete failure.
-      Use cached data when live data unavailable.
-      Apply default values when configuration missing.
-    }
-  }
-
-  Compensation {
-    Constraints {
-      Undo partial operations on failure.
-      Maintain consistency in distributed operations.
-      Use saga pattern for multi-step processes.
-    }
-  }
-}
-```
-
-### Logging Levels
-
-```sudolang
-LogLevel {
-  selectLevel(event) {
-    match event {
-      { type: "operational_error", requiresAttention: true } => "ERROR"
-      { type: "recoverable_issue" | "degraded_performance" } => "WARN"
-      { type: "state_change" | "request_lifecycle" } => "INFO"
-      { type: "troubleshooting" | "detailed_flow" } => "DEBUG"
-      default => "INFO"
-    }
-  }
-
-  require "Log correlation and request ID."
-  require "Log sanitized user context."
-  require "Log operation being attempted."
-  require "Log error type and message."
-  require "Log duration and timing."
-
-  warn "Never log passwords, tokens, or secrets."
-  warn "Never log full credit card numbers."
-  warn "Never log personal identifiable information (PII)."
-  warn "Never log raw request or response bodies containing sensitive data."
-}
-```
-
-## Best Practices
-
-```sudolang
-ErrorHandlingPractices {
-  Constraints {
-    Fail fast on programmer errors - do not mask bugs.
-    Handle operational errors gracefully with recovery options.
-    Provide correlation IDs for tracing requests across services.
-    Use structured logging (JSON) for machine parseability.
-    Centralize error handling logic - avoid scattered try-catch blocks.
-    Test error paths as rigorously as success paths.
-    Monitor error rates and set alerts for anomalies.
-  }
-}
-```
-
-## Anti-Patterns
-
-```sudolang
-ErrorAntiPatterns {
-  warn "Catching all exceptions silently (catch {}) hides bugs."
-  warn "Logging sensitive data in error messages leaks secrets."
-  warn "Returning generic 'Something went wrong' without context frustrates users."
-  warn "Retrying non-idempotent operations without safeguards causes data corruption."
-  warn "Mixing validation errors with system errors in responses confuses consumers."
-  warn "Treating all errors the same regardless of recoverability prevents proper handling."
-
-  detectAntiPattern(code) {
-    match code {
-      /catch\s*\(\s*\)\s*\{\s*\}/ => "silentCatch"
-      /catch.*password|token|secret/ => "sensitiveLogging"
-      /throw.*"Something went wrong"/ => "genericMessages"
-      default => null
-    }
-  }
-}
-```
 
 ## References
 

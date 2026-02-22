@@ -29,7 +29,6 @@ Analyze {
     Work iteratively - execute discovery => documentation => review cycles
     Wait for direction - get user input between each cycle
     Confirm before writing - ask user before persisting documentation
-    Synthesize only - never forward raw analyst messages to user, only synthesized output
   }
 
   OutputLocations {

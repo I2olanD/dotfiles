@@ -12,25 +12,25 @@ You have been assigned to work on an unfamiliar codebase. You need to understand
 
 ```bash
 # Step 1: Read existing documentation first
-Read: README.md
-Read: CLAUDE.md / Agent.md (if exists)
+read: README.md
+read: CLAUDE.md (if exists)
 
 # Step 2: Identify tech stack from config files
-Glob: package.json | requirements.txt | go.mod | Cargo.toml
+glob: package.json | requirements.txt | go.mod | Cargo.toml
 
 # Step 3: Map source structure
-Glob: **/src/**/*.{ts,js,py,go}
+glob: **/src/**/*.{ts,js,py,go}
 
 # Step 4: Find entry points
-Glob: **/index.{ts,js} | **/main.{ts,js,py,go}
+glob: **/index.{ts,js} | **/main.{ts,js,py,go}
 
 # Step 5: Locate tests to understand expected behaviors
-Glob: **/*.test.{ts,js} | **/*.spec.{ts,js} | **/test_*.py
+glob: **/*.test.{ts,js} | **/*.spec.{ts,js} | **/test_*.py
 ```
 
 ### Explanation
 
-1. **Documentation first** - README, CLAUDE.md, and Agent.md often contain project-specific conventions and commands
+1. **Documentation first** - README and CLAUDE.md often contain project-specific conventions and commands
 2. **Config files reveal stack** - package.json shows Node.js, go.mod shows Go, etc.
 3. **Source mapping** - understand directory organization
 4. **Entry points** - find where execution begins
@@ -38,9 +38,9 @@ Glob: **/*.test.{ts,js} | **/*.spec.{ts,js} | **/test_*.py
 
 ### Variations
 
-- For monorepos: Start with `Glob: **/package.json` to find all packages
-- For microservices: Look for `Glob: **/Dockerfile` to identify service boundaries
-- For legacy code: Check `Glob: **/*.sql` for database schema clues
+- For monorepos: Start with `glob: **/package.json` to find all packages
+- For microservices: Look for `glob: **/Dockerfile` to identify service boundaries
+- For legacy code: Check `glob: **/*.sql` for database schema clues
 
 ### Anti-Patterns
 
@@ -60,21 +60,21 @@ You need to modify user authentication but do not know where the code lives.
 
 ```
 # Step 1: Search for obvious terms
-Grep: (auth|login|authenticate)
+grep: (auth|login|authenticate)
   glob: **/*.{ts,js,py}
   output_mode: files_with_matches
 
 # Step 2: Find route definitions
-Grep: (login|signin|auth).*route
+grep: (login|signin|auth).*route
   glob: **/routes/**/*
 
 # Step 3: Locate service/handler
-Grep: (AuthService|AuthHandler|authenticate)
+grep: (AuthService|AuthHandler|authenticate)
   output_mode: content
   -C: 3
 
 # Step 4: Trace imports to find related files
-Grep: import.*from.*auth
+grep: import.*from.*auth
   output_mode: files_with_matches
 ```
 
@@ -87,9 +87,9 @@ Grep: import.*from.*auth
 
 ### Variations
 
-- For frontend: `Grep: (useAuth|AuthContext|AuthProvider)`
-- For database: `Grep: (users|sessions).*table|schema`
-- For middleware: `Grep: (middleware|interceptor).*auth`
+- For frontend: `grep: (useAuth|AuthContext|AuthProvider)`
+- For database: `grep: (users|sessions).*table|schema`
+- For middleware: `grep: (middleware|interceptor).*auth`
 
 ### Anti-Patterns
 
@@ -109,22 +109,22 @@ You need to understand how data moves from API request to database and back.
 
 ```
 # Step 1: Find API routes/handlers
-Grep: (app\.(get|post)|router\.(get|post)|@(Get|Post))
+grep: (app\.(get|post)|router\.(get|post)|@(Get|Post))
   glob: **/routes/**/* | **/controllers/**/*
   output_mode: content
   -C: 5
 
 # Step 2: Find service layer calls
-Grep: (Service|Repository)\.(create|find|update|delete)
+grep: (Service|Repository)\.(create|find|update|delete)
   output_mode: content
   -C: 3
 
 # Step 3: Find database operations
-Grep: (prisma|sequelize|mongoose|typeorm)\.\w+\.(find|create|update)
+grep: (prisma|sequelize|mongoose|typeorm)\.\w+\.(find|create|update)
   output_mode: content
 
 # Step 4: Find data transformations
-Grep: (map|transform|serialize|dto)
+grep: (map|transform|serialize|dto)
   glob: **/{dto,mapper,transformer}/**/*
 ```
 
@@ -137,9 +137,9 @@ Grep: (map|transform|serialize|dto)
 
 ### Variations
 
-- For event-driven: `Grep: (emit|publish|subscribe|on\()`
-- For GraphQL: `Grep: (Query|Mutation|Resolver)`
-- For message queues: `Grep: (queue|broker|consume|produce)`
+- For event-driven: `grep: (emit|publish|subscribe|on\()`
+- For GraphQL: `grep: (Query|Mutation|Resolver)`
+- For message queues: `grep: (queue|broker|consume|produce)`
 
 ### Anti-Patterns
 
@@ -159,22 +159,22 @@ You need to understand the high-level architecture to plan a refactoring effort.
 
 ```
 # Step 1: Find module/package boundaries
-Glob: **/package.json | **/go.mod | **/__init__.py
+glob: **/package.json | **/go.mod | **/__init__.py
   (for monorepos: shows internal packages)
 
 # Step 2: Identify layers
-Glob: **/{controllers,handlers,routes}/**/*
-Glob: **/{services,usecases,domain}/**/*
-Glob: **/{repositories,dal,data}/**/*
+glob: **/{controllers,handlers,routes}/**/*
+glob: **/{services,usecases,domain}/**/*
+glob: **/{repositories,dal,data}/**/*
 
 # Step 3: Find external integrations
-Grep: (axios|fetch|http\.|request\()
+grep: (axios|fetch|http\.|request\()
   output_mode: files_with_matches
-Glob: **/{clients,integrations,adapters}/**/*
+glob: **/{clients,integrations,adapters}/**/*
 
 # Step 4: Map cross-cutting concerns
-Glob: **/{middleware,interceptors,guards}/**/*
-Grep: (logger|cache|metric|trace)
+glob: **/{middleware,interceptors,guards}/**/*
+grep: (logger|cache|metric|trace)
 ```
 
 ### Explanation
@@ -186,9 +186,9 @@ Grep: (logger|cache|metric|trace)
 
 ### Variations
 
-- For microservices: Look for `Glob: **/Dockerfile` and service definitions
+- For microservices: Look for `glob: **/Dockerfile` and service definitions
 - For modular monolith: Check for internal API contracts
-- For plugin architecture: `Grep: (plugin|extension|addon)`
+- For plugin architecture: `grep: (plugin|extension|addon)`
 
 ### Anti-Patterns
 
@@ -208,22 +208,22 @@ Users report an error message: "Invalid token format". You need to find where th
 
 ```
 # Step 1: Search for exact error message
-Grep: Invalid token format
+grep: Invalid token format
   output_mode: content
   -C: 10
 
 # Step 2: Find related error handling
-Grep: (throw|raise|Error).*token
+grep: (throw|raise|Error).*token
   output_mode: content
   -C: 5
 
 # Step 3: Trace the code path
 # (after finding file, search for function callers)
-Grep: validateToken|parseToken
+grep: validateToken|parseToken
   output_mode: files_with_matches
 
 # Step 4: Check test files for expected behavior
-Grep: Invalid token
+grep: Invalid token
   glob: **/*.test.{ts,js} | **/test_*.py
   output_mode: content
 ```
@@ -251,13 +251,13 @@ Grep: Invalid token
 
 ## Quick Reference: Search Strategy by Goal
 
-| Goal                    | Primary Tool | Pattern                                 |
-| ----------------------- | ------------ | --------------------------------------- | ------------- | ------------ |
-| Find file by name       | Glob         | `**/target-name*`                       |
-| Find file by content    | Grep         | `pattern` with `files_with_matches`     |
-| Understand function     | Grep         | Function name with `-C: 10` for context |
-| Find all usages         | Grep         | Call pattern with `files_with_matches`  |
-| Map directory structure | Glob         | `**/src/**/*`                           |
-| Find configuration      | Glob         | `**/*.{json,yaml,toml,env}`             |
-| Trace dependencies      | Grep         | Import/require patterns                 |
-| Find tests              | Glob         | `\*_/_.test.\*                          | \*_/_.spec.\* | \*_/test\__` |
+| Goal | Primary Tool | Pattern |
+|------|--------------|---------|
+| Find file by name | glob | `**/target-name*` |
+| Find file by content | grep | `pattern` with `files_with_matches` |
+| Understand function | grep | Function name with `-C: 10` for context |
+| Find all usages | grep | Call pattern with `files_with_matches` |
+| Map directory structure | glob | `**/src/**/*` |
+| Find configuration | glob | `**/*.{json,yaml,toml,env}` |
+| Trace dependencies | grep | Import/require patterns |
+| Find tests | glob | `**/*.test.* | **/*.spec.* | **/test_*` |

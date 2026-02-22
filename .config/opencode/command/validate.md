@@ -1,285 +1,224 @@
 ---
-description: "Validate specifications, implementations, or understanding"
-argument-hint: "spec ID (e.g., 005), file path, 'constitution', or description of what to validate"
+description: "Validate specifications, implementations, constitution compliance, or understanding with spec quality checks, drift detection, and constitution enforcement"
+argument-hint: "spec ID (e.g., 005), file path, 'constitution', 'drift', or description of what to validate"
 allowed-tools:
-  ["todowrite", "bash", "grep", "glob", "read", "edit", "question", "skill"]
+  [
+    "todowrite",
+    "bash",
+    "write",
+    "edit",
+    "read",
+    "glob",
+    "grep",
+    "question",
+    "skill",
+  ]
 ---
 
-You are a validation orchestrator that ensures quality and correctness across specifications, implementations, and understanding.
+# Validate
+
+Roleplay as a validation orchestrator that ensures quality and correctness across specifications, implementations, and governance.
 
 **Validation Request**: $ARGUMENTS
 
-## Core Rules
-
-```sudolang
-ValidationOrchestrator {
+Validate {
   Constraints {
-    Delegate validation tasks using specialized subagents.
-    Call skill({ name: "specification-validation" }) FIRST.
-    Advisory only - provide recommendations without blocking.
-    Be specific - include file paths and line numbers.
+    You are an orchestrator - delegate validation tasks to specialist agents; parallel where applicable
+    Call skill tool FIRST - load validation methodology based on mode (see SkillRouting)
+    Include file:line for every finding - no generic observations
+    Make every finding actionable - include a clear fix recommendation
+    Parallel validation - launch ALL applicable validation perspectives simultaneously
+    Log drift decisions - record drift decisions to spec README.md for traceability
+    Read full target first - never validate without reading the full target; no assumptions about content
+    Advisory by default - all findings are recommendations unless they are constitution L1/L2 violations (which block)
+    Synthesize before presenting - deduplicate and merge findings; never present raw agent output directly
   }
-}
-```
 
-## Validation Perspectives
-
-Launch parallel validation agents to check different quality dimensions.
-
-```sudolang
-ValidationPerspective = "completeness" | "consistency" | "alignment" | "coverage"
-
-ValidationPerspectives = [
-  {
-    perspective: "completeness"
-    emoji: "✅", intent: "Ensure nothing missing"
-    focus: ["All sections filled", "No TODO/FIXME markers",
-            "Checklists complete", "No [NEEDS CLARIFICATION] markers"]
-  },
-  {
-    perspective: "consistency"
-    emoji: "🔗", intent: "Check internal alignment"
-    focus: ["Terminology matches throughout", "Cross-references valid",
-            "No contradictions"]
-  },
-  {
-    perspective: "alignment"
-    emoji: "📍", intent: "Verify doc-code match"
-    focus: ["Documented patterns exist in code",
-            "No hallucinated implementations"]
-  },
-  {
-    perspective: "coverage"
-    emoji: "📐", intent: "Assess specification depth"
-    focus: ["Requirements mapped", "Interfaces specified",
-            "Edge cases addressed"]
+  ValidationMode {
+    Parse $ARGUMENTS to determine mode. Evaluate top-to-bottom, first match wins.
+    
+    | IF input matches | THEN mode is | Description |
+    | --- | --- | --- |
+    | Spec ID (005, 005-auth) | Spec Validation | Validate specification documents |
+    | File path (src/auth.ts) | File Validation | Validate individual file quality |
+    | "drift" or "check drift" | Drift Detection | Check spec-implementation alignment |
+    | "constitution" | Constitution Validation | Check code against CONSTITUTION.md |
+    | "X against Y" pattern | Comparison Validation | Compare two sources |
+    | Freeform text | Understanding Validation | Validate approach or understanding |
   }
-]
-```
 
-### Parallel Task Execution
-
-**Decompose validation into parallel activities.** Launch multiple specialist agents in a SINGLE response to validate different concerns simultaneously.
-
-**For each perspective, describe the validation intent:**
-
-```sudolang
-ValidationTask {
-  perspective
-  target
-  context {
-    targetFiles   // Spec files, code files, or both
-    scope         // What's being validated
-    standards     // CLAUDE.md, Agent.md, project conventions
+  SkillRouting {
+    | Mode | Skill to Load |
+    | --- | --- |
+    | Spec Validation | skill({ name: "specification-validation" }) |
+    | File Validation | skill({ name: "specification-validation" }) |
+    | Drift Detection | skill({ name: "drift-detection" }) |
+    | Constitution Validation | skill({ name: "constitution-validation" }) |
+    | Comparison Validation | skill({ name: "specification-validation" }) |
+    | Understanding Validation | skill({ name: "specification-validation" }) |
   }
-  focus           // From ValidationPerspectives
-}
 
-ValidationFinding {
-  status: "✅" | "⚠️" | "❌"
-  title
-  severity: "HIGH" | "MEDIUM" | "LOW"
-  location    // file:line format
-  issue
-  recommendation
-}
-
-formatFinding(finding) => """
-  $finding.status **$finding.title** (SEVERITY: $finding.severity)
-  Location: `$finding.location`
-  Issue: $finding.issue
-  Recommendation: $finding.recommendation
-"""
-```
-
-**Perspective-Specific Guidance:**
-
-```sudolang
-getAgentFocus(perspective) {
-  match perspective {
-    "completeness" => [
-      "Scan for TODO/FIXME markers",
-      "Check checklists are complete",
-      "Verify all sections populated"
-    ]
-    "consistency" => [
-      "Cross-reference terms",
-      "Verify links are valid",
-      "Detect contradictions"
-    ]
-    "alignment" => [
-      "Compare docs to code",
-      "Verify implementations exist",
-      "Flag hallucinations"
-    ]
-    "coverage" => [
-      "Map requirements to specs",
-      "Check interface completeness",
-      "Find gaps"
-    ]
+  ValidationPerspectives {
+    | Perspective | Intent | What to Validate |
+    | --- | --- | --- |
+    | Completeness | Ensure nothing missing | All sections filled, no TODO/FIXME, checklists complete, no [NEEDS CLARIFICATION] |
+    | Consistency | Check internal alignment | Terminology matches, cross-references valid, no contradictions |
+    | Alignment | Verify doc-code match | Documented patterns exist in code, no hallucinated implementations |
+    | Coverage | Assess specification depth | Requirements mapped, interfaces specified, edge cases addressed |
+    | Drift | Check spec-implementation divergence | Scope creep, missing features, contradictions, extra work |
+    | Constitution | Governance compliance | L1/L2/L3 rule violations, autofix opportunities |
   }
-}
-```
 
-### Validation Synthesis
-
-After parallel validation completes:
-
-```sudolang
-ValidationSynthesis {
-  /synthesize findings => {
-    findings
-      |> deduplicate(by: location + issue)
-      |> sortBy(severity descending)
-      |> groupBy(category)
+  PerspectiveGuidance {
+    Completeness => Scan for markers, check checklists, verify all sections populated
+    Consistency => Cross-reference terms, verify links, detect contradictions
+    Alignment => Compare docs to code, verify implementations exist, flag hallucinations
+    Coverage => Map requirements to specs, check interface completeness, find gaps
+    Drift => Compare spec requirements to implementation, categorize drift types
+    Constitution => Parse rules, apply patterns/checks, report violations by level
   }
-}
-```
 
-## Workflow
-
-### Phase 1: Parse Input
-
-```sudolang
-InputType = "spec_id" | "file_path" | "constitution" | "comparison" | "freeform"
-
-parseInput(args) {
-  match args {
-    /^\d{3}$/               => "spec_id"
-    /^\/|\./ => "file_path"
-    "constitution"          => "constitution"
-    /against|vs|compare/    => "comparison"
-    default                 => "freeform"
-  }
-}
-
-getValidationTarget(inputType, args) {
-  match inputType {
-    "spec_id" => {
-      action: "validate specification documents"
-      locate: "docs/specs/$args/"
-    }
-    "file_path" => {
-      action: "validate file (security scan, test coverage, quality)"
-      locate: args
-    }
-    "constitution" => {
-      action: "validate codebase against CONSTITUTION.md"
-      locate: "CONSTITUTION.md"
-    }
-    "comparison" => {
-      action: "compare source to reference"
-      parse: "extract X and Y from 'X against Y'"
-    }
-    "freeform" => {
-      action: "validate understanding/correctness of described concept"
-      scope: args
+  TaskDelegation {
+    Template {
+      Validate [PERSPECTIVE] for [target]:
+      
+      CONTEXT:
+      - Target: [Spec files, code files, or both]
+      - Scope: [What's being validated]
+      - Standards: [CLAUDE.md, project conventions]
+      
+      FOCUS: [What this perspective validates - from ValidationPerspectives table]
+      
+      OUTPUT: Return findings as a structured list:
+      
+      FINDING:
+      - status: PASS | WARN | FAIL
+      - severity: HIGH | MEDIUM | LOW
+      - title: Brief title (max 40 chars)
+      - location: file:line
+      - issue: One sentence describing what was found
+      - recommendation: How to fix
+      
+      If no findings: NO_FINDINGS
     }
   }
-}
-```
 
-### Phase 2: Gather Context
+  ReferenceMaterials {
+    reference/3cs-framework.md => Completeness, Consistency, Correctness validation
+    reference/ambiguity-detection.md => Vague language patterns and scoring
+    reference/drift-detection.md => Spec-implementation alignment checking
+    reference/constitution-validation.md => Governance rule enforcement
+  }
 
-```sudolang
-ContextGathering {
-  Constraints {
-    Read relevant files, specs, or code.
-    For specs: check which documents exist (PRD, SDD, PLAN).
-    For files: identify related tests and specs.
-    For constitution: load CONSTITUTION.md rules.
+  Workflow {
+    Phase1_ParseInputGatherContext {
+      1. Analyze $ARGUMENTS to select validation mode (see ValidationMode table)
+      2. Load appropriate skill (see SkillRouting table)
+      3. Gather context based on mode:
+         Spec Validation => Check which documents exist (PRD, SDD, PLAN), read spec files, identify cross-references
+         Drift Detection => Load spec documents, identify implementation files, extract requirements and interfaces
+         Constitution Validation => Check for CONSTITUTION.md at project root, parse rules by category, identify applicable scopes
+         File Validation => Read target file, identify related specs or tests
+         Comparison => Read both sources
+      4. Determine applicable perspectives
+    }
+
+    Phase2_LaunchValidation {
+      Launch ALL applicable perspectives in parallel (single response with multiple task calls)
+      Use the TaskDelegation template
+    }
+
+    Phase3_SynthesisAndReport {
+      DeduplicationAlgorithm {
+        1. Collect all findings from all perspectives
+        2. Group by location (file:line range overlap - within 5 lines = potential overlap)
+        3. For overlapping findings: keep highest severity, merge complementary details, credit both perspectives
+        4. Sort by severity (FAIL > WARN > PASS)
+        5. Assign IDs: F[N] for failures, W[N] for warnings
+      }
+      
+      PresentationFormat {
+        ## Validation: [target]
+        
+        **Mode**: [Spec | File | Drift | Constitution | Comparison | Understanding]
+        **Assessment**: Excellent | Good | Needs Attention | Critical
+        
+        ### Summary
+        
+        | Perspective | Pass | Warn | Fail |
+        | --- | --- | --- | --- |
+        | Completeness | X | X | X |
+        | Consistency | X | X | X |
+        | Alignment | X | X | X |
+        | Coverage | X | X | X |
+        | Drift | X | X | X |
+        | Constitution | X | X | X |
+        | **Total** | X | X | X |
+        
+        *Failures (Must Fix)*
+        
+        | ID | Finding | Recommendation |
+        | --- | --- | --- |
+        | F1 | Brief title *(file:line)* | Fix recommendation *(issue description)* |
+        
+        *Warnings (Should Fix)*
+        
+        | ID | Finding | Recommendation |
+        | --- | --- | --- |
+        | W1 | Brief title *(file:line)* | Fix recommendation *(issue description)* |
+        
+        *Passes*
+        
+        | Perspective | Verified |
+        | --- | --- |
+        | Completeness | All sections populated, no TODO markers |
+        
+        ### Verdict
+        
+        [What was validated and key conclusions]
+      }
+      
+      ModeSpecificSynthesis {
+        DriftDetection {
+          Categorize by drift type: Scope Creep, Missing, Contradicts, Extra
+          Log decisions to spec README.md
+        }
+        
+        ConstitutionValidation {
+          Separate by level: L1 (autofix required), L2 (manual fix required), L3 (advisory only)
+          L1/L2 are blocking; L3 is informational
+          Pattern rules: regex match. Check rules: semantic analysis
+        }
+        
+        AmbiguityDetection {
+          Detect vague patterns: hedge words ("should", "might"), vague quantifiers ("fast", "many"), open-ended lists ("etc."), undefined terms ("the system")
+          Score: 0-5% Excellent, 5-15% Acceptable, 15-25% Recommend clarification, 25%+ High ambiguity
+        }
+      }
+    }
+
+    Phase4_NextSteps {
+      After presenting findings, evaluate scenario. First match wins.
+      
+      | IF findings include | THEN offer (via question) | Recommended |
+      | --- | --- | --- |
+      | Constitution L1/L2 violations | Apply autofixes (L1), Show violations, Skip checks | Apply autofixes |
+      | Drift detected | Acknowledge and continue, Update implementation, Update specification, Defer decision | Context-dependent |
+      | Spec issues (failures) | Address failures first, Show detailed findings, Continue anyway | Address failures |
+      | All passing | Proceed to next step | Proceed |
+    }
+  }
+
+  IntegrationPoints {
+    Called by /implement at phase checkpoints (drift) and completion (comparison)
+    Called by /specify during SDD phase for architecture alignment
   }
 }
-```
-
-### Phase 3: Apply Validation Checks
-
-```sudolang
-ValidationChecks {
-  require completeness {
-    No [NEEDS CLARIFICATION] markers.
-    Checklists done.
-    No TODO/FIXME.
-  }
-
-  require consistency {
-    Consistent terminology.
-    No contradictions.
-    Valid cross-references.
-  }
-
-  require correctness {
-    Sound logic.
-    Valid dependencies.
-    Matching interfaces.
-  }
-
-  warn ambiguity {
-    Flag vague language: should, might, could.
-    Flag imprecise quantities: various, many, few, etc.
-  }
-
-  require alignment {
-    Documented patterns actually exist in code.
-    No hallucinated implementations.
-  }
-}
-```
-
-### Phase 4: Report Findings
-
-```sudolang
-AssessmentLevel = "Excellent" | "Good" | "Needs Attention" | "Critical"
-
-determineAssessment(findings) {
-  highCount = findings |> filter(severity == "HIGH") |> count
-  mediumCount = findings |> filter(severity == "MEDIUM") |> count
-
-  match (highCount, mediumCount) {
-    (0, 0)   => "Excellent"
-    (0, _)   => "Good"
-    (1..3, _) => "Needs Attention"
-    default  => "Critical"
-  }
-}
-
-ValidationReport {
-  target
-  assessment
-  findings
-  summary
-}
-
-formatReport(report) => """
-  ## Validation: $report.target
-
-  **Assessment**: $report.assessment
-
-  ### Findings
-
-  ${ report.findings |> groupBy(category) |> formatGroupedFindings }
-
-  ### Summary
-
-  $report.summary
-"""
-
-formatGroupedFindings(grouped) => {
-  grouped |> map (category, findings) => """
-    **$category**
-    ${ findings |> map(f => "- [$f.location] - $f.issue → $f.recommendation") |> join }
-  """
-}
-```
 
 ## Important Notes
 
-```sudolang
-ValidateCommand {
-  Constraints {
-    Advisory only - all findings are recommendations.
-    Be specific - include file:line for every finding.
-    Actionable - every finding should have a clear fix.
-  }
-}
-```
+- **Advisory by default** - All findings are recommendations unless L1/L2 constitution violations
+- **Be specific** - Include file:line for every finding; no generic observations
+- **Actionable findings** - Every finding must include a clear fix recommendation
+- **Synthesize first** - Deduplicate and merge before presenting to user
+- **Log drift decisions** - Record all drift acknowledgments to spec README.md for traceability

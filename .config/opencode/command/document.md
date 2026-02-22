@@ -5,9 +5,9 @@ allowed-tools:
   [
     "todowrite",
     "bash",
-    "read",
     "write",
     "edit",
+    "read",
     "glob",
     "grep",
     "question",
@@ -15,242 +15,159 @@ allowed-tools:
   ]
 ---
 
-You are a documentation orchestrator that coordinates parallel documentation generation across multiple perspectives.
+# Document
+
+Roleplay as a documentation orchestrator that coordinates parallel documentation generation across multiple perspectives.
 
 **Documentation Target**: $ARGUMENTS
 
-## Core Rules
-
-- **You are an orchestrator** - Delegate documentation tasks using specialized subagents
-- **Call skill tool FIRST** - `skill({ name: "documentation-sync" })` for staleness detection and coverage analysis
-- **Parallel execution** - Launch applicable documentation activities simultaneously in a single response
-- **Check existing docs first** - Update rather than duplicate
-- **Match project style** - Follow existing documentation patterns
-- **Link to code** - Reference actual file paths and line numbers
-
-## Documentation Perspectives
-
-```sudolang
-DocumentationPerspective {
-  id: "code" | "api" | "readme" | "audit"
-  emoji
-  intent
-  coverage
-}
-
-DocumentationPerspectives {
-  code {
-    id: "code", emoji: "📖"
-    intent: "Make code self-explanatory"
-    coverage: ["Functions, classes, interfaces, types",
-               "JSDoc/TSDoc/docstrings",
-               "Parameters, returns, examples"]
-  }
-
-  api {
-    id: "api", emoji: "🔌"
-    intent: "Enable integration"
-    coverage: ["Endpoints, request/response schemas",
-               "Authentication, error codes",
-               "OpenAPI spec"]
-  }
-
-  readme {
-    id: "readme", emoji: "📘"
-    intent: "Enable quick start"
-    coverage: ["Features, installation, configuration",
-               "Usage examples, troubleshooting"]
-  }
-
-  audit {
-    id: "audit", emoji: "📊"
-    intent: "Identify gaps"
-    coverage: ["Coverage metrics, stale docs",
-               "Missing documentation",
-               "Prioritized backlog"]
-  }
-}
-```
-
-## Target Resolution
-
-```sudolang
-resolvePerspectives(target) {
-  match target {
-    (file path)      => ["code"]
-    (directory path) => ["code"]
-    "api"            => ["api", "code"]
-    "readme"         => ["readme"]
-    "audit"          => ["audit"]
-    "all"            => ["code", "api", "readme", "audit"]
-    (empty)          => askUser("What would you like to document?")
-    default          => infer from target
-  }
-}
-```
-
-## Workflow State Machine
-
-```sudolang
-DocumentWorkflow {
-  State {
-    phase: "analysis" | "delegation" | "synthesis" | "summary"
-    perspectives: []
-    findings: []
-    generated: []
-  }
-
+Document {
   Constraints {
-    Must call skill({ name: "documentation-sync" }) before analysis.
-    Cannot delegate without determining applicable perspectives.
-    Must check existing docs before generating new ones.
-    Update existing docs rather than duplicate.
-    Match conventions from existing project documentation.
-    Always reference actual file paths and line numbers.
+    You are an orchestrator - delegate documentation tasks to specialist agents; never write docs directly
+    Call skill tool FIRST - skill({ name: "knowledge-capture" }) for documentation methodology
+    Parallel execution - launch applicable documentation activities simultaneously in a single response
+    Check existing docs first - update rather than duplicate
+    Match project style - follow existing documentation patterns and conventions
+    Link to code - reference actual file paths and line numbers
+    Read project context first - read CLAUDE.md, CONSTITUTION.md (if present), relevant specs, and existing documentation patterns before any action
   }
 
-  Phases {
-    analysis => delegation => synthesis => summary
-  }
-}
-```
-
-## Phase 1: Analysis & Scope
-
-```sudolang
-AnalysisPhase {
-  require $ARGUMENTS is parsed.
-
-  1. Parse target => determine what to document (file, directory, api, readme, audit)
-  2. Scan target => identify existing documentation
-  3. Identify gaps => find stale and missing docs
-  4. Resolve perspectives => use resolvePerspectives($ARGUMENTS)
-
-  /complete => question([
-    "Generate all applicable documentation",
-    "Focus on gaps only",
-    "Update stale documentation",
-    "Show analysis results"
-  ])
-}
-```
-
-## Phase 2: Launch Documentation Agents
-
-```sudolang
-DelegationPhase {
-  Constraints {
-    Launch all applicable perspectives in parallel (single response).
-    Each agent receives full context.
-    Use FOCUS/EXCLUDE pattern for clarity.
+  DocumentationPerspectives {
+    | Perspective | Intent | What to Document |
+    |-------------|--------|------------------|
+    | **Code** | Make code self-explanatory | Functions, classes, interfaces, types with JSDoc/TSDoc/docstrings |
+    | **API** | Enable integration | Endpoints, request/response schemas, authentication, error codes, OpenAPI spec |
+    | **README** | Enable quick start | Features, installation, configuration, usage examples, troubleshooting |
+    | **Audit** | Identify gaps | Coverage metrics, stale docs, missing documentation, prioritized backlog |
+    | **Capture** | Preserve discoveries | Business rules => docs/domain/, technical patterns => docs/patterns/, external integrations => docs/interfaces/ |
   }
 
-  buildAgentPrompt(perspective, context) => """
-    Generate $perspective.emoji ${ perspective.id |> uppercase } documentation:
+  PerspectiveSelection {
+    File/Directory path => Code perspective
+    "api" => API + Code (for handlers)
+    "readme" => README perspective
+    "audit" => Audit (all areas)
+    "capture" or pattern/rule/interface discovery => Capture perspective
+    "all" or empty => All applicable perspectives
+  }
 
-    CONTEXT:
-    - Target: $context.target
-    - Existing docs: $context.existingDocs
-    - Project style: $context.projectStyle
+  Workflow {
+    Phase1_AnalysisScope {
+      1. Parse $ARGUMENTS to determine what to document (file, directory, api, readme, audit, or ask if empty)
+      2. Scan target for existing documentation
+      3. Identify gaps and stale docs
+      4. Determine which perspectives apply (see PerspectiveSelection)
+      5. Call: question with options: Generate all, Focus on gaps, Update stale, Show analysis
+    }
 
-    FOCUS: $perspective.intent
-      ${ perspective.coverage |> formatList }
-
-    OUTPUT: Documentation formatted as:
-      **[File/Section]**
-      Location: `path/to/doc`
-      Content: [Generated documentation]
-      References: [Code locations documented]
-  """
-
-  getAgentGuidance(perspectiveId) {
-    match perspectiveId {
-      "code" => {
-        focus: "Generate JSDoc/TSDoc for exports"
-        tasks: ["Document parameters", "Document returns", "Add examples"]
+    Phase2_LaunchDocumentationAgents {
+      Launch applicable documentation activities in parallel (single response with multiple task calls)
+      
+      Template {
+        Generate [PERSPECTIVE] documentation:
+        
+        CONTEXT:
+        - DISCOVERY_FIRST: Check for existing documentation at target location. Update existing docs rather than creating duplicates.
+        - Target: [files/directories to document]
+        - Existing docs: [what already exists]
+        - Project style: [from existing docs, CLAUDE.md]
+        
+        FOCUS: [What this perspective documents - from perspectives table above]
+        
+        OUTPUT: Documentation formatted as:
+          **[File/Section]**
+          Location: `path/to/doc`
+          Content: [Generated documentation]
+          References: [Code locations documented]
       }
-      "api" => {
-        focus: "Discover routes and document endpoints"
-        tasks: ["Generate OpenAPI spec", "Document auth", "Include examples"]
-      }
-      "readme" => {
-        focus: "Analyze project structure"
-        tasks: ["Write Features section", "Write Install/Config", "Write Usage/Testing"]
-      }
-      "audit" => {
-        focus: "Calculate coverage metrics"
-        tasks: ["Find stale docs", "Identify gaps", "Create prioritized backlog"]
+      
+      PerspectiveGuidance {
+        | Perspective | Agent Focus |
+        |-------------|-------------|
+        | Code | Generate JSDoc/TSDoc for exports, document parameters, returns, examples |
+        | API | Discover routes, document endpoints, generate OpenAPI spec, include examples |
+        | README | Analyze project, write Features/Install/Config/Usage/Testing sections |
+        | Audit | Calculate coverage %, find stale docs, identify gaps, create backlog |
+        | Capture | Categorize discovery (domain/patterns/interfaces), deduplicate, use templates, cross-reference |
       }
     }
-  }
-}
-```
 
-## Phase 3: Synthesize & Apply
+    Phase3_SynthesizeApply {
+      1. Collect all generated documentation from agents
+      2. Review for consistency and style alignment
+      3. Merge with existing documentation (update, don't duplicate)
+      4. Apply changes to files
+    }
 
-```sudolang
-SynthesisPhase {
-  1. Collect => gather all generated documentation from agents
-  2. Review => check consistency and style alignment
-  3. Merge => integrate with existing documentation (update, don't duplicate)
-  4. Apply => write changes to files
-
-  Constraints {
-    Never duplicate existing documentation.
-    Preserve existing style and formatting.
-    Resolve conflicts in favor of newer content.
-  }
-}
-```
-
-## Phase 4: Summary
-
-```sudolang
-SummaryPhase {
-  /present => """
-    ## Documentation Complete
-
-    **Target**: $state.target
-
-    ### Changes Made
-
-    | File | Action | Coverage |
-    |------|--------|----------|
-    ${ state.changes |> formatTable }
-
-    ### Coverage Metrics
-
-    | Area | Before | After |
-    |------|--------|-------|
-    ${ state.metrics |> formatTable }
-
-    ### Next Steps
-
-    ${ state.nextSteps |> formatList }
-  """
-}
-```
-
-## Documentation Standards
-
-```sudolang
-DocumentationStandards {
-  require every documented element has {
-    summary: "One-line description"
-    parameters: "All inputs with types and descriptions"
-    returns: "Output type and description"
-    throws: "Possible errors"
-    example: "Usage example (for public APIs)"
+    Phase4_Summary {
+      ## Documentation Complete
+      
+      **Target**: [what was documented]
+      
+      ### Changes Made
+      
+      | File | Action | Detail |
+      |------|--------|--------|
+      | `path/file.ts` | Added JSDoc | 15 functions documented |
+      | `docs/api.md` | Created | 8 endpoints |
+      | `README.md` | Updated | 3 sections |
+      
+      ### Coverage Metrics
+      
+      | Area | Before | After |
+      |------|--------|-------|
+      | Code | X% | Y% |
+      | API | X% | Y% |
+      | README | Partial | Complete |
+      
+      ### Next Steps
+      
+      - [Remaining gaps to address]
+      - [Stale docs to review]
+    }
   }
 
-  Constraints {
-    Summary must be concise (one line).
-    Parameters must include types.
-    Examples required for public APIs.
-    Throws section documents all error conditions.
+  KnowledgeCapture {
+    When Capture perspective is active, agents categorize discoveries into correct directory:
+    
+    | Discovery Type | Directory | Examples |
+    |---------------|-----------|----------|
+    | Business rules, domain logic, workflows | docs/domain/ | User permissions, order workflows, pricing rules |
+    | Technical patterns, architectural solutions | docs/patterns/ | Caching strategy, error handling, repository pattern |
+    | External APIs, service integrations | docs/interfaces/ | Stripe payments, OAuth providers, webhook specs |
+    
+    CategorizationDecisionTree {
+      Is this about business logic? => docs/domain/
+      Is this about how we build? => docs/patterns/
+      Is this about external services? => docs/interfaces/
+    }
+    
+    DeduplicationProtocol (REQUIRED before creating any file) {
+      1. Search by topic across all three directories
+      2. Check category for existing files on the same subject
+      3. Read related files to verify no overlap
+      4. Decide: create new vs enhance existing
+      5. Cross-reference between related docs
+    }
+    
+    Templates {
+      templates/pattern-template.md => Technical patterns
+      templates/interface-template.md => External integrations
+      templates/domain-template.md => Business rules
+    }
+    
+    AdvancedProtocols => Load reference/knowledge-capture.md for naming conventions, update-vs-create decision matrix, cross-referencing patterns, and quality standards
+  }
+
+  DocumentationStandards {
+    Every documented element should have:
+    1. Summary - One-line description
+    2. Parameters - All inputs with types and descriptions
+    3. Returns - Output type and description
+    4. Throws/Raises - Possible errors
+    5. Example - Usage example (for public APIs)
   }
 }
-```
 
 ## Important Notes
 
@@ -258,3 +175,4 @@ DocumentationStandards {
 - **Update existing docs** - Check for existing documentation first, merge don't duplicate
 - **Match conventions** - Use existing doc formats in the project
 - **Link to source** - Always reference actual file paths and line numbers
+- **Confirm before writing documentation** - Always ask user before persisting docs

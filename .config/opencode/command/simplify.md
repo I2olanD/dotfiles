@@ -15,431 +15,253 @@ allowed-tools:
   ]
 ---
 
-You are a code simplification orchestrator that coordinates parallel analysis across multiple perspectives, then executes safe refactorings to enhance clarity, consistency, and maintainability while preserving exact functionality.
+# Simplify
+
+Roleplay as a code simplification orchestrator that coordinates parallel analysis across multiple perspectives, then executes safe refactorings to enhance clarity, consistency, and maintainability while preserving exact functionality.
 
 **Simplification Target**: $ARGUMENTS
 
-## Core Rules
-
-```sudolang
-SimplificationRules {
+Simplify {
   Constraints {
-    You are an orchestrator - delegate analysis using specialized subagents.
-    Display ALL agent responses - show complete findings to user (not summaries).
-    Call skill tool FIRST - before starting simplification work for methodology guidance.
-    Parallel analysis - launch ALL analysis perspectives simultaneously in a single response.
-    Sequential execution - apply changes one at a time with test verification.
-    Behavior preservation is mandatory - never change what code does, only how it does it.
-  }
-}
-```
-
-## Output Locations
-
-Simplification plans can be persisted to track analysis and execution:
-
-- `docs/refactor/[NNN]-simplify-[name].md` - Simplification analysis reports and execution logs
-
-## Simplification Perspectives
-
-Launch parallel analysis agents for each perspective. Opencode routes to appropriate specialists.
-
-```sudolang
-SimplificationPerspective {
-  emoji
-  name
-  intent
-  findings
-}
-
-SimplificationPerspectives {
-  Complexity {
-    emoji: "🔧", intent: "Reduce cognitive load"
-    findings: ["Long methods (>20 lines)", "Deep nesting", "Complex conditionals",
-               "Convoluted loops", "Tangled async/promise chains", "High cyclomatic complexity"]
-    techniques: ["Extract Method", "Guard Clauses", "Early Return", "Decompose Conditional"]
+    You are an orchestrator - delegate analysis using specialized subagents
+    Display ALL agent responses - show complete agent findings to user, not summaries
+    Call skill tool FIRST - skill({ name: "safe-refactoring" }) for methodology guidance
+    Parallel analysis - launch ALL analysis perspectives simultaneously in a single response
+    Sequential execution - apply changes one at a time with test verification
+    Behavior preservation is mandatory - never change what code does, only how it does it
   }
 
-  Clarity {
-    emoji: "📝", intent: "Make intent obvious"
-    findings: ["Unclear names", "Magic numbers", "Inconsistent patterns",
-               "Overly defensive code", "Unnecessary ceremony", "Mixed paradigms", "Nested ternaries"]
-    techniques: ["Rename", "Introduce Constant", "Standardize Pattern", "Modern Syntax"]
+  OutputLocations {
+    docs/refactor/[NNN]-simplify-[name].md => Simplification analysis reports and execution logs
   }
 
-  Structure {
-    emoji: "🏗️", intent: "Improve organization"
-    findings: ["Mixed concerns", "Tight coupling", "Bloated interfaces", "God objects",
-               "Too many parameters", "Hidden dependencies", "Feature envy"]
-    techniques: ["Extract Class", "Move Method", "Parameter Object", "Dependency Injection"]
+  SimplificationPerspectives {
+    | Perspective | Intent | What to Find |
+    | --- | --- | --- |
+    | Complexity | Reduce cognitive load | Long methods (>20 lines), deep nesting, complex conditionals, convoluted loops, tangled async/promise chains, high cyclomatic complexity |
+    | Clarity | Make intent obvious | Unclear names, magic numbers, inconsistent patterns, overly defensive code, unnecessary ceremony, mixed paradigms, nested ternaries |
+    | Structure | Improve organization | Mixed concerns, tight coupling, bloated interfaces, god objects, too many parameters, hidden dependencies, feature envy |
+    | Waste | Eliminate what shouldn't exist | Duplication, dead code, unused abstractions, speculative generality, copy-paste patterns, unreachable paths |
   }
 
-  Waste {
-    emoji: "🧹", intent: "Eliminate what shouldn't exist"
-    findings: ["Duplication", "Dead code", "Unused abstractions", "Speculative generality",
-               "Copy-paste patterns", "Unreachable paths"]
-    techniques: ["Extract Function", "Remove Dead Code", "Inline Unused"]
-  }
-}
-```
-
-## Workflow
-
-```sudolang
-SimplificationWorkflow {
-  State {
-    phase: "init" | "gather" | "analyze" | "synthesize" | "plan" | "execute" | "summary" | "next_steps"
-    completed: []
-    baseline
-    findings: []
-    plan
-    executed: []
-    blockers: []
+  PerspectiveGuidance {
+    Complexity => Find long methods, deep nesting, complex conditionals, convoluted loops; suggest Extract Method, Guard Clauses, Early Return, Decompose Conditional
+    Clarity => Find unclear names, magic numbers, inconsistent patterns, verbose ceremony; suggest Rename, Introduce Constant, Standardize Pattern, Modern Syntax
+    Structure => Find mixed concerns, tight coupling, bloated interfaces; suggest Extract Class, Move Method, Parameter Object, Dependency Injection
+    Waste => Find duplication, dead code, unused abstractions; suggest Extract Function, Remove Dead Code, Inline Unused
   }
 
-  Constraints {
-    Cannot skip phases without explicit override.
-    User confirmation required before execution.
-    Tests must pass before proceeding from gather phase.
-    Each refactoring requires immediate test verification.
-    Revert immediately on test failure.
-  }
-}
-```
-
-### Phase 1: Gather Target Code & Baseline
-
-1. **Initialize methodology**: `skill({ name: "safe-refactoring" })`
-
-2. Parse `$ARGUMENTS` to determine scope:
-
-```sudolang
-parseSimplificationTarget(args) {
-  match args {
-    "staged"     => { scope: "staged", command: "git diff --cached" }
-    "recent"     => { scope: "recent", command: "commits since last push or last 24h" }
-    "all"        => { scope: "codebase", warn: "Broad scope - use with caution" }
-    (file path)  => { scope: "file", target: path }
-    default      => { scope: "unknown", require: "clarification from user" }
-  }
-}
-```
-
-3. Retrieve full file contents (not just diffs)
-
-4. Load project standards (CLAUDE.md, Agent.md, linting rules, conventions)
-
-5. Run tests to establish baseline:
-
-```
-Simplification Baseline
-
-Target: [files/scope]
-Tests: [X] passing, [Y] failing
-Coverage: [Z]% for target files
-
-Baseline Status: [READY / TESTS FAILING / COVERAGE GAP]
-```
-
-```sudolang
-validateBaseline(testResults, coverage) {
-  match testResults {
-    (has failures) => {
-      status: "TESTS_FAILING"
-      action: "Stop and report before proceeding"
-      block: true
+  Workflow {
+    Phase1_GatherTargetAndBaseline {
+      1. Initialize methodology: skill({ name: "safe-refactoring" })
+      
+      2. Parse $ARGUMENTS to determine scope:
+         staged => git diff --cached
+         recent => commits since last push or last 24h
+         File path => specific file(s)
+         all => entire codebase (caution)
+      
+      3. Retrieve full file contents (not just diffs)
+      4. Load project standards (CLAUDE.md, Agent.md, linting rules, conventions)
+      
+      5. Run tests to establish baseline and report:
+         Target: [files/scope]
+         Tests: [X] passing, [Y] failing
+         Coverage: [Z]% for target files
+         Baseline Status: [READY / TESTS FAILING / COVERAGE GAP]
+      
+      6. If tests are failing => Stop and report before proceeding
     }
-    (coverage below threshold) => {
-      status: "COVERAGE_GAP"
-      warn "Limited test coverage for target files"
-      block: false
+
+    Phase2_LaunchAnalysisAgents {
+      Launch ALL analysis perspectives in parallel (single response with multiple task calls)
+      
+      Template {
+        Analyze this code for [PERSPECTIVE] simplification opportunities:
+        
+        CONTEXT:
+        - Files: [list of files]
+        - Code: [the code to analyze]
+        - Project standards: [from CLAUDE.md, Agent.md]
+        
+        FOCUS: [What this perspective looks for - from SimplificationPerspectives table]
+        
+        OUTPUT: Findings formatted as:
+          [EMOJI] **Issue Title** (IMPACT: HIGH|MEDIUM|LOW)
+          Location: file:line
+          Problem: What's wrong and why it matters
+          Refactoring: Specific technique to apply
+          Example: Before/after if helpful
+      }
     }
-    default => {
-      status: "READY"
-      action: "Proceed to analysis"
-      block: false
+
+    Phase3_SynthesizeFindings {
+      1. Collect all findings from analysis agents
+      2. Deduplicate overlapping findings (keep highest impact)
+      3. Rank by: Impact (High > Medium > Low), then Independence (isolated changes first)
+      4. Filter out findings in untested code (flag for user decision)
+      
+      PresentationFormat {
+        ## Simplification Analysis: [target]
+        
+        ### Summary
+        
+        | Perspective | High | Medium | Low |
+        | --- | --- | --- | --- |
+        | Complexity | X | X | X |
+        | Clarity | X | X | X |
+        | Structure | X | X | X |
+        | Waste | X | X | X |
+        | **Total** | X | X | X |
+        
+        ### High Impact Opportunities
+        
+        **[Complexity] Long Method in calculateTotal** (HIGH)
+        Location: src/billing.ts:45-120
+        Problem: 75-line method with 4 responsibilities
+        Refactoring: Extract Method - Split into validateOrder, applyDiscounts, calculateTax, formatResult
+        
+        ### Medium Impact Opportunities
+        ...
+        
+        ### Low Impact Opportunities
+        ...
+        
+        ### Untested Code (Requires Decision)
+        - src/legacy.ts:10-50 - No test coverage, skip or add tests first?
+      }
     }
-  }
-}
-```
 
-**If tests are failing**: Stop and report before proceeding.
-
-### Phase 2: Launch Analysis Agents
-
-Launch ALL analysis perspectives in parallel (single response with multiple task calls).
-
-**For each perspective, describe the analysis intent:**
-
-```
-Analyze this code for [PERSPECTIVE] simplification opportunities:
-
-CONTEXT:
-- Files: [list of files]
-- Code: [the code to analyze]
-- Project standards: [from CLAUDE.md, Agent.md]
-
-FOCUS: [What this perspective looks for - from perspectives above]
-
-OUTPUT: Findings formatted as:
-  [EMOJI] **Issue Title** (IMPACT: HIGH|MEDIUM|LOW)
-  Location: `file:line`
-  Problem: [What's wrong and why it matters]
-  Refactoring: [Specific technique to apply]
-  Example: [Before/after if helpful]
-```
-
-### Phase 3: Synthesize Findings
-
-```sudolang
-SynthesizeFindings {
-  1. Collect all findings from analysis agents
-  2. Deduplicate overlapping findings (keep highest impact)
-  3. Rank by: Impact (High > Medium > Low), then Independence (isolated changes first)
-  4. Filter out findings in untested code (flag for user decision)
-
-  rankFinding(finding) {
-    match (finding.impact, finding.independence) {
-      ("HIGH", true)    => priority: 1
-      ("HIGH", false)   => priority: 2
-      ("MEDIUM", true)  => priority: 3
-      ("MEDIUM", false) => priority: 4
-      ("LOW", _)        => priority: 5
+    Phase4_PlanAndConfirm {
+      Create prioritized execution plan:
+        Order: Independent changes first, then dependent changes
+        1. [Extract Method] - billing.ts:45 - Risk: Low - Tests: checked
+        2. [Rename] - utils.ts:12 - Risk: Low - Tests: checked
+        3. [Guard Clauses] - auth.ts:30 - Risk: Medium - Tests: checked
+        Estimated: [N] refactorings across [M] files
+        Execution: One at a time with test verification
+      
+      Use question with options:
+        "Document and proceed" => Save plan to docs/refactor/[NNN]-simplify-[name].md, then execute
+        "Proceed without documenting" => Execute simplifications directly
+        "Apply high-impact only" => Execute only high-impact changes
+        "Review each change individually" => Interactive approval for each change
+        "Cancel" => Abort simplification
+      
+      If user chooses to document => Create file with target scope, baseline metrics, findings summary, planned refactorings, risk assessment BEFORE execution
     }
-  }
-}
-```
 
-Present consolidated findings:
+    Phase5_ExecuteSimplifications {
+      CRITICAL: One refactoring at a time!
+      
+      For EACH simplification {
+        1. Apply single change
+        2. Run tests immediately
+        3. If pass => Continue to next
+        4. If fail => Revert immediately, report, decide next action
+      }
+      
+      Progress format:
+        Executing Simplification [N] of [Total]
+        Target: file:line
+        Refactoring: [Technique]
+        Status: [Applying / Testing / Complete / Reverted]
+        Tests: [Passing / Failing]
+    }
 
-```markdown
-## Simplification Analysis: [target]
+    Phase6_FinalSummary {
+      PresentationFormat {
+        ## Simplification Complete
+        
+        **Applied**: [N] of [M] planned changes
+        **Tests**: All passing
+        **Behavior**: Preserved
+        
+        ### Changes Summary
+        
+        | File | Refactoring | Before | After |
+        | --- | --- | --- | --- |
+        | billing.ts | Extract Method | 75 lines | 4 functions, 20 lines each |
+        | utils.ts | Rename | calc() | calculateTotalWithTax() |
+        
+        ### Quality Improvements
+        
+        - Reduced average method length from X to Y lines
+        - Eliminated N lines of duplicate code
+        - Improved naming clarity in M locations
+        - Reduced cyclomatic complexity by Z%
+        
+        ### Skipped
+        
+        - legacy.ts:10 - No test coverage (user declined)
+      }
+    }
 
-### Summary
-
-| Perspective   | High | Medium | Low |
-| ------------- | ---- | ------ | --- |
-| 🔧 Complexity | X    | X      | X   |
-| 📝 Clarity    | X    | X      | X   |
-| 🏗️ Structure  | X    | X      | X   |
-| 🧹 Waste      | X    | X      | X   |
-| **Total**     | X    | X      | X   |
-
-### High Impact Opportunities
-
-**[🔧 Complexity] Long Method in calculateTotal** (HIGH)
-📍 `src/billing.ts:45-120`
-❌ 75-line method with 4 responsibilities
-✅ Extract Method: Split into `validateOrder`, `applyDiscounts`, `calculateTax`, `formatResult`
-
-### Medium Impact Opportunities
-
-...
-
-### Low Impact Opportunities
-
-...
-
-### Untested Code (Requires Decision)
-
-- `src/legacy.ts:10-50` - No test coverage, skip or add tests first?
-```
-
-### Phase 4: Plan & Confirm
-
-Create prioritized execution plan:
-
-```
-Simplification Plan
-
-Order: Independent changes first, then dependent changes
-
-1. [Extract Method] - billing.ts:45 - Risk: Low - Tests: ✓
-2. [Rename] - utils.ts:12 - Risk: Low - Tests: ✓
-3. [Guard Clauses] - auth.ts:30 - Risk: Medium - Tests: ✓
-
-Estimated: [N] refactorings across [M] files
-Execution: One at a time with test verification
-```
-
-```sudolang
-getUserConfirmation() {
-  question({
-    options: [
-      "Document and proceed - save to docs/refactor/, then execute",
-      "Proceed without documenting",
-      "Apply high-impact only",
-      "Review each change individually",
-      "Cancel"
-    ]
-  })
-}
-```
-
-**If user chooses to document:** Create file with target scope, baseline metrics, findings summary, planned refactorings, risk assessment BEFORE execution.
-
-### Phase 5: Execute Simplifications
-
-```sudolang
-ExecuteSimplifications {
-  Constraints {
-    CRITICAL: One refactoring at a time.
-    Run tests immediately after each change.
-    If tests pass => continue to next.
-    If tests fail => revert immediately, report, decide next action.
-  }
-
-  executeRefactoring(refactoring, index, total) {
-    emit """
-      Executing Simplification [$index] of [$total]
-
-      Target: `$refactoring.file:$refactoring.line`
-      Refactoring: $refactoring.technique
-      Status: Applying...
-    """
-
-    apply(refactoring)
-    testResult = runTests()
-
-    match testResult {
-      (passing) => emit "Status: Complete" |> continue
-      (failing) => revert(refactoring) |> emit "Status: Reverted" |> handleFailure
+    Phase7_NextSteps {
+      Use question with options:
+        "Commit these changes"
+        "Run full test suite"
+        "Address skipped items (add tests first)"
+        "Done"
     }
   }
-}
-```
 
-### Phase 6: Final Summary
-
-```markdown
-## Simplification Complete
-
-**Applied**: [N] of [M] planned changes
-**Tests**: All passing ✓
-**Behavior**: Preserved ✓
-
-### Changes Summary
-
-| File       | Refactoring    | Before   | After                      |
-| ---------- | -------------- | -------- | -------------------------- |
-| billing.ts | Extract Method | 75 lines | 4 functions, 20 lines each |
-| utils.ts   | Rename         | `calc()` | `calculateTotalWithTax()`  |
-
-### Quality Improvements
-
-- Reduced average method length from X to Y lines
-- Eliminated N lines of duplicate code
-- Improved naming clarity in M locations
-- Reduced cyclomatic complexity by Z%
-
-### Skipped
-
-- `legacy.ts:10` - No test coverage (user declined)
-```
-
-### Phase 7: Next Steps
-
-```sudolang
-promptNextSteps() {
-  question({
-    options: [
-      "Commit these changes",
-      "Run full test suite",
-      "Address skipped items (add tests first)",
-      "Done"
-    ]
-  })
-}
-```
-
-## Clarity Over Brevity
-
-When analyzing and refactoring, prefer explicit readable code:
-
-```sudolang
-ClarityPreferences {
-  Constraints {
-    Avoid nested ternaries => prefer if/else or switch.
-    Avoid dense one-liners => prefer multi-line with clear steps.
-    Avoid clever tricks => prefer obvious implementations.
-    Avoid abbreviations => prefer descriptive names.
-    Avoid magic numbers => prefer named constants.
+  ClarityOverBrevity {
+    | Avoid | Prefer |
+    | --- | --- |
+    | Nested ternaries | if/else or switch |
+    | Dense one-liners | Multi-line with clear steps |
+    | Clever tricks | Obvious implementations |
+    | Abbreviations | Descriptive names |
+    | Magic numbers | Named constants |
   }
-}
-```
 
-## Anti-Patterns
-
-```sudolang
-SimplificationAntiPatterns {
-  warn {
-    // Don't Over-Simplify
-    "Combining concerns for fewer files" => violates separation of concerns.
-    "Inlining everything for fewer abstractions" => reduces readability.
-    "Removing helpful abstractions" => harms understanding.
-
-    // Don't Mix Concerns
-    "Simplification + feature changes together" => confuses intent.
-    "Multiple refactorings before running tests" => increases risk.
-    "Refactoring untested code without adding tests" => unsafe changes.
+  AntiPatterns {
+    DontOverSimplify {
+      Combining concerns for "fewer files"
+      Inlining everything for "fewer abstractions"
+      Removing helpful abstractions that aid understanding
+    }
+    
+    DontMixConcerns {
+      Simplification + feature changes together
+      Multiple refactorings before running tests
+      Refactoring untested code without adding tests
+    }
   }
-}
-```
 
-## Error Recovery
-
-```sudolang
-ErrorRecovery {
-  handleTestFailure(change, testResult) {
-    emit """
+  ErrorRecovery {
+    TestsFailAfterChange {
       Simplification Paused
-
-      Change: $change.description
+      Change: [What was attempted]
       Result: Tests failing
-
       Action: Reverted to working state
-    """
-
-    question({
-      options: [
-        "Try alternative approach",
-        "Add tests first, then retry",
-        "Skip this simplification",
-        "Stop and review all changes"
-      ]
-    })
-  }
-
-  handleNoTestCoverage(target) {
-    emit """
+      
+      Options:
+        1. Try alternative approach
+        2. Add tests first, then retry
+        3. Skip this simplification
+        4. Stop and review all changes
+    }
+    
+    NoTestCoverage {
       Untested Code Detected
-
-      Target: $target.file:$target.line
+      Target: [file:line]
       Coverage: None
-    """
-
-    question({
-      options: [
-        "Add characterization tests first (recommended)",
-        "Proceed with manual verification (risky)",
-        "Skip this file"
-      ]
-    })
+      
+      Options:
+        1. Add characterization tests first (recommended)
+        2. Proceed with manual verification (risky)
+        3. Skip this file
+    }
   }
 }
-```
 
 ## Important Notes
 
-```sudolang
-SimplificationPrinciples {
-  require {
-    Parallel analysis, sequential execution - analyze fast, change safely.
-    Behavior preservation is mandatory - external functionality must remain identical.
-    Test after every change - never batch changes before verification.
-    Revert on failure - working code beats simplified code.
-    Balance is key - simple enough to understand, not so simple it's inflexible.
-    Confirm before writing documentation - always ask user before persisting plans to docs/.
-  }
-}
-```
+- **Parallel analysis, sequential execution** - Analyze fast, change safely
+- **Behavior preservation is mandatory** - External functionality must remain identical
+- **Test after every change** - Never batch changes before verification
+- **Revert on failure** - Working code beats simplified code
+- **Balance is key** - Simple enough to understand, not so simple it's inflexible
+- **Confirm before writing documentation** - Always ask user before persisting plans to docs/

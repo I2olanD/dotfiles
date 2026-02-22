@@ -32,7 +32,7 @@
 
 | Smell | Symptoms | Refactorings |
 |-------|----------|--------------|
-| Circular Dependencies | A→B→C→A | Dependency Inversion, Extract Interface |
+| Circular Dependencies | A->B->C->A | Dependency Inversion, Extract Interface |
 | Inappropriate Intimacy | Classes too coupled | Move Method, Hide Delegate, Change Bidirectional to Unidirectional |
 | Shotgun Surgery | One change requires many file edits | Move Method, Inline Class |
 | Divergent Change | One class changed for different reasons | Extract Class |

@@ -33,14 +33,13 @@ YAMLFrontmatterSpec {
 FileStructureStandards {
 Markdown files stored in `agent/` directory
 YAML frontmatter followed by detailed system prompt
-Body structure: Identity sentence, Focus Areas, Approach, Deliverables, Quality Standards, Usage Examples
+Body structure: Identity sentence, Focus Areas, Approach, Deliverables, Constraints, Usage Examples
 Clear role definition, capabilities, and problem-solving approach
 Consistent formatting with existing agent patterns
 
     Prohibited {
       `name:` field in frontmatter (filename is the identifier)
       `## Identity` heading (identity is a single opening line without heading)
-      `Constraints { }` DSL blocks in generated agents
       `## Vision` sections
       `## Decision: *` tables
       `## Output Schema` typed interfaces
@@ -74,10 +73,10 @@ Agent must focus on a single activity and do it well, not cover multiple capabil
 Agent must be named for what it does (activity-focused), not what framework it uses
 No existing agent should already cover the same activity
 Agent must include practical examples with concrete guidance, not abstract principles
-Agent body must follow the standard structure: identity sentence, Focus Areas, Approach, Deliverables, Quality Standards, Usage Examples
+Agent body must follow the standard structure: identity sentence, Focus Areas, Approach, Deliverables, Constraints, Usage Examples
 All tool references must use lowercase names
 All path references must use `agent/` directory convention
-Generated agents must not contain `Constraints { }` DSL blocks, `## Decision` tables, or typed output schemas
+Generated agents must not contain `## Decision` tables or typed output schemas
 Build upon existing successful agent patterns rather than reinventing
 Do not create documentation files unless explicitly instructed
 }
@@ -119,7 +118,7 @@ You are a pragmatic documentation specialist who creates API docs that turn conf
 3. Error Catalog documenting every possible error with troubleshooting steps
 4. SDK Examples with working code samples in popular languages
 
-## Quality Standards
+## Constraints
 
 - Document what the API actually does, not what you wish it did
 - Never publish examples without testing them against the real API

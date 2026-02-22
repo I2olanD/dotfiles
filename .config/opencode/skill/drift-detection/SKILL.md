@@ -1,6 +1,6 @@
 ---
 name: drift-detection
-description: Detect divergence between specifications and implementation during development. Use during implementation phases to identify scope creep, missing features, contradictions, or extra work not in spec. Logs drift decisions to spec README.
+description: "Detect and manage divergence between specifications and implementation during development phases"
 license: MIT
 compatibility: opencode
 metadata:
@@ -8,503 +8,376 @@ metadata:
   version: "1.0"
 ---
 
-# Drift Detection Skill
+# Drift Detection
 
-You are a specification alignment specialist that monitors for drift between specifications and implementation during development.
+Roleplay as a specification alignment specialist that monitors for drift between specifications and implementation during development.
 
-## When to Activate
-
-Activate this skill when you need to:
-
-- **Monitor implementation phases** for spec alignment
-- **Detect scope creep** (implementing more than specified)
-- **Identify missing features** (specified but not implemented)
-- **Flag contradictions** (implementation conflicts with spec)
-- **Log drift decisions** to spec README for traceability
-
-## Core Philosophy
-
-### Drift is Information, Not Failure
-
-Drift isn't inherently bad—it's valuable feedback:
-
-- **Scope creep** may indicate incomplete requirements
-- **Missing items** may reveal unrealistic timelines
-- **Contradictions** may surface spec ambiguities
-- **Extra work** may be necessary improvements
-
-The goal is **awareness and conscious decision-making**, not rigid compliance.
-
-## Drift Domain Model
-
-```sudolang
-DriftItem {
-  type
-  description
-  location?
-  specReference?
-  justification?
-}
-
-DriftAnalysis {
-  phase
-  specId
-  aligned
-  driftItems
-  alignmentPercentage
-}
-
-DriftDecision {
-  date
-  phase
-  driftType
-  status
-  notes
-}
-```
-
-## Drift Type State Machine
-
-```sudolang
-DriftType {
-  State: "scope_creep" | "missing" | "contradicts" | "extra"
-
-  scope_creep {
-    description: "Implementation adds features not in spec"
-    emoji: "ORANGE_DIAMOND"
-    example: "Added pagination not specified in PRD"
+DriftDetection {
+  Activation {
+    When to use this skill:
+    - Monitor implementation phases for spec alignment
+    - Detect scope creep (implementing more than specified)
+    - Identify missing features (specified but not implemented)
+    - Flag contradictions (implementation conflicts with spec)
+    - Log drift decisions to spec README for traceability
   }
 
-  missing {
-    description: "Spec requires feature not implemented"
-    emoji: "RED_X"
-    example: "Error handling specified but not done"
-  }
+  CorePhilosophy {
+    Principle: Drift is Information, Not Failure
 
-  contradicts {
-    description: "Implementation conflicts with spec"
-    emoji: "WARNING"
-    example: "Spec says REST, code uses GraphQL"
-  }
-
-  extra {
-    description: "Unplanned work that may be valuable"
-    emoji: "ORANGE_DIAMOND"
-    example: "Added caching for performance"
-  }
-
-  Constraints {
-    Every drift item must have exactly one type.
-    Type determines available resolution actions.
-    Missing and contradicts are higher priority than scope_creep and extra.
-  }
-}
-```
-
-## Drift Status State Machine
-
-```sudolang
-DriftStatus {
-  State: "detected" | "acknowledged" | "updated" | "deferred"
-
-  detected {
-    description: "Drift found, awaiting decision"
-    transitions: [acknowledged, updated, deferred]
-  }
-
-  acknowledged {
-    description: "Drift noted, proceeding anyway"
-    action: "Implementation continues as-is"
-    Can still be updated later.
-    transitions: [updated]
-  }
-
-  updated {
-    description: "Spec or implementation changed to align"
-    action: "Drift resolved"
-    This is a terminal state.
-  }
-
-  deferred {
-    description: "Decision postponed"
-    action: "Will address in future phase"
-    transitions: [acknowledged, updated]
-  }
-
-  Constraints {
-    All drift must start in detected state.
-    Terminal states cannot transition.
-    Decision must be logged before transition.
-  }
-}
-```
-
-## Detection Process
-
-### Step 1: Load Specification Context
-
-Read the spec documents to understand requirements:
-
-```bash
-# Using spec.py to get spec metadata
-~/.config/opencode/skill/specification-management/spec.py [ID] --read
-```
-
-Extract from documents:
-
-- **PRD**: Acceptance criteria, user stories, requirements
-- **SDD**: Components, interfaces, architecture decisions
-- **PLAN**: Phase deliverables, task objectives
-
-### Step 2: Analyze Implementation
-
-For the current implementation phase, examine:
-
-1. **Files modified** in this phase
-2. **Functions/components added**
-3. **Tests written** (what do they verify?)
-4. **Optional annotations** in code (`// Implements: PRD-1.2`)
-
-### Step 3: Compare and Categorize
-
-```sudolang
-analyzeRequirement(requirement, implementation) {
-  match findImplementation(requirement, implementation) {
-    { found: true, matches: true } => {
-      status: "aligned",
-      emoji: "GREEN_CHECK"
+    Insights {
+      Drift isn't inherently bad -- it's valuable feedback:
+      - **Scope creep** may indicate incomplete requirements
+      - **Missing items** may reveal unrealistic timelines
+      - **Contradictions** may surface spec ambiguities
+      - **Extra work** may be necessary improvements
     }
-    { found: true, matches: false } => {
-      status: "contradicts",
-      emoji: "WARNING",
-      details: extractDifferences(requirement, implementation)
+
+    Goal: Awareness and conscious decision-making, not rigid compliance
+  }
+
+  DriftTypes {
+    | Type            | Description                              | Example                               |
+    | --------------- | ---------------------------------------- | ------------------------------------- |
+    | **Scope Creep** | Implementation adds features not in spec | Added pagination not specified in PRD |
+    | **Missing**     | Spec requires feature not implemented    | Error handling specified but not done |
+    | **Contradicts** | Implementation conflicts with spec       | Spec says REST, code uses GraphQL     |
+    | **Extra**       | Unplanned work that may be valuable      | Added caching for performance         |
+  }
+
+  DetectionProcess {
+    Step1_LoadSpecificationContext {
+      Read the spec documents to understand requirements
+
+      Extract from documents:
+      - **PRD**: Acceptance criteria, user stories, requirements
+      - **SDD**: Components, interfaces, architecture decisions
+      - **PLAN**: Phase deliverables, task objectives
     }
-    { found: false } => {
-      status: "missing",
-      emoji: "RED_X"
+
+    Step2_AnalyzeImplementation {
+      For the current implementation phase, examine:
+      1. Files modified in this phase
+      2. Functions/components added
+      3. Tests written (what do they verify?)
+      4. Optional annotations in code (`// Implements: PRD-1.2`)
+    }
+
+    Step3_CompareAndCategorize {
+      ForEachSpecRequirement {
+        | Requirement     | Implementation               | Status         |
+        | --------------- | ---------------------------- | -------------- |
+        | User login      | `src/auth/login.ts`          | Aligned        |
+        | Password reset  | Not found                    | Missing        |
+        | Session timeout | Different value (30m vs 15m) | Contradicts    |
+      }
+
+      ForEachImplementationArtifact {
+        | Implementation | Spec Reference | Status         |
+        | -------------- | -------------- | -------------- |
+        | Rate limiting  | Not in spec    | Extra          |
+        | Pagination     | Not in spec    | Scope Creep    |
+      }
+    }
+
+    Step4_ReportFindings {
+      Present drift findings to user with clear categorization
     }
   }
-}
 
-analyzeImplementation(artifact, spec) {
-  match findSpecReference(artifact, spec) {
-    { found: true } => {
-      status: "aligned",
-      specRef: reference
+  DetectionStrategies {
+    Strategy1_AcceptanceCriteriaMapping {
+      Purpose: Map PRD acceptance criteria to implementation evidence
+
+      Process {
+        1. Extract acceptance criteria from PRD
+        2. Search implementation for matching behavior
+        3. Verify through test assertions
+      }
+
+      SearchPatterns {
+        ```bash
+        # Search for login implementation
+        grep -r "login\|authenticate\|access.token" src/
+
+        # Search for test coverage
+        grep -r "should.*login\|given.*registered.*user" tests/
+        ```
+      }
     }
-    { found: false, isFeature: true } => {
-      status: "scope_creep",
-      emoji: "ORANGE_DIAMOND"
+
+    Strategy2_InterfaceContractValidation {
+      Purpose: Compare SDD interfaces with actual implementation
+
+      Commands {
+        ```bash
+        # Find actual interface
+        grep -A 20 "interface UserService\|class UserService" src/
+
+        # Compare method signatures
+        ```
+      }
     }
-    { found: false, isFeature: false } => {
-      status: "extra",
-      emoji: "ORANGE_DIAMOND"
+
+    Strategy3_ArchitecturePatternVerification {
+      Purpose: Verify SDD architectural decisions in code
+
+      Process {
+        1. Check for expected classes/patterns
+        2. Verify no violations of architectural boundaries
+        3. Confirm dependency injection and layering
+      }
+
+      Commands {
+        ```bash
+        # Find repositories
+        find src -name "*Repository*"
+
+        # Check for direct DB calls outside repositories
+        grep -r "prisma\.\|db\.\|query(" src/ --include="*.ts" | grep -v Repository
+        ```
+      }
+    }
+
+    Strategy4_PLANTaskCompletion {
+      Purpose: Verify PLAN tasks against implementation
+
+      Commands {
+        ```bash
+        # Find route
+        grep -r "POST.*\/api\/users\|router.post.*users" src/
+
+        # Find validation
+        grep -r "email.*valid\|password.*strength" src/
+        ```
+      }
     }
   }
-}
-```
 
-### Step 4: Report Findings
+  CodeAnnotations {
+    Note: Optional -- aids drift detection but not required
 
-Present drift findings to user with clear categorization.
+    Examples {
+      ```typescript
+      // Implements: PRD-1.2 - User can reset password
+      async function resetPassword(email: string) {
+        // ...
+      }
 
-## Code Annotations (Optional)
+      // Implements: SDD-3.1 - Repository pattern for data access
+      class UserRepository {
+        // ...
+      }
 
-Developers can optionally annotate code to aid drift detection:
+      // Extra: Performance optimization not in spec
+      const memoizedQuery = useMemo(() => {
+        // ...
+      }, [deps]);
+      ```
+    }
 
-```typescript
-// Implements: PRD-1.2 - User can reset password
-async function resetPassword(email: string) {
-  // ...
-}
+    AnnotationFormat {
+      - `// Implements: [DOC]-[SECTION]` - Links to spec requirement
+      - `// Extra: [REASON]` - Acknowledges unspecified work
 
-// Implements: SDD-3.1 - Repository pattern for data access
-class UserRepository {
-  // ...
-}
-
-// Extra: Performance optimization not in spec
-const memoizedQuery = useMemo(() => {
-  // ...
-}, [deps]);
-```
-
-**Annotation Format:**
-
-- `// Implements: [DOC]-[SECTION]` - Links to spec requirement
-- `// Extra: [REASON]` - Acknowledges unspecified work
-
-Annotations are **optional**—drift detection works through heuristics when not present.
-
-## Heuristic Detection
-
-```sudolang
-HeuristicDetection {
-  Constraints {
-    Test descriptions often reflect requirements.
-    Function names should map to feature names.
-    Comments may contain ticket or spec references.
-    API endpoints should match spec interfaces.
+      Annotations are **optional** -- drift detection works through heuristics when not present.
+    }
   }
 
-  /findImplementedRequirements artifacts => {
-    Test file analysis
-    testMatches = artifacts
-      |> filter(a => a.isTest)
-      |> flatMap(extractTestDescriptions)
-      |> mapToRequirements
+  HeuristicDetection {
+    FindingImplementedRequirements {
+      1. **Test file analysis**: Test descriptions often mention requirements
+         ```typescript
+         describe("User Authentication", () => {
+           it("should allow password reset via email", () => {
+             // This likely implements the password reset requirement
+           });
+         });
+         ```
 
-    Function and class naming
-    nameMatches = artifacts
-      |> flatMap(extractPublicSymbols)
-      |> mapToRequirements
+      2. **Function/class naming**: Names often reflect requirements
+         - `handlePasswordReset` --> Password reset feature
+         - `UserRepository` --> Repository pattern from SDD
 
-    Comment scanning
-    commentMatches = artifacts
-      |> flatMap(extractComments)
-      |> filter(c => c matches /JIRA|spec|PRD|SDD|implements/i)
-      |> mapToRequirements
+      3. **Comment scanning**: Look for references to tickets, specs
+         - `// JIRA-1234`, `// Per spec section 3.2`
+    }
 
-    deduplicate(testMatches, nameMatches, commentMatches)
+    FindingMissingRequirements {
+      1. Search for requirement keywords in implementation
+      2. Check test coverage for spec acceptance criteria
+      3. Verify API endpoints match spec interfaces
+    }
+
+    FindingContradictions {
+      1. Compare configuration values (timeouts, limits, flags)
+      2. Verify API contracts (method names, parameters, responses)
+      3. Check architecture patterns (layers, dependencies)
+    }
   }
 
-  /findMissingRequirements spec, implemented => {
-    spec.requirements
-      |> filter(r => r not in implemented)
-      |> map(r => { type: "missing", requirement: r })
+  DriftLogging {
+    Principle: All drift decisions are logged to the spec README for traceability
+
+    DriftLogFormat {
+      Add to spec README under `## Drift Log` section:
+      ```markdown
+      ## Drift Log
+
+      | Date       | Phase   | Drift Type  | Status       | Notes                             |
+      | ---------- | ------- | ----------- | ------------ | --------------------------------- |
+      | 2026-01-04 | Phase 2 | Scope creep | Acknowledged | Added pagination not in spec      |
+      | 2026-01-04 | Phase 2 | Missing     | Updated      | Added validation per spec         |
+      | 2026-01-04 | Phase 3 | Contradicts | Deferred     | Session timeout differs from spec |
+      ```
+    }
+
+    StatusValues {
+      | Status           | Meaning                                 | Action Taken                   |
+      | ---------------- | --------------------------------------- | ------------------------------ |
+      | **Acknowledged** | Drift noted, proceeding anyway          | Implementation continues as-is |
+      | **Updated**      | Spec or implementation changed to align | Drift resolved                 |
+      | **Deferred**     | Decision postponed                      | Will address in future phase   |
+    }
   }
 
-  /findContradictions spec, artifacts => {
-    configContradictions = compareConfigValues(spec.config, artifacts |> extractConfig)
-    apiContradictions = compareApiContracts(spec.interfaces, artifacts |> extractApis)
-    archContradictions = compareArchitecture(spec.architecture, artifacts |> inferArchitecture)
+  UserInteraction {
+    AtPhaseCompletion {
+      When drift is detected, present options:
+      ```
+      Drift Detected in Phase [N]
 
-    [configContradictions, apiContradictions, archContradictions]
-      |> flatten
-      |> filter(c => c != null)
-  }
-}
-```
+      Found [N] drift items:
 
-## Drift Logging
+      1. Scope Creep: Added pagination (not in spec)
+         Location: src/api/users.ts:45
 
-All drift decisions are logged to the spec README for traceability.
+      2. Missing: Email validation (PRD-2.3)
+         Expected: Input validation for email format
 
-### Drift Log Format
-
-Add to spec README under `## Drift Log` section:
-
-```markdown
-## Drift Log
-
-| Date       | Phase   | Drift Type  | Status       | Notes                             |
-| ---------- | ------- | ----------- | ------------ | --------------------------------- |
-| 2026-01-04 | Phase 2 | Scope creep | Acknowledged | Added pagination not in spec      |
-| 2026-01-04 | Phase 2 | Missing     | Updated      | Added validation per spec         |
-| 2026-01-04 | Phase 3 | Contradicts | Deferred     | Session timeout differs from spec |
-```
-
-## User Interaction
-
-```sudolang
-DriftInteraction {
-  State: "presenting" | "awaiting_decision" | "logging" | "complete"
-
-  /presentDrift analysis => {
-    require analysis has drift items
-
-    emit """
-      WARNING Drift Detected in $analysis.phase
-
-      Found ${ analysis.driftItems |> count } drift items:
-
-      ${ analysis.driftItems |> enumerate |> map((item, i) =>
-        "${ i + 1 }. ${ item.type.emoji } ${ item.type |> capitalize }: ${ item.description }
-           Location: ${ item.location ?? 'N/A' }"
-      ) |> join("\n\n") }
-    """
-
-    State = "awaiting_decision"
-  }
-
-  /promptDecision => {
-    require State == "awaiting_decision"
-
-    emit """
       Options:
       1. Acknowledge and continue (log drift, proceed)
       2. Update implementation (implement missing, remove extra)
       3. Update specification (modify spec to match reality)
       4. Defer decision (mark for later review)
-    """
-  }
-
-  /handleDecision choice, driftItem => {
-    match choice {
-      1 => {
-        driftItem.status = "acknowledged"
-        action: "Log and continue"
-      }
-      2 => {
-        driftItem.status = "updated"
-        action: "Modify implementation to align with spec"
-        warn "Implementation changes required"
-      }
-      3 => {
-        driftItem.status = "updated"
-        action: "Modify spec to match implementation"
-        warn "Spec changes require review"
-      }
-      4 => {
-        driftItem.status = "deferred"
-        action: "Mark for future review"
-      }
-      default => {
-        warn "Invalid choice, please select 1-4"
-        return
-      }
+      ```
     }
 
-    State = "logging"
-    /logDecision driftItem
-    State = "complete"
+    LoggingDecision {
+      After user decision, update the drift log in the spec README
+    }
   }
 
-  /logDecision decision => {
-    Append to drift log in spec README.
-    appendToReadme(decision)
-  }
-}
-```
+  DriftSeverityAssessment {
+    HighSeverity {
+      Definition: Address Immediately
+      - Security requirement missing
+      - Core functionality not implemented
+      - Breaking API contract change
+      - Data integrity issue
+    }
 
-## Integration Points
+    MediumSeverity {
+      Definition: Address Before Release
+      - Non-critical feature missing
+      - Performance requirement unmet
+      - Documentation mismatch
+      - Test coverage gap
+    }
 
-This skill is called by:
-
-- `/implement` - At end of each phase for alignment check
-- `/validate` (Mode C) - For comparison validation
-
-## Report Generation
-
-```sudolang
-generatePhaseReport(analysis) {
-  aligned = analysis.aligned |> count
-  total = aligned + (analysis.driftItems |> count)
-  percentage = (aligned / total * 100) |> round
-
-  missing = analysis.driftItems |> filter(d => d.type == "missing")
-  contradicts = analysis.driftItems |> filter(d => d.type == "contradicts")
-  scopeCreep = analysis.driftItems |> filter(d => d.type == "scope_creep")
-  extra = analysis.driftItems |> filter(d => d.type == "extra")
-
-  emit """
-    CHART Drift Analysis: $analysis.phase
-
-    Spec: $analysis.specId
-    Phase: $analysis.phase
-    Files Analyzed: ${ analysis.filesAnalyzed }
-
-    +-----------------------------------------------------+
-    | ALIGNMENT SUMMARY                                   |
-    +-----------------------------------------------------+
-    | GREEN_CHECK Aligned:     $aligned requirements      |
-    | RED_X Missing:           ${ missing |> count } requirements |
-    | WARNING Contradicts:     ${ contradicts |> count } items    |
-    | ORANGE_DIAMOND Extra:    ${ (extra |> count) + (scopeCreep |> count) } items |
-    +-----------------------------------------------------+
-
-    ${ missing |> count > 0 ? generateMissingSection(missing) : "" }
-    ${ contradicts |> count > 0 ? generateContradictSection(contradicts) : "" }
-    ${ (extra |> count) + (scopeCreep |> count) > 0 ? generateExtraSection(extra, scopeCreep) : "" }
-
-    RECOMMENDATIONS:
-    ${ generateRecommendations(analysis) }
-  """
-}
-
-generateSummaryReport(analyses) {
-  totalAligned = analyses |> map(a => a.aligned |> count) |> sum
-  totalItems = analyses |> map(a => (a.aligned |> count) + (a.driftItems |> count)) |> sum
-  overallPercentage = (totalAligned / totalItems * 100) |> round
-
-  emit """
-    CHART Drift Summary: ${ analyses[0].specId }
-
-    Overall Alignment: $overallPercentage%
-
-    | Phase | Aligned | Missing | Contradicts | Extra |
-    |-------|---------|---------|-------------|-------|
-    ${ analyses |> map(a => formatPhaseRow(a)) |> join("\n") }
-
-    Drift Decisions Made: ${ countDecisions(analyses) }
-    - Acknowledged: ${ countByStatus(analyses, "acknowledged") }
-    - Updated: ${ countByStatus(analyses, "updated") }
-    - Deferred: ${ countByStatus(analyses, "deferred") }
-
-    Outstanding Items:
-    ${ getOutstandingItems(analyses) |> map(i => "- $i") |> join("\n") }
-  """
-}
-```
-
-## Validation Requirements
-
-```sudolang
-DriftDetectionValidation {
-  require "All spec documents loaded (PRD, SDD, PLAN)."
-  require "Spec ID is valid and exists."
-  require "All files modified in phase have been analyzed."
-  require "Each artifact categorized against spec."
-  require "All drift items categorized by type."
-  require "Findings presented to user."
-
-  warn "Heuristic detection may miss annotated requirements."
-  warn "Extra work detection depends on naming conventions."
-
-  Constraints {
-    Drift detection must complete before phase advances.
-    User must acknowledge or defer all detected drift.
-    All decisions must be logged to spec README.
-    Missing and contradicts require explicit resolution path.
+    LowSeverity {
+      Definition: Track for Future
+      - Style/preference differences
+      - Nice-to-have features
+      - Optimization opportunities
+      - Documentation improvements
+    }
   }
 
-  /validate analysis => {
-    require analysis.specId != null
-    require analysis.phase != null
-    require analysis.driftItems |> all(d => d.type in DriftType.State)
+  IntegrationPoints {
+    CalledBy {
+      - `/implement` -- At end of each phase for alignment check
+      - `/validate` (Mode C) -- For comparison validation
+    }
 
-    All drift items must have a status after user interaction.
-    require analysis.driftItems |> all(d => d.status != "detected")
-      else warn "Not all drift items have been addressed"
+    WorksAlongside {
+      - `skill({ name: "specification-validation" })` -- Comprehensive spec quality checks
+      - `skill({ name: "implementation-verification" })` -- Technical correctness of implementation
+      - `skill({ name: "constitution-validation" })` -- Governance compliance for drifted code
+      - `skill({ name: "specification-management" })` -- Read spec metadata and locate documents
+    }
+  }
 
-    emit "GREEN_CHECK Drift Detection Complete"
+  ReportFormats {
+    PhaseDriftReport {
+      ```
+      Drift Analysis: Phase [N]
+
+      Spec: [NNN]-[name]
+      Phase: [Phase name]
+      Files Analyzed: [N]
+
+      ALIGNMENT SUMMARY
+        Aligned:     [N] requirements
+        Missing:     [N] requirements
+        Contradicts: [N] items
+        Extra:       [N] items
+
+      DETAILS:
+
+      Missing Requirements:
+      1. [Requirement from spec]
+         Source: PRD Section [X]
+         Status: Not found in implementation
+
+      Contradictions:
+      1. [What differs]
+         Spec: [What spec says]
+         Implementation: [What code does]
+         Location: [file:line]
+
+      Extra Work:
+      1. [What was added]
+         Location: [file:line]
+         Justification: [Why it was added, if known]
+
+      RECOMMENDATIONS:
+      - [Priority action 1]
+      - [Priority action 2]
+      ```
+    }
+
+    SummaryReport_MultiPhase {
+      ```
+      Drift Summary: [NNN]-[name]
+
+      Overall Alignment: [X]%
+
+      | Phase | Aligned | Missing | Contradicts | Extra |
+      |-------|---------|---------|-------------|-------|
+      | 1     | 5       | 0       | 0           | 1     |
+      | 2     | 8       | 2       | 1           | 0     |
+      | 3     | 3       | 0       | 0           | 2     |
+
+      Drift Decisions Made: [N]
+      - Acknowledged: [N]
+      - Updated: [N]
+      - Deferred: [N]
+
+      Outstanding Items:
+      - [Item 1]
+      - [Item 2]
+      ```
+    }
+  }
+
+  ValidationChecklist {
+    Before completing drift detection:
+    - [ ] Loaded all spec documents (PRD, SDD, PLAN)
+    - [ ] Analyzed all files modified in phase
+    - [ ] Categorized all drift items by type
+    - [ ] Presented findings to user
+    - [ ] Logged decision to spec README
+    - [ ] Updated drift log with status
   }
 }
-```
-
-## Output Format
-
-After drift detection:
-
-```
-CHART Drift Detection Complete
-
-Phase: [Phase name]
-Spec: [NNN]-[name]
-
-Alignment: [X/Y] requirements ([%]%)
-
-Drift Found:
-- [N] scope creep items
-- [N] missing items
-- [N] contradictions
-- [N] extra items
-
-[User decision prompt if drift found]
-```
-
----
-
-```sudolang
-skill({ name: "drift-detection" })
-```
