@@ -1,0 +1,1612 @@
+[2026-02-23T17:06:38.986Z] [tool-before] Tool executing: glob
+[2026-02-23T17:06:38.998Z] [tool-after] Tool completed: glob
+[2026-02-23T17:06:38.998Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:06:39.176Z] [tool-before] Tool executing: glob
+[2026-02-23T17:06:39.190Z] [tool-after] Tool completed: glob
+[2026-02-23T17:06:39.194Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:06:39.996Z] [tool-before] Tool executing: grep
+[2026-02-23T17:06:40.050Z] [tool-after] Tool completed: grep
+[2026-02-23T17:06:40.050Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:06:44.095Z] [tool-before] Tool executing: mem-search_search
+[2026-02-23T17:06:44.103Z] [tool-before] Tool executing: mem-search_changes
+[2026-02-23T17:06:44.113Z] [tool-after] Tool completed: mem-search_changes
+[2026-02-23T17:06:44.117Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:06:44.121Z] [tool-after] Tool completed: mem-search_search
+[2026-02-23T17:06:44.126Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:06:48.082Z] [tool-before] Tool executing: read
+[2026-02-23T17:06:48.095Z] [tool-after] Tool completed: read
+[2026-02-23T17:06:48.102Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:06:48.755Z] [tool-before] Tool executing: bash
+[2026-02-23T17:06:48.862Z] [tool-after] Tool completed: bash
+[2026-02-23T17:06:48.862Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:06:53.132Z] [tool-before] Tool executing: grep
+[2026-02-23T17:06:53.150Z] [tool-after] Tool completed: grep
+[2026-02-23T17:06:53.150Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:06:54.374Z] [tool-before] Tool executing: bash
+[2026-02-23T17:06:54.389Z] [tool-after] Tool completed: bash
+[2026-02-23T17:06:54.389Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:06:57.519Z] [tool-before] Tool executing: bash
+[2026-02-23T17:06:57.594Z] [tool-after] Tool completed: bash
+[2026-02-23T17:06:57.594Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:06:59.097Z] [tool-before] Tool executing: bash
+[2026-02-23T17:06:59.960Z] [tool-before] Tool executing: grep
+[2026-02-23T17:06:59.970Z] [tool-after] Tool completed: grep
+[2026-02-23T17:06:59.970Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:07:00.054Z] [tool-after] Tool completed: bash
+[2026-02-23T17:07:00.057Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:07:03.819Z] [tool-before] Tool executing: bash
+[2026-02-23T17:07:03.833Z] [tool-after] Tool completed: bash
+[2026-02-23T17:07:03.840Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:07:07.130Z] [tool-before] Tool executing: bash
+[2026-02-23T17:07:07.143Z] [tool-after] Tool completed: bash
+[2026-02-23T17:07:07.148Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:07:09.677Z] [tool-before] Tool executing: bash
+[2026-02-23T17:07:11.700Z] [tool-after] Tool completed: bash
+[2026-02-23T17:07:11.701Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:07:14.303Z] [tool-before] Tool executing: bash
+[2026-02-23T17:07:14.369Z] [tool-after] Tool completed: bash
+[2026-02-23T17:07:14.369Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:07:14.826Z] [tool-before] Tool executing: read
+[2026-02-23T17:07:14.834Z] [tool-after] Tool completed: read
+[2026-02-23T17:07:14.841Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:07:18.274Z] [tool-before] Tool executing: bash
+[2026-02-23T17:07:18.359Z] [tool-after] Tool completed: bash
+[2026-02-23T17:07:18.360Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:07:19.049Z] [tool-before] Tool executing: bash
+[2026-02-23T17:07:19.971Z] [tool-after] Tool completed: bash
+[2026-02-23T17:07:19.972Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:07:24.264Z] [tool-before] Tool executing: bash
+[2026-02-23T17:07:24.277Z] [tool-after] Tool completed: bash
+[2026-02-23T17:07:24.278Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:07:28.685Z] [tool-before] Tool executing: bash
+[2026-02-23T17:07:29.694Z] [tool-after] Tool completed: bash
+[2026-02-23T17:07:29.695Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:07:32.467Z] [tool-before] Tool executing: bash
+[2026-02-23T17:07:32.475Z] [tool-after] Tool completed: bash
+[2026-02-23T17:07:32.482Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:07:35.901Z] [tool-before] Tool executing: bash
+[2026-02-23T17:07:39.653Z] [tool-after] Tool completed: bash
+[2026-02-23T17:07:39.654Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:07:42.614Z] [tool-before] Tool executing: mem-search_search
+[2026-02-23T17:07:42.627Z] [tool-after] Tool completed: mem-search_search
+[2026-02-23T17:07:42.634Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:07:46.803Z] [tool-before] Tool executing: bash
+[2026-02-23T17:07:48.829Z] [tool-after] Tool completed: bash
+[2026-02-23T17:07:48.830Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:07:52.575Z] [tool-before] Tool executing: mem-search_save_memory
+[2026-02-23T17:07:52.585Z] [tool-after] Tool completed: mem-search_save_memory
+[2026-02-23T17:07:52.591Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:07:55.220Z] [tool-before] Tool executing: mem-search_search
+[2026-02-23T17:07:55.231Z] [tool-after] Tool completed: mem-search_search
+[2026-02-23T17:07:55.235Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:07:59.098Z] [tool-before] Tool executing: read
+[2026-02-23T17:07:59.106Z] [tool-after] Tool completed: read
+[2026-02-23T17:07:59.111Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:08:02.534Z] [tool-before] Tool executing: read
+[2026-02-23T17:08:02.542Z] [tool-after] Tool completed: read
+[2026-02-23T17:08:02.547Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:08:05.678Z] [tool-before] Tool executing: read
+[2026-02-23T17:08:05.685Z] [tool-after] Tool completed: read
+[2026-02-23T17:08:05.689Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:08:09.365Z] [tool-before] Tool executing: bash
+[2026-02-23T17:08:09.391Z] [tool-after] Tool completed: bash
+[2026-02-23T17:08:09.392Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:08:10.059Z] [tool-before] Tool executing: bash
+[2026-02-23T17:08:10.095Z] [tool-after] Tool completed: bash
+[2026-02-23T17:08:10.095Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:08:13.548Z] [tool-before] Tool executing: bash
+[2026-02-23T17:08:13.588Z] [tool-after] Tool completed: bash
+[2026-02-23T17:08:13.588Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:08:14.446Z] [tool-before] Tool executing: bash
+[2026-02-23T17:08:14.479Z] [tool-after] Tool completed: bash
+[2026-02-23T17:08:14.479Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:08:17.373Z] [tool-before] Tool executing: bash
+[2026-02-23T17:08:17.388Z] [tool-after] Tool completed: bash
+[2026-02-23T17:08:17.393Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:08:20.682Z] [tool-before] Tool executing: bash
+[2026-02-23T17:08:20.691Z] [tool-after] Tool completed: bash
+[2026-02-23T17:08:20.697Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:08:25.600Z] [tool-before] Tool executing: mem-search_search
+[2026-02-23T17:08:25.654Z] [tool-after] Tool completed: mem-search_search
+[2026-02-23T17:08:25.662Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:09:10.026Z] [tool-before] Tool executing: glob
+[2026-02-23T17:09:10.047Z] [tool-after] Tool completed: glob
+[2026-02-23T17:09:10.047Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:09:10.878Z] [tool-before] Tool executing: grep
+[2026-02-23T17:09:10.901Z] [tool-after] Tool completed: grep
+[2026-02-23T17:09:10.901Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:09:13.216Z] [tool-before] Tool executing: read
+[2026-02-23T17:09:13.223Z] [tool-after] Tool completed: read
+[2026-02-23T17:09:13.228Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:09:13.610Z] [tool-before] Tool executing: read
+[2026-02-23T17:09:13.621Z] [tool-after] Tool completed: read
+[2026-02-23T17:09:13.626Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:09:20.535Z] [tool-before] Tool executing: read
+[2026-02-23T17:09:20.537Z] [tool-after] Tool completed: read
+[2026-02-23T17:09:20.544Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:09:25.285Z] [tool-before] Tool executing: todowrite
+[2026-02-23T17:09:25.296Z] [tool-after] Tool completed: todowrite
+[2026-02-23T17:09:25.303Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:09:38.106Z] [tool-before] Tool executing: edit
+[2026-02-23T17:09:41.411Z] [tool-after] Tool completed: edit
+[2026-02-23T17:09:41.412Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:09:44.866Z] [tool-before] Tool executing: todowrite
+[2026-02-23T17:09:44.873Z] [tool-after] Tool completed: todowrite
+[2026-02-23T17:09:44.877Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:10:00.013Z] [tool-before] Tool executing: edit
+[2026-02-23T17:10:03.325Z] [tool-after] Tool completed: edit
+[2026-02-23T17:10:03.326Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:10:06.383Z] [tool-before] Tool executing: bash
+[2026-02-23T17:10:07.558Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:07.559Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:10:12.800Z] [tool-before] Tool executing: todowrite
+[2026-02-23T17:10:12.807Z] [tool-after] Tool completed: todowrite
+[2026-02-23T17:10:12.813Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:10:15.365Z] [tool-before] Tool executing: bash
+[2026-02-23T17:10:15.833Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:15.834Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:10:19.555Z] [tool-before] Tool executing: bash
+[2026-02-23T17:10:20.796Z] [file-edited] File edited: /tmp/perf-project/src/feature.ts
+[2026-02-23T17:10:20.797Z] [file-edited] checks complete for /tmp/perf-project/src/feature.ts (50 lines)
+[2026-02-23T17:10:20.804Z] [file-edited] File edited: /tmp/perf-project/src/very-large-file.ts
+[2026-02-23T17:10:20.812Z] [file-edited] checks complete for /tmp/perf-project/src/very-large-file.ts (600 lines)
+[2026-02-23T17:10:20.845Z] [file-edited] File edited: 
+[2026-02-23T17:10:20.854Z] [file-edited] checks complete for  (0 lines)
+[2026-02-23T17:10:20.862Z] [session-start] Session started
+[2026-02-23T17:10:20.868Z] [session-start] GET http://127.0.0.1:1/api/context/inject?project=reliability-project
+[2026-02-23T17:10:20.874Z] [session-start] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:20.880Z] [session-start] Session started
+[2026-02-23T17:10:20.885Z] [session-start] GET http://127.0.0.1:57226/api/context/inject?project=reliability-project
+[2026-02-23T17:10:20.890Z] [session-start] response.status=503
+[2026-02-23T17:10:20.894Z] [file-edited] File edited: /non/existent/path/to/some/file.ts
+[2026-02-23T17:10:20.899Z] [file-edited] checks complete for /non/existent/path/to/some/file.ts (10 lines)
+[2026-02-23T17:10:20.904Z] [session-start] Session started
+[2026-02-23T17:10:20.908Z] [session-start] GET http://127.0.0.1:1/api/context/inject?project=reliability-project
+[2026-02-23T17:10:20.910Z] [session-start] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:20.912Z] [session-start] Session started
+[2026-02-23T17:10:20.914Z] [session-start] GET http://127.0.0.1:1/api/context/inject?project=reliability-project
+[2026-02-23T17:10:20.916Z] [session-start] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:20.952Z] [session-start] Session started
+[2026-02-23T17:10:20.955Z] [session-start] GET http://127.0.0.1:57234/api/context/inject?project=lifecycle-project
+[2026-02-23T17:10:20.958Z] [session-start] response.status=401
+[2026-02-23T17:10:20.960Z] [session-start] Session started
+[2026-02-23T17:10:20.962Z] [session-start] GET http://127.0.0.1:57234/api/context/inject?project=lifecycle-project
+[2026-02-23T17:10:20.964Z] [session-start] response.status=401
+[2026-02-23T17:10:20.967Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:20.969Z] [tool-after] Tool completed: read_file
+[2026-02-23T17:10:20.971Z] [file-edited] File edited: /tmp/test/services/user-service.ts
+[2026-02-23T17:10:20.973Z] [file-edited] checks complete for /tmp/test/services/user-service.ts (50 lines)
+[2026-02-23T17:10:20.975Z] [file-edited] File edited: /tmp/test/services/user-service.test.ts
+[2026-02-23T17:10:20.977Z] [file-edited] checks complete for /tmp/test/services/user-service.test.ts (50 lines)
+[2026-02-23T17:10:20.979Z] [file-edited] File edited: /tmp/test/services/big-service.ts
+[2026-02-23T17:10:20.980Z] [file-edited] checks complete for /tmp/test/services/big-service.ts (400 lines)
+[2026-02-23T17:10:20.982Z] [file-edited] File edited: /tmp/test/services/huge-service.ts
+[2026-02-23T17:10:20.984Z] [file-edited] checks complete for /tmp/test/services/huge-service.ts (600 lines)
+[2026-02-23T17:10:20.986Z] [session-idle] Session idle: undefined
+[2026-02-23T17:10:20.988Z] [session-idle] no meaningful context to save
+[2026-02-23T17:10:20.990Z] [session-idle] Session idle: undefined
+[2026-02-23T17:10:20.992Z] [session-idle] no meaningful context to save
+[2026-02-23T17:10:20.993Z] [session-start] Session started
+[2026-02-23T17:10:20.995Z] [session-start] GET http://127.0.0.1:1/api/context/inject?project=lifecycle-project
+[2026-02-23T17:10:20.997Z] [tool-after] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:20.999Z] [session-start] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:21.000Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:21.002Z] [file-edited] File edited: /tmp/test/some-file.ts
+[2026-02-23T17:10:21.004Z] [file-edited] checks complete for /tmp/test/some-file.ts (10 lines)
+[2026-02-23T17:10:21.006Z] [session-idle] Session idle: err-idle
+[2026-02-23T17:10:21.008Z] [session-idle] POST http://127.0.0.1:1/api/memory/save
+[2026-02-23T17:10:21.010Z] [tool-after] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:21.012Z] [session-idle] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:21.014Z] [session-idle] Session idle: err-idle-warn
+[2026-02-23T17:10:21.015Z] [session-idle] POST http://127.0.0.1:1/api/memory/save
+[2026-02-23T17:10:21.018Z] [session-idle] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:21.020Z] [tool-before] Tool executing: bash
+[2026-02-23T17:10:21.022Z] [tool-before] Tool executing: dangerous_tool
+[2026-02-23T17:10:21.039Z] [tool-before] blocked tool dangerous_tool (deny rule)
+[2026-02-23T17:10:21.076Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:10:21.079Z] [session-idle] POST http://127.0.0.1:57245/api/memory/save
+[2026-02-23T17:10:21.082Z] [session-idle] response.status=200
+[2026-02-23T17:10:21.084Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:10:21.086Z] [session-idle] POST http://127.0.0.1:57247/api/memory/save
+[2026-02-23T17:10:21.089Z] [session-idle] response.status=200
+[2026-02-23T17:10:21.092Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:10:21.094Z] [session-idle] POST http://127.0.0.1:57249/api/memory/save
+[2026-02-23T17:10:21.096Z] [session-idle] response.status=200
+[2026-02-23T17:10:21.099Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:10:21.101Z] [session-idle] POST http://127.0.0.1:57251/api/memory/save
+[2026-02-23T17:10:21.104Z] [session-idle] response.status=200
+[2026-02-23T17:10:21.106Z] [session-idle] Session idle: sess-xyz-999
+[2026-02-23T17:10:21.107Z] [session-idle] POST http://127.0.0.1:57253/api/memory/save
+[2026-02-23T17:10:21.110Z] [session-idle] response.status=200
+[2026-02-23T17:10:21.113Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:10:21.115Z] [session-idle] no meaningful context to save
+[2026-02-23T17:10:21.117Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:10:21.119Z] [session-idle] no meaningful context to save
+[2026-02-23T17:10:21.122Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:10:21.124Z] [session-idle] POST http://127.0.0.1:57257/api/memory/save
+[2026-02-23T17:10:36.126Z] [session-idle] error: The operation timed out.
+[2026-02-23T17:10:36.135Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:10:36.141Z] [session-idle] POST http://127.0.0.1:1/api/memory/save
+[2026-02-23T17:10:36.148Z] [session-idle] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:36.154Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:10:36.160Z] [session-idle] POST http://127.0.0.1:57330/api/memory/save
+[2026-02-23T17:10:36.165Z] [session-idle] response.status=500
+[2026-02-23T17:10:36.169Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:10:36.171Z] [session-idle] POST http://127.0.0.1:1/api/memory/save
+[2026-02-23T17:10:36.173Z] [session-idle] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:36.176Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:10:36.179Z] [session-idle] POST http://127.0.0.1:57333/api/memory/save
+[2026-02-23T17:10:36.181Z] [session-idle] response.status=503
+[2026-02-23T17:10:36.194Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:36.197Z] [compacting] workerUrl=http://127.0.0.1:57335, token=null
+[2026-02-23T17:10:36.199Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:10:36.202Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:10:36.204Z] [compacting] GET http://127.0.0.1:57335/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:36.207Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:10:36.209Z] [compacting] found 0 memories
+[2026-02-23T17:10:36.211Z] [compacting] no memories found to inject
+[2026-02-23T17:10:36.213Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:36.216Z] [compacting] workerUrl=http://127.0.0.1:57337, token=null
+[2026-02-23T17:10:36.219Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:10:36.221Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:10:36.223Z] [compacting] GET http://127.0.0.1:57337/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:36.226Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:10:36.228Z] [compacting] found 0 memories
+[2026-02-23T17:10:36.230Z] [compacting] no memories found to inject
+[2026-02-23T17:10:36.233Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:36.235Z] [compacting] workerUrl=http://127.0.0.1:57339, token=null
+[2026-02-23T17:10:36.238Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:10:36.240Z] [compacting] project=my-special-project (dir=/tmp/test-project)
+[2026-02-23T17:10:36.242Z] [compacting] GET http://127.0.0.1:57339/api/search?query=decisions+context+observations&limit=5&project=my-special-project
+[2026-02-23T17:10:36.244Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:10:36.282Z] [compacting] found 0 memories
+[2026-02-23T17:10:36.284Z] [compacting] no memories found to inject
+[2026-02-23T17:10:36.287Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:36.290Z] [compacting] workerUrl=http://127.0.0.1:57341, token=null
+[2026-02-23T17:10:36.292Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:10:36.294Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:10:36.296Z] [compacting] GET http://127.0.0.1:57341/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:36.299Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:10:36.301Z] [compacting] found 0 memories
+[2026-02-23T17:10:36.303Z] [compacting] no memories found to inject
+[2026-02-23T17:10:36.306Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:36.308Z] [compacting] workerUrl=http://127.0.0.1:57343, token=null
+[2026-02-23T17:10:36.310Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:10:36.312Z] [compacting] project=my-derived-project (dir=/home/user/my-derived-project)
+[2026-02-23T17:10:36.314Z] [compacting] GET http://127.0.0.1:57343/api/search?query=decisions+context+observations&limit=5&project=my-derived-project
+[2026-02-23T17:10:36.317Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:10:36.319Z] [compacting] found 0 memories
+[2026-02-23T17:10:36.321Z] [compacting] no memories found to inject
+[2026-02-23T17:10:36.324Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:36.327Z] [compacting] workerUrl=http://127.0.0.1:57345, token=null
+[2026-02-23T17:10:36.329Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:10:36.330Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:10:36.332Z] [compacting] GET http://127.0.0.1:57345/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:36.335Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:10:36.337Z] [compacting] found 2 memories
+[2026-02-23T17:10:36.339Z] [compacting] injected 2 memories into compaction context
+[2026-02-23T17:10:36.341Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:36.344Z] [compacting] workerUrl=http://127.0.0.1:57347, token=null
+[2026-02-23T17:10:36.346Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:10:36.348Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:10:36.350Z] [compacting] GET http://127.0.0.1:57347/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:36.353Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:10:36.355Z] [compacting] found 1 memories
+[2026-02-23T17:10:36.356Z] [compacting] injected 1 memories into compaction context
+[2026-02-23T17:10:36.359Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:36.362Z] [compacting] workerUrl=http://127.0.0.1:57349, token=null
+[2026-02-23T17:10:36.364Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:10:36.366Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:10:36.368Z] [compacting] GET http://127.0.0.1:57349/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:36.370Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:10:36.395Z] [compacting] found 1 memories
+[2026-02-23T17:10:36.423Z] [compacting] injected 1 memories into compaction context
+[2026-02-23T17:10:36.426Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:36.428Z] [compacting] workerUrl=http://127.0.0.1:57351, token=null
+[2026-02-23T17:10:36.430Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:10:36.432Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:10:36.434Z] [compacting] GET http://127.0.0.1:57351/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:36.436Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:10:36.438Z] [compacting] found 0 memories
+[2026-02-23T17:10:36.439Z] [compacting] no memories found to inject
+[2026-02-23T17:10:36.442Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:36.444Z] [compacting] workerUrl=http://127.0.0.1:1, token=null
+[2026-02-23T17:10:36.446Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:10:36.448Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:10:36.450Z] [compacting] GET http://127.0.0.1:1/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:36.452Z] [compacting] fetch error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:36.454Z] [compacting] no memories found to inject
+[2026-02-23T17:10:36.456Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:36.458Z] [compacting] workerUrl=http://127.0.0.1:1, token=null
+[2026-02-23T17:10:36.460Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:10:36.462Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:10:36.465Z] [compacting] GET http://127.0.0.1:1/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:36.467Z] [compacting] fetch error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:36.469Z] [compacting] no memories found to inject
+[2026-02-23T17:10:36.472Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:36.474Z] [compacting] workerUrl=http://127.0.0.1:57355, token=null
+[2026-02-23T17:10:36.476Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:10:36.478Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:10:36.480Z] [compacting] GET http://127.0.0.1:57355/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:36.482Z] [compacting] response.ok=false, status=503
+[2026-02-23T17:10:36.484Z] [compacting] no memories found to inject
+[2026-02-23T17:10:36.487Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:36.489Z] [compacting] workerUrl=http://127.0.0.1:57357, token=null
+[2026-02-23T17:10:36.490Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:10:36.492Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:10:36.494Z] [compacting] GET http://127.0.0.1:57357/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:36.497Z] [compacting] response.ok=false, status=500
+[2026-02-23T17:10:36.519Z] [compacting] no memories found to inject
+[2026-02-23T17:10:36.539Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:36.541Z] [compacting] workerUrl=http://127.0.0.1:57359, token=null
+[2026-02-23T17:10:36.544Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:10:36.546Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:10:36.548Z] [compacting] GET http://127.0.0.1:57359/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:41.551Z] [compacting] fetch error: The operation timed out.
+[2026-02-23T17:10:41.559Z] [compacting] no memories found to inject
+[2026-02-23T17:10:41.567Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:41.573Z] [compacting] workerUrl=http://127.0.0.1:57381, token=present
+[2026-02-23T17:10:41.579Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:10:41.585Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:10:41.591Z] [compacting] GET http://127.0.0.1:57381/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:41.594Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:10:41.597Z] [compacting] found 0 memories
+[2026-02-23T17:10:41.599Z] [compacting] no memories found to inject
+[2026-02-23T17:10:41.602Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:41.604Z] [compacting] workerUrl=http://127.0.0.1:57383, token=null
+[2026-02-23T17:10:41.606Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:10:41.609Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:10:41.611Z] [compacting] GET http://127.0.0.1:57383/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:41.613Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:10:41.615Z] [compacting] found 0 memories
+[2026-02-23T17:10:41.618Z] [compacting] no memories found to inject
+[2026-02-23T17:10:41.621Z] [compacted] Session compacted: sess-compact-123
+[2026-02-23T17:10:41.623Z] [compacted] GET http://127.0.0.1:57385/api/context/inject?project=test-project
+[2026-02-23T17:10:41.625Z] [compacted] got context (31 chars)
+[2026-02-23T17:10:41.627Z] [compacted] injected worker context
+[2026-02-23T17:10:41.630Z] [compacted] Session compacted: sess-compact-123
+[2026-02-23T17:10:41.632Z] [compacted] GET http://127.0.0.1:57387/api/context/inject?project=special-project
+[2026-02-23T17:10:41.634Z] [compacted] got context (12 chars)
+[2026-02-23T17:10:41.637Z] [compacted] injected worker context
+[2026-02-23T17:10:41.639Z] [compacted] Session compacted: sess-compact-123
+[2026-02-23T17:10:41.642Z] [compacted] GET http://127.0.0.1:57389/api/context/inject?project=test-project
+[2026-02-23T17:10:41.644Z] [compacted] got context (26 chars)
+[2026-02-23T17:10:41.646Z] [compacted] injected worker context
+[2026-02-23T17:10:41.648Z] [compacted] Session compacted: sess-compact-123
+[2026-02-23T17:10:41.650Z] [compacted] GET http://127.0.0.1:57391/api/context/inject?project=test-project
+[2026-02-23T17:10:41.653Z] [compacted] no context from worker
+[2026-02-23T17:10:41.655Z] [compacted] no context available
+[2026-02-23T17:10:41.658Z] [compacted] Session compacted: sess-restore-111
+[2026-02-23T17:10:41.678Z] [compacted] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:10:41.701Z] [compacted] worker fetch failed: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:41.704Z] [compacted] injected fallback state from file
+[2026-02-23T17:10:41.708Z] [compacted] Session compacted: sess-format-222
+[2026-02-23T17:10:41.711Z] [compacted] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:10:41.713Z] [compacted] worker fetch failed: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:41.716Z] [compacted] injected fallback state from file
+[2026-02-23T17:10:41.720Z] [compacted] Session compacted: sess-cleanup-333
+[2026-02-23T17:10:41.722Z] [compacted] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:10:41.725Z] [compacted] worker fetch failed: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:41.728Z] [compacted] injected fallback state from file
+[2026-02-23T17:10:41.741Z] [compacted] Session compacted: sess-role-444
+[2026-02-23T17:10:41.743Z] [compacted] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:10:41.746Z] [compacted] worker fetch failed: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:41.749Z] [compacted] injected fallback state from file
+[2026-02-23T17:10:41.753Z] [compacted] Session compacted: sess-nostate-555
+[2026-02-23T17:10:41.755Z] [compacted] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:10:41.757Z] [compacted] worker fetch failed: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:41.759Z] [compacted] no context available
+[2026-02-23T17:10:41.761Z] [compacted] Session compacted: sess-unchanged-666
+[2026-02-23T17:10:41.763Z] [compacted] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:10:41.765Z] [compacted] worker fetch failed: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:41.767Z] [compacted] no context available
+[2026-02-23T17:10:41.769Z] [compacted] Session compacted: sess-compact-123
+[2026-02-23T17:10:41.771Z] [compacted] GET not-a-valid-url/api/context/inject?project=test-project
+[2026-02-23T17:10:41.773Z] [compacted] error: fetch() URL is invalid
+[2026-02-23T17:10:41.776Z] [compacted] Session compacted: sess-compact-123
+[2026-02-23T17:10:41.777Z] [compacted] GET http://127.0.0.1:57399/api/context/inject?project=test-project
+[2026-02-23T17:10:41.780Z] [compacted] no context from worker
+[2026-02-23T17:10:41.782Z] [compacted] no context available
+[2026-02-23T17:10:41.785Z] [file-edited] File edited: src/services/auth.ts
+[2026-02-23T17:10:41.804Z] [file-edited] checks complete for src/services/auth.ts (50 lines)
+[2026-02-23T17:10:41.806Z] [file-edited] File edited: src/services/auth.ts
+[2026-02-23T17:10:41.808Z] [file-edited] checks complete for src/services/auth.ts (50 lines)
+[2026-02-23T17:10:41.810Z] [file-edited] File edited: src/services/user.ts
+[2026-02-23T17:10:41.812Z] [file-edited] checks complete for src/services/user.ts (50 lines)
+[2026-02-23T17:10:41.814Z] [file-edited] File edited: src/services/auth.ts
+[2026-02-23T17:10:41.817Z] [file-edited] checks complete for src/services/auth.ts (50 lines)
+[2026-02-23T17:10:41.819Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:10:41.820Z] [file-edited] checks complete for src/services/auth.test.ts (50 lines)
+[2026-02-23T17:10:41.822Z] [file-edited] File edited: src/services/auth.spec.ts
+[2026-02-23T17:10:41.824Z] [file-edited] checks complete for src/services/auth.spec.ts (50 lines)
+[2026-02-23T17:10:41.825Z] [file-edited] File edited: pkg/auth/auth_test.go
+[2026-02-23T17:10:41.827Z] [file-edited] checks complete for pkg/auth/auth_test.go (50 lines)
+[2026-02-23T17:10:41.829Z] [file-edited] File edited: tests/test_auth.py
+[2026-02-23T17:10:41.830Z] [file-edited] checks complete for tests/test_auth.py (50 lines)
+[2026-02-23T17:10:41.832Z] [file-edited] File edited: src/utils/format.test.js
+[2026-02-23T17:10:41.834Z] [file-edited] checks complete for src/utils/format.test.js (50 lines)
+[2026-02-23T17:10:41.836Z] [file-edited] File edited: src/utils/format.ts
+[2026-02-23T17:10:41.837Z] [file-edited] checks complete for src/utils/format.ts (50 lines)
+[2026-02-23T17:10:41.839Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:10:41.840Z] [file-edited] checks complete for src/services/auth.test.ts (50 lines)
+[2026-02-23T17:10:41.842Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:10:41.844Z] [file-edited] checks complete for src/services/auth.test.ts (300 lines)
+[2026-02-23T17:10:41.845Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:10:41.847Z] [file-edited] checks complete for src/services/auth.test.ts (301 lines)
+[2026-02-23T17:10:41.848Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:10:41.850Z] [file-edited] checks complete for src/services/auth.test.ts (350 lines)
+[2026-02-23T17:10:41.851Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:10:41.853Z] [file-edited] checks complete for src/services/auth.test.ts (350 lines)
+[2026-02-23T17:10:41.854Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:10:41.856Z] [file-edited] checks complete for src/services/auth.test.ts (350 lines)
+[2026-02-23T17:10:41.857Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:10:41.860Z] [file-edited] checks complete for src/services/auth.test.ts (501 lines)
+[2026-02-23T17:10:41.862Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:10:41.864Z] [file-edited] checks complete for src/services/auth.test.ts (750 lines)
+[2026-02-23T17:10:41.865Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:10:41.867Z] [file-edited] checks complete for src/services/auth.test.ts (750 lines)
+[2026-02-23T17:10:41.869Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:10:41.870Z] [file-edited] checks complete for src/services/auth.test.ts (600 lines)
+[2026-02-23T17:10:41.872Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:10:41.895Z] [file-edited] checks complete for src/services/auth.test.ts (501 lines)
+[2026-02-23T17:10:41.897Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:10:41.899Z] [file-edited] checks complete for src/services/auth.test.ts (150 lines)
+[2026-02-23T17:10:41.901Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:10:41.902Z] [file-edited] checks complete for src/services/auth.test.ts (250 lines)
+[2026-02-23T17:10:41.904Z] [file-edited] File edited: src/services/auth.ts
+[2026-02-23T17:10:41.905Z] [file-edited] checks complete for src/services/auth.ts (350 lines)
+[2026-02-23T17:10:41.906Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:10:41.908Z] [file-edited] checks complete for src/services/auth.test.ts (350 lines)
+[2026-02-23T17:10:41.909Z] [file-edited] File edited: null
+[2026-02-23T17:10:41.911Z] [file-edited] error: The "path" property must be of type string, got object
+[2026-02-23T17:10:41.912Z] [file-edited] File edited: null
+[2026-02-23T17:10:41.913Z] [file-edited] error: The "path" property must be of type string, got object
+[2026-02-23T17:10:41.915Z] [file-edited] File edited: src/services/auth.ts
+[2026-02-23T17:10:41.916Z] [file-edited] checks complete for src/services/auth.ts (50 lines)
+[2026-02-23T17:10:41.919Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:42.023Z] [tool-after] Tool completed: read_file
+[2026-02-23T17:10:42.128Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:42.236Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:42.345Z] [tool-after] Tool completed: write_file
+[2026-02-23T17:10:42.453Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:42.460Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:42.466Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:42.472Z] [tool-after] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:42.476Z] [tool-after] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:42.480Z] [tool-after] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:42.573Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:42.681Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:42.686Z] [tool-after] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:42.888Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:42.894Z] [tool-after] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:43.095Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:43.101Z] [tool-after] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:43.303Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:43.410Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:43.522Z] [tool-before] Tool executing: bash
+[2026-02-23T17:10:43.526Z] [tool-before] Tool executing: websearch
+[2026-02-23T17:10:43.530Z] [tool-before] Tool executing: websearch
+[2026-02-23T17:10:43.534Z] [tool-before] blocked tool websearch (deny rule)
+[2026-02-23T17:10:43.539Z] [tool-before] Tool executing: websearch
+[2026-02-23T17:10:43.543Z] [tool-before] blocked tool websearch (deny rule)
+[2026-02-23T17:10:43.547Z] [tool-before] Tool executing: bash
+[2026-02-23T17:10:43.550Z] [tool-before] blocked tool bash (deny rule)
+[2026-02-23T17:10:43.554Z] [tool-before] Tool executing: grep
+[2026-02-23T17:10:43.558Z] [tool-before] redirected tool grep
+[2026-02-23T17:10:43.563Z] [tool-before] Tool executing: grep
+[2026-02-23T17:10:43.566Z] [tool-before] redirected tool grep
+[2026-02-23T17:10:43.570Z] [tool-before] Tool executing: websearch
+[2026-02-23T17:10:43.572Z] [tool-before] redirected tool websearch
+[2026-02-23T17:10:43.573Z] [tool-before] Tool executing: bash
+[2026-02-23T17:10:43.575Z] [tool-before] Tool executing: write
+[2026-02-23T17:10:43.577Z] [tool-before] Tool executing: bash
+[2026-02-23T17:10:43.578Z] [tool-before] blocked tool bash (deny rule)
+[2026-02-23T17:10:43.580Z] [tool-before] Tool executing: bash
+[2026-02-23T17:10:43.582Z] [tool-before] redirected tool bash
+[2026-02-23T17:10:43.583Z] [tool-before] Tool executing: bash
+[2026-02-23T17:10:43.585Z] [tool-before] Tool executing: bash
+[2026-02-23T17:10:43.586Z] [tool-before] blocked tool bash (deny rule)
+[2026-02-23T17:10:43.588Z] [tool-before] Tool executing: bash
+[2026-02-23T17:10:43.589Z] [tool-before] rule error: Invalid rule: tool must be a string and action must be 'deny' or 'redirect'
+[2026-02-23T17:10:43.591Z] [tool-before] Tool executing: bash
+[2026-02-23T17:10:43.592Z] [tool-before] rule error: Invalid rule: tool must be a string and action must be 'deny' or 'redirect'
+[2026-02-23T17:10:43.594Z] [tool-before] Tool executing: bash
+[2026-02-23T17:10:43.595Z] [tool-before] rule error: Invalid rule: tool must be a string and action must be 'deny' or 'redirect'
+[2026-02-23T17:10:43.596Z] [tool-before] blocked tool bash (deny rule)
+[2026-02-23T17:10:43.601Z] [session-start] Session started
+[2026-02-23T17:10:43.611Z] [session-start] GET http://127.0.0.1:57435/api/context/inject?project=test-project
+[2026-02-23T17:10:43.634Z] [session-start] response.status=200
+[2026-02-23T17:10:43.636Z] [session-start] injected context (12 chars)
+[2026-02-23T17:10:43.638Z] [session-start] Session started
+[2026-02-23T17:10:43.639Z] [session-start] GET http://127.0.0.1:57437/api/context/inject?project=my-special-project
+[2026-02-23T17:10:43.642Z] [session-start] response.status=200
+[2026-02-23T17:10:43.643Z] [session-start] no context returned from worker
+[2026-02-23T17:10:43.645Z] [session-start] Session started
+[2026-02-23T17:10:43.647Z] [session-start] GET http://127.0.0.1:57439/api/context/inject?project=test-project
+[2026-02-23T17:10:43.649Z] [session-start] response.status=200
+[2026-02-23T17:10:43.650Z] [session-start] injected context (27 chars)
+[2026-02-23T17:10:43.653Z] [session-start] Session started
+[2026-02-23T17:10:43.654Z] [session-start] GET http://127.0.0.1:57441/api/context/inject?project=test-project
+[2026-02-23T17:10:43.656Z] [session-start] response.status=200
+[2026-02-23T17:10:43.658Z] [session-start] injected context (16 chars)
+[2026-02-23T17:10:43.661Z] [session-start] Session started
+[2026-02-23T17:10:43.662Z] [session-start] GET http://127.0.0.1:57443/api/context/inject?project=test-project
+[2026-02-23T17:10:43.664Z] [session-start] response.status=200
+[2026-02-23T17:10:43.666Z] [session-start] no context returned from worker
+[2026-02-23T17:10:43.668Z] [session-start] Session started
+[2026-02-23T17:10:43.670Z] [session-start] GET http://127.0.0.1:57445/api/context/inject?project=test-project
+[2026-02-23T17:10:43.672Z] [session-start] response.status=200
+[2026-02-23T17:10:43.675Z] [session-start] no context returned from worker
+[2026-02-23T17:10:43.676Z] [session-start] Session started
+[2026-02-23T17:10:43.678Z] [session-start] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:10:43.680Z] [session-start] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:43.683Z] [session-start] Session started
+[2026-02-23T17:10:43.685Z] [session-start] GET http://127.0.0.1:57448/api/context/inject?project=test-project
+[2026-02-23T17:10:43.687Z] [session-start] response.status=503
+[2026-02-23T17:10:43.689Z] [session-start] Session started
+[2026-02-23T17:10:43.691Z] [session-start] GET http://127.0.0.1:57450/api/context/inject?project=test-project
+[2026-02-23T17:10:43.694Z] [session-start] response.status=500
+[2026-02-23T17:10:43.696Z] [session-start] Session started
+[2026-02-23T17:10:43.698Z] [session-start] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:10:43.700Z] [session-start] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:43.702Z] [session-start] Session started
+[2026-02-23T17:10:43.704Z] [session-start] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:10:43.713Z] [session-start] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:10:43.749Z] [session-start] Session started
+[2026-02-23T17:10:43.752Z] [session-start] GET http://127.0.0.1:57454/api/context/inject?project=test-project
+[2026-02-23T17:10:46.755Z] [session-start] error: The operation timed out.
+[2026-02-23T17:10:46.769Z] [session-start] Session started
+[2026-02-23T17:10:46.779Z] [session-start] GET http://127.0.0.1:41777/api/context/inject?project=test-project
+[2026-02-23T17:10:46.787Z] [session-start] response.status=401
+[2026-02-23T17:10:46.794Z] [session-start] Token expired, refreshing...
+[2026-02-23T17:10:46.797Z] [session-start] retry response.status=401
+[2026-02-23T17:10:47.015Z] [file-edited] File edited: /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771866647014/user-service.ts
+[2026-02-23T17:10:47.022Z] [file-edited] checks complete for /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771866647014/user-service.ts (50 lines)
+[2026-02-23T17:10:47.028Z] [file-edited] File edited: /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771866647014/user-service.test.ts
+[2026-02-23T17:10:47.035Z] [file-edited] checks complete for /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771866647014/user-service.test.ts (30 lines)
+[2026-02-23T17:10:47.042Z] [file-edited] File edited: /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771866647014/user-service.ts
+[2026-02-23T17:10:47.045Z] [file-edited] checks complete for /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771866647014/user-service.ts (50 lines)
+[2026-02-23T17:10:47.047Z] [file-edited] File edited: /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771866647014/user-service.ts
+[2026-02-23T17:10:47.050Z] [file-edited] checks complete for /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771866647014/user-service.ts (50 lines)
+[2026-02-23T17:10:47.052Z] [file-edited] File edited: /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771866647014/auth.spec.ts
+[2026-02-23T17:10:47.055Z] [file-edited] checks complete for /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771866647014/auth.spec.ts (20 lines)
+[2026-02-23T17:10:47.057Z] [file-edited] File edited: /tmp/big-service.ts
+[2026-02-23T17:10:47.059Z] [file-edited] checks complete for /tmp/big-service.ts (400 lines)
+[2026-02-23T17:10:47.062Z] [file-edited] File edited: /tmp/massive-service.ts
+[2026-02-23T17:10:47.063Z] [file-edited] checks complete for /tmp/massive-service.ts (600 lines)
+[2026-02-23T17:10:47.065Z] [file-edited] File edited: /tmp/small-service.ts
+[2026-02-23T17:10:47.067Z] [file-edited] checks complete for /tmp/small-service.ts (299 lines)
+[2026-02-23T17:10:47.069Z] [file-edited] File edited: /tmp/path/to/huge-file.ts
+[2026-02-23T17:10:47.072Z] [file-edited] checks complete for /tmp/path/to/huge-file.ts (700 lines)
+[2026-02-23T17:10:47.074Z] [file-edited] File edited: /tmp/medium-file.ts
+[2026-02-23T17:10:47.077Z] [file-edited] checks complete for /tmp/medium-file.ts (350 lines)
+[2026-02-23T17:10:47.104Z] [file-edited] File edited: /tmp/role-check.ts
+[2026-02-23T17:10:47.107Z] [file-edited] checks complete for /tmp/role-check.ts (400 lines)
+[2026-02-23T17:10:47.109Z] [tool-before] Tool executing: rm_rf
+[2026-02-23T17:10:47.111Z] [tool-before] blocked tool rm_rf (deny rule)
+[2026-02-23T17:10:47.112Z] [tool-before] Tool executing: delete_db
+[2026-02-23T17:10:47.114Z] [tool-before] blocked tool delete_db (deny rule)
+[2026-02-23T17:10:47.116Z] [tool-before] Tool executing: old_search
+[2026-02-23T17:10:47.118Z] [tool-before] redirected tool old_search
+[2026-02-23T17:10:47.119Z] [tool-before] Tool executing: allowed_tool
+[2026-02-23T17:10:47.121Z] [tool-before] Tool executing: format_disk
+[2026-02-23T17:10:47.123Z] [tool-before] blocked tool format_disk (deny rule)
+[2026-02-23T17:10:47.125Z] [file-edited] File edited: /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/combined-1771866647124/mega-service.ts
+[2026-02-23T17:10:47.126Z] [file-edited] checks complete for /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/combined-1771866647124/mega-service.ts (400 lines)
+[2026-02-23T17:10:53.129Z] [session-idle] Session idle: session-1
+[2026-02-23T17:10:53.135Z] [session-idle] POST http://localhost:41777/api/memory/save
+[2026-02-23T17:10:53.148Z] [session-idle] response.status=200
+[2026-02-23T17:10:53.154Z] [session-idle] Session idle: session-1
+[2026-02-23T17:10:53.159Z] [session-idle] POST http://localhost:41777/api/memory/save
+[2026-02-23T17:10:53.163Z] [session-idle] response.status=200
+[2026-02-23T17:10:53.167Z] [session-idle] Session idle: session-1
+[2026-02-23T17:10:53.171Z] [session-idle] no meaningful context to save
+[2026-02-23T17:10:53.177Z] [compacted] Session compacted: session-1
+[2026-02-23T17:10:53.180Z] [compacted] GET http://localhost:41777/api/context/inject?project=test-project
+[2026-02-23T17:10:53.184Z] [compacted] got context (16 chars)
+[2026-02-23T17:10:53.188Z] [compacted] injected worker context
+[2026-02-23T17:10:53.192Z] [compacted] Session compacted: session-1
+[2026-02-23T17:10:53.194Z] [compacted] GET http://localhost:41777/api/context/inject?project=test-project
+[2026-02-23T17:10:53.196Z] [compacted] got context (16 chars)
+[2026-02-23T17:10:53.198Z] [compacted] injected worker context
+[2026-02-23T17:10:53.200Z] [compacted] Session compacted: session-1
+[2026-02-23T17:10:53.201Z] [compacted] GET http://localhost:41777/api/context/inject?project=test-project
+[2026-02-23T17:10:53.203Z] [compacted] got context (16 chars)
+[2026-02-23T17:10:53.205Z] [compacted] injected worker context
+[2026-02-23T17:10:53.208Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:53.210Z] [compacting] workerUrl=http://localhost:41777, token=present
+[2026-02-23T17:10:53.212Z] [compacting] input={"sessionId":"session-compact-1"}
+[2026-02-23T17:10:53.213Z] [compacting] project=test-project (dir=/tmp/test)
+[2026-02-23T17:10:53.215Z] [compacting] GET http://localhost:41777/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:53.217Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:10:53.219Z] [compacting] found 0 memories
+[2026-02-23T17:10:53.221Z] [compacting] no memories found to inject
+[2026-02-23T17:10:53.222Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:53.224Z] [compacting] workerUrl=http://localhost:41777, token=null
+[2026-02-23T17:10:53.249Z] [compacting] input={"sessionId":"session-compact-1"}
+[2026-02-23T17:10:53.251Z] [compacting] project=test-project (dir=/tmp/test)
+[2026-02-23T17:10:53.253Z] [compacting] GET http://localhost:41777/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:53.255Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:10:53.257Z] [compacting] found 0 memories
+[2026-02-23T17:10:53.259Z] [compacting] no memories found to inject
+[2026-02-23T17:10:53.261Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:53.263Z] [compacting] workerUrl=http://localhost:41777, token=present
+[2026-02-23T17:10:53.265Z] [compacting] input={"sessionId":"session-compact-1"}
+[2026-02-23T17:10:53.266Z] [compacting] project=test-project (dir=/tmp/test)
+[2026-02-23T17:10:53.268Z] [compacting] GET http://localhost:41777/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:53.270Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:10:53.272Z] [compacting] found 2 memories
+[2026-02-23T17:10:53.274Z] [compacting] injected 2 memories into compaction context
+[2026-02-23T17:10:53.276Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:53.278Z] [compacting] workerUrl=http://localhost:41777, token=present
+[2026-02-23T17:10:53.280Z] [compacting] input={"sessionId":"session-compact-1"}
+[2026-02-23T17:10:53.281Z] [compacting] project=test-project (dir=/tmp/test)
+[2026-02-23T17:10:53.283Z] [compacting] GET http://localhost:41777/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:53.285Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:10:53.287Z] [compacting] found 0 memories
+[2026-02-23T17:10:53.289Z] [compacting] no memories found to inject
+[2026-02-23T17:10:53.291Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:10:53.293Z] [compacting] workerUrl=http://localhost:41777, token=present
+[2026-02-23T17:10:53.295Z] [compacting] input={"sessionId":"session-compact-1"}
+[2026-02-23T17:10:53.297Z] [compacting] project=test-project (dir=/tmp/test)
+[2026-02-23T17:10:53.299Z] [compacting] GET http://localhost:41777/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:10:53.301Z] [compacting] fetch error: Network error
+[2026-02-23T17:10:53.303Z] [compacting] no memories found to inject
+[2026-02-23T17:10:53.306Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:53.360Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:53.415Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:53.469Z] [tool-after] Tool completed: read_file
+[2026-02-23T17:10:53.521Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:53.575Z] [tool-after] Tool completed: bash
+[2026-02-23T17:10:53.579Z] [session-start] Session started
+[2026-02-23T17:10:53.581Z] [session-start] GET http://localhost:41777/api/context/inject?project=test-project
+[2026-02-23T17:10:53.583Z] [session-start] response.status=200
+[2026-02-23T17:10:53.585Z] [session-start] injected context (14 chars)
+[2026-02-23T17:10:53.587Z] [session-start] Session started
+[2026-02-23T17:10:53.589Z] [session-start] GET http://localhost:41777/api/context/inject?project=test-project
+[2026-02-23T17:10:53.592Z] [session-start] response.status=200
+[2026-02-23T17:10:53.593Z] [session-start] injected context (14 chars)
+[2026-02-23T17:10:53.595Z] [session-start] Session started
+[2026-02-23T17:10:53.597Z] [session-start] GET http://localhost:41777/api/context/inject?project=test-project
+[2026-02-23T17:10:53.599Z] [session-start] response.status=200
+[2026-02-23T17:10:53.601Z] [session-start] injected context (14 chars)
+[2026-02-23T17:10:53.603Z] [session-start] Session started
+[2026-02-23T17:10:53.605Z] [session-start] GET http://localhost:41777/api/context/inject?project=test-project
+[2026-02-23T17:10:53.607Z] [session-start] response.status=401
+[2026-02-23T17:10:53.609Z] [session-start] Token expired, refreshing...
+[2026-02-23T17:10:53.611Z] [session-start] retry response.status=200
+[2026-02-23T17:10:53.613Z] [session-start] injected context (13 chars)
+[2026-02-23T17:10:53.615Z] [session-start] Session started
+[2026-02-23T17:10:53.617Z] [session-start] GET http://localhost:41777/api/context/inject?project=test-project
+[2026-02-23T17:10:53.619Z] [session-start] response.status=401
+[2026-02-23T17:11:11.389Z] [tool-after] Tool completed: bash
+[2026-02-23T17:11:11.396Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:11:15.104Z] [tool-before] Tool executing: bash
+[2026-02-23T17:11:15.307Z] [tool-after] Tool completed: bash
+[2026-02-23T17:11:15.307Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:11:20.986Z] [tool-before] Tool executing: todowrite
+[2026-02-23T17:11:21.000Z] [tool-after] Tool completed: todowrite
+[2026-02-23T17:11:21.009Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:14:34.844Z] [tool-before] Tool executing: bash
+[2026-02-23T17:14:34.879Z] [tool-after] Tool completed: bash
+[2026-02-23T17:14:34.879Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:14:35.723Z] [tool-before] Tool executing: bash
+[2026-02-23T17:14:35.738Z] [tool-after] Tool completed: bash
+[2026-02-23T17:14:35.738Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:14:35.944Z] [tool-before] Tool executing: bash
+[2026-02-23T17:14:35.968Z] [tool-after] Tool completed: bash
+[2026-02-23T17:14:35.968Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:14:41.087Z] [tool-before] Tool executing: bash
+[2026-02-23T17:14:41.098Z] [tool-after] Tool completed: bash
+[2026-02-23T17:14:41.098Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:14:58.167Z] [tool-before] Tool executing: mem-search_search
+[2026-02-23T17:14:58.184Z] [tool-after] Tool completed: mem-search_search
+[2026-02-23T17:14:58.191Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:19.033Z] [tool-before] Tool executing: glob
+[2026-02-23T17:15:19.054Z] [tool-after] Tool completed: glob
+[2026-02-23T17:15:19.060Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:19.917Z] [tool-before] Tool executing: bash
+[2026-02-23T17:15:20.116Z] [tool-after] Tool completed: bash
+[2026-02-23T17:15:20.117Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:20.782Z] [tool-before] Tool executing: bash
+[2026-02-23T17:15:20.796Z] [tool-after] Tool completed: bash
+[2026-02-23T17:15:20.797Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:24.213Z] [tool-before] Tool executing: read
+[2026-02-23T17:15:24.219Z] [tool-after] Tool completed: read
+[2026-02-23T17:15:24.228Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:24.549Z] [tool-before] Tool executing: read
+[2026-02-23T17:15:24.558Z] [tool-after] Tool completed: read
+[2026-02-23T17:15:24.565Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:28.053Z] [tool-before] Tool executing: read
+[2026-02-23T17:15:28.060Z] [tool-after] Tool completed: read
+[2026-02-23T17:15:28.066Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:31.716Z] [tool-before] Tool executing: read
+[2026-02-23T17:15:31.727Z] [tool-after] Tool completed: read
+[2026-02-23T17:15:31.733Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:34.950Z] [tool-before] Tool executing: bash
+[2026-02-23T17:15:34.961Z] [tool-after] Tool completed: bash
+[2026-02-23T17:15:34.972Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:35.751Z] [tool-before] Tool executing: bash
+[2026-02-23T17:15:36.305Z] [tool-after] Tool completed: bash
+[2026-02-23T17:15:36.306Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:40.217Z] [tool-before] Tool executing: bash
+[2026-02-23T17:15:40.235Z] [tool-after] Tool completed: bash
+[2026-02-23T17:15:40.236Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:40.906Z] [tool-before] Tool executing: bash
+[2026-02-23T17:15:40.920Z] [tool-after] Tool completed: bash
+[2026-02-23T17:15:40.921Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:44.185Z] [tool-before] Tool executing: bash
+[2026-02-23T17:15:44.261Z] [tool-after] Tool completed: bash
+[2026-02-23T17:15:44.263Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:44.909Z] [tool-before] Tool executing: bash
+[2026-02-23T17:15:44.928Z] [tool-after] Tool completed: bash
+[2026-02-23T17:15:44.928Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:47.765Z] [tool-before] Tool executing: bash
+[2026-02-23T17:15:49.033Z] [tool-before] Tool executing: bash
+[2026-02-23T17:15:49.608Z] [tool-after] Tool completed: bash
+[2026-02-23T17:15:49.609Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:50.266Z] [tool-after] Tool completed: bash
+[2026-02-23T17:15:50.271Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:52.575Z] [tool-before] Tool executing: bash
+[2026-02-23T17:15:52.594Z] [tool-after] Tool completed: bash
+[2026-02-23T17:15:52.594Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:54.680Z] [tool-before] Tool executing: bash
+[2026-02-23T17:15:54.692Z] [tool-after] Tool completed: bash
+[2026-02-23T17:15:54.692Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:15:57.755Z] [tool-before] Tool executing: bash
+[2026-02-23T17:15:58.286Z] [tool-before] Tool executing: bash
+[2026-02-23T17:15:59.110Z] [tool-after] Tool completed: bash
+[2026-02-23T17:15:59.111Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:16:22.755Z] [tool-after] Tool completed: bash
+[2026-02-23T17:16:22.755Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:16:28.400Z] [tool-before] Tool executing: bash
+[2026-02-23T17:16:29.827Z] [tool-after] Tool completed: bash
+[2026-02-23T17:16:29.828Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:16:33.704Z] [tool-before] Tool executing: read
+[2026-02-23T17:16:33.707Z] [tool-after] Tool completed: read
+[2026-02-23T17:16:33.715Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:16:33.858Z] [tool-before] Tool executing: read
+[2026-02-23T17:16:33.866Z] [tool-after] Tool completed: read
+[2026-02-23T17:16:33.872Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:16:37.572Z] [tool-before] Tool executing: bash
+[2026-02-23T17:16:37.989Z] [tool-before] Tool executing: read
+[2026-02-23T17:16:37.992Z] [tool-after] Tool completed: read
+[2026-02-23T17:16:37.997Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:16:39.396Z] [tool-after] Tool completed: bash
+[2026-02-23T17:16:39.400Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:16:43.259Z] [tool-before] Tool executing: grep
+[2026-02-23T17:16:43.294Z] [tool-after] Tool completed: grep
+[2026-02-23T17:16:43.294Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:16:49.654Z] [tool-before] Tool executing: todowrite
+[2026-02-23T17:16:49.665Z] [tool-after] Tool completed: todowrite
+[2026-02-23T17:16:49.672Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:16:53.508Z] [tool-before] Tool executing: edit
+[2026-02-23T17:16:54.403Z] [tool-after] Tool completed: edit
+[2026-02-23T17:16:54.404Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:16:56.853Z] [tool-before] Tool executing: read
+[2026-02-23T17:16:56.864Z] [tool-after] Tool completed: read
+[2026-02-23T17:16:56.871Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:16:59.644Z] [tool-before] Tool executing: edit
+[2026-02-23T17:17:00.502Z] [tool-after] Tool completed: edit
+[2026-02-23T17:17:00.503Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:17:04.152Z] [tool-before] Tool executing: todowrite
+[2026-02-23T17:17:04.159Z] [tool-after] Tool completed: todowrite
+[2026-02-23T17:17:04.164Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:17:14.138Z] [tool-before] Tool executing: edit
+[2026-02-23T17:17:17.461Z] [tool-after] Tool completed: edit
+[2026-02-23T17:17:17.461Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:17:21.039Z] [tool-before] Tool executing: todowrite
+[2026-02-23T17:17:21.045Z] [tool-after] Tool completed: todowrite
+[2026-02-23T17:17:21.049Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:17:31.045Z] [tool-before] Tool executing: edit
+[2026-02-23T17:17:34.359Z] [tool-after] Tool completed: edit
+[2026-02-23T17:17:34.359Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:17:37.219Z] [tool-before] Tool executing: todowrite
+[2026-02-23T17:17:37.221Z] [tool-after] Tool completed: todowrite
+[2026-02-23T17:17:37.227Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:17:39.648Z] [tool-before] Tool executing: bash
+[2026-02-23T17:17:40.652Z] [tool-after] Tool completed: bash
+[2026-02-23T17:17:40.653Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:17:42.890Z] [tool-before] Tool executing: bash
+[2026-02-23T17:17:43.167Z] [tool-after] Tool completed: bash
+[2026-02-23T17:17:43.168Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:17:46.536Z] [tool-before] Tool executing: read
+[2026-02-23T17:17:46.544Z] [tool-after] Tool completed: read
+[2026-02-23T17:17:46.549Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:17:50.351Z] [tool-before] Tool executing: edit
+[2026-02-23T17:17:51.178Z] [tool-after] Tool completed: edit
+[2026-02-23T17:17:51.178Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:17:59.138Z] [tool-before] Tool executing: edit
+[2026-02-23T17:17:59.968Z] [tool-after] Tool completed: edit
+[2026-02-23T17:17:59.969Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:18:02.192Z] [tool-before] Tool executing: bash
+[2026-02-23T17:18:02.335Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:02.335Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:18:04.813Z] [tool-before] Tool executing: bash
+[2026-02-23T17:18:06.037Z] [file-edited] File edited: /tmp/perf-project/src/feature.ts
+[2026-02-23T17:18:06.038Z] [file-edited] checks complete for /tmp/perf-project/src/feature.ts (50 lines)
+[2026-02-23T17:18:06.047Z] [file-edited] File edited: /tmp/perf-project/src/very-large-file.ts
+[2026-02-23T17:18:06.053Z] [file-edited] checks complete for /tmp/perf-project/src/very-large-file.ts (600 lines)
+[2026-02-23T17:18:06.087Z] [file-edited] File edited: 
+[2026-02-23T17:18:06.092Z] [file-edited] checks complete for  (0 lines)
+[2026-02-23T17:18:06.098Z] [session-start] Session started
+[2026-02-23T17:18:06.103Z] [session-start] GET http://127.0.0.1:1/api/context/inject?project=reliability-project
+[2026-02-23T17:18:06.109Z] [session-start] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:06.116Z] [session-start] Session started
+[2026-02-23T17:18:06.120Z] [session-start] GET http://127.0.0.1:59829/api/context/inject?project=reliability-project
+[2026-02-23T17:18:06.125Z] [session-start] response.status=503
+[2026-02-23T17:18:06.129Z] [file-edited] File edited: /non/existent/path/to/some/file.ts
+[2026-02-23T17:18:06.133Z] [file-edited] checks complete for /non/existent/path/to/some/file.ts (10 lines)
+[2026-02-23T17:18:06.137Z] [session-start] Session started
+[2026-02-23T17:18:06.142Z] [session-start] GET http://127.0.0.1:1/api/context/inject?project=reliability-project
+[2026-02-23T17:18:06.145Z] [session-start] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:06.148Z] [session-start] Session started
+[2026-02-23T17:18:06.150Z] [session-start] GET http://127.0.0.1:1/api/context/inject?project=reliability-project
+[2026-02-23T17:18:06.152Z] [session-start] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:06.187Z] [session-start] Session started
+[2026-02-23T17:18:06.190Z] [session-start] GET http://127.0.0.1:59837/api/context/inject?project=lifecycle-project
+[2026-02-23T17:18:06.192Z] [session-start] response.status=401
+[2026-02-23T17:18:06.194Z] [session-start] Session started
+[2026-02-23T17:18:06.196Z] [session-start] GET http://127.0.0.1:59837/api/context/inject?project=lifecycle-project
+[2026-02-23T17:18:06.198Z] [session-start] response.status=401
+[2026-02-23T17:18:06.200Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:06.202Z] [tool-after] Tool completed: read_file
+[2026-02-23T17:18:06.204Z] [file-edited] File edited: /tmp/test/services/user-service.ts
+[2026-02-23T17:18:06.206Z] [file-edited] checks complete for /tmp/test/services/user-service.ts (50 lines)
+[2026-02-23T17:18:06.207Z] [file-edited] File edited: /tmp/test/services/user-service.test.ts
+[2026-02-23T17:18:06.209Z] [file-edited] checks complete for /tmp/test/services/user-service.test.ts (50 lines)
+[2026-02-23T17:18:06.211Z] [file-edited] File edited: /tmp/test/services/big-service.ts
+[2026-02-23T17:18:06.213Z] [file-edited] checks complete for /tmp/test/services/big-service.ts (400 lines)
+[2026-02-23T17:18:06.215Z] [file-edited] File edited: /tmp/test/services/huge-service.ts
+[2026-02-23T17:18:06.217Z] [file-edited] checks complete for /tmp/test/services/huge-service.ts (600 lines)
+[2026-02-23T17:18:06.219Z] [session-idle] Session idle: undefined
+[2026-02-23T17:18:06.221Z] [session-idle] no meaningful context to save
+[2026-02-23T17:18:06.223Z] [session-idle] Session idle: undefined
+[2026-02-23T17:18:06.224Z] [session-idle] no meaningful context to save
+[2026-02-23T17:18:06.226Z] [session-start] Session started
+[2026-02-23T17:18:06.228Z] [session-start] GET http://127.0.0.1:1/api/context/inject?project=lifecycle-project
+[2026-02-23T17:18:06.230Z] [tool-after] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:06.232Z] [session-start] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:06.234Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:06.236Z] [file-edited] File edited: /tmp/test/some-file.ts
+[2026-02-23T17:18:06.238Z] [file-edited] checks complete for /tmp/test/some-file.ts (10 lines)
+[2026-02-23T17:18:06.240Z] [session-idle] Session idle: err-idle
+[2026-02-23T17:18:06.242Z] [session-idle] POST http://127.0.0.1:1/api/memory/save
+[2026-02-23T17:18:06.244Z] [tool-after] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:06.245Z] [session-idle] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:06.247Z] [session-idle] Session idle: err-idle-warn
+[2026-02-23T17:18:06.261Z] [session-idle] POST http://127.0.0.1:1/api/memory/save
+[2026-02-23T17:18:06.288Z] [session-idle] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:06.290Z] [tool-before] Tool executing: bash
+[2026-02-23T17:18:06.293Z] [tool-before] Tool executing: dangerous_tool
+[2026-02-23T17:18:06.295Z] [tool-before] blocked tool dangerous_tool (deny rule)
+[2026-02-23T17:18:06.319Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:18:06.322Z] [session-idle] POST http://127.0.0.1:59848/api/memory/save
+[2026-02-23T17:18:06.324Z] [session-idle] response.status=200
+[2026-02-23T17:18:06.326Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:18:06.328Z] [session-idle] POST http://127.0.0.1:59850/api/memory/save
+[2026-02-23T17:18:06.330Z] [session-idle] response.status=200
+[2026-02-23T17:18:06.333Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:18:06.336Z] [session-idle] POST http://127.0.0.1:59852/api/memory/save
+[2026-02-23T17:18:06.339Z] [session-idle] response.status=200
+[2026-02-23T17:18:06.342Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:18:06.344Z] [session-idle] POST http://127.0.0.1:59854/api/memory/save
+[2026-02-23T17:18:06.346Z] [session-idle] response.status=200
+[2026-02-23T17:18:06.349Z] [session-idle] Session idle: sess-xyz-999
+[2026-02-23T17:18:06.351Z] [session-idle] POST http://127.0.0.1:59856/api/memory/save
+[2026-02-23T17:18:06.354Z] [session-idle] response.status=200
+[2026-02-23T17:18:06.356Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:18:06.359Z] [session-idle] no meaningful context to save
+[2026-02-23T17:18:06.361Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:18:06.363Z] [session-idle] no meaningful context to save
+[2026-02-23T17:18:06.366Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:18:06.368Z] [session-idle] POST http://127.0.0.1:59860/api/memory/save
+[2026-02-23T17:18:21.407Z] [session-idle] error: The operation timed out.
+[2026-02-23T17:18:21.407Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:18:21.414Z] [session-idle] POST http://127.0.0.1:1/api/memory/save
+[2026-02-23T17:18:21.420Z] [session-idle] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:21.426Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:18:21.432Z] [session-idle] POST http://127.0.0.1:59930/api/memory/save
+[2026-02-23T17:18:21.438Z] [session-idle] response.status=500
+[2026-02-23T17:18:21.444Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:18:21.450Z] [session-idle] POST http://127.0.0.1:1/api/memory/save
+[2026-02-23T17:18:21.455Z] [session-idle] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:21.459Z] [session-idle] Session idle: sess-idle-123
+[2026-02-23T17:18:21.461Z] [session-idle] POST http://127.0.0.1:59933/api/memory/save
+[2026-02-23T17:18:21.464Z] [session-idle] response.status=503
+[2026-02-23T17:18:21.485Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:21.491Z] [compacting] workerUrl=http://127.0.0.1:59935, token=null
+[2026-02-23T17:18:21.497Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:18:21.501Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:18:21.504Z] [compacting] GET http://127.0.0.1:59935/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:21.507Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:18:21.509Z] [compacting] found 0 memories
+[2026-02-23T17:18:21.512Z] [compacting] no memories found to inject
+[2026-02-23T17:18:21.515Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:21.517Z] [compacting] workerUrl=http://127.0.0.1:59937, token=null
+[2026-02-23T17:18:21.520Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:18:21.522Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:18:21.524Z] [compacting] GET http://127.0.0.1:59937/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:21.527Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:18:21.529Z] [compacting] found 0 memories
+[2026-02-23T17:18:21.531Z] [compacting] no memories found to inject
+[2026-02-23T17:18:21.534Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:21.537Z] [compacting] workerUrl=http://127.0.0.1:59939, token=null
+[2026-02-23T17:18:21.539Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:18:21.541Z] [compacting] project=my-special-project (dir=/tmp/test-project)
+[2026-02-23T17:18:21.543Z] [compacting] GET http://127.0.0.1:59939/api/search?query=decisions+context+observations&limit=5&project=my-special-project
+[2026-02-23T17:18:21.546Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:18:21.548Z] [compacting] found 0 memories
+[2026-02-23T17:18:21.551Z] [compacting] no memories found to inject
+[2026-02-23T17:18:21.555Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:21.557Z] [compacting] workerUrl=http://127.0.0.1:59941, token=null
+[2026-02-23T17:18:21.559Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:18:21.562Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:18:21.564Z] [compacting] GET http://127.0.0.1:59941/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:21.594Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:18:21.597Z] [compacting] found 0 memories
+[2026-02-23T17:18:21.599Z] [compacting] no memories found to inject
+[2026-02-23T17:18:21.602Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:21.604Z] [compacting] workerUrl=http://127.0.0.1:59943, token=null
+[2026-02-23T17:18:21.606Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:18:21.608Z] [compacting] project=my-derived-project (dir=/home/user/my-derived-project)
+[2026-02-23T17:18:21.610Z] [compacting] GET http://127.0.0.1:59943/api/search?query=decisions+context+observations&limit=5&project=my-derived-project
+[2026-02-23T17:18:21.613Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:18:21.636Z] [compacting] found 0 memories
+[2026-02-23T17:18:21.638Z] [compacting] no memories found to inject
+[2026-02-23T17:18:21.641Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:21.643Z] [compacting] workerUrl=http://127.0.0.1:59945, token=null
+[2026-02-23T17:18:21.645Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:18:21.647Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:18:21.649Z] [compacting] GET http://127.0.0.1:59945/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:21.652Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:18:21.654Z] [compacting] found 2 memories
+[2026-02-23T17:18:21.656Z] [compacting] injected 2 memories into compaction context
+[2026-02-23T17:18:21.659Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:21.661Z] [compacting] workerUrl=http://127.0.0.1:59948, token=null
+[2026-02-23T17:18:21.663Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:18:21.664Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:18:21.666Z] [compacting] GET http://127.0.0.1:59948/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:21.669Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:18:21.671Z] [compacting] found 1 memories
+[2026-02-23T17:18:21.673Z] [compacting] injected 1 memories into compaction context
+[2026-02-23T17:18:21.675Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:21.677Z] [compacting] workerUrl=http://127.0.0.1:59950, token=null
+[2026-02-23T17:18:21.679Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:18:21.681Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:18:21.683Z] [compacting] GET http://127.0.0.1:59950/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:21.686Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:18:21.688Z] [compacting] found 1 memories
+[2026-02-23T17:18:21.690Z] [compacting] injected 1 memories into compaction context
+[2026-02-23T17:18:21.692Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:21.694Z] [compacting] workerUrl=http://127.0.0.1:59952, token=null
+[2026-02-23T17:18:21.696Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:18:21.698Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:18:21.700Z] [compacting] GET http://127.0.0.1:59952/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:21.703Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:18:21.705Z] [compacting] found 0 memories
+[2026-02-23T17:18:21.707Z] [compacting] no memories found to inject
+[2026-02-23T17:18:21.709Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:21.711Z] [compacting] workerUrl=http://127.0.0.1:1, token=null
+[2026-02-23T17:18:21.713Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:18:21.715Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:18:21.717Z] [compacting] GET http://127.0.0.1:1/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:21.720Z] [compacting] fetch error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:21.766Z] [compacting] no memories found to inject
+[2026-02-23T17:18:21.769Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:21.771Z] [compacting] workerUrl=http://127.0.0.1:1, token=null
+[2026-02-23T17:18:21.773Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:18:21.775Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:18:21.777Z] [compacting] GET http://127.0.0.1:1/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:21.779Z] [compacting] fetch error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:21.781Z] [compacting] no memories found to inject
+[2026-02-23T17:18:21.784Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:21.786Z] [compacting] workerUrl=http://127.0.0.1:59956, token=null
+[2026-02-23T17:18:21.788Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:18:21.790Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:18:21.792Z] [compacting] GET http://127.0.0.1:59956/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:21.794Z] [compacting] response.ok=false, status=503
+[2026-02-23T17:18:21.796Z] [compacting] no memories found to inject
+[2026-02-23T17:18:21.798Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:21.800Z] [compacting] workerUrl=http://127.0.0.1:59958, token=null
+[2026-02-23T17:18:21.802Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:18:21.804Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:18:21.806Z] [compacting] GET http://127.0.0.1:59958/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:21.809Z] [compacting] response.ok=false, status=500
+[2026-02-23T17:18:21.811Z] [compacting] no memories found to inject
+[2026-02-23T17:18:21.814Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:21.816Z] [compacting] workerUrl=http://127.0.0.1:59960, token=null
+[2026-02-23T17:18:21.818Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:18:21.820Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:18:21.822Z] [compacting] GET http://127.0.0.1:59960/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:26.824Z] [compacting] fetch error: The operation timed out.
+[2026-02-23T17:18:26.825Z] [compacting] no memories found to inject
+[2026-02-23T17:18:26.833Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:26.838Z] [compacting] workerUrl=http://127.0.0.1:59985, token=present
+[2026-02-23T17:18:26.844Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:18:26.849Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:18:26.856Z] [compacting] GET http://127.0.0.1:59985/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:26.860Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:18:26.863Z] [compacting] found 0 memories
+[2026-02-23T17:18:26.865Z] [compacting] no memories found to inject
+[2026-02-23T17:18:26.868Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:26.870Z] [compacting] workerUrl=http://127.0.0.1:59987, token=null
+[2026-02-23T17:18:26.872Z] [compacting] input={"sessionId":"sess-compact-123"}
+[2026-02-23T17:18:26.875Z] [compacting] project=test-project (dir=/tmp/test-project)
+[2026-02-23T17:18:26.877Z] [compacting] GET http://127.0.0.1:59987/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:26.879Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:18:26.882Z] [compacting] found 0 memories
+[2026-02-23T17:18:26.884Z] [compacting] no memories found to inject
+[2026-02-23T17:18:26.886Z] [compacted] Session compacted: sess-compact-123
+[2026-02-23T17:18:26.888Z] [compacted] GET http://127.0.0.1:59989/api/context/inject?project=test-project
+[2026-02-23T17:18:26.891Z] [compacted] got context (31 chars)
+[2026-02-23T17:18:26.894Z] [compacted] injected worker context
+[2026-02-23T17:18:26.897Z] [compacted] Session compacted: sess-compact-123
+[2026-02-23T17:18:26.899Z] [compacted] GET http://127.0.0.1:59991/api/context/inject?project=special-project
+[2026-02-23T17:18:26.901Z] [compacted] got context (12 chars)
+[2026-02-23T17:18:26.903Z] [compacted] injected worker context
+[2026-02-23T17:18:26.906Z] [compacted] Session compacted: sess-compact-123
+[2026-02-23T17:18:26.908Z] [compacted] GET http://127.0.0.1:59993/api/context/inject?project=test-project
+[2026-02-23T17:18:26.911Z] [compacted] got context (26 chars)
+[2026-02-23T17:18:26.913Z] [compacted] injected worker context
+[2026-02-23T17:18:26.915Z] [compacted] Session compacted: sess-compact-123
+[2026-02-23T17:18:26.918Z] [compacted] GET http://127.0.0.1:59995/api/context/inject?project=test-project
+[2026-02-23T17:18:26.920Z] [compacted] no context from worker
+[2026-02-23T17:18:26.923Z] [compacted] no context available
+[2026-02-23T17:18:26.926Z] [compacted] Session compacted: sess-restore-111
+[2026-02-23T17:18:26.960Z] [compacted] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:18:26.963Z] [compacted] worker fetch failed: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:26.966Z] [compacted] injected fallback state from file
+[2026-02-23T17:18:26.970Z] [compacted] Session compacted: sess-format-222
+[2026-02-23T17:18:26.972Z] [compacted] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:18:26.974Z] [compacted] worker fetch failed: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:26.978Z] [compacted] injected fallback state from file
+[2026-02-23T17:18:26.982Z] [compacted] Session compacted: sess-cleanup-333
+[2026-02-23T17:18:26.983Z] [compacted] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:18:26.986Z] [compacted] worker fetch failed: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:26.989Z] [compacted] injected fallback state from file
+[2026-02-23T17:18:27.008Z] [compacted] Session compacted: sess-role-444
+[2026-02-23T17:18:27.010Z] [compacted] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:18:27.012Z] [compacted] worker fetch failed: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:27.016Z] [compacted] injected fallback state from file
+[2026-02-23T17:18:27.019Z] [compacted] Session compacted: sess-nostate-555
+[2026-02-23T17:18:27.022Z] [compacted] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:18:27.024Z] [compacted] worker fetch failed: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:27.026Z] [compacted] no context available
+[2026-02-23T17:18:27.028Z] [compacted] Session compacted: sess-unchanged-666
+[2026-02-23T17:18:27.030Z] [compacted] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:18:27.032Z] [compacted] worker fetch failed: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:27.034Z] [compacted] no context available
+[2026-02-23T17:18:27.036Z] [compacted] Session compacted: sess-compact-123
+[2026-02-23T17:18:27.038Z] [compacted] GET not-a-valid-url/api/context/inject?project=test-project
+[2026-02-23T17:18:27.040Z] [compacted] error: fetch() URL is invalid
+[2026-02-23T17:18:27.043Z] [compacted] Session compacted: sess-compact-123
+[2026-02-23T17:18:27.045Z] [compacted] GET http://127.0.0.1:60007/api/context/inject?project=test-project
+[2026-02-23T17:18:27.047Z] [compacted] no context from worker
+[2026-02-23T17:18:27.049Z] [compacted] no context available
+[2026-02-23T17:18:27.052Z] [file-edited] File edited: src/services/auth.ts
+[2026-02-23T17:18:27.077Z] [file-edited] checks complete for src/services/auth.ts (50 lines)
+[2026-02-23T17:18:27.079Z] [file-edited] File edited: src/services/auth.ts
+[2026-02-23T17:18:27.081Z] [file-edited] checks complete for src/services/auth.ts (50 lines)
+[2026-02-23T17:18:27.083Z] [file-edited] File edited: src/services/user.ts
+[2026-02-23T17:18:27.085Z] [file-edited] checks complete for src/services/user.ts (50 lines)
+[2026-02-23T17:18:27.087Z] [file-edited] File edited: src/services/auth.ts
+[2026-02-23T17:18:27.089Z] [file-edited] checks complete for src/services/auth.ts (50 lines)
+[2026-02-23T17:18:27.091Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:18:27.093Z] [file-edited] checks complete for src/services/auth.test.ts (50 lines)
+[2026-02-23T17:18:27.095Z] [file-edited] File edited: src/services/auth.spec.ts
+[2026-02-23T17:18:27.097Z] [file-edited] checks complete for src/services/auth.spec.ts (50 lines)
+[2026-02-23T17:18:27.098Z] [file-edited] File edited: pkg/auth/auth_test.go
+[2026-02-23T17:18:27.100Z] [file-edited] checks complete for pkg/auth/auth_test.go (50 lines)
+[2026-02-23T17:18:27.102Z] [file-edited] File edited: tests/test_auth.py
+[2026-02-23T17:18:27.104Z] [file-edited] checks complete for tests/test_auth.py (50 lines)
+[2026-02-23T17:18:27.106Z] [file-edited] File edited: src/utils/format.test.js
+[2026-02-23T17:18:27.108Z] [file-edited] checks complete for src/utils/format.test.js (50 lines)
+[2026-02-23T17:18:27.109Z] [file-edited] File edited: src/utils/format.ts
+[2026-02-23T17:18:27.111Z] [file-edited] checks complete for src/utils/format.ts (50 lines)
+[2026-02-23T17:18:27.113Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:18:27.114Z] [file-edited] checks complete for src/services/auth.test.ts (50 lines)
+[2026-02-23T17:18:27.116Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:18:27.118Z] [file-edited] checks complete for src/services/auth.test.ts (300 lines)
+[2026-02-23T17:18:27.119Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:18:27.121Z] [file-edited] checks complete for src/services/auth.test.ts (301 lines)
+[2026-02-23T17:18:27.123Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:18:27.124Z] [file-edited] checks complete for src/services/auth.test.ts (350 lines)
+[2026-02-23T17:18:27.126Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:18:27.127Z] [file-edited] checks complete for src/services/auth.test.ts (350 lines)
+[2026-02-23T17:18:27.129Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:18:27.131Z] [file-edited] checks complete for src/services/auth.test.ts (350 lines)
+[2026-02-23T17:18:27.132Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:18:27.134Z] [file-edited] checks complete for src/services/auth.test.ts (501 lines)
+[2026-02-23T17:18:27.136Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:18:27.137Z] [file-edited] checks complete for src/services/auth.test.ts (750 lines)
+[2026-02-23T17:18:27.138Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:18:27.140Z] [file-edited] checks complete for src/services/auth.test.ts (750 lines)
+[2026-02-23T17:18:27.141Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:18:27.143Z] [file-edited] checks complete for src/services/auth.test.ts (600 lines)
+[2026-02-23T17:18:27.164Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:18:27.166Z] [file-edited] checks complete for src/services/auth.test.ts (501 lines)
+[2026-02-23T17:18:27.168Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:18:27.170Z] [file-edited] checks complete for src/services/auth.test.ts (150 lines)
+[2026-02-23T17:18:27.171Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:18:27.173Z] [file-edited] checks complete for src/services/auth.test.ts (250 lines)
+[2026-02-23T17:18:27.174Z] [file-edited] File edited: src/services/auth.ts
+[2026-02-23T17:18:27.176Z] [file-edited] checks complete for src/services/auth.ts (350 lines)
+[2026-02-23T17:18:27.177Z] [file-edited] File edited: src/services/auth.test.ts
+[2026-02-23T17:18:27.178Z] [file-edited] checks complete for src/services/auth.test.ts (350 lines)
+[2026-02-23T17:18:27.180Z] [file-edited] File edited: null
+[2026-02-23T17:18:27.181Z] [file-edited] error: The "path" property must be of type string, got object
+[2026-02-23T17:18:27.183Z] [file-edited] File edited: null
+[2026-02-23T17:18:27.184Z] [file-edited] error: The "path" property must be of type string, got object
+[2026-02-23T17:18:27.185Z] [file-edited] File edited: src/services/auth.ts
+[2026-02-23T17:18:27.187Z] [file-edited] checks complete for src/services/auth.ts (50 lines)
+[2026-02-23T17:18:27.190Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:27.294Z] [tool-after] Tool completed: read_file
+[2026-02-23T17:18:27.398Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:27.508Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:27.618Z] [tool-after] Tool completed: write_file
+[2026-02-23T17:18:27.725Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:27.733Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:27.738Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:27.743Z] [tool-after] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:27.748Z] [tool-after] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:27.752Z] [tool-after] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:27.844Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:27.951Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:27.957Z] [tool-after] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:28.157Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:28.164Z] [tool-after] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:28.365Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:28.371Z] [tool-after] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:28.573Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:28.682Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:28.790Z] [tool-before] Tool executing: bash
+[2026-02-23T17:18:28.795Z] [tool-before] Tool executing: websearch
+[2026-02-23T17:18:28.798Z] [tool-before] Tool executing: websearch
+[2026-02-23T17:18:28.802Z] [tool-before] blocked tool websearch (deny rule)
+[2026-02-23T17:18:28.806Z] [tool-before] Tool executing: websearch
+[2026-02-23T17:18:28.810Z] [tool-before] blocked tool websearch (deny rule)
+[2026-02-23T17:18:28.814Z] [tool-before] Tool executing: bash
+[2026-02-23T17:18:28.817Z] [tool-before] blocked tool bash (deny rule)
+[2026-02-23T17:18:28.821Z] [tool-before] Tool executing: grep
+[2026-02-23T17:18:28.825Z] [tool-before] redirected tool grep
+[2026-02-23T17:18:28.828Z] [tool-before] Tool executing: grep
+[2026-02-23T17:18:28.830Z] [tool-before] redirected tool grep
+[2026-02-23T17:18:28.832Z] [tool-before] Tool executing: websearch
+[2026-02-23T17:18:28.833Z] [tool-before] redirected tool websearch
+[2026-02-23T17:18:28.835Z] [tool-before] Tool executing: bash
+[2026-02-23T17:18:28.836Z] [tool-before] Tool executing: write
+[2026-02-23T17:18:28.838Z] [tool-before] Tool executing: bash
+[2026-02-23T17:18:28.839Z] [tool-before] blocked tool bash (deny rule)
+[2026-02-23T17:18:28.841Z] [tool-before] Tool executing: bash
+[2026-02-23T17:18:28.842Z] [tool-before] redirected tool bash
+[2026-02-23T17:18:28.844Z] [tool-before] Tool executing: bash
+[2026-02-23T17:18:28.845Z] [tool-before] Tool executing: bash
+[2026-02-23T17:18:28.846Z] [tool-before] blocked tool bash (deny rule)
+[2026-02-23T17:18:28.848Z] [tool-before] Tool executing: bash
+[2026-02-23T17:18:28.849Z] [tool-before] rule error: Invalid rule: tool must be a string and action must be 'deny' or 'redirect'
+[2026-02-23T17:18:28.851Z] [tool-before] Tool executing: bash
+[2026-02-23T17:18:28.852Z] [tool-before] rule error: Invalid rule: tool must be a string and action must be 'deny' or 'redirect'
+[2026-02-23T17:18:28.854Z] [tool-before] Tool executing: bash
+[2026-02-23T17:18:28.855Z] [tool-before] rule error: Invalid rule: tool must be a string and action must be 'deny' or 'redirect'
+[2026-02-23T17:18:28.857Z] [tool-before] blocked tool bash (deny rule)
+[2026-02-23T17:18:28.861Z] [session-start] Session started
+[2026-02-23T17:18:28.878Z] [session-start] GET http://127.0.0.1:60037/api/context/inject?project=test-project
+[2026-02-23T17:18:28.880Z] [session-start] response.status=200
+[2026-02-23T17:18:28.882Z] [session-start] injected context (12 chars)
+[2026-02-23T17:18:28.884Z] [session-start] Session started
+[2026-02-23T17:18:28.886Z] [session-start] GET http://127.0.0.1:60039/api/context/inject?project=my-special-project
+[2026-02-23T17:18:28.888Z] [session-start] response.status=200
+[2026-02-23T17:18:28.889Z] [session-start] no context returned from worker
+[2026-02-23T17:18:28.891Z] [session-start] Session started
+[2026-02-23T17:18:28.893Z] [session-start] GET http://127.0.0.1:60041/api/context/inject?project=test-project
+[2026-02-23T17:18:28.895Z] [session-start] response.status=200
+[2026-02-23T17:18:28.897Z] [session-start] injected context (27 chars)
+[2026-02-23T17:18:28.900Z] [session-start] Session started
+[2026-02-23T17:18:28.902Z] [session-start] GET http://127.0.0.1:60043/api/context/inject?project=test-project
+[2026-02-23T17:18:28.904Z] [session-start] response.status=200
+[2026-02-23T17:18:28.905Z] [session-start] injected context (16 chars)
+[2026-02-23T17:18:28.908Z] [session-start] Session started
+[2026-02-23T17:18:28.910Z] [session-start] GET http://127.0.0.1:60045/api/context/inject?project=test-project
+[2026-02-23T17:18:28.912Z] [session-start] response.status=200
+[2026-02-23T17:18:28.913Z] [session-start] no context returned from worker
+[2026-02-23T17:18:28.915Z] [session-start] Session started
+[2026-02-23T17:18:28.917Z] [session-start] GET http://127.0.0.1:60047/api/context/inject?project=test-project
+[2026-02-23T17:18:28.919Z] [session-start] response.status=200
+[2026-02-23T17:18:28.921Z] [session-start] no context returned from worker
+[2026-02-23T17:18:28.923Z] [session-start] Session started
+[2026-02-23T17:18:28.925Z] [session-start] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:18:28.927Z] [session-start] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:28.929Z] [session-start] Session started
+[2026-02-23T17:18:28.931Z] [session-start] GET http://127.0.0.1:60050/api/context/inject?project=test-project
+[2026-02-23T17:18:28.933Z] [session-start] response.status=503
+[2026-02-23T17:18:28.935Z] [session-start] Session started
+[2026-02-23T17:18:28.937Z] [session-start] GET http://127.0.0.1:60052/api/context/inject?project=test-project
+[2026-02-23T17:18:28.940Z] [session-start] response.status=500
+[2026-02-23T17:18:28.942Z] [session-start] Session started
+[2026-02-23T17:18:28.944Z] [session-start] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:18:28.946Z] [session-start] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:28.949Z] [session-start] Session started
+[2026-02-23T17:18:28.951Z] [session-start] GET http://127.0.0.1:1/api/context/inject?project=test-project
+[2026-02-23T17:18:28.953Z] [session-start] error: Unable to connect. Is the computer able to access the url?
+[2026-02-23T17:18:28.956Z] [session-start] Session started
+[2026-02-23T17:18:28.988Z] [session-start] GET http://127.0.0.1:60056/api/context/inject?project=test-project
+[2026-02-23T17:18:31.991Z] [session-start] error: The operation timed out.
+[2026-02-23T17:18:32.003Z] [session-start] Session started
+[2026-02-23T17:18:32.011Z] [session-start] GET http://127.0.0.1:41777/api/context/inject?project=test-project
+[2026-02-23T17:18:32.017Z] [session-start] response.status=401
+[2026-02-23T17:18:32.024Z] [session-start] Token expired, refreshing...
+[2026-02-23T17:18:32.030Z] [session-start] retry response.status=401
+[2026-02-23T17:18:32.243Z] [file-edited] File edited: /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771867112243/user-service.ts
+[2026-02-23T17:18:32.251Z] [file-edited] checks complete for /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771867112243/user-service.ts (50 lines)
+[2026-02-23T17:18:32.257Z] [file-edited] File edited: /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771867112243/user-service.test.ts
+[2026-02-23T17:18:32.263Z] [file-edited] checks complete for /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771867112243/user-service.test.ts (30 lines)
+[2026-02-23T17:18:32.269Z] [file-edited] File edited: /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771867112243/user-service.ts
+[2026-02-23T17:18:32.272Z] [file-edited] checks complete for /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771867112243/user-service.ts (50 lines)
+[2026-02-23T17:18:32.275Z] [file-edited] File edited: /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771867112243/user-service.ts
+[2026-02-23T17:18:32.277Z] [file-edited] checks complete for /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771867112243/user-service.ts (50 lines)
+[2026-02-23T17:18:32.279Z] [file-edited] File edited: /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771867112243/auth.spec.ts
+[2026-02-23T17:18:32.282Z] [file-edited] checks complete for /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/tdd-test-1771867112243/auth.spec.ts (20 lines)
+[2026-02-23T17:18:32.284Z] [file-edited] File edited: /tmp/big-service.ts
+[2026-02-23T17:18:32.286Z] [file-edited] checks complete for /tmp/big-service.ts (400 lines)
+[2026-02-23T17:18:32.288Z] [file-edited] File edited: /tmp/massive-service.ts
+[2026-02-23T17:18:32.290Z] [file-edited] checks complete for /tmp/massive-service.ts (600 lines)
+[2026-02-23T17:18:32.292Z] [file-edited] File edited: /tmp/small-service.ts
+[2026-02-23T17:18:32.295Z] [file-edited] checks complete for /tmp/small-service.ts (299 lines)
+[2026-02-23T17:18:32.297Z] [file-edited] File edited: /tmp/path/to/huge-file.ts
+[2026-02-23T17:18:32.299Z] [file-edited] checks complete for /tmp/path/to/huge-file.ts (700 lines)
+[2026-02-23T17:18:32.301Z] [file-edited] File edited: /tmp/medium-file.ts
+[2026-02-23T17:18:32.303Z] [file-edited] checks complete for /tmp/medium-file.ts (350 lines)
+[2026-02-23T17:18:32.305Z] [file-edited] File edited: /tmp/role-check.ts
+[2026-02-23T17:18:32.311Z] [file-edited] checks complete for /tmp/role-check.ts (400 lines)
+[2026-02-23T17:18:32.313Z] [tool-before] Tool executing: rm_rf
+[2026-02-23T17:18:32.315Z] [tool-before] blocked tool rm_rf (deny rule)
+[2026-02-23T17:18:32.318Z] [tool-before] Tool executing: delete_db
+[2026-02-23T17:18:32.320Z] [tool-before] blocked tool delete_db (deny rule)
+[2026-02-23T17:18:32.322Z] [tool-before] Tool executing: old_search
+[2026-02-23T17:18:32.323Z] [tool-before] redirected tool old_search
+[2026-02-23T17:18:32.325Z] [tool-before] Tool executing: allowed_tool
+[2026-02-23T17:18:32.327Z] [tool-before] Tool executing: format_disk
+[2026-02-23T17:18:32.329Z] [tool-before] blocked tool format_disk (deny rule)
+[2026-02-23T17:18:32.331Z] [file-edited] File edited: /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/combined-1771867112331/mega-service.ts
+[2026-02-23T17:18:32.333Z] [file-edited] checks complete for /var/folders/j9/r_hc6mtj42jd3r90c1vvf5y00000gn/T/combined-1771867112331/mega-service.ts (400 lines)
+[2026-02-23T17:18:38.334Z] [session-idle] Session idle: session-1
+[2026-02-23T17:18:38.339Z] [session-idle] POST http://localhost:41777/api/memory/save
+[2026-02-23T17:18:38.343Z] [session-idle] response.status=200
+[2026-02-23T17:18:38.348Z] [session-idle] Session idle: session-1
+[2026-02-23T17:18:38.351Z] [session-idle] POST http://localhost:41777/api/memory/save
+[2026-02-23T17:18:38.355Z] [session-idle] response.status=200
+[2026-02-23T17:18:38.359Z] [session-idle] Session idle: session-1
+[2026-02-23T17:18:38.365Z] [session-idle] no meaningful context to save
+[2026-02-23T17:18:38.371Z] [compacted] Session compacted: session-1
+[2026-02-23T17:18:38.374Z] [compacted] GET http://localhost:41777/api/context/inject?project=test-project
+[2026-02-23T17:18:38.377Z] [compacted] got context (16 chars)
+[2026-02-23T17:18:38.379Z] [compacted] injected worker context
+[2026-02-23T17:18:38.381Z] [compacted] Session compacted: session-1
+[2026-02-23T17:18:38.383Z] [compacted] GET http://localhost:41777/api/context/inject?project=test-project
+[2026-02-23T17:18:38.384Z] [compacted] got context (16 chars)
+[2026-02-23T17:18:38.386Z] [compacted] injected worker context
+[2026-02-23T17:18:38.388Z] [compacted] Session compacted: session-1
+[2026-02-23T17:18:38.390Z] [compacted] GET http://localhost:41777/api/context/inject?project=test-project
+[2026-02-23T17:18:38.392Z] [compacted] got context (16 chars)
+[2026-02-23T17:18:38.394Z] [compacted] injected worker context
+[2026-02-23T17:18:38.397Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:38.399Z] [compacting] workerUrl=http://localhost:41777, token=present
+[2026-02-23T17:18:38.401Z] [compacting] input={"sessionId":"session-compact-1"}
+[2026-02-23T17:18:38.403Z] [compacting] project=test-project (dir=/tmp/test)
+[2026-02-23T17:18:38.404Z] [compacting] GET http://localhost:41777/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:38.406Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:18:38.422Z] [compacting] found 0 memories
+[2026-02-23T17:18:38.424Z] [compacting] no memories found to inject
+[2026-02-23T17:18:38.426Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:38.428Z] [compacting] workerUrl=http://localhost:41777, token=null
+[2026-02-23T17:18:38.430Z] [compacting] input={"sessionId":"session-compact-1"}
+[2026-02-23T17:18:38.432Z] [compacting] project=test-project (dir=/tmp/test)
+[2026-02-23T17:18:38.434Z] [compacting] GET http://localhost:41777/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:38.436Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:18:38.438Z] [compacting] found 0 memories
+[2026-02-23T17:18:38.440Z] [compacting] no memories found to inject
+[2026-02-23T17:18:38.441Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:38.443Z] [compacting] workerUrl=http://localhost:41777, token=present
+[2026-02-23T17:18:38.445Z] [compacting] input={"sessionId":"session-compact-1"}
+[2026-02-23T17:18:38.447Z] [compacting] project=test-project (dir=/tmp/test)
+[2026-02-23T17:18:38.449Z] [compacting] GET http://localhost:41777/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:38.451Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:18:38.453Z] [compacting] found 2 memories
+[2026-02-23T17:18:38.454Z] [compacting] injected 2 memories into compaction context
+[2026-02-23T17:18:38.456Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:38.458Z] [compacting] workerUrl=http://localhost:41777, token=present
+[2026-02-23T17:18:38.460Z] [compacting] input={"sessionId":"session-compact-1"}
+[2026-02-23T17:18:38.462Z] [compacting] project=test-project (dir=/tmp/test)
+[2026-02-23T17:18:38.464Z] [compacting] GET http://localhost:41777/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:38.466Z] [compacting] response.ok=true, status=200
+[2026-02-23T17:18:38.468Z] [compacting] found 0 memories
+[2026-02-23T17:18:38.470Z] [compacting] no memories found to inject
+[2026-02-23T17:18:38.472Z] [compacting] Session compacting - fetching memories...
+[2026-02-23T17:18:38.474Z] [compacting] workerUrl=http://localhost:41777, token=present
+[2026-02-23T17:18:38.476Z] [compacting] input={"sessionId":"session-compact-1"}
+[2026-02-23T17:18:38.479Z] [compacting] project=test-project (dir=/tmp/test)
+[2026-02-23T17:18:38.481Z] [compacting] GET http://localhost:41777/api/search?query=decisions+context+observations&limit=5&project=test-project
+[2026-02-23T17:18:38.483Z] [compacting] fetch error: Network error
+[2026-02-23T17:18:38.485Z] [compacting] no memories found to inject
+[2026-02-23T17:18:38.488Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:38.542Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:38.596Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:38.650Z] [tool-after] Tool completed: read_file
+[2026-02-23T17:18:38.707Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:38.769Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:38.771Z] [session-start] Session started
+[2026-02-23T17:18:38.773Z] [session-start] GET http://localhost:41777/api/context/inject?project=test-project
+[2026-02-23T17:18:38.775Z] [session-start] response.status=200
+[2026-02-23T17:18:38.777Z] [session-start] injected context (14 chars)
+[2026-02-23T17:18:38.779Z] [session-start] Session started
+[2026-02-23T17:18:38.781Z] [session-start] GET http://localhost:41777/api/context/inject?project=test-project
+[2026-02-23T17:18:38.783Z] [session-start] response.status=200
+[2026-02-23T17:18:38.785Z] [session-start] injected context (14 chars)
+[2026-02-23T17:18:38.787Z] [session-start] Session started
+[2026-02-23T17:18:38.789Z] [session-start] GET http://localhost:41777/api/context/inject?project=test-project
+[2026-02-23T17:18:38.791Z] [session-start] response.status=200
+[2026-02-23T17:18:38.793Z] [session-start] injected context (14 chars)
+[2026-02-23T17:18:38.795Z] [session-start] Session started
+[2026-02-23T17:18:38.797Z] [session-start] GET http://localhost:41777/api/context/inject?project=test-project
+[2026-02-23T17:18:38.799Z] [session-start] response.status=401
+[2026-02-23T17:18:38.801Z] [session-start] Token expired, refreshing...
+[2026-02-23T17:18:38.803Z] [session-start] retry response.status=200
+[2026-02-23T17:18:38.805Z] [session-start] injected context (13 chars)
+[2026-02-23T17:18:38.807Z] [session-start] Session started
+[2026-02-23T17:18:38.809Z] [session-start] GET http://localhost:41777/api/context/inject?project=test-project
+[2026-02-23T17:18:38.811Z] [session-start] response.status=401
+[2026-02-23T17:18:56.672Z] [tool-after] Tool completed: bash
+[2026-02-23T17:18:56.672Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:19:00.573Z] [tool-before] Tool executing: todowrite
+[2026-02-23T17:19:00.587Z] [tool-after] Tool completed: todowrite
+[2026-02-23T17:19:00.597Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:10.807Z] [tool-before] Tool executing: bash
+[2026-02-23T17:21:10.938Z] [tool-after] Tool completed: bash
+[2026-02-23T17:21:10.939Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:11.356Z] [tool-before] Tool executing: mem-search_search
+[2026-02-23T17:21:11.373Z] [tool-after] Tool completed: mem-search_search
+[2026-02-23T17:21:11.379Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:14.708Z] [tool-before] Tool executing: glob
+[2026-02-23T17:21:14.726Z] [tool-after] Tool completed: glob
+[2026-02-23T17:21:14.734Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:15.530Z] [tool-before] Tool executing: grep
+[2026-02-23T17:21:15.562Z] [tool-after] Tool completed: grep
+[2026-02-23T17:21:15.562Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:18.513Z] [tool-before] Tool executing: read
+[2026-02-23T17:21:18.524Z] [tool-after] Tool completed: read
+[2026-02-23T17:21:18.530Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:19.188Z] [tool-before] Tool executing: bash
+[2026-02-23T17:21:19.211Z] [tool-after] Tool completed: bash
+[2026-02-23T17:21:19.212Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:22.908Z] [tool-before] Tool executing: read
+[2026-02-23T17:21:22.911Z] [tool-after] Tool completed: read
+[2026-02-23T17:21:22.917Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:23.676Z] [tool-before] Tool executing: bash
+[2026-02-23T17:21:23.752Z] [tool-after] Tool completed: bash
+[2026-02-23T17:21:23.752Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:27.237Z] [tool-before] Tool executing: grep
+[2026-02-23T17:21:27.278Z] [tool-after] Tool completed: grep
+[2026-02-23T17:21:27.278Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:28.132Z] [tool-before] Tool executing: bash
+[2026-02-23T17:21:28.209Z] [tool-after] Tool completed: bash
+[2026-02-23T17:21:28.210Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:31.567Z] [tool-before] Tool executing: read
+[2026-02-23T17:21:31.570Z] [tool-after] Tool completed: read
+[2026-02-23T17:21:31.580Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:32.307Z] [tool-before] Tool executing: bash
+[2026-02-23T17:21:32.329Z] [tool-after] Tool completed: bash
+[2026-02-23T17:21:32.329Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:35.168Z] [tool-before] Tool executing: bash
+[2026-02-23T17:21:35.232Z] [tool-after] Tool completed: bash
+[2026-02-23T17:21:35.233Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:35.625Z] [tool-before] Tool executing: read
+[2026-02-23T17:21:35.628Z] [tool-after] Tool completed: read
+[2026-02-23T17:21:35.633Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:38.420Z] [tool-before] Tool executing: bash
+[2026-02-23T17:21:38.433Z] [tool-after] Tool completed: bash
+[2026-02-23T17:21:38.434Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:39.119Z] [tool-before] Tool executing: bash
+[2026-02-23T17:21:39.194Z] [tool-after] Tool completed: bash
+[2026-02-23T17:21:39.195Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:42.263Z] [tool-before] Tool executing: read
+[2026-02-23T17:21:42.265Z] [tool-after] Tool completed: read
+[2026-02-23T17:21:42.270Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:45.449Z] [tool-before] Tool executing: read
+[2026-02-23T17:21:45.452Z] [tool-after] Tool completed: read
+[2026-02-23T17:21:45.458Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:48.858Z] [tool-before] Tool executing: bash
+[2026-02-23T17:21:50.011Z] [tool-after] Tool completed: bash
+[2026-02-23T17:21:50.012Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:21:54.715Z] [tool-before] Tool executing: bash
+[2026-02-23T17:21:55.855Z] [tool-after] Tool completed: bash
+[2026-02-23T17:21:55.856Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:20.104Z] [tool-before] Tool executing: mem-search_search
+[2026-02-23T17:22:20.114Z] [tool-after] Tool completed: mem-search_search
+[2026-02-23T17:22:20.123Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:20.561Z] [tool-before] Tool executing: glob
+[2026-02-23T17:22:20.578Z] [tool-after] Tool completed: glob
+[2026-02-23T17:22:20.579Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:20.780Z] [tool-before] Tool executing: glob
+[2026-02-23T17:22:20.794Z] [tool-after] Tool completed: glob
+[2026-02-23T17:22:20.799Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:24.201Z] [tool-before] Tool executing: read
+[2026-02-23T17:22:24.206Z] [tool-after] Tool completed: read
+[2026-02-23T17:22:24.212Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:25.321Z] [tool-before] Tool executing: mem-search_save_memory
+[2026-02-23T17:22:25.333Z] [tool-after] Tool completed: mem-search_save_memory
+[2026-02-23T17:22:25.338Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:28.760Z] [tool-before] Tool executing: mem-search_search
+[2026-02-23T17:22:28.769Z] [tool-after] Tool completed: mem-search_search
+[2026-02-23T17:22:28.774Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:29.469Z] [tool-before] Tool executing: bash
+[2026-02-23T17:22:29.498Z] [tool-after] Tool completed: bash
+[2026-02-23T17:22:29.499Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:32.889Z] [tool-before] Tool executing: bash
+[2026-02-23T17:22:33.443Z] [tool-after] Tool completed: bash
+[2026-02-23T17:22:33.444Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:33.938Z] [tool-before] Tool executing: read
+[2026-02-23T17:22:33.941Z] [tool-after] Tool completed: read
+[2026-02-23T17:22:33.947Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:37.428Z] [tool-before] Tool executing: grep
+[2026-02-23T17:22:37.464Z] [tool-after] Tool completed: grep
+[2026-02-23T17:22:37.465Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:40.256Z] [tool-before] Tool executing: read
+[2026-02-23T17:22:40.265Z] [tool-after] Tool completed: read
+[2026-02-23T17:22:40.270Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:40.760Z] [tool-before] Tool executing: grep
+[2026-02-23T17:22:40.793Z] [tool-after] Tool completed: grep
+[2026-02-23T17:22:40.794Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:43.469Z] [tool-before] Tool executing: read
+[2026-02-23T17:22:43.471Z] [tool-after] Tool completed: read
+[2026-02-23T17:22:43.478Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:44.447Z] [tool-before] Tool executing: bash
+[2026-02-23T17:22:44.520Z] [tool-after] Tool completed: bash
+[2026-02-23T17:22:44.521Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:48.230Z] [tool-before] Tool executing: bash
+[2026-02-23T17:22:48.300Z] [tool-after] Tool completed: bash
+[2026-02-23T17:22:48.301Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:49.187Z] [tool-before] Tool executing: bash
+[2026-02-23T17:22:49.201Z] [tool-after] Tool completed: bash
+[2026-02-23T17:22:49.201Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:52.200Z] [tool-before] Tool executing: grep
+[2026-02-23T17:22:52.232Z] [tool-after] Tool completed: grep
+[2026-02-23T17:22:52.233Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:52.789Z] [tool-before] Tool executing: bash
+[2026-02-23T17:22:52.811Z] [tool-after] Tool completed: bash
+[2026-02-23T17:22:52.812Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:55.663Z] [tool-before] Tool executing: bash
+[2026-02-23T17:22:55.678Z] [tool-after] Tool completed: bash
+[2026-02-23T17:22:55.678Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:56.188Z] [tool-before] Tool executing: bash
+[2026-02-23T17:22:56.211Z] [tool-after] Tool completed: bash
+[2026-02-23T17:22:56.212Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:22:58.810Z] [tool-before] Tool executing: bash
+[2026-02-23T17:23:00.467Z] [tool-after] Tool completed: bash
+[2026-02-23T17:23:00.468Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:23:03.243Z] [tool-before] Tool executing: bash
+[2026-02-23T17:23:03.264Z] [tool-after] Tool completed: bash
+[2026-02-23T17:23:03.265Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:23:05.639Z] [tool-before] Tool executing: grep
+[2026-02-23T17:23:05.665Z] [tool-after] Tool completed: grep
+[2026-02-23T17:23:05.665Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:23:07.994Z] [tool-before] Tool executing: bash
+[2026-02-23T17:23:08.008Z] [tool-after] Tool completed: bash
+[2026-02-23T17:23:08.016Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:23:11.762Z] [tool-before] Tool executing: read
+[2026-02-23T17:23:11.768Z] [tool-after] Tool completed: read
+[2026-02-23T17:23:11.772Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:23:14.537Z] [tool-before] Tool executing: grep
+[2026-02-23T17:23:14.558Z] [tool-after] Tool completed: grep
+[2026-02-23T17:23:14.559Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:23:16.456Z] [tool-before] Tool executing: read
+[2026-02-23T17:23:16.459Z] [tool-after] Tool completed: read
+[2026-02-23T17:23:16.467Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:23:23.042Z] [tool-before] Tool executing: read
+[2026-02-23T17:23:23.053Z] [tool-after] Tool completed: read
+[2026-02-23T17:23:23.060Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:23:23.736Z] [tool-before] Tool executing: bash
+[2026-02-23T17:23:23.752Z] [tool-after] Tool completed: bash
+[2026-02-23T17:23:23.752Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:23:30.465Z] [tool-before] Tool executing: bash
+[2026-02-23T17:23:30.477Z] [tool-after] Tool completed: bash
+[2026-02-23T17:23:30.477Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:23:33.098Z] [tool-before] Tool executing: bash
+[2026-02-23T17:23:33.112Z] [tool-after] Tool completed: bash
+[2026-02-23T17:23:33.117Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:23:33.523Z] [tool-before] Tool executing: bash
+[2026-02-23T17:23:33.540Z] [tool-after] Tool completed: bash
+[2026-02-23T17:23:33.546Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:23:37.776Z] [tool-before] Tool executing: bash
+[2026-02-23T17:23:37.785Z] [tool-after] Tool completed: bash
+[2026-02-23T17:23:37.792Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:23:38.679Z] [tool-before] Tool executing: bash
+[2026-02-23T17:23:38.700Z] [tool-after] Tool completed: bash
+[2026-02-23T17:23:38.701Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:23:45.709Z] [tool-before] Tool executing: bash
+[2026-02-23T17:23:45.719Z] [tool-after] Tool completed: bash
+[2026-02-23T17:23:45.724Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:24:07.087Z] [tool-before] Tool executing: read
+[2026-02-23T17:24:07.100Z] [tool-after] Tool completed: read
+[2026-02-23T17:24:07.108Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:24:30.029Z] [tool-before] Tool executing: bash
+[2026-02-23T17:24:30.045Z] [tool-after] Tool completed: bash
+[2026-02-23T17:24:30.052Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:24:53.765Z] [tool-before] Tool executing: mem-search_search
+[2026-02-23T17:24:53.822Z] [tool-after] Tool completed: mem-search_search
+[2026-02-23T17:24:53.831Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:25:16.222Z] [tool-before] Tool executing: mem-search_save_memory
+[2026-02-23T17:25:16.230Z] [tool-after] Tool completed: mem-search_save_memory
+[2026-02-23T17:25:16.235Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:25:16.686Z] [tool-before] Tool executing: mem-search_search
+[2026-02-23T17:25:16.730Z] [tool-after] Tool completed: mem-search_search
+[2026-02-23T17:25:16.738Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:25:38.615Z] [tool-before] Tool executing: mem-search_timeline
+[2026-02-23T17:25:38.626Z] [tool-after] Tool completed: mem-search_timeline
+[2026-02-23T17:25:38.632Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:25:38.961Z] [tool-before] Tool executing: mem-search_decisions
+[2026-02-23T17:25:38.964Z] [tool-after] Tool completed: mem-search_decisions
+[2026-02-23T17:25:38.973Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:25:39.307Z] [tool-before] Tool executing: mem-search_changes
+[2026-02-23T17:25:39.315Z] [tool-after] Tool completed: mem-search_changes
+[2026-02-23T17:25:39.323Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T17:26:01.654Z] [tool-before] Tool executing: mem-search_get_observations
+[2026-02-23T17:26:01.666Z] [tool-after] Tool completed: mem-search_get_observations
+[2026-02-23T17:26:01.673Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:11:05.539Z] [tool-before] Tool executing: bash
+[2026-02-23T19:11:05.591Z] [tool-after] Tool completed: bash
+[2026-02-23T19:11:05.592Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:11:06.055Z] [tool-before] Tool executing: mem-search_search
+[2026-02-23T19:11:06.117Z] [tool-after] Tool completed: mem-search_search
+[2026-02-23T19:11:06.122Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:11:10.506Z] [tool-before] Tool executing: mem-search_search
+[2026-02-23T19:11:10.639Z] [tool-after] Tool completed: mem-search_search
+[2026-02-23T19:11:10.648Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:11:13.360Z] [tool-before] Tool executing: grep
+[2026-02-23T19:11:13.548Z] [tool-after] Tool completed: grep
+[2026-02-23T19:11:13.549Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:11:16.619Z] [tool-before] Tool executing: grep
+[2026-02-23T19:11:16.644Z] [tool-after] Tool completed: grep
+[2026-02-23T19:11:16.644Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:12:03.296Z] [tool-before] Tool executing: bash
+[2026-02-23T19:12:04.314Z] [tool-after] Tool completed: bash
+[2026-02-23T19:12:04.314Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:12:07.044Z] [tool-before] Tool executing: bash
+[2026-02-23T19:12:07.146Z] [tool-after] Tool completed: bash
+[2026-02-23T19:12:07.146Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:12:09.256Z] [tool-before] Tool executing: bash
+[2026-02-23T19:12:10.082Z] [tool-after] Tool completed: bash
+[2026-02-23T19:12:10.082Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:13:21.630Z] [tool-before] Tool executing: mem-search_search
+[2026-02-23T19:13:21.649Z] [tool-after] Tool completed: mem-search_search
+[2026-02-23T19:13:21.654Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:13:22.087Z] [tool-before] Tool executing: mem-search_changes
+[2026-02-23T19:13:22.094Z] [tool-before] Tool executing: mem-search_decisions
+[2026-02-23T19:13:22.100Z] [tool-after] Tool completed: mem-search_changes
+[2026-02-23T19:13:22.105Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:13:22.111Z] [tool-after] Tool completed: mem-search_decisions
+[2026-02-23T19:13:22.115Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:13:26.757Z] [tool-before] Tool executing: mem-search_save_memory
+[2026-02-23T19:13:26.766Z] [tool-after] Tool completed: mem-search_save_memory
+[2026-02-23T19:13:26.771Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:13:27.422Z] [tool-before] Tool executing: mem-search_timeline
+[2026-02-23T19:13:27.431Z] [tool-after] Tool completed: mem-search_timeline
+[2026-02-23T19:13:27.436Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:13:48.987Z] [tool-before] Tool executing: bash
+[2026-02-23T19:13:49.091Z] [tool-after] Tool completed: bash
+[2026-02-23T19:13:49.092Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:14:46.701Z] [tool-before] Tool executing: bash
+[2026-02-23T19:14:46.735Z] [tool-after] Tool completed: bash
+[2026-02-23T19:14:46.735Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:14:47.396Z] [tool-before] Tool executing: bash
+[2026-02-23T19:14:47.461Z] [tool-after] Tool completed: bash
+[2026-02-23T19:14:47.462Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:14:47.977Z] [tool-before] Tool executing: bash
+[2026-02-23T19:14:48.018Z] [tool-after] Tool completed: bash
+[2026-02-23T19:14:48.018Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:14:55.784Z] [tool-before] Tool executing: bash
+[2026-02-23T19:14:55.901Z] [tool-after] Tool completed: bash
+[2026-02-23T19:14:55.901Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
+[2026-02-23T19:14:57.881Z] [tool-before] Tool executing: bash
+[2026-02-23T19:14:57.906Z] [tool-after] Tool completed: bash
+[2026-02-23T19:14:57.906Z] [tool-after] error: Object.entries requires that input parameter not be null or undefined
