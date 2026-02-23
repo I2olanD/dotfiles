@@ -12,13 +12,6 @@
         "Authorization": "Bearer {env:MCP_GITHUB_PAT}"
       },
       "enabled": true
-    },
-    "mem-search": {
-      "type": "local",
-      "command": [
-        "opencode-metis",
-        "start-mcp"
-      ]
     }
   }
 }
