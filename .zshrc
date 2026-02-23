@@ -156,19 +156,6 @@ if [[ $+commands[tmux] == "1" ]]; then
   fi
 fi
 
-# ============================================================================
-# User Config
-# ============================================================================
-[[ -f "${HOME}/.zshrc.user.zsh" ]] && source "${HOME}/.zshrc.user.zsh"
-
-# pnpm
-export PNPM_HOME="/Users/rolandolah/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
-
 # Mole shell completion
 if output="$(mole completion zsh 2>/dev/null)"; then eval "$output"; fi
 
@@ -182,3 +169,8 @@ alias yypush='yadm push origin "$(yadm rev-parse --abbrev-ref HEAD)"'
 autoload -z edit-command-line
 zle -N edit-command-line
 bindkey "^X^E" edit-command-line
+
+# ============================================================================
+# User Config
+# ============================================================================
+[[ -f "${HOME}/.zshrc.user.zsh" ]] && source "${HOME}/.zshrc.user.zsh"
