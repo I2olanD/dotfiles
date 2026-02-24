@@ -94,3 +94,6 @@ mise.toml
 **/*.pem
 **/*.key
 !**/*.pub
+
+# Opencode
+.config/opencode/memory
