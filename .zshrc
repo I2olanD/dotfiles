@@ -172,8 +172,6 @@ esac
 # Mole shell completion
 if output="$(mole completion zsh 2>/dev/null)"; then eval "$output"; fi
 
-
-
 # yadm
 alias ycm="yadm checkout main"
 alias yst="yadm status"
