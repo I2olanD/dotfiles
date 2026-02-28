@@ -1,0 +1,14 @@
+copy-on-select = clipboard
+
+font-family = Iosevka
+font-size = 13
+
+macos-titlebar-style = hidden
+window-padding-balance = true
+window-padding-color = extend
+window-padding-x = 0
+window-padding-y = 0
+
+confirm-close-surface = false
+
+theme = Catppuccin mocha
