@@ -36,11 +36,11 @@ vim.opt.swapfile = false
 vim.opt.writebackup = false
 
 -- tabs and indentation
-vim.opt.shiftround = true  -- Round indent to multiple of `shiftwidth`
+vim.opt.shiftround = true -- Round indent to multiple of `shiftwidth`
 vim.opt.smartindent = true -- do smart indentation when starting a new line
-vim.opt.tabstop = 2        -- number of spaces a <Tab> counts for
-vim.opt.shiftwidth = 2     -- number of psaces to use for each step of indent
-vim.opt.expandtab = true   -- always use spaces instead of tabs
+vim.opt.tabstop = 2 -- number of spaces a <Tab> counts for
+vim.opt.shiftwidth = 2 -- number of psaces to use for each step of indent
+vim.opt.expandtab = true -- always use spaces instead of tabs
 
 -- cmd window
 vim.o.cmdheight = 0
