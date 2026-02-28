@@ -3,7 +3,10 @@
 # ============================================================================
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
-export TERM="wezterm"
+# Ghostty terminfo
+if [[ -d "/Applications/Ghostty.app/Contents/Resources/terminfo" ]]; then
+  export TERMINFO_DIRS="/Applications/Ghostty.app/Contents/Resources/terminfo:${TERMINFO_DIRS:-}"
+fi
 
 # ============================================================================
 # Options
