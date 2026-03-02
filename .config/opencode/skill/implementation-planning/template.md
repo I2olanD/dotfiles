@@ -78,9 +78,9 @@ When implementation requires changes from the specification:
 **Specification**:
 
 [NEEDS CLARIFICATION: Replace with actual paths from your spec directory]
-- `docs/specs/[NNN]-[name]/product-requirements.md` - Product Requirements
-- `docs/specs/[NNN]-[name]/solution-design.md` - Solution Design
-- `docs/{patterns,interfaces,research}/[name].md`  - Optional references
+- `.start/specs/[NNN]-[name]/requirements.md` - Product Requirements
+- `.start/specs/[NNN]-[name]/solution.md` - Solution Design
+- `.start/{patterns,interfaces,research}/[name].md`  - Optional references
 
 **Key Design Decisions**:
 
@@ -158,14 +158,14 @@ Builds the [API endpoints/integrations/UI components] that expose Phase 1 capabi
 
 - [ ] **T2.2 [Component B]** `[parallel: true]` `[component: backend]`
 
-  1. Prime: Read integration pattern `[ref: docs/interfaces/X.md]`
+  1. Prime: Read integration pattern `[ref: .start/interfaces/X.md]`
   2. Test: [Success flow]; [Failure handling]; [Retry logic]
   3. Implement: Create `src/[path]/[Adapter].ts` with integration
   4. Validate: Integration tests pass with test/mock service
   5. Success:
       - [Success criterion 1] `[ref: PRD/AC-2.2]`
       - [Failure handling verified] `[ref: SDD/Error Handling]`
-      - [Retry logic works with backoff] `[ref: docs/patterns/resilience.md]`
+      - [Retry logic works with backoff] `[ref: .start/patterns/resilience.md]`
 
 - [ ] **T2.3 Phase Validation** `[activity: validate]`
 

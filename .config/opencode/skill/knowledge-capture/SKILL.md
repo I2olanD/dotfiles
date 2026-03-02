@@ -44,7 +44,7 @@ KnowledgeCapture {
     All documentation follows this hierarchy:
 
     ```
-    docs/
+    .start/
       domain/          # Business rules, domain logic, workflows, validation rules
       patterns/        # Technical patterns, architectural solutions, code patterns
       interfaces/      # External API contracts, service integrations, webhooks
@@ -103,7 +103,7 @@ KnowledgeCapture {
 
       ```bash
       # Search for existing documentation
-      grep -ri "main keyword" docs/domain/ docs/patterns/ docs/interfaces/
+      grep -ri "main keyword" .start/domain/ .start/patterns/ .start/interfaces/
       find docs -name "*topic-keyword*"
       ```
 
@@ -117,9 +117,9 @@ KnowledgeCapture {
 
     Step1_DetermineCategory {
       Ask yourself:
-      - Is this about business logic? --> `docs/domain/`
-      - Is this about how we build? --> `docs/patterns/`
-      - Is this about external services? --> `docs/interfaces/`
+      - Is this about business logic? --> `.start/domain/`
+      - Is this about how we build? --> `.start/patterns/`
+      - Is this about external services? --> `.start/interfaces/`
     }
 
     Step2_ChooseCreateOrUpdate {
@@ -167,7 +167,7 @@ KnowledgeCapture {
   DeduplicationProtocol {
     Before creating any documentation:
 
-    1. **Search by topic**: `grep -ri "topic" docs/`
+    1. **Search by topic**: `grep -ri "topic" .start/`
     2. **Check category**: List files in target category
     3. **Read related files**: Verify no overlap
     4. **Decide**: Create new vs enhance existing
@@ -177,9 +177,9 @@ KnowledgeCapture {
   GrayAreasAndEdgeCases {
     WhenBusinessAndTechnicalOverlap {
       Authentication Example:
-      - `docs/domain/user-roles.md` -- WHO can access WHAT (business rule)
-      - `docs/patterns/authentication-flow.md` -- HOW authentication works (technical)
-      - `docs/interfaces/oauth-providers.md` -- EXTERNAL services used (integration)
+      - `.start/domain/user-roles.md` -- WHO can access WHAT (business rule)
+      - `.start/patterns/authentication-flow.md` -- HOW authentication works (technical)
+      - `.start/interfaces/oauth-providers.md` -- EXTERNAL services used (integration)
 
       Guideline: If it affects WHAT users can do, it belongs in domain.
       If it affects HOW we build it, it belongs in patterns.
@@ -257,7 +257,7 @@ KnowledgeCapture {
 
     ```
     Documentation Created/Updated:
-    - docs/[category]/[filename].md
+    - .start/[category]/[filename].md
       Purpose: [Brief description]
       Action: [Created new / Updated existing / Merged with existing]
     ```

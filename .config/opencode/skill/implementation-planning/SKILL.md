@@ -19,7 +19,7 @@ ImplementationPlanning {
     - Complete phases in an existing implementation-plan.md
     - Define task sequences and dependencies
     - Plan TDD cycles (Prime to Test to Implement to Validate)
-    - Work on any `implementation-plan.md` file in docs/specs/
+    - Work on any `plan/README.md` file in .start/specs/
   }
 
   SuccessCriteria {
@@ -35,7 +35,7 @@ ImplementationPlanning {
     Constraints {
       1. The PLAN template is at [template.md](template.md) -- use this structure exactly
       2. Read the template from this skill's directory
-      3. Write to spec directory: `docs/specs/[NNN]-[name]/implementation-plan.md`
+      3. Write to spec directory: `.start/specs/[NNN]-[name]/plan/README.md`
     }
   }
 

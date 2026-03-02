@@ -456,6 +456,6 @@ Lessons Learned:
 ## External Resources
 
 - [Google SRE Book - Monitoring](https://sre.google/sre-book/monitoring-distributed-systems/)
-- [OpenTelemetry Specification](https://opentelemetry.io/docs/specs/)
+- [OpenTelemetry Specification](https://opentelemetry.io/.start/specs/)
 - [Prometheus Best Practices](https://prometheus.io/docs/practices/)
 - [Datadog Monitoring Guide](https://www.datadoghq.com/blog/monitoring-101-collecting-data/)

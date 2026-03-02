@@ -39,7 +39,7 @@ Document {
     | **API** | Enable integration | Endpoints, request/response schemas, authentication, error codes, OpenAPI spec |
     | **README** | Enable quick start | Features, installation, configuration, usage examples, troubleshooting |
     | **Audit** | Identify gaps | Coverage metrics, stale docs, missing documentation, prioritized backlog |
-    | **Capture** | Preserve discoveries | Business rules => docs/domain/, technical patterns => docs/patterns/, external integrations => docs/interfaces/ |
+    | **Capture** | Preserve discoveries | Business rules => .start/domain/, technical patterns => .start/patterns/, external integrations => .start/interfaces/ |
   }
 
   PerspectiveSelection {
@@ -109,7 +109,7 @@ Document {
       | File | Action | Detail |
       |------|--------|--------|
       | `path/file.ts` | Added JSDoc | 15 functions documented |
-      | `docs/api.md` | Created | 8 endpoints |
+      | `.start/api.md` | Created | 8 endpoints |
       | `README.md` | Updated | 3 sections |
       
       ### Coverage Metrics
@@ -132,14 +132,14 @@ Document {
     
     | Discovery Type | Directory | Examples |
     |---------------|-----------|----------|
-    | Business rules, domain logic, workflows | docs/domain/ | User permissions, order workflows, pricing rules |
-    | Technical patterns, architectural solutions | docs/patterns/ | Caching strategy, error handling, repository pattern |
-    | External APIs, service integrations | docs/interfaces/ | Stripe payments, OAuth providers, webhook specs |
+    | Business rules, domain logic, workflows | .start/domain/ | User permissions, order workflows, pricing rules |
+    | Technical patterns, architectural solutions | .start/patterns/ | Caching strategy, error handling, repository pattern |
+    | External APIs, service integrations | .start/interfaces/ | Stripe payments, OAuth providers, webhook specs |
     
     CategorizationDecisionTree {
-      Is this about business logic? => docs/domain/
-      Is this about how we build? => docs/patterns/
-      Is this about external services? => docs/interfaces/
+      Is this about business logic? => .start/domain/
+      Is this about how we build? => .start/patterns/
+      Is this about external services? => .start/interfaces/
     }
     
     DeduplicationProtocol (REQUIRED before creating any file) {

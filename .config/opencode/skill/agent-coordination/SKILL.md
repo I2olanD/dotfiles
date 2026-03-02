@@ -198,7 +198,7 @@ AgentCoordination {
 
   DocumentStructure {
     ```
-    docs/specs/[NNN]-[name]/
+    .start/specs/[NNN]-[name]/
       product-requirements.md   # Referenced for context
       solution-design.md        # Referenced for compliance checks
       implementation-plan.md    # Executed phase-by-phase

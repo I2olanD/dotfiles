@@ -19,14 +19,14 @@ RequirementsAnalysis {
     - Complete sections in an existing product-requirements.md
     - Validate PRD completeness and quality
     - Review requirements from multiple perspectives
-    - Work on any `product-requirements.md` file in docs/specs/
+    - Work on any `requirements.md` file in .start/specs/
   }
 
   Template {
     Constraints {
       1. The PRD template is at [template.md](template.md) -- use this structure exactly
       2. Read the template from this skill's directory
-      3. Write to spec directory: `docs/specs/[NNN]-[name]/product-requirements.md`
+      3. Write to spec directory: `.start/specs/[NNN]-[name]/requirements.md`
     }
   }
 

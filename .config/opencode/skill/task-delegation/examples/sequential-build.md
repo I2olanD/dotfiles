@@ -73,7 +73,7 @@ CONTEXT: Building JWT authentication for REST API.
     - Email must be unique
     - Follow project database conventions exactly
 
-OUTPUT: Schema design document at docs/patterns/auth-database-schema.md
+OUTPUT: Schema design document at .start/patterns/auth-database-schema.md
     - Table definitions with column types
     - Indexes and constraints
     - Foreign key relationships
@@ -113,7 +113,7 @@ EXCLUDE:
     - Don't add tables not in schema design
 
 CONTEXT: Implementing schema designed in previous step.
-    - Schema document: docs/patterns/auth-database-schema.md
+    - Schema document: .start/patterns/auth-database-schema.md
     - Tables: users (email, password_hash, created_at, updated_at)
     - Tables: sessions (id, user_id, token_hash, expires_at, created_at)
     - Indexes: users.email (unique), sessions.token_hash, sessions.user_id
@@ -290,7 +290,7 @@ Status: RUNNING
 Time: 15 minutes
 
 Agent 1: COMPLETE ✅
-Output: docs/patterns/auth-database-schema.md
+Output: .start/patterns/auth-database-schema.md
 
 Deliverables:
 - Users table design (5 columns + indexes)
@@ -425,7 +425,7 @@ Each agent received growing context:
 
 ```
 📁 Project structure:
-├── docs/patterns/
+├── .start/patterns/
 │   └── auth-database-schema.md (Agent 1)
 ├── migrations/
 │   └── 20250124120000_create_auth_tables.js (Agent 2)

@@ -16,16 +16,16 @@ Activities:
 2. Document caching patterns
 3. Document error handling patterns
 
-All parallel, all OUTPUT: "docs/patterns/[pattern-name].md"
+All parallel, all OUTPUT: ".start/patterns/[pattern-name].md"
 
 Problem: What if agents choose same filename?
-- Agent 1 might create: docs/patterns/auth.md
-- Agent 2 might create: docs/patterns/cache.md
-- Agent 3 might create: docs/patterns/error.md
+- Agent 1 might create: .start/patterns/auth.md
+- Agent 2 might create: .start/patterns/cache.md
+- Agent 3 might create: .start/patterns/error.md
 
 OR worse:
-- Agent 1: docs/patterns/authentication.md
-- Agent 2: docs/patterns/authentication-patterns.md
+- Agent 1: .start/patterns/authentication.md
+- Agent 2: .start/patterns/authentication-patterns.md
 - Both trying to document auth? Collision!
 
 Result: Ambiguous, potential collisions, inconsistent naming
@@ -38,13 +38,13 @@ Result: Ambiguous, potential collisions, inconsistent naming
 
 Activities:
 1. Document authentication patterns
-   - OUTPUT: docs/patterns/authentication-flow.md (EXPLICIT PATH)
+   - OUTPUT: .start/patterns/authentication-flow.md (EXPLICIT PATH)
 
 2. Document caching patterns
-   - OUTPUT: docs/patterns/caching-strategy.md (EXPLICIT PATH)
+   - OUTPUT: .start/patterns/caching-strategy.md (EXPLICIT PATH)
 
 3. Document error handling patterns
-   - OUTPUT: docs/patterns/error-handling.md (EXPLICIT PATH)
+   - OUTPUT: .start/patterns/error-handling.md (EXPLICIT PATH)
 
 File Coordination Check:
 ✅ All paths explicit and unique
@@ -60,7 +60,7 @@ Status: SAFE FOR PARALLEL EXECUTION
 
 ```
 DISCOVERY_FIRST: Before starting, check existing documentation:
-    - List docs/patterns/ directory
+    - List .start/patterns/ directory
     - Search for existing auth-related files
     - Note naming conventions used
     - Check if authentication-flow.md already exists
@@ -80,10 +80,10 @@ EXCLUDE:
 
 CONTEXT: Documenting patterns found in src/middleware/auth.*, src/routes/auth.*
     - Focus on how authentication works, not implementation details
-    - Use pattern template: docs/templates/pattern-template.md
+    - Use pattern template: .start/templates/pattern-template.md
     - Follow existing documentation style
 
-OUTPUT: EXACTLY this path: docs/patterns/authentication-flow.md
+OUTPUT: EXACTLY this path: .start/patterns/authentication-flow.md
     - If file exists: STOP and report (don't overwrite)
     - If file doesn't exist: Create new
     - Use pattern template structure
@@ -106,7 +106,7 @@ TERMINATION:
 
 ```
 DISCOVERY_FIRST: Before starting, check existing documentation:
-    - List docs/patterns/ directory
+    - List .start/patterns/ directory
     - Search for existing cache-related files
     - Note naming conventions
     - Check if caching-strategy.md already exists
@@ -129,7 +129,7 @@ CONTEXT: Documenting patterns found in src/cache/*, src/services/*
     - Use pattern template
     - Follow existing documentation style
 
-OUTPUT: EXACTLY this path: docs/patterns/caching-strategy.md
+OUTPUT: EXACTLY this path: .start/patterns/caching-strategy.md
     - If file exists: STOP and report (don't overwrite)
     - If file doesn't exist: Create new
     - Use pattern template structure
@@ -151,7 +151,7 @@ TERMINATION:
 
 ```
 DISCOVERY_FIRST: Before starting, check existing documentation:
-    - List docs/patterns/ directory
+    - List .start/patterns/ directory
     - Search for existing error-related files
     - Note naming conventions
     - Check if error-handling.md already exists
@@ -174,7 +174,7 @@ CONTEXT: Documenting patterns found in src/errors/*, src/middleware/error.*
     - Use pattern template
     - Follow existing documentation style
 
-OUTPUT: EXACTLY this path: docs/patterns/error-handling.md
+OUTPUT: EXACTLY this path: .start/patterns/error-handling.md
     - If file exists: STOP and report (don't overwrite)
     - If file doesn't exist: Create new
     - Use pattern template structure
@@ -199,13 +199,13 @@ Before launching these agents:
 ```
 📋 File Coordination Pre-Flight Check
 
-Agent 1 OUTPUT: docs/patterns/authentication-flow.md
-Agent 2 OUTPUT: docs/patterns/caching-strategy.md
-Agent 3 OUTPUT: docs/patterns/error-handling.md
+Agent 1 OUTPUT: .start/patterns/authentication-flow.md
+Agent 2 OUTPUT: .start/patterns/caching-strategy.md
+Agent 3 OUTPUT: .start/patterns/error-handling.md
 
 ✅ All paths are explicit (no ambiguity)
 ✅ All paths are unique (no two agents write same file)
-✅ All paths follow convention (docs/patterns/[name].md)
+✅ All paths follow convention (.start/patterns/[name].md)
 ✅ All agents instructed to check if file exists first
 ✅ All agents instructed to STOP if collision detected
 
@@ -221,13 +221,13 @@ Safe to launch in parallel: YES
 🚀 Launching 3 parallel documentation agents
 
 Agent 1: Authentication Pattern → RUNNING
-  TARGET: docs/patterns/authentication-flow.md
+  TARGET: .start/patterns/authentication-flow.md
 
 Agent 2: Caching Pattern → RUNNING
-  TARGET: docs/patterns/caching-strategy.md
+  TARGET: .start/patterns/caching-strategy.md
 
 Agent 3: Error Handling Pattern → RUNNING
-  TARGET: docs/patterns/error-handling.md
+  TARGET: .start/patterns/error-handling.md
 
 File coordination: ✅ All unique paths
 Collision risk: ✅ None
@@ -239,13 +239,13 @@ Parallel safety: ✅ Confirmed
 ```
 ⏳ Agents running...
 
-[Agent 1] Checking: docs/patterns/authentication-flow.md → NOT EXISTS
+[Agent 1] Checking: .start/patterns/authentication-flow.md → NOT EXISTS
 [Agent 1] Safe to create → PROCEEDING
 
-[Agent 2] Checking: docs/patterns/caching-strategy.md → NOT EXISTS
+[Agent 2] Checking: .start/patterns/caching-strategy.md → NOT EXISTS
 [Agent 2] Safe to create → PROCEEDING
 
-[Agent 3] Checking: docs/patterns/error-handling.md → NOT EXISTS
+[Agent 3] Checking: .start/patterns/error-handling.md → NOT EXISTS
 [Agent 3] Safe to create → PROCEEDING
 
 No collisions detected. All agents proceeding independently.
@@ -255,13 +255,13 @@ No collisions detected. All agents proceeding independently.
 
 ```
 Agent 1: COMPLETE ✅ (22 minutes)
-  Created: docs/patterns/authentication-flow.md (3.2 KB)
+  Created: .start/patterns/authentication-flow.md (3.2 KB)
 
 Agent 2: COMPLETE ✅ (18 minutes)
-  Created: docs/patterns/caching-strategy.md (2.8 KB)
+  Created: .start/patterns/caching-strategy.md (2.8 KB)
 
 Agent 3: COMPLETE ✅ (25 minutes)
-  Created: docs/patterns/error-handling.md (4.1 KB)
+  Created: .start/patterns/error-handling.md (4.1 KB)
 
 All agents complete. No collisions occurred.
 ```
@@ -269,7 +269,7 @@ All agents complete. No collisions occurred.
 ## Results
 
 ```
-📁 docs/patterns/
+📁 .start/patterns/
 ├── authentication-flow.md    ✅ Created by Agent 1
 ├── caching-strategy.md        ✅ Created by Agent 2
 └── error-handling.md          ✅ Created by Agent 3
@@ -286,17 +286,17 @@ All agents complete. No collisions occurred.
 If agents might create multiple files:
 
 ```
-Agent 1 OUTPUT: docs/patterns/authentication/
+Agent 1 OUTPUT: .start/patterns/authentication/
   - flow.md
   - jwt-tokens.md
   - session-management.md
 
-Agent 2 OUTPUT: docs/patterns/caching/
+Agent 2 OUTPUT: .start/patterns/caching/
   - redis-usage.md
   - invalidation.md
   - key-naming.md
 
-Agent 3 OUTPUT: docs/patterns/error-handling/
+Agent 3 OUTPUT: .start/patterns/error-handling/
   - error-classes.md
   - response-format.md
   - recovery-patterns.md
@@ -363,7 +363,7 @@ Result: Duplicate or conflicting documentation
 
 ```
 BAD:
-OUTPUT: docs/patterns/auth.md
+OUTPUT: .start/patterns/auth.md
 (No instruction to check if exists)
 
 Problem: If file exists, agent might overwrite
@@ -376,9 +376,9 @@ Result: Lost documentation
 
 ```
 BAD:
-Agent 1 OUTPUT: docs/patterns/pattern.md
-Agent 2 OUTPUT: docs/patterns/patterns.md
-Agent 3 OUTPUT: docs/patterns/pattern-doc.md
+Agent 1 OUTPUT: .start/patterns/pattern.md
+Agent 2 OUTPUT: .start/patterns/patterns.md
+Agent 3 OUTPUT: .start/patterns/pattern-doc.md
 
 Problem: All similar, confusing, might collide
 Result: Unclear which agent created what
@@ -392,7 +392,7 @@ Result: Unclear which agent created what
 
 ✅ **Always specify exact OUTPUT path:**
 ```
-OUTPUT: docs/patterns/authentication-flow.md
+OUTPUT: .start/patterns/authentication-flow.md
 NOT: "Document authentication patterns"
 ```
 
@@ -411,7 +411,7 @@ Before launching:
 
 ✅ **Instruct agents to check before creating:**
 ```
-OUTPUT: docs/patterns/authentication-flow.md
+OUTPUT: .start/patterns/authentication-flow.md
 - If file exists: STOP and report (don't overwrite)
 - If file doesn't exist: Create new
 ```
@@ -450,7 +450,7 @@ Agent 1 completes → Creates authentication-flow.md
   ↓
 Documentation skill notices "pattern" created
   ↓
-Checks: Is this in correct location? (docs/patterns/ ✅)
+Checks: Is this in correct location? (.start/patterns/ ✅)
 Checks: Does it follow template? (✅)
 Checks: Should it be cross-referenced? (Yes)
   ↓
@@ -474,7 +474,7 @@ Documentation skill adds cross-references:
 
 ⚠️ **Naming conventions:** Ensure consistency (kebab-case vs snake_case)
 ⚠️ **Template usage:** All agents should use same template
-⚠️ **Directory structure:** Verify docs/patterns/ exists before launching
+⚠️ **Directory structure:** Verify .start/patterns/ exists before launching
 
 ## Reusable Coordination Template
 

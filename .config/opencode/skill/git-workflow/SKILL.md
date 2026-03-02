@@ -166,7 +166,7 @@ GitWorkflow {
 
           Defines requirements for ${spec_name}.
 
-          See: docs/specs/${spec_id}-${spec_name_slug}/product-requirements.md
+          See: .start/specs/${spec_id}-${spec_name_slug}/requirements.md
 
           Co-authored-by: Opencode <claude@anthropic.com>"
           ```
@@ -178,7 +178,7 @@ GitWorkflow {
 
           Architecture and technical design for ${spec_name}.
 
-          See: docs/specs/${spec_id}-${spec_name_slug}/solution-design.md
+          See: .start/specs/${spec_id}-${spec_name_slug}/solution.md
 
           Co-authored-by: Opencode <claude@anthropic.com>"
           ```
@@ -190,7 +190,7 @@ GitWorkflow {
 
           Phased implementation tasks for ${spec_name}.
 
-          See: docs/specs/${spec_id}-${spec_name_slug}/implementation-plan.md
+          See: .start/specs/${spec_id}-${spec_name_slug}/plan/README.md
 
           Co-authored-by: Opencode <claude@anthropic.com>"
           ```
@@ -205,7 +205,7 @@ GitWorkflow {
           - Solution design (SDD)
           - Implementation plan (PLAN)
 
-          See: docs/specs/${spec_id}-${spec_name_slug}/
+          See: .start/specs/${spec_id}-${spec_name_slug}/
 
           Co-authored-by: Opencode <claude@anthropic.com>"
           ```
@@ -229,7 +229,7 @@ GitWorkflow {
 
         Implements phase ${phase} of specification ${spec_id}-${spec_name}.
 
-        See: docs/specs/${spec_id}-${spec_name_slug}/
+        See: .start/specs/${spec_id}-${spec_name_slug}/
 
         Co-authored-by: Opencode <claude@anthropic.com>"
         ```
@@ -270,7 +270,7 @@ GitWorkflow {
 
         ## Related
 
-        - Spec Directory: \`docs/specs/${spec_id}-${spec_name_slug}/\`
+        - Spec Directory: \`.start/specs/${spec_id}-${spec_name_slug}/\`
         EOF
         )"
         ```
@@ -287,7 +287,7 @@ GitWorkflow {
 
         ## Specification
 
-        Implements specification [\`${spec_id}-${spec_name}\`](docs/specs/${spec_id}-${spec_name_slug}/).
+        Implements specification [\`${spec_id}-${spec_name}\`](.start/specs/${spec_id}-${spec_name_slug}/).
 
         ## Changes
 

@@ -142,7 +142,7 @@ Refactor {
         4. Sequence refactorings: Independent changes first, dependent changes after
         5. Present findings in summary table format
         6. Use question:
-           "Document and proceed" => Save plan to docs/refactor/[NNN]-[name].md, then execute
+           "Document and proceed" => Save plan to .start/refactor/[NNN]-[name].md, then execute
            "Proceed without documenting" => Execute refactorings directly
            "Cancel" => Abort refactoring
         
@@ -204,4 +204,4 @@ Refactor {
 - **Test after every change** - Never batch changes before verification
 - **Revert on failure** - Working code beats refactored code
 - **Document BEFORE execution** - If user wants documentation, create it before making changes
-- **Confirm before writing documentation** - Always ask user before persisting plans to docs/
+- **Confirm before writing documentation** - Always ask user before persisting plans to .start/

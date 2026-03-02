@@ -19,14 +19,14 @@ ArchitectureDesign {
     - Complete sections in an existing solution-design.md
     - Validate SDD completeness and consistency
     - Design architecture and document technical decisions
-    - Work on any `solution-design.md` file in docs/specs/
+    - Work on any `solution.md` file in .start/specs/
   }
 
   Template {
     Constraints {
       1. The SDD template is at [template.md](template.md) -- use this structure exactly
       2. Read the template from this skill's directory
-      3. Write to spec directory: `docs/specs/[NNN]-[name]/solution-design.md`
+      3. Write to spec directory: `.start/specs/[NNN]-[name]/solution.md`
     }
   }
 

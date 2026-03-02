@@ -55,7 +55,7 @@ AccessibilityImplementation {
     4. Verify visual accessibility including color contrast and zoom support
     5. Test with assistive technologies: NVDA, JAWS, VoiceOver, TalkBack
 
-    Refer to docs/patterns/accessibility-standards.md for detailed WCAG criteria, ARIA patterns, and keyboard interaction specifications.
+    Refer to .start/patterns/accessibility-standards.md for detailed WCAG criteria, ARIA patterns, and keyboard interaction specifications.
   }
 
   Deliverables {

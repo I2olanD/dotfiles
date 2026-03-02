@@ -29,7 +29,7 @@ InteractionArchitecture {
     4. Create wireframes from low-fidelity sketches to interactive prototypes
     5. Validate designs through usability testing and iteration
 
-    Refer to docs/patterns/accessibility-standards.md for WCAG-compliant interaction patterns and keyboard navigation.
+    Refer to .start/patterns/accessibility-standards.md for WCAG-compliant interaction patterns and keyboard navigation.
   }
 
   Deliverables {

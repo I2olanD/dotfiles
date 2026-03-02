@@ -124,19 +124,19 @@ TaskDelegation {
       1. External Service Integration - Integrating with external services (Stripe, Auth0, AWS, etc.)
       2. Reusable - Pattern/interface/rule used in 2+ places OR clearly reusable
       3. NonObvious - Not standard practices (REST, MVC, CRUD)
-      4. NotDuplicate - Check existing docs first: grep -ri "keyword" docs/ or find docs -name "*topic*"
+      4. NotDuplicate - Check existing docs first: grep -ri "keyword" .start/ or find .start/docs -name "*topic*"
     }
 
     DecisionLogic {
-      FoundExistingDocs => OUTPUT: "Update docs/[category]/[file.md]"
-      NoExistingDocsMeetsCriteria => OUTPUT: "Create docs/[category]/[file.md]"
+      FoundExistingDocs => OUTPUT: "Update .start/[category]/[file.md]"
+      NoExistingDocsMeetsCriteria => OUTPUT: "Create .start/[category]/[file.md]"
       DoesntMeetCriteria => No documentation in OUTPUT
     }
 
     Categories {
-      docs/interfaces/ => External service integrations (Stripe, Auth0, AWS, webhooks)
-      docs/patterns/ => Technical patterns (caching, auth flow, error handling)
-      docs/domain/ => Business rules and domain logic (permissions, pricing, workflows)
+      .start/interfaces/ => External service integrations (Stripe, Auth0, AWS, webhooks)
+      .start/patterns/ => Technical patterns (caching, auth flow, error handling)
+      .start/domain/ => Business rules and domain logic (permissions, pricing, workflows)
     }
 
     WhatNotToDocument {
@@ -315,8 +315,8 @@ TaskDelegation {
         Example {
           ```
           CONTEXT:
-              - Self-prime from: docs/specs/001-auth/implementation-plan.md (Phase 2, Task 3)
-              - Self-prime from: docs/specs/001-auth/solution-design.md (Section 4.2)
+              - Self-prime from: .start/specs/001-auth/plan/README.md (Phase 2, Task 3)
+              - Self-prime from: .start/specs/001-auth/solution.md (Section 4.2)
               - Self-prime from: CLAUDE.md / Agent.md (project standards)
               - Match interfaces defined in SDD Section 4.2
               - Follow existing patterns in src/services/
@@ -341,9 +341,9 @@ TaskDelegation {
     PathAssignmentStrategies {
       ExplicitUniquePaths {
         Assign each agent a specific file path
-        Agent1 OUTPUT => docs/patterns/authentication-flow.md
-        Agent2 OUTPUT => docs/interfaces/oauth-providers.md
-        Agent3 OUTPUT => docs/domain/user-permissions.md
+        Agent1 OUTPUT => .start/patterns/authentication-flow.md
+        Agent2 OUTPUT => .start/interfaces/oauth-providers.md
+        Agent3 OUTPUT => .start/domain/user-permissions.md
         Result => No collisions possible
       }
 
@@ -356,9 +356,9 @@ TaskDelegation {
 
       HierarchicalPaths {
         Use directory structure to separate agents
-        Agent1 OUTPUT => docs/patterns/backend/api-versioning.md
-        Agent2 OUTPUT => docs/patterns/frontend/state-management.md
-        Agent3 OUTPUT => docs/patterns/database/migration-strategy.md
+        Agent1 OUTPUT => .start/patterns/backend/api-versioning.md
+        Agent2 OUTPUT => .start/patterns/frontend/state-management.md
+        Agent3 OUTPUT => .start/patterns/database/migration-strategy.md
         Result => Different directories prevent collisions
       }
     }

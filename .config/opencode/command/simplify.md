@@ -32,7 +32,7 @@ Simplify {
   }
 
   OutputLocations {
-    docs/refactor/[NNN]-simplify-[name].md => Simplification analysis reports and execution logs
+    .start/refactor/[NNN]-simplify-[name].md => Simplification analysis reports and execution logs
   }
 
   SimplificationPerspectives {
@@ -142,7 +142,7 @@ Simplify {
         Execution: One at a time with test verification
       
       Use question with options:
-        "Document and proceed" => Save plan to docs/refactor/[NNN]-simplify-[name].md, then execute
+        "Document and proceed" => Save plan to .start/refactor/[NNN]-simplify-[name].md, then execute
         "Proceed without documenting" => Execute simplifications directly
         "Apply high-impact only" => Execute only high-impact changes
         "Review each change individually" => Interactive approval for each change
@@ -264,4 +264,4 @@ Simplify {
 - **Test after every change** - Never batch changes before verification
 - **Revert on failure** - Working code beats simplified code
 - **Balance is key** - Simple enough to understand, not so simple it's inflexible
-- **Confirm before writing documentation** - Always ask user before persisting plans to docs/
+- **Confirm before writing documentation** - Always ask user before persisting plans to .start/

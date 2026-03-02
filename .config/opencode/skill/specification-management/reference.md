@@ -10,12 +10,12 @@
 ## Directory Structure
 
 ```
-docs/specs/
+.start/specs/
 ├── 001-user-authentication/
 │   ├── README.md                 # Managed by specification-management skill
-│   ├── product-requirements.md   # Created by requirements-analysis skill
-│   ├── solution-design.md        # Created by architecture-design skill
-│   └── implementation-plan.md    # Created by implementation-planning skill
+│   ├── requirements.md   # Created by requirements-analysis skill
+│   ├── solution.md        # Created by architecture-design skill
+│   └── plan/README.md    # Created by implementation-planning skill
 ├── 002-payment-processing/
 │   └── ...
 └── 003-notification-system/
@@ -30,7 +30,7 @@ spec.py "feature name here"
 ```
 **Output:**
 ```
-Created spec directory: docs/specs/005-feature-name-here
+Created spec directory: .start/specs/005-feature-name-here
 Spec ID: 005
 Specification directory created successfully
 ```
@@ -43,31 +43,31 @@ spec.py 005 --read
 ```toml
 id = "005"
 name = "feature-name-here"
-dir = "docs/specs/005-feature-name-here"
+dir = ".start/specs/005-feature-name-here"
 
 [spec]
-prd = "docs/specs/005-feature-name-here/product-requirements.md"
-sdd = "docs/specs/005-feature-name-here/solution-design.md"
+prd = ".start/specs/005-feature-name-here/requirements.md"
+sdd = ".start/specs/005-feature-name-here/solution.md"
 
 files = [
   "product-requirements.md",
   "README.md",
-  "solution-design.md"
+  "solution.md"
 ]
 ```
 
 ### Add Template to Existing Spec
 ```bash
-spec.py 005 --add product-requirements
-spec.py 005 --add solution-design
-spec.py 005 --add implementation-plan
+spec.py 005 --add specify-requirements
+spec.py 005 --add specify-solution
+spec.py 005 --add specify-plan
 ```
 
 ## Template Resolution
 
 Templates are resolved in this order:
 1. `skills/[template-name]/template.md` (primary)
-2. `templates/[template-name].md` (deprecated fallback)
+2. 
 
 ## README.md Fields
 
