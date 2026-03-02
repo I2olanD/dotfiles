@@ -26,15 +26,15 @@ CodebaseAnalysis {
     2. Select perspectives based on focus area
     3. Present ALL agent findings completely - never summarize
     4. Wait for user confirmation between cycles
-    5. Persist findings to appropriate docs/ locations
+    5. Persist findings to appropriate .start/ locations
   }
 
   OutputLocations {
     Findings persisted based on content type:
-    - `docs/domain/` -- Business rules, domain logic, workflows
-    - `docs/patterns/` -- Technical patterns, architectural solutions
-    - `docs/interfaces/` -- API contracts, service integrations
-    - `docs/research/` -- General research findings, exploration notes
+    - `.start/domain/` -- Business rules, domain logic, workflows
+    - `.start/patterns/` -- Technical patterns, architectural solutions
+    - `.start/interfaces/` -- API contracts, service integrations
+    - `.start/research/` -- General research findings, exploration notes
   }
 
   AnalysisPerspectives {
@@ -82,7 +82,7 @@ CodebaseAnalysis {
           Discovery: [What was found]
           Evidence: `file:line` references
           Documentation: [Suggested doc content]
-          Location: [Where to persist: docs/domain/, docs/patterns/, docs/interfaces/]
+          Location: [Where to persist: .start/domain/, .start/patterns/, .start/interfaces/]
         ```
       }
 
@@ -109,7 +109,7 @@ CodebaseAnalysis {
       }
 
       Step4_Persist {
-        Optional: Ask if user wants to save to appropriate docs/ location
+        Optional: Ask if user wants to save to appropriate .start/ location
         See OutputLocations for paths
       }
     }
@@ -127,13 +127,13 @@ CodebaseAnalysis {
 
     ### Documentation
 
-    - [docs/path/file.md] - [what was documented]
+    - [.start/path/file.md] - [what was documented]
 
     ### Open Questions
 
     - [unresolved items for future investigation]
     ```
 
-    Offer documentation options: Save to docs/, Skip, or Export as markdown.
+    Offer documentation options: Save to .start/, Skip, or Export as markdown.
   }
 }

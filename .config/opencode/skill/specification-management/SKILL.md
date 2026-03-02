@@ -53,11 +53,11 @@ SpecificationManagement {
       ```toml
       id = "004"
       name = "feature-name"
-      dir = "docs/specs/004-feature-name"
+      dir = ".start/specs/004-feature-name"
 
       [spec]
-      prd = "docs/specs/004-feature-name/product-requirements.md"
-      sdd = "docs/specs/004-feature-name/solution-design.md"
+      prd = ".start/specs/004-feature-name/requirements.md"
+      sdd = ".start/specs/004-feature-name/solution.md"
 
       files = [
         "product-requirements.md",

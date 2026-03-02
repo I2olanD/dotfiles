@@ -167,7 +167,7 @@ Specify {
   }
 
   DocumentationStructure {
-    docs/specs/[NNN]-[name]/
+    .start/specs/[NNN]-[name]/
     ├── README.md                 # Decisions and progress
     ├── product-requirements.md   # What and why
     ├── solution-design.md        # How

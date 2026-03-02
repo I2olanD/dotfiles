@@ -120,7 +120,7 @@ ContextPreservation {
 
       ## References
 
-      - [Relevant spec]: docs/specs/001-auth/
+      - [Relevant spec]: .start/specs/001-auth/
       - [External doc]: https://...
       - [Code pattern]: src/utils/validation.ts
 
@@ -310,7 +310,7 @@ ContextPreservation {
       ## Specification Context
 
       Spec: [ID] - [Name]
-      Location: docs/specs/[ID]-[name]/
+      Location: .start/specs/[ID]-[name]/
 
       Progress vs Spec:
 

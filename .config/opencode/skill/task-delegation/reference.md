@@ -260,7 +260,7 @@ Agent 3 OUTPUT: results/agent-3/findings.md
 For critical files, ensure atomic creation:
 
 ```
-OUTPUT: Create file at exact path: docs/patterns/auth.md
+OUTPUT: Create file at exact path: .start/patterns/auth.md
   - If file exists, FAIL and report (don't overwrite)
   - Use atomic write (temp file + rename)
   - Verify write succeeded before marking complete
@@ -390,7 +390,7 @@ EXCLUDE:
 CONTEXT:
   - Redis already configured: localhost:6379
   - Use ioredis client
-  - Follow caching pattern: docs/patterns/caching-strategy.md
+  - Follow caching pattern: .start/patterns/caching-strategy.md
 ```
 
 **Pattern:** Each retry adds specificity based on previous failure.
@@ -677,7 +677,7 @@ Discovers reusable pattern
   ↓
 Documentation skill activates
   ↓
-Pattern documented in docs/patterns/
+Pattern documented in .start/patterns/
   ↓
 Reported back to orchestrator
 ```

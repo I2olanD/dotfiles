@@ -170,7 +170,7 @@ SafeRefactoring {
         ```
 
         6. Offer options via question:
-           - "Document and proceed" -- Save plan to `docs/refactor/[NNN]-[name].md`, then execute
+           - "Document and proceed" -- Save plan to `.start/refactor/[NNN]-[name].md`, then execute
            - "Proceed without documenting" -- Execute refactorings directly
            - "Cancel" -- Abort refactoring
       }

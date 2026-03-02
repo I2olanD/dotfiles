@@ -29,7 +29,7 @@ DesignFoundation {
     4. Ensure WCAG 2.1 AA compliance in all visual elements
     5. Document usage patterns with clear guidelines and real-world examples
 
-    Refer to docs/patterns/accessibility-standards.md for color contrast validation, focus states, and ARIA requirements.
+    Refer to .start/patterns/accessibility-standards.md for color contrast validation, focus states, and ARIA requirements.
   }
 
   Deliverables {

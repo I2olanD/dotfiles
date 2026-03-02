@@ -32,10 +32,10 @@ Analyze {
   }
 
   OutputLocations {
-    docs/domain/ => Business rules, domain logic, workflows
-    docs/patterns/ => Technical patterns, architectural solutions
-    docs/interfaces/ => API contracts, service integrations
-    docs/research/ => General research findings, exploration notes
+    .start/domain/ => Business rules, domain logic, workflows
+    .start/patterns/ => Technical patterns, architectural solutions
+    .start/interfaces/ => API contracts, service integrations
+    .start/research/ => General research findings, exploration notes
   }
 
   AnalysisPerspectives {
@@ -76,17 +76,17 @@ Analyze {
         Discovery: [What was found]
         Evidence: `file:line` references
         Documentation: [Suggested doc content]
-        Location: [Where to persist: docs/domain/, docs/patterns/, docs/interfaces/]
+        Location: [Where to persist: .start/domain/, .start/patterns/, .start/interfaces/]
     }
 
     PerspectiveGuidance {
       | Perspective | Agent Focus |
       | --- | --- |
-      | Business | Find domain rules, document in docs/domain/, identify workflows and entities |
-      | Technical | Map patterns, document in docs/patterns/, note conventions and structures |
+      | Business | Find domain rules, document in .start/domain/, identify workflows and entities |
+      | Technical | Map patterns, document in .start/patterns/, note conventions and structures |
       | Security | Trace auth flows, document sensitive paths, identify protection mechanisms |
       | Performance | Find hot paths, caching opportunities, expensive operations |
-      | Integration | Map external APIs, document in docs/interfaces/, trace data flows |
+      | Integration | Map external APIs, document in .start/interfaces/, trace data flows |
     }
   }
 
@@ -103,7 +103,7 @@ Analyze {
         1. Discovery - Launch specialist agents for applicable perspectives
         2. Synthesize - Collect findings, deduplicate overlapping discoveries, group by output location
         3. Review - Present ALL agent findings (complete responses). Wait for user confirmation.
-        4. Persist (Optional) - Ask if user wants to save to appropriate docs/ location
+        4. Persist (Optional) - Ask if user wants to save to appropriate .start/ location
       }
 
       CycleSelfCheck {
@@ -129,14 +129,14 @@ Analyze {
         
         ### Documentation
         
-        - [docs/path/file.md] - [what was documented]
+        - [.start/path/file.md] - [what was documented]
         
         ### Open Questions
         
         - [unresolved items for future investigation]
       }
       
-      Offer documentation options: Save to docs/, Skip, or Export as markdown
+      Offer documentation options: Save to .start/, Skip, or Export as markdown
     }
   }
 }

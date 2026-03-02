@@ -10,9 +10,9 @@ Complete reference for the documentation skill including advanced patterns, edge
 
 **Authentication Example:**
 
-- `docs/domain/user-roles.md` - WHO can access WHAT (business rule)
-- `docs/patterns/authentication-flow.md` - HOW authentication works (technical)
-- `docs/interfaces/oauth-providers.md` - EXTERNAL services used (integration)
+- `.start/domain/user-roles.md` - WHO can access WHAT (business rule)
+- `.start/patterns/authentication-flow.md` - HOW authentication works (technical)
+- `.start/interfaces/oauth-providers.md` - EXTERNAL services used (integration)
 
 **Guideline:** If it affects WHAT users can do, it belongs in domain. If it affects HOW we build it, it belongs in patterns.
 
@@ -20,8 +20,8 @@ Complete reference for the documentation skill including advanced patterns, edge
 
 **Caching Example:**
 
-- Local in-memory caching --> `docs/patterns/caching-strategy.md`
-- Redis/Memcached integration --> `docs/interfaces/redis-cache.md`
+- Local in-memory caching --> `.start/patterns/caching-strategy.md`
+- Redis/Memcached integration --> `.start/interfaces/redis-cache.md`
 
 **Guideline:** Self-contained code patterns go in patterns. External service dependencies go in interfaces.
 
@@ -30,9 +30,9 @@ Complete reference for the documentation skill including advanced patterns, edge
 **Payment Processing Example:**
 Could span all three:
 
-- `docs/domain/payment-rules.md` - Refund policies, pricing rules
-- `docs/patterns/payment-processing.md` - Internal payment handling
-- `docs/interfaces/stripe-api.md` - Stripe integration specifics
+- `.start/domain/payment-rules.md` - Refund policies, pricing rules
+- `.start/patterns/payment-processing.md` - Internal payment handling
+- `.start/interfaces/stripe-api.md` - Stripe integration specifics
 
 **Guideline:** Create separate documents for each perspective. Cross-reference heavily.
 
@@ -132,28 +132,28 @@ Use for:
 find docs -type f -name "*.md" | grep -i keyword
 
 # Search content
-grep -ri "search term" docs/
+grep -ri "search term" .start/
 ```
 
 ### Technique 2: Category Listing
 ```bash
 # List all patterns
-ls docs/patterns/
+ls .start/patterns/
 
 # List all interfaces
-ls docs/interfaces/
+ls .start/interfaces/
 
 # List all domain docs
-ls docs/domain/
+ls .start/domain/
 ```
 
 ### Technique 3: Content Scanning
 ```bash
 # Show first 5 lines of each file
-find docs/patterns -name "*.md" -exec head -5 {} \; -print
+find .start/patterns -name "*.md" -exec head -5 {} \; -print
 
 # Search for specific concept
-grep -l "authentication" docs/**/*.md
+grep -l "authentication" .start/**/*.md
 ```
 
 ### Technique 4: Related Term Mapping
@@ -293,10 +293,10 @@ When a pattern/interface is superseded:
 ### What if Nothing Fits the Categories?
 
 **Option 1:** Expand categories (rare, think hard first)
-**Option 2:** Create `docs/architecture/` for cross-cutting concerns
+**Option 2:** Create `.start/architecture/` for cross-cutting concerns
 **Option 3:** Add to specification docs if feature-specific
 
-**Example:** ADRs (Architecture Decision Records) might warrant `docs/decisions/`
+**Example:** ADRs (Architecture Decision Records) might warrant `.start/decisions/`
 
 ### What if It's Too Small to Document?
 
@@ -318,8 +318,8 @@ When a pattern/interface is superseded:
 - `specs/023-checkout/SDD.md` - Checkout flow specifics
 
 **Shared docs:**
-- `docs/patterns/state-machines.md` - Reusable state machine pattern
-- `docs/domain/order-workflow.md` - General order rules
+- `.start/patterns/state-machines.md` - Reusable state machine pattern
+- `.start/domain/order-workflow.md` - General order rules
 
 ## Performance Considerations
 
@@ -350,14 +350,14 @@ Quick overview: We use Redis for session and API response caching.
 
 ### During Analysis (`/analyze`)
 Documentation skill captures discovered patterns:
-- Code analysis reveals patterns --> Document in `docs/patterns/`
-- Business rules discovered --> Document in `docs/domain/`
-- External APIs found --> Document in `docs/interfaces/`
+- Code analysis reveals patterns --> Document in `.start/patterns/`
+- Business rules discovered --> Document in `.start/domain/`
+- External APIs found --> Document in `.start/interfaces/`
 
 ### During Specification (`/specify`)
 - PRD/SDD references existing documentation
 - New patterns discovered --> Document them
-- Specifications live in `docs/specs/`, reference shared docs
+- Specifications live in `.start/specs/`, reference shared docs
 
 ### During Implementation (`/implement`)
 - Implementation follows documented patterns

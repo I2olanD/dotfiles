@@ -44,8 +44,8 @@ Implement {
       - Unauthorized additions
     
     CONTEXT:
-      - Self-prime from: docs/specs/[NNN]-[name]/implementation-plan.md (Phase X, Task Y)
-      - Self-prime from: docs/specs/[NNN]-[name]/solution-design.md (Section X.Y)
+      - Self-prime from: .start/specs/[NNN]-[name]/plan/README.md (Phase X, Task Y)
+      - Self-prime from: .start/specs/[NNN]-[name]/solution.md (Section X.Y)
       - Self-prime from: CLAUDE.md (project standards)
       - Match interfaces defined in SDD
       - Follow existing patterns in [relevant codebase directory]
@@ -196,7 +196,7 @@ Implement {
   }
 
   DocumentStructure {
-    docs/specs/[NNN]-[name]/
+    .start/specs/[NNN]-[name]/
     ├── product-requirements.md   # Referenced for context
     ├── solution-design.md        # Referenced for compliance checks
     └── implementation-plan.md    # Executed phase-by-phase

@@ -50,11 +50,11 @@ CON-3 [Auth requirements, data protection needs, regulatory compliance]
 #### Documentation Context
 ```yaml
 # Internal documentation and patterns
-- doc: docs/patterns/pattern-name.md
+- doc: .start/patterns/pattern-name.md
   relevance: HIGH
   why: "Existing pattern that must be followed"
 
-- doc: docs/interfaces/interface-name.md
+- doc: .start/interfaces/interface-name.md
   relevance: MEDIUM
   why: "External service integration requirements"
 
@@ -122,21 +122,21 @@ inbound:
     type: HTTP/HTTPS
     format: REST/GraphQL
     authentication: [OAuth2/JWT/Session]
-    doc: @docs/interfaces/web-api.md
+    doc: @.start/interfaces/web-api.md
     data_flow: "User actions and queries"
 
   - name: "Mobile App API"
     type: HTTPS
     format: REST
     authentication: JWT
-    doc: @docs/interfaces/mobile-api.md
+    doc: @.start/interfaces/mobile-api.md
     data_flow: "Mobile-specific operations"
 
   - name: "Webhook Receiver"
     type: HTTPS
     format: JSON
     authentication: HMAC signature
-    doc: @docs/interfaces/webhook-spec.md
+    doc: @.start/interfaces/webhook-spec.md
     data_flow: "Event notifications from external systems"
 
 # Outbound Interfaces (what this system calls)
@@ -145,7 +145,7 @@ outbound:
     type: HTTPS
     format: REST
     authentication: API Key
-    doc: @docs/interfaces/payment-gateway.md
+    doc: @.start/interfaces/payment-gateway.md
     data_flow: "Transaction processing"
     criticality: HIGH
 
@@ -153,7 +153,7 @@ outbound:
     type: AMQP/HTTPS
     format: JSON
     authentication: Service Token
-    doc: @docs/interfaces/notification-service.md
+    doc: @.start/interfaces/notification-service.md
     data_flow: "User notifications"
     criticality: MEDIUM
 
@@ -161,7 +161,7 @@ outbound:
     type: HTTPS
     format: JSON
     authentication: API Key
-    doc: @docs/interfaces/analytics.md
+    doc: @.start/interfaces/analytics.md
     data_flow: "Event tracking"
     criticality: LOW
 
@@ -170,19 +170,19 @@ data:
   - name: "Primary Database"
     type: PostgreSQL/MySQL/MongoDB
     connection: Connection Pool
-    doc: @docs/interfaces/database-schema.md
+    doc: @.start/interfaces/database-schema.md
     data_flow: "Application state persistence"
 
   - name: "Cache Layer"
     type: Redis/Memcached
     connection: Client Library
-    doc: @docs/interfaces/cache-strategy.md
+    doc: @.start/interfaces/cache-strategy.md
     data_flow: "Temporary data and sessions"
 
   - name: "File Storage"
     type: S3/Azure Blob/GCS
     connection: SDK
-    doc: @docs/interfaces/storage-api.md
+    doc: @.start/interfaces/storage-api.md
     data_flow: "Media and document storage"
 ```
 
@@ -267,19 +267,19 @@ graph LR
 # Reference existing interface documentation
 interfaces:
   - name: "User Authentication API"
-    doc: @docs/interfaces/auth-api.md
+    doc: @.start/interfaces/auth-api.md
     relevance: CRITICAL
     sections: [authentication_flow, token_management]
     why: "Core authentication flow must be followed"
 
   - name: "Payment Processing Interface"
-    doc: @docs/interfaces/payment-gateway.md
+    doc: @.start/interfaces/payment-gateway.md
     relevance: HIGH
     sections: [transaction_processing, webhook_handling]
     why: "Integration with payment provider constraints"
 
   - name: "Event Bus Interface"
-    doc: @docs/interfaces/event-bus.md (NEW)
+    doc: @.start/interfaces/event-bus.md (NEW)
     relevance: MEDIUM
     sections: [event_format, subscription_model]
     why: "New event-driven communication pattern"
@@ -301,7 +301,7 @@ Table: supporting_entity_table (NEW)
   business_field: data_type, constraints
 
 # Reference detailed schema documentation if available
-schema_doc: @docs/interfaces/database-schema.md
+schema_doc: @.start/interfaces/database-schema.md
 migration_scripts: @migrations/v2.1.0/
 ```
 
@@ -327,7 +327,7 @@ Endpoint: Feature Operation
       details: object (optional)
 
 # Reference comprehensive API documentation if available
-api_doc: @docs/interfaces/internal-api.md
+api_doc: @.start/interfaces/internal-api.md
 openapi_spec: @specs/openapi.yaml
 ```
 
@@ -353,7 +353,7 @@ ENTITY: SupportingEntity (NEW)
   BEHAVIORS: [method_definitions]
 
 # Reference domain model documentation if available
-domain_doc: @docs/domain/entity-model.md
+domain_doc: @.start/domain/entity-model.md
 ```
 
 #### Integration Points
@@ -365,13 +365,13 @@ domain_doc: @docs/domain/entity-model.md
 - from: [source-component]
   to: [target-component]
     - protocol: [REST/GraphQL/gRPC/WebSocket/MessageQueue]
-    - doc: @docs/interfaces/internal-api.md
+    - doc: @.start/interfaces/internal-api.md
     - endpoints: [specific endpoints or topics]
     - data_flow: "Description of what data flows between components"
 
 # External System Integration (third-party services)
 External_Service_Name:
-  - doc: @docs/interfaces/service-name.md
+  - doc: @.start/interfaces/service-name.md
   - sections: [relevant_endpoints, data_formats]
   - integration: "Brief description of how systems connect"
   - critical_data: [data_elements_exchanged]
@@ -567,12 +567,12 @@ OUTPUT: processed_result
 [NEEDS CLARIFICATION: What existing patterns will be used and what new patterns need to be created?]
 ```yaml
 # Existing patterns used in this feature
-- pattern: @docs/patterns/[pattern-name].md
+- pattern: @.start/patterns/[pattern-name].md
   relevance: [CRITICAL|HIGH|MEDIUM|LOW]
   why: "[Brief explanation of why this pattern is needed]"
 
 # New patterns created for this feature
-- pattern: @docs/patterns/[new-pattern-name].md (NEW)
+- pattern: @.start/patterns/[new-pattern-name].md (NEW)
   relevance: [CRITICAL|HIGH|MEDIUM|LOW]
   why: "[Brief explanation of why this pattern was created]"
 ```

@@ -32,7 +32,7 @@ ImplementationVerification {
 
   SpecificationDocumentHierarchy {
     ```
-    docs/specs/[NNN]-[name]/
+    .start/specs/[NNN]-[name]/
       product-requirements.md   # WHAT and WHY (business requirements)
       solution-design.md        # HOW (technical design, interfaces, patterns)
       implementation-plan.md    # WHEN (execution sequence, phases)

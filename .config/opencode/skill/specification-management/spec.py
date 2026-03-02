@@ -4,8 +4,7 @@ The Agentic Startup - Spec Generation Script
 Creates numbered spec directories with auto-incrementing IDs
 
 Location: ~/.config/opencode/skill/specification-management/spec.py
-Template resolution: skills/[template-name]/template.md (primary)
-                    templates/[template-name].md (fallback, deprecated)
+Template resolution: skills/[template-name]/template.md
 """
 
 import argparse
@@ -22,33 +21,16 @@ script_dir = Path(__file__).resolve().parent
 plugin_root = script_dir.parent.parent
 
 # Specs are created in the current working directory
-SPECS_DIR = Path("docs/specs")
+SPECS_DIR = Path(".start/specs")
 # Skills directory for primary template lookup
 SKILLS_DIR = plugin_root / "skills"
-# Templates directory for fallback (deprecated)
-TEMPLATES_DIR = plugin_root / "templates"
 
 
 def get_template_path(template_name: str) -> Path:
-    """
-    Resolve template path with skill-first, legacy-fallback pattern.
-
-    Resolution order:
-    1. skills/[template-name]/template.md (new location)
-    2. templates/[template-name].md (deprecated, backward compat)
-    """
-    # Primary: Look in skill directory
-    skill_template = SKILLS_DIR / template_name / "template.md"
-    if skill_template.exists():
-        return skill_template
-
-    # Fallback: Legacy templates directory (deprecated)
-    legacy_template = TEMPLATES_DIR / f"{template_name}.md"
-    if legacy_template.exists():
-        print(f"Warning: Using deprecated template location. "
-              f"Template should be at: {skill_template}", file=sys.stderr)
-        return legacy_template
-
+    """Resolve template path from skill directory."""
+    template = SKILLS_DIR / template_name / "template.md"
+    if template.exists():
+        return template
     raise FileNotFoundError(f"Template not found: {template_name}")
 
 
@@ -110,12 +92,14 @@ def read_spec(spec_id: str) -> None:
     # List spec documents
     print()
     print("[spec]")
-    if (spec_dir / "product-requirements.md").exists():
-        print(f'prd = "{spec_dir / "product-requirements.md"}"')
-    if (spec_dir / "solution-design.md").exists():
-        print(f'sdd = "{spec_dir / "solution-design.md"}"')
-    if (spec_dir / "implementation-plan.md").exists():
-        print(f'plan = "{spec_dir / "implementation-plan.md"}"')
+    if (spec_dir / "requirements.md").exists():
+        print(f'prd = "{spec_dir / "requirements.md"}"')
+    if (spec_dir / "solution.md").exists():
+        print(f'sdd = "{spec_dir / "solution.md"}"')
+    plan_dir = spec_dir / "plan"
+    if plan_dir.exists() and (plan_dir / "README.md").exists():
+        print(f'plan_dir = "{plan_dir}"')
+        print(f'plan = "{plan_dir / "README.md"}"')
 
     # List quality gates if they exist
     gate_files = [

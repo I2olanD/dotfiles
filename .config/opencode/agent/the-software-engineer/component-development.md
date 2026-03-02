@@ -24,7 +24,7 @@ ComponentDevelopment {
     3. Implement framework-specific patterns (React hooks/Context, Vue Composition API, Angular RxJS, Svelte stores)
     4. Optimize performance through memoization, virtualization, and lazy loading
     5. Handle client-server state sync, real-time updates, and offline strategies
-    6. Refer to docs/patterns/accessibility-standards.md for WCAG compliance and testing
+    6. Refer to .start/patterns/accessibility-standards.md for WCAG compliance and testing
   }
 
   Deliverables {
