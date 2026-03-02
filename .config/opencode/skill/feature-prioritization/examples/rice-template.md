@@ -5,7 +5,7 @@ A ready-to-use template for scoring and ranking features using the RICE framewor
 ## Quick Reminder: The Formula
 
 ```
-RICE Score = (Reach x Impact x Confidence) / Effort
+RICE Score = (Reach × Impact × Confidence) / Effort
 ```
 
 Higher score = higher priority.
@@ -16,7 +16,7 @@ Higher score = higher priority.
 
 Copy this table for your prioritization session.
 
-| Feature | Reach (users/qtr) | Impact (0.25-3) | Confidence (50-100%) | Effort (person-months) | RICE Score | Rank |
+| Feature | Reach (users/qtr) | Impact (0.25–3) | Confidence (50–100%) | Effort (person-months) | RICE Score | Rank |
 |---------|-------------------|-----------------|----------------------|------------------------|------------|------|
 |         |                   |                 |                      |                        |            |      |
 |         |                   |                 |                      |                        |            |      |
@@ -29,10 +29,10 @@ Copy this table for your prioritization session.
 For each row:
 
 ```
-RICE Score = (Reach x Impact x (Confidence / 100)) / Effort
+RICE Score = (Reach × Impact × (Confidence / 100)) / Effort
 ```
 
-Note: Convert confidence percentage to decimal before calculating (80% -> 0.80).
+Note: Convert confidence percentage to decimal before calculating (80% → 0.80).
 
 ---
 
@@ -76,7 +76,7 @@ This example scores five competing features for a B2B analytics product.
 |---------|-------|--------|------------|--------|------------|------|
 | CSV export | 6,000 | 2 | 80% | 0.5 | **19,200** | 1 |
 | Scheduled email reports | 3,500 | 2 | 80% | 1 | **5,600** | 2 |
-| Custom date range picker | 8,000 | 1 | 100% | 0.5 | **16,000** | -- |
+| Custom date range picker | 8,000 | 1 | 100% | 0.5 | **16,000** | — |
 | Dashboard sharing (public link) | 2,000 | 2 | 50% | 1.5 | **1,333** | 4 |
 | Dark mode | 25,000 | 0.25 | 50% | 2 | **1,563** | 3 |
 
@@ -84,19 +84,19 @@ This example scores five competing features for a B2B analytics product.
 
 ```
 CSV export:
-  (6,000 x 2 x 0.80) / 0.5 = 9,600 / 0.5 = 19,200
+  (6,000 × 2 × 0.80) / 0.5 = 9,600 / 0.5 = 19,200
 
 Scheduled email reports:
-  (3,500 x 2 x 0.80) / 1 = 5,600
+  (3,500 × 2 × 0.80) / 1 = 5,600
 
 Custom date range picker:
-  (8,000 x 1 x 1.00) / 0.5 = 16,000
+  (8,000 × 1 × 1.00) / 0.5 = 16,000
 
 Dashboard sharing:
-  (2,000 x 2 x 0.50) / 1.5 = 2,000 / 1.5 = 1,333
+  (2,000 × 2 × 0.50) / 1.5 = 2,000 / 1.5 = 1,333
 
 Dark mode:
-  (25,000 x 0.25 x 0.50) / 2 = 3,125 / 2 = 1,563
+  (25,000 × 0.25 × 0.50) / 2 = 3,125 / 2 = 1,563
 ```
 
 ### Adjusted Priority
@@ -107,10 +107,10 @@ Scores alone tell most of the story, but two features need a note:
 
 Final open-roadmap ranking with 3 person-months of capacity:
 
-1. **CSV export** (score: 19,200) -- 0.5 months. High confidence data from 62 support tickets.
-2. **Scheduled email reports** (score: 5,600) -- 1 month. Validated by customer interviews with 3 enterprise accounts.
-3. **Dark mode** (score: 1,563) -- defer to next quarter. High reach, but very low impact and confidence.
-4. **Dashboard sharing** (score: 1,333) -- defer. Low confidence, significant security design work needed first.
+1. **CSV export** (score: 19,200) — 0.5 months. High confidence data from 62 support tickets.
+2. **Scheduled email reports** (score: 5,600) — 1 month. Validated by customer interviews with 3 enterprise accounts.
+3. **Dark mode** (score: 1,563) — defer to next quarter. High reach, but very low impact and confidence.
+4. **Dashboard sharing** (score: 1,333) — defer. Low confidence, significant security design work needed first.
 
 Total committed: 1.5 months, leaving 1.5 months buffer for Must items and scope growth.
 
@@ -121,10 +121,10 @@ Total committed: 1.5 months, leaving 1.5 months buffer for Must items and scope 
 | Mistake | Problem | Fix |
 |---------|---------|-----|
 | Using 100% confidence by default | Inflates every score equally, ranking becomes meaningless | Only use 100% when you have validated data |
-| Estimating Reach as total user base | Overstates impact -- most features affect a subset of users | Count only users who encounter the relevant workflow |
+| Estimating Reach as total user base | Overstates impact — most features affect a subset of users | Count only users who encounter the relevant workflow |
 | Ignoring Effort entirely | Low-effort features win by default regardless of value | Always estimate Effort; a 0.1 score skews results badly |
 | Scoring in isolation | Individual scorers have different mental scales | Score as a group, or calibrate with one known-reference feature |
-| Never revisiting scores | Context changes -- last quarter's data is stale | Re-score when key inputs (user count, team size) shift significantly |
+| Never revisiting scores | Context changes — last quarter's data is stale | Re-score when key inputs (user count, team size) shift significantly |
 
 ---
 

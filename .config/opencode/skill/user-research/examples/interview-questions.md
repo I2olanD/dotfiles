@@ -2,7 +2,7 @@
 
 ## Context
 
-Use these questions as a starting point -- adapt to your product domain and the specific study objectives. Do not read questions verbatim. The goal is conversation, not interrogation. Questions are organized by research phase and purpose.
+Use these questions as a starting point — adapt to your product domain and the specific study objectives. Do not read questions verbatim. The goal is conversation, not interrogation. Questions are organized by research phase and purpose.
 
 Pair each question with follow-up probes and silence. The best insight often comes after the participant pauses and keeps going.
 
@@ -10,7 +10,7 @@ Pair each question with follow-up probes and silence. The best insight often com
 
 ## Discovery Research
 
-Discovery research explores the problem space before you have a solution. The goal is to understand users' worlds -- their goals, habits, mental models, and the workarounds they have invented to cope with existing problems.
+Discovery research explores the problem space before you have a solution. The goal is to understand users' worlds — their goals, habits, mental models, and the workarounds they have invented to cope with existing problems.
 
 ### Opening and Context
 
@@ -38,14 +38,14 @@ Ask about behavior, not hypothetical behavior. Past events are evidence. Future 
 - "What's the most annoying part of how you handle [task] right now?"
 
 **Probes:**
-- "You mentioned [X] -- can you tell me more about that?"
+- "You mentioned [X] — can you tell me more about that?"
 - "How long does that usually take?"
 - "How often does that happen?"
 - "What do you do if [tool / step] isn't available?"
 
 ### Uncovering Pain Points
 
-Let participants articulate frustrations in their own words. Do not suggest the pain point -- have them name it.
+Let participants articulate frustrations in their own words. Do not suggest the pain point — have them name it.
 
 - "What's the most frustrating part of your current process?"
 - "What takes longer than it should?"
@@ -57,7 +57,7 @@ Let participants articulate frustrations in their own words. Do not suggest the 
 **Probes:**
 - "How often does that happen?"
 - "What do you do instead?"
-- "What's the cost of that frustration -- to you, or to your team?"
+- "What's the cost of that frustration — to you, or to your team?"
 - "Has that ever caused a real problem for you? Tell me about it."
 
 ### Exploring Goals and Motivation
@@ -94,11 +94,11 @@ Understanding how participants reason helps you design for their actual model, n
 
 ## Usability Research
 
-Usability research evaluates a specific interface or flow. The goal is to observe behavior -- what participants do, where they hesitate, where they fail, and why -- not to collect opinions about the design.
+Usability research evaluates a specific interface or flow. The goal is to observe behavior — what participants do, where they hesitate, where they fail, and why — not to collect opinions about the design.
 
 ### Task Framing
 
-Frame tasks as scenarios, not instructions. Avoid naming UI elements in the task -- let participants find them.
+Frame tasks as scenarios, not instructions. Avoid naming UI elements in the task — let participants find them.
 
 **Instead of:** "Click the Settings button and change your notification preferences."
 **Use:** "Imagine you want to stop receiving email notifications from this product. Show me how you would do that."
@@ -110,9 +110,9 @@ Frame tasks as scenarios, not instructions. Avoid naming UI elements in the task
 
 Set expectations so participants feel safe failing and think aloud naturally.
 
-- "I want to be clear -- I'm testing the design, not you. There are no wrong answers."
+- "I want to be clear — I'm testing the design, not you. There are no wrong answers."
 - "If something is confusing, that's incredibly useful feedback. Please don't assume you're missing something obvious."
-- "As you go through the tasks, please think out loud -- tell me what you're looking at, what you're thinking, what you're trying to do."
+- "As you go through the tasks, please think out loud — tell me what you're looking at, what you're thinking, what you're trying to do."
 
 ### During Task Completion
 
@@ -136,13 +136,13 @@ Capture their experience while it is fresh, after they have completed or abandon
 - "Was there a moment where you weren't sure what to do? Tell me about that."
 - "What did you expect to find where you looked first?"
 - "If you had to do that again, what would you do differently?"
-- "What would you call what you just did -- what word comes to mind for that action?"
+- "What would you call what you just did — what word comes to mind for that action?"
 
 ### After the Session
 
 Gather overall impressions and anything participants held back during tasks.
 
-- "Looking back at everything you saw today -- what stood out most?"
+- "Looking back at everything you saw today — what stood out most?"
 - "What, if anything, surprised you?"
 - "Is there anything you wish worked differently from what you saw?"
 - "If this were a product you used every day, what would be the first thing you'd want to change?"
@@ -152,7 +152,7 @@ Gather overall impressions and anything participants held back during tasks.
 
 ## Validation Research
 
-Validation research tests whether a solution -- a concept, prototype, or launched feature -- addresses the problem you intended to solve. The goal is to disconfirm your assumptions, not confirm them.
+Validation research tests whether a solution — a concept, prototype, or launched feature — addresses the problem you intended to solve. The goal is to disconfirm your assumptions, not confirm them.
 
 ### Concept Testing
 
@@ -174,7 +174,7 @@ Use these when presenting a concept or early prototype for the first time.
 Assess whether the solution addresses a real and important problem for this participant.
 
 - "Does this address a problem you actually have?"
-- "On a scale from not important at all to extremely important -- how much does this matter to you? Why?"
+- "On a scale from not important at all to extremely important — how much does this matter to you? Why?"
 - "Would you use something like this? In what situation?"
 - "What would you need to believe for this to be worth your time?"
 
@@ -195,7 +195,7 @@ Understand how participants position your solution against alternatives.
 
 ### Post-Launch Validation
 
-For features that are already live -- understand adoption and actual impact.
+For features that are already live — understand adoption and actual impact.
 
 - "Have you used [feature]? Tell me about the last time."
 - "What made you decide to try it?"

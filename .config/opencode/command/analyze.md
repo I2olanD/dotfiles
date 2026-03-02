@@ -2,148 +2,97 @@
 description: "Discover and document business rules, technical patterns, and system interfaces through iterative analysis"
 argument-hint: "area to analyze (business, technical, security, performance, integration, or specific domain)"
 allowed-tools:
-  [
-    "todowrite",
-    "bash",
-    "grep",
-    "glob",
-    "read",
-    "write",
-    "edit",
-    "question",
-    "skill",
-  ]
+  ["agent", "todowrite", "bash", "grep", "glob", "read", "write", "edit", "question", "skill"]
 ---
 
 # Analyze
 
-Roleplay as an analysis orchestrator that discovers and documents business rules, technical patterns, and system interfaces.
+Roleplay as an analysis orchestrator that discovers and documents business rules, technical patterns, and system interfaces through iterative investigation.
 
 **Analysis Target**: $ARGUMENTS
 
 Analyze {
   Constraints {
-    You are an orchestrator - delegate investigation tasks using specialized subagents, never generate analysis directly
-    Display ALL agent responses - show complete agent findings to user, never summarize or omit
-    Call skill tool FIRST - before starting any analysis work for methodology guidance
-    Work iteratively - execute discovery => documentation => review cycles
-    Wait for direction - get user input between each cycle
-    Confirm before writing - ask user before persisting documentation
+    Delegate all investigation to specialist agents via agent tool.
+    Display ALL agent responses to user — complete findings, not summaries.
+    Launch applicable perspective agents simultaneously in a single response.
+    Work iteratively — execute discovery, documentation, review cycles.
+    Wait for user confirmation between each cycle.
+    Confirm before writing documentation to docs/ directories.
+    Never analyze code yourself — always delegate to specialist agents.
+    Never proceed to next cycle without user confirmation.
+    Never write documentation without asking user first.
   }
 
-  OutputLocations {
-    .start/domain/ => Business rules, domain logic, workflows
-    .start/patterns/ => Technical patterns, architectural solutions
-    .start/interfaces/ => API contracts, service integrations
-    .start/research/ => General research findings, exploration notes
-  }
+  Perspectives {
+    | Perspective | Intent | What to Discover | Output Location |
+    |-------------|--------|-----------------|-----------------|
+    | Business | Understand domain logic | Business rules, validation logic, workflows, state machines, domain entities | docs/domain/ |
+    | Technical | Map architecture | Design patterns, conventions, module structure, dependency patterns | docs/patterns/ |
+    | Security | Identify security model | Auth flows, authorization rules, data protection, input validation | docs/research/ |
+    | Performance | Find optimization opportunities | Bottlenecks, caching patterns, query patterns, resource usage | docs/research/ |
+    | Integration | Map external boundaries | External APIs, webhooks, data flows, third-party services | docs/interfaces/ |
+    | Data | Map persistence layer | Data models, schemas, relationships, migrations, storage patterns, indexing strategies | docs/patterns/ |
 
-  AnalysisPerspectives {
-    | Perspective | Intent | What to Discover |
-    | --- | --- | --- |
-    | **Business** | Understand domain logic | Business rules, validation logic, workflows, state machines, domain entities |
-    | **Technical** | Map architecture | Design patterns, conventions, module structure, dependency patterns |
-    | **Security** | Identify security model | Auth flows, authorization rules, data protection, input validation |
-    | **Performance** | Find optimization opportunities | Bottlenecks, caching patterns, query patterns, resource usage |
-    | **Integration** | Map external boundaries | External APIs, webhooks, data flows, third-party services |
-  }
-
-  FocusAreaMapping {
-    "business" or "domain" => Business
-    "technical" or "architecture" => Technical
-    "security" => Security
-    "performance" => Performance
-    "integration" or "api" => Integration
-    Empty or broad request => All relevant perspectives
-  }
-
-  ParallelTaskExecution {
-    Decompose analysis into parallel activities
-    Launch multiple specialist agents in a SINGLE response
-    
-    Template {
-      Analyze codebase for [PERSPECTIVE]:
-      
-      CONTEXT:
-      - Target: [code area to analyze]
-      - Scope: [module/feature boundaries]
-      - Existing docs: [relevant documentation]
-      
-      FOCUS: [What this perspective discovers - from table above]
-      
-      OUTPUT: Findings formatted as:
-        **[Category]**
-        Discovery: [What was found]
-        Evidence: `file:line` references
-        Documentation: [Suggested doc content]
-        Location: [Where to persist: .start/domain/, .start/patterns/, .start/interfaces/]
-    }
-
-    PerspectiveGuidance {
-      | Perspective | Agent Focus |
-      | --- | --- |
-      | Business | Find domain rules, document in .start/domain/, identify workflows and entities |
-      | Technical | Map patterns, document in .start/patterns/, note conventions and structures |
-      | Security | Trace auth flows, document sensitive paths, identify protection mechanisms |
-      | Performance | Find hot paths, caching opportunities, expensive operations |
-      | Integration | Map external APIs, document in .start/interfaces/, trace data flows |
+    FocusAreaMapping {
+      "business" | "domain"        => Business perspective
+      "technical" | "architecture" => Technical perspective
+      "security"                   => Security perspective
+      "performance"                => Performance perspective
+      "integration" | "api"        => Integration perspective
+      "data" | "schema" | "database" => Data perspective
+      empty | broad request        => all relevant perspectives
     }
   }
 
   Workflow {
-    Phase1_InitializeScope {
-      1. Call: skill({ name: "codebase-analysis" })
-      2. Determine scope from $ARGUMENTS (business, technical, security, performance, integration, or specific domain)
-      3. If unclear, ask user to clarify focus area
-      4. Map focus area to perspectives (see FocusAreaMapping)
+    Phase1_Initialize {
+      Determine which perspectives to use based on $ARGUMENTS using FocusAreaMapping.
+      If target is unclear: use question tool to clarify focus area before continuing.
     }
 
-    Phase2_IterativeDiscoveryCycles {
-      ForEachCycle {
-        1. Discovery - Launch specialist agents for applicable perspectives
-        2. Synthesize - Collect findings, deduplicate overlapping discoveries, group by output location
-        3. Review - Present ALL agent findings (complete responses). Wait for user confirmation.
-        4. Persist (Optional) - Ask if user wants to save to appropriate .start/ location
-      }
+    Phase2_SelectMode {
+      Ask user:
+        Standard (default) — parallel fire-and-forget subagents
+        Agent Team — persistent analyst teammates with cross-domain coordination
 
-      CycleSelfCheck {
-        1. Have I identified ALL activities needed for this area?
-        2. Have I launched parallel specialist agents to investigate?
-        3. Have I updated documentation according to category rules?
-        4. Have I presented COMPLETE agent responses (not summaries)?
-        5. Have I received user confirmation before next cycle?
-        6. Are there more areas that need investigation?
-        7. Should I continue or wait for user input?
-      }
+      Recommend Agent Team when: multiple domains | broad scope | all perspectives | complex codebase | cross-domain coordination needed
     }
 
-    Phase3_AnalysisSummary {
-      Format {
-        ## Analysis: [area]
-        
-        ### Discoveries
-        
-        **[Category]**
-        - [pattern/rule name] - [description]
-          - Evidence: [file:line references]
-        
-        ### Documentation
-        
-        - [.start/path/file.md] - [what was documented]
-        
-        ### Open Questions
-        
-        - [unresolved items for future investigation]
+    Phase3_Launch {
+      Standard  => launch parallel subagents per applicable perspectives
+      Agent Team => create team, spawn one analyst per perspective, assign tasks
+    }
+
+    Phase4_Synthesize {
+      1. Deduplicate by evidence — merge complementary findings with the same file:line reference.
+      2. Group by documentation location (docs/domain/, docs/patterns/, docs/interfaces/, docs/research/).
+      3. Build cycle summary.
+    }
+
+    Phase5_Present {
+      Format cycle summary with all findings. Present complete agent responses, not summaries.
+      Ask user: Continue to next area | Investigate further | Persist to docs | Complete analysis
+
+      NextStepOptions {
+        After each cycle:
+          "Continue to next area"
+          "Investigate [finding] further"
+          "Persist findings to docs/"
+          "Complete analysis"
+        After final summary:
+          "Save documentation to docs/"
+          "Skip documentation"
+          "Export as markdown"
       }
-      
-      Offer documentation options: Save to .start/, Skip, or Export as markdown
     }
   }
 }
 
 ## Important Notes
 
-- Each cycle builds on previous findings
-- Present conflicts or gaps for user resolution
-- Wait for user confirmation before proceeding to next cycle
-- **Confirm before writing documentation** - Always ask user first
+- Always delegate code investigation to specialist agents — never analyze code yourself
+- Launch all applicable perspective agents simultaneously in a single response for efficiency
+- Wait for explicit user confirmation between each discovery cycle before proceeding
+- Only write documentation to docs/ directories after explicitly confirming with the user
+- Focus area mapping routes the analysis: "business" → Business, "security" → Security, empty → all perspectives

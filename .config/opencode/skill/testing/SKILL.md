@@ -10,204 +10,124 @@ metadata:
 
 # Testing
 
-Roleplay as a testing specialist that designs effective test strategies, writes tests at appropriate layers, and debugs test failures using systematic approaches.
+Roleplay as a testing specialist who writes effective tests, applies layer-appropriate mocking strategies, and debugs failures systematically. You enforce test quality standards and ensure the right behavior is tested at the right layer.
 
 Testing {
   Activation {
     Writing unit, integration, or E2E tests
     Debugging test failures
-    Reviewing test quality
-    Deciding what to mock vs use real implementations
+    Reviewing test quality and coverage
+    Managing flaky tests
+    Selecting test layers and mocking strategies
   }
 
   LayerDistribution {
-    Unit (60-70%) => Mock at boundaries only
-    Integration (20-30%) => Real deps, mock external services only
-    E2E (5-10%) => No mocking - real user journeys
+    Unit (60-70%) => Mock at boundaries only, <100ms, no I/O, deterministic
+    Integration (20-30%) => Real deps, mock external services only, <5s, clean state between tests
+    E2E (5-10%) => No mocking, real services in sandbox mode, <30s, critical paths only
   }
 
-  UnitTests {
-    Purpose: Verify isolated business logic
-    Characteristics: < 100ms, no I/O, deterministic
-    TestHere: Business logic, validation, transformations, edge cases
-    
-    MockingRules {
-      Mock at the edge only (databases, APIs, file system, time)
-      Test the real system under test with actual implementations
-      Use real internal collaborators - mock only external boundaries
-    }
-    
-    Example {
-      ```typescript
-      // CORRECT: Mock only external dependency
-      const service = new OrderService(mockRepository)  // Repository is the edge
-      const total = service.calculateTotal(order)
-      expect(total).toBe(90)
-      
-      // WRONG: Mocking internal methods
-      vi.spyOn(service, 'applyDiscount')  // Now you're testing the mock
-      ```
+  AssessScope {
+    match (context) {
+      new feature code  => write tests for new behavior
+      bug fix           => write regression test first, then fix
+      refactoring       => verify existing tests pass, add coverage gaps
+      test review       => evaluate test quality and coverage
     }
   }
 
-  IntegrationTests {
-    Purpose: Verify components work together with real dependencies
-    Characteristics: < 5 seconds, containerized deps, clean state between tests
-    TestHere: Database queries, API contracts, service communication, caching
-    
-    MockingRules {
-      Use real databases
-      Use real caches
-      Mock only external third-party services (Stripe, SendGrid)
+  SelectLayer {
+    match (scope) {
+      business logic | validation | transformation | edge cases
+        => Unit: mock at boundaries only
+
+      database queries | API contracts | service communication | caching
+        => Integration: real deps, mock external services only
+
+      signup | checkout | auth flows | smoke tests
+        => E2E: no mocking, real services in sandbox mode
     }
-    
-    Example {
-      ```typescript
-      // CORRECT: Real DB, mock external payment API
-      const db = await createTestDatabase()
-      const paymentApi = vi.mocked(PaymentGateway)
-      const service = new CheckoutService(db, paymentApi)
-      
-      await service.checkout(cart)
-      
-      expect(await db.orders.find(orderId)).toBeDefined()  // Real DB
-      expect(paymentApi.charge).toHaveBeenCalledOnce()     // Mocked external
-      ```
-    }
+
+    Mocking rules by layer:
+    - Unit => mock external boundaries (DB, APIs, filesystem, time)
+    - Integration => real databases, real caches, mock only third-party services
+    - E2E => no mocking at all
   }
 
-  E2ETests {
-    Purpose: Validate critical user journeys in the real system
-    Characteristics: < 30 seconds, critical paths only, fix flakiness immediately
-    TestHere: Signup, checkout, auth flows, smoke tests
-    
-    MockingRules {
-      No mocking - that's the entire point
-      Use real services (sandbox/test modes)
-      Real browser automation
-    }
-    
-    Example {
-      ```typescript
-      // Real browser, real system (Playwright example)
-      await page.goto('/checkout')
-      await page.fill('#card', '4242424242424242')
-      await page.click('[data-testid="pay"]')
-      
-      await expect(page.locator('.confirmation')).toContainText('Order confirmed')
-      ```
-    }
+  WriteTests {
+    Apply Arrange-Act-Assert pattern.
+    Name tests descriptively: "rejects order when inventory insufficient"
+
+    Always test edge cases:
+    - Boundaries => min-1, min, min+1, max-1, max, max+1, zero, one, many
+    - Special values => null, empty, negative, MAX_INT, NaN, unicode, leap years, timezones
+    - Errors => network failures, timeouts, invalid input, unauthorized
+
+    Read examples/test-pyramid.md for layer-specific code examples.
   }
 
-  CorePrinciples {
-    TestBehaviorNotImplementation {
-      ```typescript
-      // CORRECT: Observable behavior
-      expect(order.total).toBe(108)
-      
-      // WRONG: Implementation detail
-      expect(order._calculateTax).toHaveBeenCalled()
-      ```
-    }
-    
-    ArrangeActAssert {
-      ```typescript
-      // Arrange
-      const mockEmail = vi.mocked(EmailService)
-      const service = new UserService(mockEmail)
-      
-      // Act
-      await service.register(userData)
-      
-      // Assert
-      expect(mockEmail.sendTo).toHaveBeenCalledWith('user@example.com')
-      ```
-    }
-    
-    OneBehaviorPerTest => Multiple assertions OK if verifying same logical outcome
-    
-    DescriptiveNames {
-      ```typescript
-      // GOOD
-      it('rejects order when inventory insufficient', ...)
-      
-      // BAD
-      it('test order', ...)
-      ```
-    }
-    
-    TestIsolation => No shared mutable state between tests
+  RunTests {
+    Execute in order (fastest feedback first):
+    1. Lint/typecheck
+    2. Unit tests
+    3. Integration tests
+    4. E2E tests
   }
 
-  ExecutionOrder {
-    1. Lint/typecheck => Fastest feedback
-    2. Unit tests => Fast, high volume
-    3. Integration tests => Real dependencies
-    4. E2E tests => Highest confidence
-  }
+  DebugFailures {
+    match (layer) {
+      Unit => {
+        1. Read the assertion message carefully
+        2. Check test setup (Arrange section)
+        3. Run in isolation to rule out state leakage
+        4. Add logging to trace execution path
+      }
+      Integration => {
+        1. Check database state before/after
+        2. Verify mocks configured correctly
+        3. Look for race conditions or timing issues
+        4. Check transaction/rollback behavior
+      }
+      E2E => {
+        1. Check screenshots/videos
+        2. Verify selectors still match the UI
+        3. Add explicit waits for async operations
+        4. Run locally with visible browser
+        5. Compare CI environment to local
+      }
+    }
 
-  DebuggingFailures {
-    UnitTestFails {
-      1. Read the assertion message carefully
-      2. Check test setup (Arrange section)
-      3. Run in isolation to rule out state leakage
-      4. Add logging to trace execution path
-    }
-    
-    IntegrationTestFails {
-      1. Check database state before/after
-      2. Verify mocks configured correctly
-      3. Look for race conditions or timing issues
-      4. Check transaction/rollback behavior
-    }
-    
-    E2ETestFails {
-      1. Check screenshots/videos (most frameworks capture these)
-      2. Verify selectors still match the UI
-      3. Add explicit waits for async operations
-      4. Run locally with visible browser to observe
-      5. Compare CI environment to local
-    }
-  }
-
-  FlakyTests {
-    HandleAggressively => They erode trust
-    
-    Protocol {
-      1. Quarantine => Move to separate suite immediately
-      2. Fix within 1 week => Or delete
-    }
-    
-    CommonCauses {
-      Shared state between tests
-      Time-dependent logic
-      Race conditions
-      Non-deterministic ordering
-    }
-  }
-
-  Coverage {
-    Quality over quantity => 80% meaningful coverage beats 100% trivial coverage
-    Focus on business-critical paths (payments, auth, core domain logic)
-    Skip generated code
-  }
-
-  EdgeCases {
-    Boundaries => min-1, min, min+1, max-1, max, max+1, zero, one, many
-    SpecialValues => null, empty, negative, MAX_INT, NaN, unicode, leap years, timezones
-    Errors => Network failures, timeouts, invalid input, unauthorized
+    Flaky test protocol:
+    1. Quarantine => move to separate suite immediately
+    2. Fix within 1 week => or delete
+    3. Common causes: shared state, time-dependent logic, race conditions, non-deterministic ordering
   }
 
   AntiPatterns {
-    | Pattern | Problem |
-    | --- | --- |
-    | Over-mocking | Testing mocks instead of code |
-    | Implementation testing | Breaks on refactoring |
-    | Shared state | Test order affects results |
-    | Test duplication | Use parameterized tests instead |
+    - Over-mocking => testing mocks instead of code
+    - Implementation test => breaks on refactoring
+    - Shared state => test order affects results
+    - Test duplication => use parameterized tests instead
+  }
+
+  Constraints {
+    Test behavior, not implementation — assert on observable outcomes
+    One behavior per test — multiple assertions OK if verifying same logical outcome
+    Use descriptive test names that state the expected behavior
+    Follow Arrange-Act-Assert structure in every test
+    Mock at boundaries only — databases, APIs, file system, time
+    Use real internal collaborators — never mock application code
+    Keep tests independent — no shared mutable state between tests
+    Handle flaky tests aggressively — quarantine, fix within one week, or delete
+    Focus on business-critical paths (payments, auth, core domain logic)
+    Prefer quality over quantity — 80% meaningful coverage beats 100% trivial coverage
+    Never mock internal methods or classes
+    Never test implementation details — tests should survive refactoring
+    Never skip edge case testing — boundaries, null, empty, negative values
+    Never leave flaky tests in the main suite
   }
 }
 
 ## References
 
-- [test-pyramid.md](examples/test-pyramid.md) - Test pyramid strategy and examples
+- [test-pyramid.md](examples/test-pyramid.md) — Layer-specific code examples and mocking patterns

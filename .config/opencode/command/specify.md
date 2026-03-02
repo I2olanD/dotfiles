@@ -2,190 +2,152 @@
 description: "Create a comprehensive specification from a brief description. Manages specification workflow including directory creation, README tracking, and phase transitions."
 argument-hint: "describe your feature or requirement to specify"
 allowed-tools:
-  [
-    "todowrite",
-    "bash",
-    "grep",
-    "read",
-    "write",
-    "edit",
-    "question",
-    "skill",
-  ]
+  ["agent", "todowrite", "bash", "grep", "read", "write", "edit", "question", "skill"]
 ---
 
 # Specify
 
 Roleplay as an expert requirements gatherer that creates specification documents for one-shot implementation.
 
-**Description:** $ARGUMENTS
+**Description**: $ARGUMENTS
 
 Specify {
   Constraints {
-    You are an orchestrator - delegate research tasks using specialized subagents
-    Display ALL agent responses - show complete agent findings to user (not summaries)
-    Call skill tool FIRST - before starting any phase work for methodology guidance
-    Ask user for direction - use question after initialization to let user choose path
-    Phases are sequential - PRD => SDD => PLAN (can skip phases with user approval)
-    Track decisions in specification README - log skipped phases and non-default choices
-    Wait for confirmation - require user approval between each document phase
-    Never start a phase without calling the appropriate skill tool first
-    Git integration is optional - offer branch/commit workflow only when user requests it
+    Delegate research tasks to specialist agents via agent tool.
+    Display ALL agent responses to user — complete findings, not summaries.
+    Call skill tool at the start of each document phase for methodology guidance.
+    Run phases sequentially — PRD, SDD, PLAN (user can skip phases).
+    Wait for user confirmation between each document phase.
+    Track decisions in specification README via output-format guidelines.
+    Git integration is optional — offer branch/commit as an option.
+    Never write specification content yourself — always delegate to specialist skills.
+    Never proceed to next document phase without user approval.
+    Never skip decision logging when user makes non-default choices.
+  }
+
+  DocumentStructure {
+    Specifications live in .start/specs/[NNN]-[name]/:
+      README.md       — Decisions and progress tracking
+      requirements.md — What and why (PRD)
+      solution.md     — How (SDD)
+      plan/           — Execution sequence (README.md manifest + phase-N.md files)
+
+    DecisionLogging: When user skips a phase or makes a non-default choice,
+      log it in the spec README.md decisions table with date, decision, and rationale.
   }
 
   ResearchPerspectives {
     | Perspective | Intent | What to Research |
-    | --- | --- | --- |
-    | **Requirements** | Understand user needs | User stories, stakeholder goals, acceptance criteria, edge cases |
-    | **Technical** | Evaluate architecture options | Patterns, technology choices, constraints, dependencies |
-    | **Security** | Identify protection needs | Authentication, authorization, data protection, compliance |
-    | **Performance** | Define capacity targets | Load expectations, latency targets, scalability requirements |
-    | **Integration** | Map external boundaries | APIs, third-party services, data flows, contracts |
-  }
+    |-------------|--------|-----------------|
+    | Requirements | Understand user needs | User stories, stakeholder goals, acceptance criteria, edge cases |
+    | Technical | Evaluate architecture options | Patterns, technology choices, constraints, dependencies |
+    | Security | Identify protection needs | Authentication, authorization, data protection, compliance |
+    | Performance | Define capacity targets | Load expectations, latency targets, scalability requirements |
+    | Integration | Map external boundaries | APIs, third-party services, data flows, contracts |
+    | UX | Define user experience requirements | User flows, interaction patterns, accessibility requirements, error states |
 
-  ParallelTaskExecution {
-    Decompose research into parallel activities
-    Launch multiple specialist agents in a SINGLE response
-    
-    Template {
-      Research [PERSPECTIVE] for specification:
-      
-      CONTEXT:
-      - Description: [User's feature description]
-      - Codebase: [Relevant existing code, patterns]
-      - Constraints: [Known limitations, requirements]
-      
-      FOCUS: [What this perspective researches - from table above]
-      
-      OUTPUT: Findings formatted as:
-        **[Topic]**
-        Discovery: [What was found]
-        Evidence: [Code references, documentation]
-        Recommendation: [Actionable insight for spec]
-        Open Questions: [Needs clarification]
+    AgentFocus {
+      Requirements => Interview stakeholders (user), identify personas, define acceptance criteria
+      Technical    => Analyze existing architecture, evaluate options, identify constraints
+      Security     => Assess auth needs, data sensitivity, compliance requirements
+      Performance  => Define SLOs, identify bottleneck risks, set capacity targets
+      Integration  => Map external APIs, document contracts, identify data flows
+      UX           => Define user flows, interaction patterns, accessibility requirements (skip if no UI)
     }
-  }
 
-  ResearchSynthesis {
-    1. Collect all findings from research agents
-    2. Deduplicate overlapping discoveries
-    3. Identify conflicts requiring user decision
-    4. Organize by document section (PRD, SDD, PLAN)
+    ResearchSynthesis {
+      After parallel research completes:
+        1. Collect all findings from research agents.
+        2. Deduplicate overlapping discoveries.
+        3. Identify conflicts requiring user decision.
+        4. Organize by document section (PRD, SDD, PLAN).
+    }
   }
 
   Workflow {
     Phase1_Initialize {
-      Context: Creating new spec or checking existing spec status
-      
-      1. Call: skill({ name: "specification-management" })
-      2. Initialize specification using $ARGUMENTS (skill handles directory creation/reading)
-      3. Call: question to let user choose direction
-      
-      ForNewSpecs {
-        Ask where to start:
-        Option1 (Recommended) => Start with PRD - Define requirements first, then design, then plan
-        Option2 => Start with SDD - Skip requirements, go straight to technical design
-        Option3 => Start with PLAN - Skip to implementation planning
-      }
-      
-      ForExistingSpecs {
-        Analyze document status (check for [NEEDS CLARIFICATION] markers and checklist completion):
-        PRD incomplete => Continue PRD
-        SDD incomplete => Continue SDD
-        PLAN incomplete => Continue PLAN
-        All complete => Finalize & Assess
+      Invoke /specify-meta to create or read the spec directory.
+
+      match (spec status) {
+        new      => Ask user:
+                      Start with PRD (recommended) — define requirements first
+                      Start with SDD — skip to technical design
+                      Start with PLAN — skip to implementation planning
+        existing => Analyze document status (check for [NEEDS CLARIFICATION] markers).
+                    Suggest continuation point based on incomplete documents.
       }
     }
 
-    Phase2_PRD {
-      Context: Working on product requirements, defining user stories, acceptance criteria
-      
-      1. Call: skill({ name: "requirements-analysis" })
-      2. Focus: WHAT needs to be built and WHY it matters
-      3. Scope: Business requirements only (defer technical details to SDD)
-      4. Deliverable: Complete Product Requirements
-      
-      AfterCompletion => Call: question - Continue to SDD (recommended) or Finalize PRD
+    Phase2_SelectMode {
+      Ask user:
+        Standard (default) — parallel fire-and-forget research agents
+        Agent Team — persistent researcher teammates with peer collaboration
+
+      Recommend Agent Team when: 3+ document phases planned, complex domain, multiple integrations,
+        or conflicting perspectives likely (e.g., security vs performance).
     }
 
-    Phase3_SDD {
-      Context: Working on solution design, designing architecture, defining interfaces
-      
-      1. Call: skill({ name: "architecture-design" })
-      2. Focus: HOW the solution will be built
-      3. Scope: Design decisions and interfaces (defer code to implementation)
-      4. Deliverable: Complete Solution Design
-      
-      ConstitutionAlignment (if CONSTITUTION.md exists) {
-        Call: skill({ name: "constitution-validation" }) in planning mode
-        Verify proposed architecture aligns with constitutional rules
-        Ensure ADRs are consistent with L1/L2 constitution rules
-        Report any potential conflicts for resolution before finalizing SDD
+    Phase3_Research {
+      Launch applicable perspectives based on feature type.
+
+      match (mode) {
+        Standard   => launch parallel subagents per applicable perspectives
+        Agent Team => create team, spawn one researcher per perspective, assign tasks
       }
-      
-      AfterCompletion => Call: question - Continue to PLAN (recommended) or Finalize SDD
+
+      Synthesize findings per ResearchSynthesis. Research feeds into all subsequent document phases.
     }
 
-    Phase4_PLAN {
-      Context: Working on implementation plan, planning phases, sequencing tasks
-      
-      1. Call: skill({ name: "implementation-planning" })
-      2. Focus: Task sequencing and dependencies
-      3. Scope: What and in what order (defer duration estimates)
-      4. Deliverable: Complete Implementation Plan
-      
-      AfterCompletion => Call: question - Finalize Specification (recommended) or Revisit PLAN
+    Phase4_WritePRD {
+      Invoke /specify-requirements.
+
+      Focus: WHAT needs to be built and WHY it matters.
+      Scope: business requirements only — defer technical details to SDD.
+
+      Ask user: Continue to SDD (recommended) | Finalize PRD
     }
 
-    Phase5_Finalization {
-      Context: Reviewing all documents, assessing implementation readiness
-      
-      1. Call: skill({ name: "specification-management" })
-      2. Review documents and assess context drift between them
-      3. Generate readiness and confidence assessment
-      
-      GitFinalization (if user requested git integration) {
-        Offer to commit specification with conventional message (docs(spec-[id]): ...)
-        Offer to create spec review PR via gh pr create
-        Handle push and PR creation
-      }
-      
-      Summary {
-        Specification Complete
-        
-        Spec: [NNN]-[name]
-        Documents: PRD | SDD | PLAN
-        
-        Readiness: [HIGH/MEDIUM/LOW]
-        Confidence: [N]%
-        
-        Next Steps:
-        1. /validate [ID] - Validate specification quality
-        2. /implement [ID] - Begin implementation
-      }
+    Phase5_WriteSDD {
+      Invoke /specify-solution.
+
+      Focus: HOW the solution will be built.
+      Scope: design decisions and interfaces — defer code to implementation.
+
+      If CONSTITUTION.md exists: invoke /validate constitution to verify architecture aligns with rules.
+
+      Ask user: Continue to PLAN (recommended) | Finalize SDD
     }
-  }
 
-  DocumentationStructure {
-    .start/specs/[NNN]-[name]/
-    ├── README.md                 # Decisions and progress
-    ├── product-requirements.md   # What and why
-    ├── solution-design.md        # How
-    └── implementation-plan.md    # Execution sequence
-  }
+    Phase6_WritePLAN {
+      Invoke /specify-plan.
 
-  DecisionLogging {
-    When user skips a phase or makes a non-default choice, log it in README.md:
-    
-    | Date | Decision | Rationale |
-    | --- | --- | --- |
-    | [date] | PRD skipped | User chose to start directly with SDD |
-    | [date] | Started from PLAN | Requirements and design already documented elsewhere |
+      Focus: task sequencing and dependencies.
+      Scope: what and in what order — defer duration estimates.
+
+      Ask user: Finalize specification (recommended) | Revisit PLAN
+    }
+
+    Phase7_Finalize {
+      Invoke /specify-meta to review and assess readiness.
+
+      If git repository exists:
+        Ask user: Commit + PR | Commit only | Skip git
+
+      Present completion summary: spec ID, documents created, readiness assessment (HIGH/MEDIUM/LOW).
+    }
   }
 }
 
+## Integration with Other Skills
+
+- /brainstorm — Use before /specify to validate design ideas before committing to a specification
+- /validate — Called during SDD phase for constitution alignment; called before implementation for readiness
+- /implement — Consumes the specification produced by /specify
+
 ## Important Notes
 
-- **Git integration is optional** - Offer branch/commit workflow only when user requests it
-- **User confirmation required** - Wait for user approval between each document phase
-- **Log all decisions** - Record skipped phases and non-default choices in README.md
+- Always invoke the appropriate sub-skill for each document phase (/specify-requirements, /specify-solution, /specify-plan)
+- Never write specification content directly — always delegate to specialist skills
+- Run phases sequentially (PRD → SDD → PLAN); users can skip phases, but log those decisions
+- Constitution alignment check during SDD phase prevents architecture violations before implementation
+- Readiness assessment at finalization determines if spec is ready for /implement

@@ -31,8 +31,8 @@ So that I know what's happening.
 ```
 
 Problems:
-- "User" is too broad -- which type of user? The story means nothing without knowing who it serves.
-- "See notifications" is undefined -- what kind, from where, in what format?
+- "User" is too broad — which type of user? The story means nothing without knowing who it serves.
+- "See notifications" is undefined — what kind, from where, in what format?
 - "Know what's happening" has no testable outcome.
 
 **Good:**
@@ -61,7 +61,7 @@ So that I can see the data.
 ```
 
 Problems:
-- "Pie charts" is a solution, not a capability. The user's real need is to understand data -- the visualization type is an implementation choice.
+- "Pie charts" is a solution, not a capability. The user's real need is to understand data — the visualization type is an implementation choice.
 - "See the data" says nothing about what data, why it matters, or what the manager will do with it.
 
 **Good:**
@@ -75,7 +75,7 @@ So that I can identify at-risk accounts before they churn.
 Why this works:
 - The capability describes what the manager needs to know, not how it's displayed.
 - The benefit ties directly to a business outcome (preventing churn).
-- This leaves implementation open -- a table, a chart, or a sorted list all become valid choices.
+- This leaves implementation open — a table, a chart, or a sorted list all become valid choices.
 
 ---
 
@@ -91,7 +91,7 @@ So that I have it.
 
 Problems:
 - The benefit "so that I have it" restates the want and adds no value.
-- Removing the benefit makes this story unvalidatable -- you can't measure success without knowing why.
+- Removing the benefit makes this story unvalidatable — you can't measure success without knowing why.
 
 **Good:**
 
@@ -103,7 +103,7 @@ So that I can implement and test my integration without needing support from the
 
 Why this works:
 - The role is specific (developer integrating, not developers in general).
-- The benefit is a measurable outcome -- reduced support requests, independent implementation.
+- The benefit is a measurable outcome — reduced support requests, independent implementation.
 
 ---
 
@@ -122,7 +122,7 @@ Problems:
 - It cannot be completed in a single sprint.
 - There is no way to write meaningful acceptance criteria for something this large.
 
-**Good -- Split into stories:**
+**Good — Split into stories:**
 
 ```
 As a shopper,
@@ -148,7 +148,7 @@ Each story is independently deliverable and testable.
 
 ## Well-Crafted Stories with Acceptance Criteria
 
-### Story 1: Authentication -- Password Reset
+### Story 1: Authentication — Password Reset
 
 ```
 As a registered user who has forgotten their password,
@@ -185,11 +185,11 @@ Then I see the same success message as if the email were registered
 And no email is sent
 ```
 
-Note on the last scenario: showing the same message regardless prevents user enumeration -- an attacker cannot determine which emails are registered by trying different addresses.
+Note on the last scenario: showing the same message regardless prevents user enumeration — an attacker cannot determine which emails are registered by trying different addresses.
 
 ---
 
-### Story 2: Search -- Finding Records
+### Story 2: Search — Finding Records
 
 ```
 As a support agent,
@@ -231,7 +231,7 @@ And I see a hint indicating I need to type at least 3 characters
 
 ---
 
-### Story 3: Permissions -- Role-Based Access
+### Story 3: Permissions — Role-Based Access
 
 ```
 As an organization administrator,
@@ -275,7 +275,7 @@ And they see an error: "Organizations must have at least one administrator"
 
 ---
 
-### Story 4: Data Export -- CSV Download
+### Story 4: Data Export — CSV Download
 
 ```
 As a finance team member,
@@ -320,7 +320,7 @@ And I see an inline error: "Start date must be before end date"
 
 ---
 
-### Story 5: Notifications -- Real-Time Alerts
+### Story 5: Notifications — Real-Time Alerts
 
 ```
 As a warehouse operations manager,
@@ -406,9 +406,9 @@ Scenario: Pagination works correctly at boundaries (first page, last page)
 
 | Anti-Pattern | Problem | Fix |
 |---|---|---|
-| **"Works correctly"** | Not testable -- correct according to whom? | Define the specific expected output |
+| **"Works correctly"** | Not testable — correct according to whom? | Define the specific expected output |
 | **"Should be fast"** | Relative and unmeasurable | "Loads within 2 seconds on a 4G connection" |
 | **"The system handles errors"** | What errors? What does handling mean? | Specify the error condition and the exact user-visible response |
 | **Only happy path** | Misses the majority of real-world usage | Add scenarios for empty state, boundaries, failures, and unauthorized access |
 | **Implementation detail in criteria** | Ties acceptance to a technical choice | Describe the observable outcome, not how it's achieved |
-| **Passive voice throughout** | Obscures who is doing what | "The user sees X" or "The system sends Y" -- name the actor |
+| **Passive voice throughout** | Obscures who is doing what | "The user sees X" or "The system sends Y" — name the actor |
