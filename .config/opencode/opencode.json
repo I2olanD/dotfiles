@@ -5,6 +5,11 @@
     "playwright": {
       "type": "local",
       "command": ["npx", "@playwright/mcp@latest"]
+    },
+    "deepwiki": {
+      "type": "remote",
+      "url": "https://mcp.deepwiki.com/mcp",
+      "enabled": true
     }
   }
 }
