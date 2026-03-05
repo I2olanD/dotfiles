@@ -1,207 +1,170 @@
 ---
-description: "Refactor code for improved maintainability without changing business logic"
+description: "Refactor, simplify, or clean up code for improved maintainability without changing business logic"
 argument-hint: "describe what code needs refactoring and why"
 allowed-tools:
-  [
-    "todowrite",
-    "bash",
-    "write",
-    "edit",
-    "read",
-    "glob",
-    "grep",
-    "question",
-    "skill",
-  ]
+  ["grep", "glob", "bash", "read", "edit", "write", "question", "skill"]
 ---
 
 # Refactor
 
-Roleplay as an expert refactoring orchestrator that improves code quality while strictly preserving all existing behavior.
+Roleplay as a refactoring orchestrator that improves code quality while strictly preserving all existing behavior.
 
-**Description**: $ARGUMENTS
+**Refactoring Target**: $ARGUMENTS
 
 Refactor {
   Constraints {
-    You are an orchestrator - delegate analysis and refactoring tasks to specialist agents; never refactor directly
-    Display ALL agent responses - show complete agent findings to user; never summarize or omit
-    Call skill tool FIRST - before each refactoring phase for methodology guidance
-    Test after EVERY change - run tests before and after; no exceptions
-    One change at a time - apply a single refactoring, verify, then proceed; never batch changes before verification
-    Revert on failure - working code beats refactored code; revert immediately if tests fail or behavior changes
-    Document BEFORE execution - if user wants documentation, create it before making changes
-    Flag untested code - never refactor without explicit user approval if code lacks test coverage
-    Read project context first - read CLAUDE.md, CONSTITUTION.md (if present), relevant specs, and existing codebase patterns before any action
+    Cover all applicable analysis perspectives thoroughly.
+    Establish test baseline before any changes.
+    Run tests after EVERY individual change.
+    One refactoring at a time — never batch changes before verification.
+    Revert immediately if tests fail or behavior changes.
+    Get user approval before refactoring untested code.
+    Never change external behavior, public API contracts, or business logic results.
   }
 
-  Preserved (immutable) {
-    External behavior
-    Public API contracts
-    Business logic results
-    Side effect ordering
+  Scope {
+    InScope: Code structure, internal implementation, naming, duplication, readability, dependencies.
+      Techniques: nested ternaries → if/else or switch, dense one-liners → multi-line with clear steps,
+      clever tricks → obvious implementations, abbreviations → descriptive names,
+      magic numbers → named constants.
+    OutOfScope: External behavior, public API contracts, business logic results, side effect ordering.
   }
 
-  CanChange {
-    Code structure
-    Internal implementation
-    Variable/function names
-    Duplication removal
-    Dependencies/versions
+  AnalysisPerspectives {
+    StandardPerspectives {
+      | Perspective | Intent | What to Analyze |
+      |-------------|--------|-----------------|
+      | Code Smells | Find improvement opportunities | Long methods, duplication, complexity, deep nesting, magic numbers |
+      | Dependencies | Map coupling issues | Circular dependencies, tight coupling, abstraction violations |
+      | Test Coverage | Assess safety for refactoring | Existing tests, coverage gaps, test quality, missing assertions |
+      | Patterns | Identify applicable techniques | Design patterns, refactoring recipes, architectural improvements |
+      | Risk | Evaluate change impact | Blast radius, breaking changes, complexity, rollback difficulty, performance regression |
+    }
+
+    SimplificationPerspectives {
+      Use when $ARGUMENTS focuses on within-function readability (e.g., "simplify", "clean up", "reduce complexity").
+      Use StandardPerspectives for structural/architectural refactoring.
+
+      | Perspective | Intent | What to Find |
+      |-------------|--------|--------------|
+      | Complexity | Reduce cognitive load | Long methods (>20 lines), deep nesting, complex conditionals, convoluted loops, tangled async chains |
+      | Clarity | Make intent obvious | Unclear names, magic numbers, inconsistent patterns, overly defensive code, nested ternaries |
+      | Structure | Improve organization | Mixed concerns, tight coupling, bloated interfaces, god objects, too many parameters |
+      | Waste | Eliminate what shouldn't exist | Duplication, dead code, unused abstractions, speculative generality, copy-paste patterns |
+    }
+
+    Note: Risk assessment from StandardPerspectives applies to ALL refactoring — always evaluate
+          blast radius, breaking changes, and performance regression potential.
   }
 
-  ClarityOverBrevity {
-    if/else over nested ternaries
-    Multi-line over dense one-liners
-    Obvious implementations over clever tricks
-    Descriptive names over abbreviations
-    Named constants over magic numbers
+  CodeSmellsCatalog {
+    MethodLevel {
+      Long Method (>20 lines)     => Extract Method, Decompose Conditional
+      Long Parameter List (>3-4)  => Introduce Parameter Object, Preserve Whole Object
+      Duplicate Code              => Extract Method, Pull Up Method, Form Template Method
+      Complex Conditionals        => Decompose Conditional, Replace with Guard Clauses
+      Feature Envy                => Move Method, Move Field
+      Data Clumps                 => Extract Class, Introduce Parameter Object
+      Speculative Generality      => Collapse Hierarchy, Inline Class, Remove Parameter
+      Dead Code                   => Remove Dead Code
+    }
+
+    ClassLevel {
+      Large Class (>200 lines)    => Extract Class, Extract Subclass
+      God Class                   => Extract Class, Move Method
+      Primitive Obsession         => Replace Primitive with Object, Extract Class
+      Lazy Class                  => Inline Class, Collapse Hierarchy
+      Middle Man                  => Remove Middle Man, Inline Method
+    }
+
+    ArchitectureLevel {
+      Circular Dependencies       => Dependency Inversion, Extract Interface
+      Inappropriate Intimacy      => Move Method, Hide Delegate
+      Shotgun Surgery             => Move Method, Inline Class (one change requires many file edits)
+      Divergent Change            => Extract Class (one class changed for different reasons)
+      Message Chains (a.b().c())  => Hide Delegate, Extract Method
+    }
+
+    DecisionMatrix {
+      Tests passing, clear smell     => Proceed with refactoring
+      Tests passing, unclear benefit => Skip or discuss with team
+      Tests failing                  => Fix tests first, then refactor
+      No tests for area              => Add tests first OR skip refactoring
+      Behavior change required       => Not refactoring — this is a feature change
+    }
   }
 
-  AnalysisMode {
-    "simplify", "clean up", "reduce complexity" => Simplification Mode with Complexity, Clarity, Structure, Waste perspectives
-    anything else => Standard Mode with Code Smells, Dependencies, Test Coverage, Patterns, Risk perspectives
-  }
+  OutputFormat {
+    FindingColumns {
+      ID:          Impact letter + number (H1 = High #1, M1 = Medium #1, L1 = Low #1)
+      Finding:     Brief title + location in italics
+      Remediation: Specific refactoring technique + problem description in italics
+      Risk:        Assessment of potential complications
+    }
 
-  StandardAnalysisPerspectives {
-    | Perspective | Intent | What to Analyze |
-    |-------------|--------|-----------------|
-    | Code Smells | Find improvement opportunities | Long methods, duplication, complexity, deep nesting, magic numbers |
-    | Dependencies | Map coupling issues | Circular dependencies, tight coupling, abstraction violations |
-    | Test Coverage | Assess safety for refactoring | Existing tests, coverage gaps, test quality, missing assertions |
-    | Patterns | Identify applicable techniques | Design patterns, refactoring recipes, architectural improvements |
-    | Risk | Evaluate change impact | Blast radius, breaking changes, complexity, rollback difficulty |
-  }
+    NextStepsAfterAnalysis {
+      "Document and proceed" — Save plan to docs/refactor/[NNN]-[name].md, then execute
+      "Proceed without documenting" — Execute refactorings directly
+      "Cancel" — Abort refactoring
+    }
 
-  SimplificationAnalysisPerspectives {
-    | Perspective | Intent | What to Find |
-    |-------------|--------|--------------|
-    | Complexity | Reduce cognitive load | Long methods (>20 lines), deep nesting, complex conditionals, convoluted loops, tangled async/promise chains |
-    | Clarity | Make intent obvious | Unclear names, magic numbers, inconsistent patterns, overly defensive code, unnecessary ceremony, nested ternaries |
-    | Structure | Improve organization | Mixed concerns, tight coupling, bloated interfaces, god objects, too many parameters, hidden dependencies |
-    | Waste | Eliminate what shouldn't exist | Duplication, dead code, unused abstractions, speculative generality, copy-paste patterns, unreachable paths |
-  }
-
-  ErrorRecovery {
-    Tests fail after refactoring => Revert change, report failure, offer: try alternative / add tests first / skip / get guidance
-    Behavior changed => Revert immediately, investigate cause
-    Untested code encountered => Flag for user: add characterization tests first / proceed with manual verification (risky) / skip
-    User requests stop => Halt immediately, report progress so far
-  }
-
-  SupportingFiles {
-    reference/code-smells.md => Code smell catalog and refactoring strategies
+    NextStepsAfterCompletion {
+      "Commit these changes"
+      "Run full test suite"
+      "Address skipped items (add tests first)"
+      "Done"
+    }
   }
 
   Workflow {
     Phase1_EstablishBaseline {
-      1. Call: skill({ name: "safe-refactoring" })
-      2. Locate target code based on $ARGUMENTS
-      3. Run existing tests to establish baseline
-      4. Report baseline status:
-      
-      Refactoring Baseline
-      
-      Tests: [X] passing, [Y] failing
-      Coverage: [Z]%
-      Uncovered areas: [List critical paths]
-      
-      Baseline Status: READY | TESTS FAILING | COVERAGE GAP
-      
-      5. If tests failing => Stop and report to user
-      6. If uncovered code found => Flag for user decision before proceeding
+      Locate target code from $ARGUMENTS. Run existing tests to establish baseline.
+      Report baseline: passing/failing/skipped counts, coverage assessment.
+
+      match (baseline) {
+        tests failing  => stop, report to user
+        coverage gaps  => Ask user: Add tests first (recommended) | Proceed without coverage | Cancel
+        ready          => continue
+      }
     }
 
-    Phase2_Analyze {
-      Launch parallel analysis agents (single response with multiple task calls) per the active analysis mode perspectives
-      
-      Template {
-        Analyze [PERSPECTIVE] for refactoring:
-        
-        CONTEXT:
-        - Target: [Code to refactor]
-        - Scope: [Module/feature boundaries]
-        - Baseline: [Test status, coverage %]
-        
-        FOCUS: [What this perspective analyzes - from perspectives table]
-        
-        OUTPUT: Return findings as:
-        - impact: HIGH | MEDIUM | LOW
-        - title: Brief title (max 40 chars)
-        - location: file:line
-        - problem: One sentence describing what's wrong
-        - refactoring: Specific technique to apply
-        - risk: Potential complications
-        
-        If no findings: NO_FINDINGS
-      }
+    Phase2_AnalyzeIssues {
+      Select perspectives: Simplification for within-function readability, Standard for structural refactoring.
+      Launch parallel subagents per applicable perspectives simultaneously in a single response.
 
-      Synthesis {
-        1. Collect all findings from analysis agents
-        2. Deduplicate overlapping issues
-        3. Rank by: Impact (High > Medium > Low), then Risk (Low first)
-        4. Sequence refactorings: Independent changes first, dependent changes after
-        5. Present findings in summary table format
-        6. Use question:
-           "Document and proceed" => Save plan to .start/refactor/[NNN]-[name].md, then execute
-           "Proceed without documenting" => Execute refactorings directly
-           "Cancel" => Abort refactoring
-        
-        If user chooses to document => Create file with target, baseline metrics, issues identified, planned techniques, risk assessment
-      }
+      Process findings:
+        1. Deduplicate overlapping issues.
+        2. Rank by impact (descending), then risk (ascending).
+        3. Sequence independent items first, dependent items after.
+
+      Present analysis summary with Finding table.
+      Ask user: Document and proceed | Proceed without documenting | Cancel
+      If Cancel: stop, report summary of findings discovered.
     }
 
     Phase3_ExecuteChanges {
-      For EACH change in prioritized sequence:
-      
-      1. Apply single change
-      2. Run tests immediately
-      3. If pass => Mark complete, continue to next
-      4. If fail => Apply error recovery (see ErrorRecovery)
+      Apply changes sequentially — behavior preservation requires it.
+
+      For each refactoring in findings:
+        1. Apply single change.
+        2. Run tests immediately.
+        3. If tests pass: mark complete, continue.
+        4. If tests fail: `git checkout -- <changed files>`.
+           Report error recovery: what was reverted, what to investigate next.
     }
 
     Phase4_FinalValidation {
-      1. Run complete test suite
-      2. Compare behavior with baseline
-      3. Present results:
-      
-      ## Refactoring Complete: [target]
-      
-      **Status**: Complete | Partial - [reason]
-      
-      ### Before / After
-      
-      | File | Before | After | Technique |
-      |------|--------|-------|-----------|
-      | billing.ts | 75-line method | 4 functions, 20 lines each | Extract Method |
-      
-      ### Verification
-      
-      - Tests: [X] passing (baseline: [Y])
-      - Behavior: Preserved
-      - Coverage: [Z]% (baseline: [W]%)
-      
-      ### Quality Improvements
-      
-      - [Improvement 1]
-      
-      ### Skipped
-      
-      - [file:line] - [reason]
-      
-      4. Use question:
-         "Commit these changes"
-         "Run full test suite"
-         "Address skipped items (add tests first)"
-         "Done"
+      Run complete test suite. Compare behavior with baseline.
+      Present completion summary: changes applied, tests status, skipped items.
+      Ask user: Commit changes | Run full test suite | Address skipped items | Done
     }
   }
 }
 
 ## Important Notes
 
-- **Parallel analysis, sequential execution** - Analyze fast, change safely
-- **Behavior preservation is mandatory** - External functionality must remain identical
-- **Test after every change** - Never batch changes before verification
-- **Revert on failure** - Working code beats refactored code
-- **Document BEFORE execution** - If user wants documentation, create it before making changes
-- **Confirm before writing documentation** - Always ask user before persisting plans to .start/
+- Establish a passing test baseline BEFORE any changes; revert immediately if tests fail after a change
+- One refactoring at a time — never batch changes before test verification
+- Never change external behavior, public API contracts, or business logic results
+- Use Simplification perspectives for within-function readability; Standard perspectives for structural work
+- Risk assessment (blast radius, breaking changes, performance) applies to all refactoring

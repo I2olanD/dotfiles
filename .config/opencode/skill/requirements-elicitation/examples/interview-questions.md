@@ -2,9 +2,9 @@
 
 ## Context
 
-This document provides a structured bank of questions for stakeholder interviews across different phases of requirements elicitation. Questions are organized by purpose and stakeholder type. Select questions based on your session goals -- not all questions apply to every interview.
+This document provides a structured bank of questions for stakeholder interviews across different phases of requirements elicitation. Questions are organized by purpose and stakeholder type. Select questions based on your session goals — not all questions apply to every interview.
 
-Use these in conjunction with the interview structure from SKILL.md (Context -> Current State -> Desired State -> Constraints -> Wrap-Up).
+Use these in conjunction with the interview structure from SKILL.md (Context → Current State → Desired State → Constraints → Wrap-Up).
 
 ---
 
@@ -35,7 +35,7 @@ These questions establish context and reveal the real problem. Ask them early to
 - Who do you think I should talk to next?
 - Are there people who benefit from the current situation staying the same?
 - Who signs off on this decision?
-- Are there stakeholders outside your team -- customers, partners, regulators?
+- Are there stakeholders outside your team — customers, partners, regulators?
 
 ---
 
@@ -70,7 +70,7 @@ These questions document what exists today so you can identify pain points and u
 ### Volume and Scale
 
 - How many people do this task?
-- How much data is involved -- records, transactions, files?
+- How much data is involved — records, transactions, files?
 - What happens during peak periods? How does the system cope?
 - Has this grown significantly in the past year? Where do you expect it to be in two years?
 
@@ -82,7 +82,7 @@ These questions clarify the goal and prevent gold plating by anchoring requireme
 
 ### Defining Success
 
-- Describe the ideal state -- what does "done" look like?
+- Describe the ideal state — what does "done" look like?
 - What specific outcome tells you this worked?
 - What metrics would you measure to know it's working?
 - What's the minimum you need to declare this a success?
@@ -97,7 +97,7 @@ These questions clarify the goal and prevent gold plating by anchoring requireme
 
 ### Priority and Trade-offs
 
-- If you had to rank these capabilities -- fast, cheap, correct -- which matters most?
+- If you had to rank these capabilities — fast, cheap, correct — which matters most?
 - What can we defer to a later phase without losing the core value?
 - Are there features you think would be nice but aren't essential?
 - Would you rather have something basic by [date] or something complete later?
@@ -110,7 +110,7 @@ These questions confirm your understanding and surface gaps before you commit to
 
 ### Checking Comprehension
 
-- Let me summarize what I've heard -- please correct me where I'm wrong.
+- Let me summarize what I've heard — please correct me where I'm wrong.
 - Is there anything important I haven't asked?
 - What assumptions are you making that I might not share?
 - What would you add if you had more time?
@@ -163,7 +163,7 @@ These questions uncover implementation constraints and integration complexity.
 - Are there existing systems this needs to integrate with?
 - What parts of the current architecture make this harder than it should be?
 - Are there data quality or availability issues we need to account for?
-- What are the constraints we can't change -- legacy systems, contracts, infrastructure?
+- What are the constraints we can't change — legacy systems, contracts, infrastructure?
 - What's the riskiest part of building this from a technical standpoint?
 - Are there security, privacy, or compliance requirements that aren't obvious?
 
@@ -176,7 +176,7 @@ These questions focus on strategic alignment, risk tolerance, and go/no-go crite
 - What would make you pull the plug on this initiative?
 - Who are the key decision-makers, and what do they care about?
 - Is there a point at which this becomes "too expensive" relative to the value?
-- What external pressures -- market, regulatory, competitive -- are driving this timeline?
+- What external pressures — market, regulatory, competitive — are driving this timeline?
 
 ---
 
@@ -191,7 +191,7 @@ These questions focus on strategic alignment, risk tolerance, and go/no-go crite
 
 ### For Customer-Facing Products
 
-- Who is the target user -- are they tech-savvy, occasional users, power users?
+- Who is the target user — are they tech-savvy, occasional users, power users?
 - What devices and environments will they use this on?
 - What does the user already know when they arrive at this feature?
 - What's the user's goal, and what might distract them from it?
@@ -201,16 +201,16 @@ These questions focus on strategic alignment, risk tolerance, and go/no-go crite
 
 - What decisions will be made using this data?
 - Who will look at this, and how often?
-- What's the acceptable latency -- real-time, hourly, daily?
+- What's the acceptable latency — real-time, hourly, daily?
 - What's the source of truth, and how reliable is it?
-- What does "wrong" look like -- what data errors have caused problems before?
+- What does "wrong" look like — what data errors have caused problems before?
 
 ### For Integration and API Features
 
 - What systems will call this, and what do they expect back?
 - What are the upstream and downstream dependencies?
 - What's the acceptable error rate and latency?
-- How will failures be handled -- retry, fallback, alert?
+- How will failures be handled — retry, fallback, alert?
 - Who is responsible for the other side of this integration?
 
 ---

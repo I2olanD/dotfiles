@@ -27,6 +27,7 @@
 
 [include]
   path = ~/.gitconfig.user
+
 [merge]
 	conflictStyle = zdiff3
 
