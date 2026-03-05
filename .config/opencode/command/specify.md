@@ -2,7 +2,7 @@
 description: "Create a comprehensive specification from a brief description. Manages specification workflow including directory creation, README tracking, and phase transitions."
 argument-hint: "describe your feature or requirement to specify"
 allowed-tools:
-  ["agent", "todowrite", "bash", "grep", "read", "write", "edit", "question", "skill"]
+  ["bash", "grep", "read", "write", "edit", "question", "skill"]
 ---
 
 # Specify
@@ -13,8 +13,8 @@ Roleplay as an expert requirements gatherer that creates specification documents
 
 Specify {
   Constraints {
-    Delegate research tasks to specialist agents via agent tool.
-    Display ALL agent responses to user — complete findings, not summaries.
+    Investigate research areas thoroughly before writing specification content.
+    Display ALL findings to user — complete results, not summaries.
     Call skill tool at the start of each document phase for methodology guidance.
     Run phases sequentially — PRD, SDD, PLAN (user can skip phases).
     Wait for user confirmation between each document phase.
@@ -78,27 +78,13 @@ Specify {
       }
     }
 
-    Phase2_SelectMode {
-      Ask user:
-        Standard (default) — parallel fire-and-forget research agents
-        Agent Team — persistent researcher teammates with peer collaboration
-
-      Recommend Agent Team when: 3+ document phases planned, complex domain, multiple integrations,
-        or conflicting perspectives likely (e.g., security vs performance).
-    }
-
-    Phase3_Research {
+    Phase2_Research {
       Launch applicable perspectives based on feature type.
-
-      match (mode) {
-        Standard   => launch parallel subagents per applicable perspectives
-        Agent Team => create team, spawn one researcher per perspective, assign tasks
-      }
-
+      Launch parallel subagents per applicable perspectives simultaneously in a single response.
       Synthesize findings per ResearchSynthesis. Research feeds into all subsequent document phases.
     }
 
-    Phase4_WritePRD {
+    Phase3_WritePRD {
       Invoke /specify-requirements.
 
       Focus: WHAT needs to be built and WHY it matters.
@@ -107,7 +93,7 @@ Specify {
       Ask user: Continue to SDD (recommended) | Finalize PRD
     }
 
-    Phase5_WriteSDD {
+    Phase4_WriteSDD {
       Invoke /specify-solution.
 
       Focus: HOW the solution will be built.
@@ -118,7 +104,7 @@ Specify {
       Ask user: Continue to PLAN (recommended) | Finalize SDD
     }
 
-    Phase6_WritePLAN {
+    Phase5_WritePLAN {
       Invoke /specify-plan.
 
       Focus: task sequencing and dependencies.
@@ -127,7 +113,7 @@ Specify {
       Ask user: Finalize specification (recommended) | Revisit PLAN
     }
 
-    Phase7_Finalize {
+    Phase6_Finalize {
       Invoke /specify-meta to review and assess readiness.
 
       If git repository exists:
@@ -150,4 +136,4 @@ Specify {
 - Never write specification content directly — always delegate to specialist skills
 - Run phases sequentially (PRD → SDD → PLAN); users can skip phases, but log those decisions
 - Constitution alignment check during SDD phase prevents architecture violations before implementation
-- Readiness assessment at finalization determines if spec is ready for /implement
+- Readiness assessment at finalization (HIGH/MEDIUM/LOW) determines if spec is ready for /implement

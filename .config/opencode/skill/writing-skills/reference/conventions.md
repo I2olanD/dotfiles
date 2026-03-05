@@ -26,12 +26,10 @@ description: What it does and when to use it  // Max 1024 chars
 
 Optional fields:
 
-allowed-tools: Task, Bash, Read              // Tools without permission prompts
+allowed-tools: Bash, Read                    // Tools without permission prompts
 user-invocable: true                         // false = hides from / menu
 argument-hint: "description of arguments"    // Shown in / menu
 disable-model-invocation: false              // true = only user can invoke
-context: fork                                // Run in subagent
-agent: Explore                               // Subagent type when context: fork
 
 ### Description Guidelines
 

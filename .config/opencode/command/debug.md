@@ -2,7 +2,7 @@
 description: "Systematically diagnose and resolve bugs through conversational investigation and root cause analysis"
 argument-hint: "describe the bug, error message, or unexpected behavior"
 allowed-tools:
-  ["agent", "todowrite", "bash", "grep", "glob", "read", "edit", "question", "skill"]
+  ["bash", "grep", "glob", "read", "edit", "question", "skill"]
 ---
 
 # Debug
@@ -63,39 +63,19 @@ Debug {
       Show only relevant code — never walls of text.
     }
 
-    Phase2_SelectMode {
-      Ask user:
-        Standard (default) — conversational step-by-step debugging
-        Agent Team — adversarial investigation with competing hypotheses
-
-      Recommend Agent Team when:
-        Hypotheses >= 3 | bug spans multiple systems | intermittent reproduction |
-        contradictory evidence | prior debugging attempts failed
+    Phase2_Investigate {
+      Present theories conversationally, let user guide direction.
+      Track hypotheses internally — narrow down through targeted investigation.
+      Present theories numbered by likelihood.
     }
 
-    Phase3_Investigate {
-      match (mode) {
-        Standard => {
-          present theories conversationally, let user guide direction
-          track hypotheses with todowrite
-          narrow down through targeted investigation
-          present theories numbered by likelihood
-        }
-        Agent Team => {
-          spawn investigators per relevant perspectives
-          adversarial protocol: investigators challenge each other's hypotheses
-          strongest surviving hypothesis = most likely root cause
-        }
-      }
-    }
-
-    Phase4_FindRootCause {
+    Phase3_FindRootCause {
       1. Correlate evidence across perspectives.
       2. Rank hypotheses by supporting evidence.
       3. Present root cause with specific file:line reference.
     }
 
-    Phase5_FixAndVerify {
+    Phase4_FixAndVerify {
       Propose minimal fix targeting root cause.
       Ask user: Apply fix | Modify approach | Skip
 
@@ -111,5 +91,5 @@ Debug {
 - Report only verified observations — never claim to have analyzed code you haven't read
 - Always ask before applying fixes; report actual test results honestly after applying
 - Use natural, first-person language: "I see you're hitting...", "Found it."
-- Recommend Agent Team when hypotheses >= 3 or bug spans multiple systems
+- When multiple hypotheses arise, track them internally and narrow down through targeted investigation
 - After fixing, always verify by running tests and asking about adding a regression test

@@ -2,7 +2,7 @@
 description: "Validate specifications, implementations, constitution compliance, or understanding. Includes spec quality checks, drift detection, and constitution enforcement."
 argument-hint: "spec ID (e.g., 005), file path, 'constitution', 'drift', or description of what to validate"
 allowed-tools:
-  ["agent", "todowrite", "bash", "grep", "glob", "read", "edit", "write", "question"]
+  ["bash", "grep", "glob", "read", "edit", "write", "question"]
 ---
 
 # Validate
@@ -13,12 +13,11 @@ Roleplay as a validation orchestrator that ensures quality and correctness acros
 
 Validate {
   Constraints {
-    Delegate all validation tasks to specialist agents via agent tool.
-    Launch ALL applicable validation perspectives simultaneously.
+    Cover all applicable validation perspectives thoroughly.
+    Launch all applicable validation perspectives simultaneously where possible.
     Include file paths and line numbers for all findings.
     Every finding must have a clear, actionable fix recommendation.
     Advisory by default — provide recommendations without blocking.
-    Never validate code yourself — always delegate to specialist agents.
     Never skip constitution L1/L2 violations — these are blocking.
     Never present findings without specific file:line references.
     Never summarize agent findings — present complete results.
@@ -181,22 +180,11 @@ Validate {
       }
     }
 
-    Phase3_SelectMode {
-      Ask user:
-        Standard (default) — parallel fire-and-forget subagents
-        Agent Team — persistent teammates with shared task list and coordination
-
-      Recommend Agent Team when: full spec validation | drift + constitution together | 4+ perspectives | multi-document scope.
+    Phase3_LaunchValidation {
+      Launch parallel subagents per applicable perspectives simultaneously in a single response.
     }
 
-    Phase4_LaunchValidation {
-      match (mode) {
-        Standard   => launch parallel subagents per applicable perspectives
-        Agent Team => create team, spawn one validator per perspective, assign tasks
-      }
-    }
-
-    Phase5_SynthesizeFindings {
+    Phase4_SynthesizeFindings {
       Process findings:
         1. Deduplicate by location (within 5 lines), keeping highest severity and merging complementary details.
         2. Sort by severity (descending).
@@ -210,7 +198,7 @@ Validate {
       Calculate assessment level (Excellent / Good / Needs Attention / Critical).
     }
 
-    Phase6_NextSteps {
+    Phase5_NextSteps {
       match (validationMode) {
         Constitution => Ask user: Apply autofixes (L1) | Show violations | Skip
         Drift        => Ask user: Acknowledge | Update implementation | Update spec | Defer
@@ -229,6 +217,6 @@ Validate {
 
 - Validation mode is determined from $ARGUMENTS: spec ID → Spec, file path → File, "drift" → Drift, "constitution" → Constitution
 - Constitution L1/L2 violations are BLOCKING — never skip these; L3 is advisory only
-- Drift is information, not failure — present options (acknowledge, update impl, update spec, defer)
+- Drift is information, not failure — present options: acknowledge, update implementation, update spec, or defer
 - Include specific file:line references for every finding — no finding without a location
 - Ambiguity score (0-5% excellent, 5-15% acceptable, 15-25% clarify, 25%+ high) applied to spec validation

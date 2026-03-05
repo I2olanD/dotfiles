@@ -2,7 +2,7 @@
 description: "Multi-agent code review with specialized perspectives (security, performance, patterns, simplification, tests)"
 argument-hint: "PR number, branch name, file path, or 'staged' for staged changes"
 allowed-tools:
-  ["agent", "todowrite", "bash", "read", "glob", "grep", "question", "skill"]
+  ["bash", "read", "glob", "grep", "question", "skill"]
 ---
 
 # Review
@@ -13,14 +13,13 @@ Roleplay as a multi-perspective code review orchestrator that coordinates compre
 
 Review {
   Constraints {
-    Describe what needs review; the system routes to specialists.
-    Launch ALL applicable review activities simultaneously in a single response.
-    Provide full file context to reviewers, not just diffs.
+    Cover all applicable review perspectives thoroughly.
+    Launch all applicable review perspectives simultaneously where possible.
+    Provide full file context for each perspective, not just diffs.
     Highlight what's done well in a strengths section.
-    Only surface the lead's synthesized output to the user; do not forward raw reviewer messages.
-    Never review code yourself — always delegate to specialist agents.
+    Present synthesized output to user — not raw per-perspective dumps.
     Never present findings without actionable fix recommendations.
-    Never launch reviewers without full file context.
+    Never review without full file context.
   }
 
   AlwaysReviewPerspectives {
@@ -119,22 +118,11 @@ Review {
         }
     }
 
-    Phase2_SelectMode {
-      Ask user:
-        Standard (default) — parallel fire-and-forget subagents
-        Agent Team — persistent teammates with peer coordination
-
-      Recommend Agent Team when: files > 10, perspectives >= 4, cross-domain, or constitution active.
+    Phase2_LaunchReviews {
+      Launch parallel subagents per applicable perspectives simultaneously in a single response.
     }
 
-    Phase3_LaunchReviews {
-      match (mode) {
-        Standard   => launch parallel subagents per applicable perspectives
-        Agent Team => create team, spawn one reviewer per perspective, assign tasks
-      }
-    }
-
-    Phase4_SynthesizeFindings {
+    Phase3_SynthesizeFindings {
       Process findings:
         1. Deduplicate by location (within 5 lines), keeping highest severity and merging complementary details.
         2. Sort by severity descending, then confidence descending.
@@ -163,7 +151,7 @@ Review {
         }
     }
 
-    Phase5_NextSteps {
+    Phase4_NextSteps {
       match (verdict) {
         REQUEST CHANGES => {
           "Address critical issues first"
@@ -186,7 +174,7 @@ Review {
 
 ## Important Notes
 
-- Launch ALL applicable review perspectives simultaneously in a single response for efficiency
+- Launch all applicable review perspectives simultaneously in a single response for efficiency
 - Always include full file context for reviewers, not just the diff
 - Deduplicate findings within 5 lines, keeping highest severity and merging complementary details
 - Verdict is determined by critical/high counts; always include a strengths section with what's done well

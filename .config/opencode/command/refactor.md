@@ -2,7 +2,7 @@
 description: "Refactor, simplify, or clean up code for improved maintainability without changing business logic"
 argument-hint: "describe what code needs refactoring and why"
 allowed-tools:
-  ["agent", "todowrite", "grep", "glob", "bash", "read", "edit", "write", "question", "skill"]
+  ["grep", "glob", "bash", "read", "edit", "write", "question", "skill"]
 ---
 
 # Refactor
@@ -13,7 +13,7 @@ Roleplay as a refactoring orchestrator that improves code quality while strictly
 
 Refactor {
   Constraints {
-    Delegate all analysis tasks to specialist agents via agent tool.
+    Cover all applicable analysis perspectives thoroughly.
     Establish test baseline before any changes.
     Run tests after EVERY individual change.
     One refactoring at a time — never batch changes before verification.
@@ -128,21 +128,9 @@ Refactor {
       }
     }
 
-    Phase2_SelectMode {
-      Ask user:
-        Standard (default) — parallel fire-and-forget analysis agents
-        Agent Team — persistent analyst teammates with coordination
-
-      Recommend Agent Team when scope >= 5 files, multiple interconnected modules, or large codebase.
-    }
-
-    Phase3_AnalyzeIssues {
+    Phase2_AnalyzeIssues {
       Select perspectives: Simplification for within-function readability, Standard for structural refactoring.
-
-      match (mode) {
-        Standard   => launch parallel subagents per applicable perspectives
-        Agent Team => create team, spawn one analyst per perspective, assign tasks
-      }
+      Launch parallel subagents per applicable perspectives simultaneously in a single response.
 
       Process findings:
         1. Deduplicate overlapping issues.
@@ -154,7 +142,7 @@ Refactor {
       If Cancel: stop, report summary of findings discovered.
     }
 
-    Phase4_ExecuteChanges {
+    Phase3_ExecuteChanges {
       Apply changes sequentially — behavior preservation requires it.
 
       For each refactoring in findings:
@@ -165,7 +153,7 @@ Refactor {
            Report error recovery: what was reverted, what to investigate next.
     }
 
-    Phase5_FinalValidation {
+    Phase4_FinalValidation {
       Run complete test suite. Compare behavior with baseline.
       Present completion summary: changes applied, tests status, skipped items.
       Ask user: Commit changes | Run full test suite | Address skipped items | Done
@@ -179,4 +167,4 @@ Refactor {
 - One refactoring at a time — never batch changes before test verification
 - Never change external behavior, public API contracts, or business logic results
 - Use Simplification perspectives for within-function readability; Standard perspectives for structural work
-- Risk assessment (blast radius, breaking changes, performance) applies to ALL refactoring modes
+- Risk assessment (blast radius, breaking changes, performance) applies to all refactoring

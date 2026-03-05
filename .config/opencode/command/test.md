@@ -2,7 +2,7 @@
 description: "Use when completing implementation, fixing bugs, refactoring code, or any time you need to verify the test suite passes. Also use when tests fail and you hear 'pre-existing' or 'not my changes' — enforces strict code ownership."
 argument-hint: "'all' to run full suite, file path for targeted tests, or 'baseline' to capture current state"
 allowed-tools:
-  ["agent", "bash", "read", "glob", "grep", "edit", "write", "question", "todowrite"]
+  ["bash", "read", "glob", "grep", "edit", "write", "question"]
 ---
 
 # Test
@@ -156,17 +156,7 @@ Test {
       Present discovery results: runner identified, test files found, categories, quality commands.
     }
 
-    Phase2_SelectMode {
-      Ask user:
-        Standard (default) — sequential test execution, discover-run-fix-verify
-        Agent Team — parallel runners per test category (unit, integration, E2E, quality)
-
-      Recommend Agent Team when:
-        3+ test categories | full suite > 2 min | failures span multiple modules |
-        both lint/typecheck AND test failures to fix
-    }
-
-    Phase3_CaptureBaseline {
+    Phase2_CaptureBaseline {
       Run full test suite to establish baseline. Record passing, failing, skipped counts.
       Present baseline report.
 
@@ -176,11 +166,8 @@ Test {
       }
     }
 
-    Phase4_ExecuteTests {
-      match (mode) {
-        Standard   => run full suite, capture verbose output, parse results
-        Agent Team => create team, spawn one runner per test category, assign tasks
-      }
+    Phase3_ExecuteTests {
+      Run full suite, capture verbose output, parse results.
 
       match (results) {
         all passing => skip to Phase5
@@ -195,14 +182,14 @@ Test {
         5. If fixing one test breaks another: find root cause, do NOT give up.
     }
 
-    Phase5_RunQualityChecks {
+    Phase4_RunQualityChecks {
       For each quality command discovered in Phase1:
         1. Run the command.
         2. If passes: continue.
         3. If fails: fix issues in files you touched, re-run to verify.
     }
 
-    Phase6_Report {
+    Phase5_Report {
       Present final report: suite health, failures fixed, quality checks passed, files changed.
     }
   }

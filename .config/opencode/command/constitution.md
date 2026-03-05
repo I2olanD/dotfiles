@@ -2,7 +2,7 @@
 description: "Create or update a project constitution with governance rules. Uses discovery-based approach to generate project-specific rules."
 argument-hint: "optional focus areas (e.g., 'security and testing', 'architecture patterns for Next.js')"
 allowed-tools:
-  ["agent", "todowrite", "bash", "grep", "glob", "read", "write", "edit", "question", "skill"]
+  ["bash", "grep", "glob", "read", "write", "edit", "question", "skill"]
 ---
 
 # Constitution
@@ -13,8 +13,8 @@ Roleplay as a governance orchestrator that coordinates parallel pattern discover
 
 Constitution {
   Constraints {
-    Delegate all discovery to specialist agents via agent tool.
-    Launch all applicable discovery perspectives simultaneously in a single response.
+    Cover all applicable discovery perspectives thoroughly.
+    Launch all applicable discovery perspectives simultaneously where possible.
     Discover actual codebase patterns before proposing rules.
     Present discovered rules for user approval before writing.
     Classify every rule with a level (L1/L2/L3).

@@ -50,7 +50,7 @@ SpecifyPlan {
     }
 
     2_DiscoverTasks {
-      Launch parallel specialist agents to investigate:
+      Investigate each planning area directly:
       1. Task sequencing and dependencies
       2. Testing strategies for each component
       3. Risk assessment and mitigation

@@ -10,7 +10,7 @@ metadata:
 
 # Writing Skills
 
-Roleplay as a skill authoring specialist that creates, audits, converts, and maintains Claude Code skills following the conventions in reference/conventions.md.
+Roleplay as a skill authoring specialist that creates, audits, converts, and maintains opencode skills following the conventions in reference/conventions.md.
 
 WritingSkills {
   Activation {
@@ -66,7 +66,7 @@ WritingSkills {
       2. Read reference/output-format.md for audit checklist
       3. Identify issue category and root cause, not just symptoms
       4. Propose specific fix
-      5. Test fix via subagent before proposing -- don't just analyze
+      5. Test the fix before proposing -- don't just analyze
       6. Run step 6 (Verify Skill)
     }
 
@@ -83,7 +83,7 @@ WritingSkills {
       Verify structure: Grep for ## headings -- PICS sections present?
       Verify size: Line count < 500? If not, identify content to externalize
       Verify conventions: Read reference/conventions.md and check compliance
-      For discipline-enforcing skills: Launch subagent with pressure scenario per reference/testing-with-subagents.md
+      For discipline-enforcing skills: test with a pressure scenario per reference/testing-with-pressure-scenarios.md
     }
 
     7_PresentResult {
@@ -118,7 +118,7 @@ WritingSkills {
 - [conventions.md](reference/conventions.md) - Skill structure, PICS layout, transformation checklist
 - [common-failures.md](reference/common-failures.md) - Failure patterns, anti-patterns, fixes
 - [output-format.md](reference/output-format.md) - Audit checklist, issue categories
-- [testing-with-subagents.md](reference/testing-with-subagents.md) - Pressure scenarios for discipline-enforcing skills
+- [testing-with-subagents.md](reference/testing-with-pressure-scenarios.md) - Pressure scenario methodology for discipline-enforcing skills
 - [persuasion-principles.md](reference/persuasion-principles.md) - Language patterns for rule-enforcement skills
 - [canonical-skill.md](examples/canonical-skill.md) - Annotated skill demonstrating all conventions
 - [output-example.md](examples/output-example.md) - Concrete output example

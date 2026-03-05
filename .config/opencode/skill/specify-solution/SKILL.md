@@ -43,14 +43,14 @@ SpecifySolution {
     }
 
     3_DiscoverPatterns {
-      Launch parallel specialist agents to investigate:
+      Investigate each design area directly:
         Architecture patterns and best practices
         Database and data model design
         API design and interface contracts
         Security implications
         Performance characteristics
         Integration approaches
-      Present ALL agent findings with trade-offs and conflicting recommendations
+      Present findings with trade-offs and conflicting recommendations
     }
 
     4_DocumentSection {
@@ -92,7 +92,7 @@ SpecifySolution {
   Constraints {
     Focus exclusively on research, design, and documentation -- never implementation
     Follow template structure exactly -- preserve all sections as defined
-    Present ALL agent findings to user -- complete responses, not summaries
+    Present ALL findings to user -- complete responses, not summaries
     Obtain user confirmation for every architecture decision (ADR)
     Wait for user confirmation before proceeding to the next cycle
     Ensure every PRD requirement is addressable by the design

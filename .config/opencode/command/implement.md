@@ -2,7 +2,7 @@
 description: "Executes the implementation plan from a specification. Loops through plan phases, delegates tasks to specialists, updates phase status on completion. Supports resuming from partially-completed plans."
 argument-hint: "spec ID to implement (e.g., 001), or file path"
 allowed-tools:
-  ["agent", "todowrite", "bash", "write", "edit", "read", "glob", "grep", "question", "skill"]
+  ["bash", "write", "edit", "read", "glob", "grep", "question", "skill"]
 ---
 
 # Implement
@@ -13,7 +13,7 @@ Roleplay as an implementation orchestrator that executes specification plans by 
 
 Implement {
   Constraints {
-    Delegate ALL implementation tasks to subagents or teammates via agent tool.
+    Delegate ALL implementation tasks to subagents.
     Summarize agent results — extract files, summary, tests, blockers for user visibility.
     Load only the current phase file — one phase at a time for context efficiency.
     Wait for user confirmation at phase boundaries.
@@ -22,7 +22,7 @@ Implement {
     Pass accumulated context between phases — only relevant prior outputs + specs.
     Update phase file frontmatter AND plan/README.md checkbox on phase completion.
     Skip already-completed phases when resuming an interrupted plan.
-    Never implement code directly — you are an orchestrator ONLY.
+    Never implement code directly — act as orchestrator ONLY.
     Never display full agent responses — extract key outputs only.
     Never skip phase boundary checkpoints.
     Never proceed past a blocking constitution violation (L1/L2).
@@ -81,20 +81,11 @@ Implement {
       }
     }
 
-    Phase2_SelectMode {
-      Ask user:
-        Standard (default) — parallel fire-and-forget subagents with todowrite tracking
-        Agent Team — persistent teammates with shared task list and coordination
-
-      Recommend Agent Team when:
-        phases >= 3 | cross-phase dependencies | parallel tasks >= 5 | shared state across tasks
-    }
-
-    Phase3_PhaseLoop {
+    Phase2_PhaseLoop {
       For each phase where phase.status != completed:
         1. Mark phase as in_progress (update frontmatter).
-        2. Execute the phase (Phase4).
-        3. Validate the phase (Phase5).
+        2. Execute the phase (Phase3_ExecutePhase).
+        3. Validate the phase (Phase4_ValidatePhase).
         4. Ask user:
            match (user choice) {
              "Continue to next phase" => continue loop
@@ -105,28 +96,17 @@ Implement {
 
       After loop:
         match (all phases completed) {
-          true  => run Phase7_Complete
+          true  => run Phase5_Complete
           false => report progress, plan is resumable from next pending phase
         }
     }
 
-    Phase4_ExecutePhase {
+    Phase3_ExecutePhase {
       Read plan/phase-{N}.md for current phase tasks.
       Read Phase Context: GATE, spec references, key decisions, dependencies.
 
-      match (mode) {
-        Standard => {
-          Load ONLY current phase tasks into todowrite.
-          Parallel tasks (marked [parallel: true]): launch ALL in a single response.
-          Sequential tasks: launch one, await result, then next.
-          Update todowrite status after each task.
-        }
-        Agent Team => {
-          Create tasks via task system with phase/task metadata and dependency chains.
-          Spawn teammates by work stream — only roles needed for current phase.
-          Assign tasks. Monitor via automatic messages and task list.
-        }
-      }
+      Parallel tasks (marked [parallel: true]): launch ALL in a single response.
+      Sequential tasks: launch one, await result, then next.
 
       As tasks complete: update task checkboxes in phase-N.md: `- [ ]` → `- [x]`
 
@@ -137,7 +117,7 @@ Implement {
         After 3 cycles    => escalate to user
     }
 
-    Phase5_ValidatePhase {
+    Phase4_ValidatePhase {
       1. Run /validate drift check for spec alignment.
       2. Run /validate constitution check if CONSTITUTION.md exists.
       3. Verify all phase tasks are complete.
@@ -150,7 +130,7 @@ Implement {
       Ask user: Continue to next phase | Review output | Pause | Address issues
     }
 
-    Phase7_Complete {
+    Phase5_Complete {
       1. Run /validate for final validation (comparison mode).
       2. Present completion summary: spec ID, phases completed, tasks executed, test status, files changed.
 
@@ -168,4 +148,4 @@ Implement {
 - Load one phase file at a time for context efficiency; skip already-completed phases on resume
 - Run /validate drift check and constitution check at every phase boundary
 - Update both phase-N.md frontmatter AND plan/README.md checkbox when completing each phase
-- Recommend Agent Team when 3+ phases, 5+ parallel tasks, or cross-phase dependencies exist
+- For parallel tasks (marked [parallel: true]): launch ALL in a single response; sequential tasks: one at a time

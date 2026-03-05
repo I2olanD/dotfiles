@@ -1,4 +1,4 @@
-# Testing Skills With Subagents
+# Testing Skills With Pressure Scenarios
 
 **Load this reference when:** creating or editing skills, before deployment, to verify they work under pressure and resist rationalization.
 
@@ -49,7 +49,7 @@ Don't test:
 
 ### How to Run a Baseline Test
 
-Use the Task tool to launch a subagent:
+Present the scenario directly in the current conversation:
 
 ```markdown
 IMPORTANT: This is a real scenario. You must choose and act.

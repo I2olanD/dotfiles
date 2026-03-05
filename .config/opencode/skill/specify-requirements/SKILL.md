@@ -38,10 +38,10 @@ SpecifyRequirements {
 
     1_Discover {
       Identify gaps between what is known and what template.md requires
-      Launch parallel agents for each gap:
-        Market analysis for competitive landscape
-        User research for personas and journeys
-        Requirements clarification for edge cases
+      Investigate each gap directly:
+        Research competitive landscape for market context
+        Define personas and journeys from user research
+        Clarify edge cases and acceptance criteria
     }
 
     2_Document {
@@ -51,7 +51,7 @@ SpecifyRequirements {
     }
 
     3_Review {
-      Present ALL agent findings to user, including:
+      Present ALL findings to user, including:
         Conflicting information or recommendations
         Questions needing clarification
       Options: Approve section | Clarify [topic] | Redo discovery
@@ -77,7 +77,7 @@ SpecifyRequirements {
   Constraints {
     Use template.md structure exactly -- preserve all sections as defined
     Follow iterative cycle: discover -> document -> review per section
-    Present ALL agent findings to user -- complete responses, not summaries
+    Present ALL findings to user -- complete responses, not summaries
     Wait for user confirmation before proceeding to the next cycle
     Run validation checklist before declaring PRD complete
     Never include technical implementation details -- no code, architecture, or database design

@@ -2,7 +2,7 @@
 description: "Discover and document business rules, technical patterns, and system interfaces through iterative analysis"
 argument-hint: "area to analyze (business, technical, security, performance, integration, or specific domain)"
 allowed-tools:
-  ["agent", "todowrite", "bash", "grep", "glob", "read", "write", "edit", "question", "skill"]
+  ["bash", "grep", "glob", "read", "write", "edit", "question", "skill"]
 ---
 
 # Analyze
@@ -13,13 +13,12 @@ Roleplay as an analysis orchestrator that discovers and documents business rules
 
 Analyze {
   Constraints {
-    Delegate all investigation to specialist agents via agent tool.
-    Display ALL agent responses to user — complete findings, not summaries.
-    Launch applicable perspective agents simultaneously in a single response.
+    Investigate using specialist perspectives — cover each applicable area thoroughly.
+    Display ALL findings to user — complete results, not summaries.
+    Launch applicable perspective investigations simultaneously where possible.
     Work iteratively — execute discovery, documentation, review cycles.
     Wait for user confirmation between each cycle.
     Confirm before writing documentation to docs/ directories.
-    Never analyze code yourself — always delegate to specialist agents.
     Never proceed to next cycle without user confirmation.
     Never write documentation without asking user first.
   }
@@ -51,26 +50,17 @@ Analyze {
       If target is unclear: use question tool to clarify focus area before continuing.
     }
 
-    Phase2_SelectMode {
-      Ask user:
-        Standard (default) — parallel fire-and-forget subagents
-        Agent Team — persistent analyst teammates with cross-domain coordination
-
-      Recommend Agent Team when: multiple domains | broad scope | all perspectives | complex codebase | cross-domain coordination needed
+    Phase2_Launch {
+      Launch parallel subagents per applicable perspectives simultaneously in a single response.
     }
 
-    Phase3_Launch {
-      Standard  => launch parallel subagents per applicable perspectives
-      Agent Team => create team, spawn one analyst per perspective, assign tasks
-    }
-
-    Phase4_Synthesize {
+    Phase3_Synthesize {
       1. Deduplicate by evidence — merge complementary findings with the same file:line reference.
       2. Group by documentation location (docs/domain/, docs/patterns/, docs/interfaces/, docs/research/).
       3. Build cycle summary.
     }
 
-    Phase5_Present {
+    Phase4_Present {
       Format cycle summary with all findings. Present complete agent responses, not summaries.
       Ask user: Continue to next area | Investigate further | Persist to docs | Complete analysis
 
@@ -91,7 +81,6 @@ Analyze {
 
 ## Important Notes
 
-- Always delegate code investigation to specialist agents — never analyze code yourself
 - Launch all applicable perspective agents simultaneously in a single response for efficiency
 - Wait for explicit user confirmation between each discovery cycle before proceeding
 - Only write documentation to docs/ directories after explicitly confirming with the user
