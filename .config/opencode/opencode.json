@@ -10,6 +10,10 @@
       "type": "remote",
       "url": "https://mcp.deepwiki.com/mcp",
       "enabled": true
+    },
+    "clockodo": {
+      "type": "local",
+      "command": ["npx", "-y", "clockodo-mcp@latest"]
     }
   }
 }

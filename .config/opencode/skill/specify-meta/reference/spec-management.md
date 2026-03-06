@@ -28,9 +28,9 @@
 
 ## Legacy Fallback
 
-The script supports backward compatibility with `docs/specs/`:
+The script supports backward compatibility with `.start/specs/` (formerly `docs/specs/`):
 
-- **Read**: Checks `.start/specs/` first, falls back to `docs/specs/`
+- **Read**: Checks `.start/specs/` first, falls back to legacy locations
 - **ID scanning**: Scans both directories, takes max ID across both
 - **File names**: Supports both new (`requirements.md`, `solution.md`) and legacy (`product-requirements.md`, `solution-design.md`)
 - **Plan**: Supports both `plan/` directory and legacy `implementation-plan.md`

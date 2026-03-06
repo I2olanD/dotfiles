@@ -43,7 +43,7 @@ Validate {
     }
 
     FileValidation {
-      Input: file path like `src/auth.ts` or `docs/design.md`
+      Input: file path like `src/auth.ts` or `.start/design.md`
       Validates individual files for quality and completeness.
       For spec files: structure, [NEEDS CLARIFICATION] markers, checklist completion, ambiguity
       For implementation files: TODO/FIXME markers, code completeness, spec correspondence

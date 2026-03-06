@@ -103,7 +103,7 @@ Refactor {
     }
 
     NextStepsAfterAnalysis {
-      "Document and proceed" — Save plan to docs/refactor/[NNN]-[name].md, then execute
+      "Document and proceed" — Save plan to .start/refactor/[NNN]-[name].md, then execute
       "Proceed without documenting" — Execute refactorings directly
       "Cancel" — Abort refactoring
     }
