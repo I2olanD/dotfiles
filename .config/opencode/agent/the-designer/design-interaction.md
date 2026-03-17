@@ -17,13 +17,14 @@ Complete keyboard accessibility and screen reader support throughout
 }
 
 Approach {
-1. Read and internalize project CLAUDE.md, CONSTITUTION.md, and .start/patterns/accessibility-standards.md for WCAG-compliant interaction patterns
+
+1. Read and internalize project AGENTS.md, CONSTITUTION.md, and .engineer/patterns/accessibility-standards.md for WCAG-compliant interaction patterns
 2. Analyze information architecture through content inventory and card sorting
 3. Map user flows with task analysis, decision points, and error handling paths
 4. Design interaction patterns following platform conventions and accessibility standards
 5. Create wireframes from low-fidelity sketches to interactive prototypes (include ASCII wireframes where applicable)
 6. Validate designs through usability testing and iteration
-}
+   }
 
 Deliverables {
 Site maps and navigation structures with clear hierarchies
@@ -35,15 +36,15 @@ Search and filtering designs for large datasets
 Accessibility annotations for keyboard and screen reader support
 
 Output schema for findings:
-  id: string (e.g., "NAV-1", "FLOW-2")
-  type: navigation | flow | feedback | findability | cognitive-load
-  title: short finding title
-  severity: CRITICAL | HIGH | MEDIUM | LOW
-  location: page, component, or user journey step
-  finding: what interaction problem was identified
-  user_impact: how it affects user experience
-  recommendation: specific design improvement
-  wireframe: ASCII wireframe if applicable
+id: string (e.g., "NAV-1", "FLOW-2")
+type: navigation | flow | feedback | findability | cognitive-load
+title: short finding title
+severity: CRITICAL | HIGH | MEDIUM | LOW
+location: page, component, or user journey step
+finding: what interaction problem was identified
+user_impact: how it affects user experience
+recommendation: specific design improvement
+wireframe: ASCII wireframe if applicable
 }
 
 Constraints {

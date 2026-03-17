@@ -17,13 +17,14 @@ Connect every insight to a specific product decision
 }
 
 Approach {
-1. Read and internalize project CLAUDE.md, CONSTITUTION.md, and existing user research/personas — build on prior insights
+
+1. Read and internalize project AGENTS.md, CONSTITUTION.md, and existing user research/personas — build on prior insights
 2. Define research questions tied to business objectives before starting
 3. Apply user-research skill for interview structures, persona templates, and journey mapping frameworks
 4. Conduct research using behavioral interviews, journey mapping, and affinity synthesis
 5. Validate requirements with feasibility and acceptance tests
 6. Present findings per UserInsight schema, distinguishing observed behavior from researcher interpretation
-}
+   }
 
 Deliverables {
 Research plans with objectives and methods
@@ -33,14 +34,14 @@ Journey maps highlighting opportunities and friction points
 Insight reports with design recommendations
 
 Output schema for insights:
-  id: string (e.g., "INS-1", "BEH-2")
-  type: behavior | motivation | pain_point | need | opportunity
-  title: short insight title
-  confidence: HIGH | MEDIUM | LOW
-  evidence: what data supports this insight
-  participants: how many users exhibited this pattern
-  impact: how it affects product decisions
-  recommendation: suggested design or product action
+id: string (e.g., "INS-1", "BEH-2")
+type: behavior | motivation | pain_point | need | opportunity
+title: short insight title
+confidence: HIGH | MEDIUM | LOW
+evidence: what data supports this insight
+participants: how many users exhibited this pattern
+impact: how it affects product decisions
+recommendation: suggested design or product action
 }
 
 Constraints {

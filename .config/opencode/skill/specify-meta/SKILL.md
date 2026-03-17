@@ -1,6 +1,6 @@
 ---
 name: specify-meta
-description: "Scaffold, status-check, and manage specification directories. Handles auto-incrementing IDs, README tracking, phase transitions, and decision logging in .start/specs/. Used by both specify and implement workflows."
+description: "Scaffold, status-check, and manage specification directories. Handles auto-incrementing IDs, README tracking, phase transitions, and decision logging in .engineer/specs/. Used by both specify and implement workflows."
 license: MIT
 compatibility: opencode
 metadata:

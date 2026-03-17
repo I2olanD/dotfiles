@@ -1,6 +1,6 @@
 ---
 name: specify-requirements
-description: "Create and validate product requirements documents (PRD). Use when writing requirements, defining user stories, specifying acceptance criteria, analyzing user needs, or working on requirements.md files in .start/specs/. Includes validation checklist, iterative cycle pattern, and multi-angle review process."
+description: "Create and validate product requirements documents (PRD). Use when writing requirements, defining user stories, specifying acceptance criteria, analyzing user needs, or working on requirements.md files in .engineer/specs/. Includes validation checklist, iterative cycle pattern, and multi-angle review process."
 license: MIT
 compatibility: opencode
 metadata:
@@ -17,7 +17,7 @@ SpecifyRequirements {
     Writing product requirements or PRDs
     Defining user stories and acceptance criteria
     Analyzing user needs for a feature
-    Working on requirements.md files in .start/specs/
+    Working on requirements.md files in .engineer/specs/
     Validating requirement completeness
   }
 

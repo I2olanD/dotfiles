@@ -16,7 +16,7 @@ ls -la
 ls -la *.json *.yaml *.yml *.toml 2>/dev/null
 
 # Check for documentation
-ls -la README* CLAUDE.md .start/ 2>/dev/null
+ls -la README* AGENTS.md .engineer/ 2>/dev/null
 ```
 
 ### Step 2: Source Organization
@@ -131,13 +131,13 @@ Grep: (useState|useReducer|createStore|createSlice)
 
 ## Quick Reference
 
-| Goal | Primary Tool | Pattern |
-|------|--------------|---------|
-| Find file by name | Glob | `**/target-name*` |
-| Find file by content | Grep | `pattern` with `files_with_matches` |
-| Understand function | Grep | Function name with `-C: 10` for context |
-| Find all usages | Grep | Call pattern with `files_with_matches` |
-| Map directory structure | Glob | `**/src/**/*` |
-| Find configuration | Glob | `**/*.{json,yaml,toml,env}` |
-| Trace dependencies | Grep | Import/require patterns |
-| Find tests | Glob | `**/*.test.* | **/*.spec.* | **/test_*` |
+| Goal                    | Primary Tool | Pattern                                 |
+| ----------------------- | ------------ | --------------------------------------- | ------------- | ------------ |
+| Find file by name       | Glob         | `**/target-name*`                       |
+| Find file by content    | Grep         | `pattern` with `files_with_matches`     |
+| Understand function     | Grep         | Function name with `-C: 10` for context |
+| Find all usages         | Grep         | Call pattern with `files_with_matches`  |
+| Map directory structure | Glob         | `**/src/**/*`                           |
+| Find configuration      | Glob         | `**/*.{json,yaml,toml,env}`             |
+| Trace dependencies      | Grep         | Import/require patterns                 |
+| Find tests              | Glob         | `\*_/_.test.\*                          | \*_/_.spec.\* | \*_/test\__` |

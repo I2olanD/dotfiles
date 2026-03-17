@@ -136,7 +136,7 @@ not just the outcome.]
 3. Fill in the status as "Proposed" during discussion
 4. Update status to "Accepted" when decision is finalized
 5. Never edit accepted ADRs; create new ones that supersede them
-6. Store ADRs in a `.start/decisions/` or `.start/adr/` directory
+6. Store ADRs in a `.engineer/decisions/` or `.engineer/adr/` directory
 
 ## Numbering Convention
 

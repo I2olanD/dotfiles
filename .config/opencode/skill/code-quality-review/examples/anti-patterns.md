@@ -295,7 +295,7 @@ If profiling reveals this is genuinely slow at real-world scale, the optimizatio
 def process_users(users):
     # Process in batches of 500 to stay within API rate limits.
     # Batch size determined by load testing at 10k users/minute.
-    # See: .start/adr/0012-user-batch-processing.md
+    # See: .engineer/adr/0012-user-batch-processing.md
     BATCH_SIZE = 500
     results = []
     for batch in chunked(users, BATCH_SIZE):
@@ -571,7 +571,7 @@ Files that must change:
   src/frontend/hooks/usePermissions.ts — add permission checks
   src/tests/fixtures/users.ts    — update test fixtures
   src/tests/auth/permissions.test.ts — add test cases
-  .start/api/users.md              — update API documentation
+  .engineer/api/users.md              — update API documentation
 ```
 
 ### Why It Is Problematic

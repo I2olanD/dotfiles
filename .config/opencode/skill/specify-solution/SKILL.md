@@ -1,6 +1,6 @@
 ---
 name: specify-solution
-description: "Create and validate solution design documents (SDD). Use when designing architecture, defining interfaces, documenting technical decisions, analyzing system components, or working on solution.md files in .start/specs/. Includes validation checklist, consistency verification, and overlap detection."
+description: "Create and validate solution design documents (SDD). Use when designing architecture, defining interfaces, documenting technical decisions, analyzing system components, or working on solution.md files in .engineer/specs/. Includes validation checklist, consistency verification, and overlap detection."
 license: MIT
 compatibility: opencode
 metadata:
@@ -18,7 +18,7 @@ SpecifySolution {
     Defining interfaces and API contracts
     Documenting technical decisions (ADRs)
     Analyzing system components and their interactions
-    Working on solution.md files in .start/specs/
+    Working on solution.md files in .engineer/specs/
   }
 
   SDDFocus {

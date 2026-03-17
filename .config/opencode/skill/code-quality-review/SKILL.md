@@ -67,3 +67,4 @@ CodeQualityReview {
 - [anti-patterns.md](reference/anti-patterns.md) — Common code anti-patterns and remediation strategies
 - [feedback-patterns.md](reference/feedback-patterns.md) — Effective code review feedback patterns and templates
 - [checklists.md](reference/checklists.md) — Per-dimension quality checklists for thorough reviews
+- [safe-removal.md](reference/safe-removal.md) — Verification protocol for dead code removal, dependency removal, and file deletion

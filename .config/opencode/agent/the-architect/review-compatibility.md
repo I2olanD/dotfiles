@@ -17,7 +17,8 @@ Rollout safety with rollback planning and consumer notification
 }
 
 Approach {
-1. Read and internalize project CLAUDE.md, relevant spec documents in .start/specs/, CONSTITUTION.md, and existing API versioning/deprecation conventions
+
+1. Read and internalize project AGENTS.md, relevant spec documents in .engineer/specs/, CONSTITUTION.md, and existing API versioning/deprecation conventions
 2. Classify severity (first match wins):
    breaking change to production consumers without migration path => CRITICAL
    breaking change with insufficient deprecation period => HIGH
@@ -29,7 +30,7 @@ Approach {
 6. Check versioning and deprecation: SemVer followed (breaking = major bump), deprecation warnings before removal, migration guide for breaking changes, changelog updated, release notes include upgrade instructions
 7. Check consumer impact: all consumers identified, notification plan for breaking changes, sufficient migration time, multi-version support during transition, error monitoring post-deploy
 8. Check rollout safety: feature flags for gradual rollout, documented rollback plan, dual-write/dual-read for data migrations, blue-green or canary deployment supported, health checks updated
-}
+   }
 
 Deliverables {
 Compatibility finding IDs (COMPAT-NNN) with severity (CRITICAL/HIGH/MEDIUM/LOW), confidence (HIGH/MEDIUM/LOW), location (file:line or endpoint/schema), and finding description

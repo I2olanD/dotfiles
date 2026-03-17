@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-The Agentic Startup - Spec Generation Script
+The Agentic Engineer - Spec Generation Script
 Creates numbered spec directories with auto-incrementing IDs
 
 Location: plugins/start/skills/specify-meta/spec.py
@@ -21,7 +21,7 @@ script_dir = Path(__file__).resolve().parent
 plugin_root = script_dir.parent.parent
 
 # Specs are created in the current working directory
-SPECS_DIR = Path(".start/specs")
+SPECS_DIR = Path(".engineer/specs")
 # Skills directory for template lookup
 SKILLS_DIR = plugin_root / "skills"
 
@@ -57,7 +57,7 @@ def sanitize_name(name: str) -> str:
 
 
 def find_spec_dir(spec_id: str) -> Optional[Path]:
-    """Find a spec directory by ID in .start/specs/."""
+    """Find a spec directory by ID in .engineer/specs/."""
     if SPECS_DIR.exists():
         for dir_path in SPECS_DIR.iterdir():
             if dir_path.is_dir() and dir_path.name.startswith(f"{spec_id}-"):
@@ -222,7 +222,7 @@ def create_spec(feature_name: str, template: Optional[str] = None) -> None:
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description="The Agentic Startup - Spec Generation Script"
+        description="The Agentic Engineer - Spec Generation Script"
     )
     parser.add_argument(
         "feature_name",

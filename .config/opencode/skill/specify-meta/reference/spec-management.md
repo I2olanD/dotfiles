@@ -10,7 +10,7 @@
 ## Directory Structure
 
 ```
-.start/specs/
+.engineer/specs/
 ├── 001-user-authentication/
 │   ├── README.md                 # Managed by specify-meta skill
 │   ├── requirements.md           # Created by specify-requirements skill
@@ -28,9 +28,9 @@
 
 ## Legacy Fallback
 
-The script supports backward compatibility with `.start/specs/` (formerly `docs/specs/`):
+The script supports backward compatibility with `.engineer/specs/` (formerly `docs/specs/`):
 
-- **Read**: Checks `.start/specs/` first, falls back to legacy locations
+- **Read**: Checks `.engineer/specs/` first, falls back to legacy locations
 - **ID scanning**: Scans both directories, takes max ID across both
 - **File names**: Supports both new (`requirements.md`, `solution.md`) and legacy (`product-requirements.md`, `solution-design.md`)
 - **Plan**: Supports both `plan/` directory and legacy `implementation-plan.md`
@@ -43,7 +43,7 @@ spec.py "feature name here"
 ```
 **Output:**
 ```
-Created spec directory: .start/specs/005-feature-name-here
+Created spec directory: .engineer/specs/005-feature-name-here
 Spec ID: 005
 Specification directory created successfully
 ```
@@ -58,14 +58,14 @@ spec.py 005 --read
 ```toml
 id = "005"
 name = "feature-name-here"
-dir = ".start/specs/005-feature-name-here"
+dir = ".engineer/specs/005-feature-name-here"
 
 [spec]
-prd = ".start/specs/005-feature-name-here/requirements.md"
-sdd = ".start/specs/005-feature-name-here/solution.md"
-plan_dir = ".start/specs/005-feature-name-here/plan"
-plan = ".start/specs/005-feature-name-here/plan/README.md"
-phases = [".start/specs/005-feature-name-here/plan/phase-1.md"]
+prd = ".engineer/specs/005-feature-name-here/requirements.md"
+sdd = ".engineer/specs/005-feature-name-here/solution.md"
+plan_dir = ".engineer/specs/005-feature-name-here/plan"
+plan = ".engineer/specs/005-feature-name-here/plan/README.md"
+phases = [".engineer/specs/005-feature-name-here/plan/phase-1.md"]
 
 files = [
   "README.md",

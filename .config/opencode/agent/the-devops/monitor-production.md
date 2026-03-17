@@ -17,7 +17,8 @@ Track and continuously improve MTTR metrics
 }
 
 Approach {
-1. Read and internalize project CLAUDE.md, existing monitoring configurations, service architecture and critical paths, and CONSTITUTION.md
+
+1. Read and internalize project AGENTS.md, existing monitoring configurations, service architecture and critical paths, and CONSTITUTION.md
 2. Analyze service architecture and identify critical paths and component dependencies
 3. Select observability stack (first match wins):
    existing Prometheus/Grafana setup => match existing stack
@@ -35,7 +36,7 @@ Approach {
 6. Design dashboard suites for operations, engineering, and business audiences
 7. Leverage platform-operations skill for implementation details
 8. Verify alerts fire correctly and dashboards show expected data
-}
+   }
 
 Deliverables {
 Monitoring architecture with stack configuration
