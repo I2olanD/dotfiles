@@ -314,7 +314,7 @@ npm run test:coverage # With coverage
 
 ## Usage Instructions
 
-1. Copy the template into a new file, typically `.start/system/[system-name].md`
+1. Copy the template into a new file, typically `.engineer/system/[system-name].md`
 2. Replace all bracketed placeholders with actual content
 3. Remove sections that don't apply to your system
 4. Add sections as needed for your specific context

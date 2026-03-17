@@ -1,6 +1,6 @@
 # Robustness Review Checklists
 
-Detailed checklists for complexity and concurrency review. Load when the review-robustness agent needs specific patterns to evaluate.
+Detailed checklists for complexity reduction (abstraction challenges, code/architecture simplification, anti-patterns) and concurrency safety (race conditions, async/await, deadlock prevention, resource management, database transactions, event handling). Loaded by the review-robustness agent when evaluating specific patterns.
 
 ---
 
@@ -8,15 +8,15 @@ Detailed checklists for complexity and concurrency review. Load when the review-
 
 When you see a new abstraction, challenge it. First match wins.
 
-| If You See | Ask | Expected Justification |
-|------------|-----|----------------------|
-| New interface | "How many implementations exist TODAY?" | 2+ concrete implementations |
-| Factory pattern | "Is there more than one product RIGHT NOW?" | Multiple products in use |
-| Abstract class | "What behavior is actually shared?" | Concrete shared methods |
-| Generic type parameter | "What concrete types are used TODAY?" | 2+ distinct type usages |
-| Configuration option | "Has anyone ever changed this from default?" | Evidence of variation |
-| Event/callback system | "Could a direct function call work?" | Multiple listeners needed |
-| Microservice extraction | "Does this NEED to scale independently?" | Different scaling profile proven |
+| If You See              | Ask                                          | Expected Justification           |
+| ----------------------- | -------------------------------------------- | -------------------------------- |
+| New interface           | "How many implementations exist TODAY?"      | 2+ concrete implementations      |
+| Factory pattern         | "Is there more than one product RIGHT NOW?"  | Multiple products in use         |
+| Abstract class          | "What behavior is actually shared?"          | Concrete shared methods          |
+| Generic type parameter  | "What concrete types are used TODAY?"        | 2+ distinct type usages          |
+| Configuration option    | "Has anyone ever changed this from default?" | Evidence of variation            |
+| Event/callback system   | "Could a direct function call work?"         | Multiple listeners needed        |
+| Microservice extraction | "Does this NEED to scale independently?"     | Different scaling profile proven |
 
 ## Complexity: Code-Level Simplification
 
@@ -104,10 +104,10 @@ When you see a new abstraction, challenge it. First match wins.
 
 ## Concurrency: Common Patterns to Flag
 
-| Pattern | Issue | Fix |
-|---------|-------|-----|
-| `if (cache[key]) return cache[key]` | TOCTOU race | Use atomic get-or-set |
-| `await` inside `forEach` | Sequential, not parallel | Use `Promise.all` with `map` |
-| `async () => { fetch(...) }` | Unhandled promise | Add error handling or await |
-| Shared mutable object | Race condition | Immutable or synchronized |
-| `setTimeout` without cleanup | Memory leak | Store and clear timeout ID |
+| Pattern                             | Issue                    | Fix                          |
+| ----------------------------------- | ------------------------ | ---------------------------- |
+| `if (cache[key]) return cache[key]` | TOCTOU race              | Use atomic get-or-set        |
+| `await` inside `forEach`            | Sequential, not parallel | Use `Promise.all` with `map` |
+| `async () => { fetch(...) }`        | Unhandled promise        | Add error handling or await  |
+| Shared mutable object               | Race condition           | Immutable or synchronized    |
+| `setTimeout` without cleanup        | Memory leak              | Store and clear timeout ID   |

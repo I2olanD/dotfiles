@@ -17,7 +17,8 @@ Consider the full lifecycle: build, deploy, operate, evolve
 }
 
 Approach {
-1. Read and internalize project CLAUDE.md, relevant spec documents in .start/specs/, CONSTITUTION.md, and existing codebase patterns before designing
+
+1. Read and internalize project AGENTS.md, relevant spec documents in .engineer/specs/, CONSTITUTION.md, and existing codebase patterns before designing
 2. Assess current architecture, tech stack, team capabilities, and constraints using project-discovery skill
 3. Evaluate architecture pattern (first match wins):
    independent scaling + team autonomy => microservices (trade-off: operational complexity, distributed debugging)
@@ -46,7 +47,7 @@ Approach {
    real-time client updates => WebSockets or SSE
 7. Create C4 diagrams using architecture-selection skill; define service boundaries, data flow, API contracts (api-contract-design skill), data models (domain-modeling skill)
 8. Define capacity targets, scaling triggers, deployment strategy, and monitoring (platform-operations skill); document ADRs for each major decision
-}
+   }
 
 Deliverables {
 Selected architecture pattern with rationale

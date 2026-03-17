@@ -1,6 +1,6 @@
 ---
 name: specify-plan
-description: "Create and validate implementation plans (PLAN). Use when planning implementation phases, defining tasks, sequencing work, analyzing dependencies, or working on plan files in .start/specs/. Generates per-phase files (plan/README.md + plan/phase-N.md) for progressive disclosure. Includes TDD phase structure and specification compliance gates."
+description: "Create and validate implementation plans (PLAN). Use when planning implementation phases, defining tasks, sequencing work, analyzing dependencies, or working on plan files in .engineer/specs/. Generates per-phase files (plan/README.md + plan/phase-N.md) for progressive disclosure. Includes TDD phase structure and specification compliance gates."
 license: MIT
 compatibility: opencode
 metadata:
@@ -17,7 +17,7 @@ SpecifyPlan {
     Planning implementation phases for a specification
     Defining tasks and sequencing work
     Analyzing dependencies between implementation tasks
-    Working on plan files in .start/specs/
+    Working on plan files in .engineer/specs/
     Breaking features into executable TDD tasks
   }
 

@@ -17,7 +17,8 @@ Profile with production-like data volumes under realistic load conditions
 }
 
 Approach {
-1. Read and internalize project CLAUDE.md, relevant spec documents in .start/specs/, CONSTITUTION.md, and existing codebase patterns using performance-analysis and platform-operations skills
+
+1. Read and internalize project AGENTS.md, relevant spec documents in .engineer/specs/, CONSTITUTION.md, and existing codebase patterns using performance-analysis and platform-operations skills
 2. Establish baseline metrics before any optimization — never optimize without measuring first
 3. Profile to identify actual bottlenecks using profiling tools (first match wins):
    slow page load, large bundle, poor Core Web Vitals => frontend layer
@@ -46,7 +47,7 @@ Approach {
    connection exhaustion => connection pooling + prompt connection return
 8. Measure before/after metrics for each optimization to validate improvement
 9. Set up continuous performance monitoring and budgets
-}
+   }
 
 Deliverables {
 Baseline measurements before any optimization

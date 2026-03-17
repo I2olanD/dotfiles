@@ -106,9 +106,9 @@ When implementation requires changes from the specification:
 **Specification**:
 
 [NEEDS CLARIFICATION: Replace with actual paths from your spec directory]
-- `.start/specs/[NNN]-[name]/requirements.md` - Product Requirements
-- `.start/specs/[NNN]-[name]/solution.md` - Solution Design
-- `.start/{patterns,interfaces,research}/[name].md`  - Optional references
+- `.engineer/specs/[NNN]-[name]/requirements.md` - Product Requirements
+- `.engineer/specs/[NNN]-[name]/solution.md` - Solution Design
+- `.engineer/{patterns,interfaces,research}/[name].md`  - Optional references
 
 **Key Design Decisions**:
 
