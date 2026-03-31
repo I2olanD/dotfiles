@@ -1,31 +1,7 @@
-local function find_config_dir(bufnr, config_files)
-  local filepath = vim.api.nvim_buf_get_name(bufnr)
-  if filepath == "" then
-    return nil
-  end
-
-  local dir = vim.fn.fnamemodify(filepath, ":h")
-
-  while dir ~= "/" and dir ~= "" do
-    for _, config_file in ipairs(config_files) do
-      if vim.fn.filereadable(dir .. "/" .. config_file) == 1 then
-        return dir
-      end
-    end
-    local parent = vim.fn.fnamemodify(dir, ":h")
-    if parent == dir then
-      break
-    end
-    dir = parent
-  end
-  return nil
-end
-
-local biome_configs = { "biome.json", "biome.jsonc" }
+local config = require("utils.config")
 
 local function js_formatter(bufnr)
-  local biome_root = find_config_dir(bufnr, biome_configs)
-  if biome_root then
+  if config.find_config_dir(bufnr, config.biome_configs) then
     return { "biome" }
   end
   return { "prettier" }
@@ -58,7 +34,7 @@ require("conform").setup({
   formatters = {
     biome = {
       cwd = function(_, ctx)
-        return find_config_dir(ctx.buf, biome_configs) or vim.fn.getcwd()
+        return config.find_config_dir(ctx.buf, config.biome_configs) or vim.fn.getcwd()
       end,
     },
   },

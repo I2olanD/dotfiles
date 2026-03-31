@@ -38,15 +38,10 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
 for server_name, server_config in pairs(servers) do
-  local config = vim.tbl_deep_extend("force", {
+  vim.lsp.config(server_name, vim.tbl_deep_extend("force", {
     on_attach = keymaps.on_attach,
     capabilities = capabilities,
-    settings = servers[server_name].settings or {},
-    filetypes = servers[server_name].filetypes or {},
-    init_options = servers[server_name].init_options or {},
-  }, server_config)
-
-  vim.lsp.config(server_name, config)
+  }, server_config))
 end
 
 require("mason").setup()

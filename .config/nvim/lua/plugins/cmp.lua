@@ -2,7 +2,7 @@ local cmp = require("cmp")
 local luasnip = require("luasnip")
 local lspkind = require("lspkind")
 
-local function is_visible(cmp)
+local function is_visible()
   return cmp.core.view:visible() or vim.fn.pumvisible() == 1
 end
 
@@ -28,7 +28,7 @@ cmp.setup({
     ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
     ["<CR>"] = cmp.mapping({
       i = function(fallback)
-        if is_visible(cmp) and cmp.get_active_entry() then
+        if is_visible() and cmp.get_active_entry() then
           cmp.confirm()
         else
           fallback()

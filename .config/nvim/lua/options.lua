@@ -40,7 +40,6 @@ vim.opt.smartcase = true
 vim.opt.autowrite = true
 vim.opt.updatetime = 500
 
--- turn of swapfiles
 vim.opt.backup = false
 vim.opt.swapfile = false
 vim.opt.writebackup = false
