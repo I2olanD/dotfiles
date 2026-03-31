@@ -35,49 +35,43 @@ local eslint_configs = {
   "eslint.config.cjs",
 }
 
-return {
-  "mfussenegger/nvim-lint",
-  event = { "BufWritePost", "BufReadPost", "InsertLeave" },
-  config = function()
-    local lint = require("lint")
+local lint = require("lint")
 
-    lint.linters_by_ft = {
-      lua = { "luacheck" },
-      sql = { "sqlfluff" },
+lint.linters_by_ft = {
+  lua = { "luacheck" },
+  sql = { "sqlfluff" },
+}
+
+vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
+  callback = function(args)
+    local ft = vim.bo[args.buf].filetype
+    local js_fts = {
+      javascript = true,
+      typescript = true,
+      javascriptreact = true,
+      typescriptreact = true,
+      svelte = true,
     }
 
-    vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
-      callback = function(args)
-        local ft = vim.bo[args.buf].filetype
-        local js_fts = {
-          javascript = true,
-          typescript = true,
-          javascriptreact = true,
-          typescriptreact = true,
-          svelte = true,
-        }
+    if js_fts[ft] or ft == "json" or ft == "jsonc" then
+      local biome_root = find_config_dir(args.buf, biome_configs)
+      if biome_root then
+        lint.linters.biomejs.cwd = biome_root
+        lint.try_lint({ "biomejs" })
+        return
+      end
 
-        if js_fts[ft] or ft == "json" or ft == "jsonc" then
-          local biome_root = find_config_dir(args.buf, biome_configs)
-          if biome_root then
-            lint.linters.biomejs.cwd = biome_root
-            lint.try_lint({ "biomejs" })
-            return
-          end
-
-          if js_fts[ft] then
-            local eslint_root = find_config_dir(args.buf, eslint_configs)
-            if eslint_root then
-              lint.linters.eslint.cwd = eslint_root
-              lint.try_lint({ "eslint" })
-            end
-          elseif ft == "json" or ft == "jsonc" then
-            lint.try_lint({ "jsonlint" })
-          end
-        else
-          lint.try_lint()
+      if js_fts[ft] then
+        local eslint_root = find_config_dir(args.buf, eslint_configs)
+        if eslint_root then
+          lint.linters.eslint.cwd = eslint_root
+          lint.try_lint({ "eslint" })
         end
-      end,
-    })
+      elseif ft == "json" or ft == "jsonc" then
+        lint.try_lint({ "jsonlint" })
+      end
+    else
+      lint.try_lint()
+    end
   end,
-}
+})

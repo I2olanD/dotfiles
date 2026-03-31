@@ -28,55 +28,41 @@ local servers = {
         telemetry = { enable = false },
         diagnostics = { globals = { "vim" } },
       },
-    }
-  },
-
-  gopls = {}
-}
-
-return {
-  {
-    "mason-org/mason.nvim",
-    -- event = { "BufReadPre", "BufNewFile" },
-    dependencies = {
-      "mason-org/mason-lspconfig.nvim",
-      "WhoIsSethDaniel/mason-tool-installer.nvim",
-      "neovim/nvim-lspconfig",
-      "hrsh7th/cmp-nvim-lsp",
     },
-    config = function()
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
-
-      for server_name, server_config in pairs(servers) do
-        local config = vim.tbl_deep_extend("force", {
-          on_attach = keymaps.on_attach,
-          capabilities = capabilities,
-          settings = servers[server_name].settings or {},
-          filetypes = servers[server_name].filetypes or {},
-          init_options = servers[server_name].init_options or {},
-        }, server_config)
-
-        vim.lsp.config(server_name, config)
-      end
-
-      require("mason").setup()
-      require("mason-lspconfig").setup({
-        ensure_installed = vim.tbl_keys(servers),
-      })
-      require("mason-tool-installer").setup({
-        ensure_installed = {
-          "biome",
-          "prettier",
-          "jsonlint",
-          "sqlfluff",
-          "luacheck",
-          "gofumpt",
-          "goimports",
-          "htmlhint",
-          "stylua",
-        },
-      })
-    end,
   },
+
+  gopls = {},
 }
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+
+for server_name, server_config in pairs(servers) do
+  local config = vim.tbl_deep_extend("force", {
+    on_attach = keymaps.on_attach,
+    capabilities = capabilities,
+    settings = servers[server_name].settings or {},
+    filetypes = servers[server_name].filetypes or {},
+    init_options = servers[server_name].init_options or {},
+  }, server_config)
+
+  vim.lsp.config(server_name, config)
+end
+
+require("mason").setup()
+require("mason-lspconfig").setup({
+  ensure_installed = vim.tbl_keys(servers),
+})
+require("mason-tool-installer").setup({
+  ensure_installed = {
+    "biome",
+    "prettier",
+    "jsonlint",
+    "sqlfluff",
+    "luacheck",
+    "gofumpt",
+    "goimports",
+    "htmlhint",
+    "stylua",
+  },
+})

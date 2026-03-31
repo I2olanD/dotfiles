@@ -31,48 +31,40 @@ local function js_formatter(bufnr)
   return { "prettier" }
 end
 
-return {
-  "stevearc/conform.nvim",
-  event = { "BufReadPre", "BufNewFile" },
-  config = function()
-    local conform = require("conform")
+require("conform").setup({
+  formatters_by_ft = {
+    javascript = js_formatter,
+    typescript = js_formatter,
+    javascriptreact = js_formatter,
+    typescriptreact = js_formatter,
+    json = js_formatter,
+    jsonc = js_formatter,
+    css = js_formatter,
 
-    conform.setup({
-      formatters_by_ft = {
-        javascript = js_formatter,
-        typescript = js_formatter,
-        javascriptreact = js_formatter,
-        typescriptreact = js_formatter,
-        json = js_formatter,
-        jsonc = js_formatter,
-        css = js_formatter,
+    scss = { "prettier" },
+    sass = { "prettier" },
+    html = { "prettier" },
+    markdown = { "prettier" },
 
-        scss = { "prettier" },
-        sass = { "prettier" },
-        html = { "prettier" },
-        markdown = { "prettier" },
+    lua = { "stylua" },
 
-        lua = { "stylua" },
+    go = { "goimports", "gofumpt" },
 
-        go = { "goimports", "gofumpt" },
+    yaml = { "yamlfmt" },
 
-        yaml = { "yamlfmt" },
+    sql = { "sqlfmt" },
+  },
 
-        sql = { "sqlfmt" },
-      },
+  formatters = {
+    biome = {
+      cwd = function(_, ctx)
+        return find_config_dir(ctx.buf, biome_configs) or vim.fn.getcwd()
+      end,
+    },
+  },
 
-      formatters = {
-        biome = {
-          cwd = function(_, ctx)
-            return find_config_dir(ctx.buf, biome_configs) or vim.fn.getcwd()
-          end,
-        },
-      },
-
-      format_on_save = {
-        lsp_fallback = true,
-        timeout_ms = 500,
-      },
-    })
-  end,
-}
+  format_on_save = {
+    lsp_fallback = true,
+    timeout_ms = 500,
+  },
+})
