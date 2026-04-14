@@ -37,9 +37,21 @@ local servers = {
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
+local function on_attach(client, bufnr)
+  keymaps.on_attach(client, bufnr)
+
+  if client.server_capabilities.documentSymbolProvider then
+    require("nvim-navic").attach(client, bufnr)
+  end
+
+  if client.supports_method("textDocument/inlayHint") then
+    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+  end
+end
+
 for server_name, server_config in pairs(servers) do
   vim.lsp.config(server_name, vim.tbl_deep_extend("force", {
-    on_attach = keymaps.on_attach,
+    on_attach = on_attach,
     capabilities = capabilities,
   }, server_config))
 end

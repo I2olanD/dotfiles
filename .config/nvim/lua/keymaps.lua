@@ -72,6 +72,83 @@ map({ "n", "v" }, "<C-Up>", "<Plug>(VM-Add-Cursor-Up)", { desc = "Add cursor up"
 map({ "n", "v" }, "<C-Down>", "<Plug>(VM-Add-Cursor-Down)", { desc = "Add cursor down" })
 
 -- ============================================================================
+-- GIT (Gitsigns + Diffview)
+-- ============================================================================
+
+map("n", "]h", function()
+  require("gitsigns").nav_hunk("next")
+end, { desc = "Next hunk" })
+map("n", "[h", function()
+  require("gitsigns").nav_hunk("prev")
+end, { desc = "Prev hunk" })
+map("n", "<leader>hs", function()
+  require("gitsigns").stage_hunk()
+end, { desc = "Stage hunk" })
+map("n", "<leader>hr", function()
+  require("gitsigns").reset_hunk()
+end, { desc = "Reset hunk" })
+map("v", "<leader>hs", function()
+  require("gitsigns").stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+end, { desc = "Stage selected" })
+map("v", "<leader>hr", function()
+  require("gitsigns").reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+end, { desc = "Reset selected" })
+map("n", "<leader>hS", function()
+  require("gitsigns").stage_buffer()
+end, { desc = "Stage buffer" })
+map("n", "<leader>hp", function()
+  require("gitsigns").preview_hunk()
+end, { desc = "Preview hunk" })
+map("n", "<leader>hb", function()
+  require("gitsigns").toggle_current_line_blame()
+end, { desc = "Toggle blame" })
+map("n", "<leader>hd", function()
+  require("gitsigns").diffthis()
+end, { desc = "Diff this" })
+
+map("n", "<leader>hv", "<cmd>DiffviewOpen<cr>", { desc = "Diffview open" })
+map("n", "<leader>hq", "<cmd>DiffviewClose<cr>", { desc = "Diffview close" })
+map("n", "<leader>hf", "<cmd>DiffviewFileHistory %<cr>", { desc = "Diffview file history" })
+
+-- ============================================================================
+-- DEBUG (DAP)
+-- ============================================================================
+
+map("n", "<leader>db", function()
+  require("dap").toggle_breakpoint()
+end, { desc = "Toggle breakpoint" })
+map("n", "<leader>dB", function()
+  require("dap").set_breakpoint(vim.fn.input("Condition: "))
+end, { desc = "Conditional breakpoint" })
+map("n", "<leader>dc", function()
+  require("dap").continue()
+end, { desc = "Continue / Start" })
+map("n", "<leader>di", function()
+  require("dap").step_into()
+end, { desc = "Step into" })
+map("n", "<leader>do", function()
+  require("dap").step_over()
+end, { desc = "Step over" })
+map("n", "<leader>dO", function()
+  require("dap").step_out()
+end, { desc = "Step out" })
+map("n", "<leader>du", function()
+  require("dapui").toggle()
+end, { desc = "Toggle DAP UI" })
+map("n", "<leader>dt", function()
+  require("dap").terminate()
+end, { desc = "Terminate" })
+
+-- ============================================================================
+-- SYMBOLS (Aerial)
+-- ============================================================================
+
+map("n", "<leader>sa", "<cmd>AerialToggle<cr>", { desc = "Toggle symbol outline" })
+map("n", "<leader>ss", function()
+  require("fzf-lua").lsp_document_symbols()
+end, { desc = "Search symbols" })
+
+-- ============================================================================
 -- HELP (Which-key)
 -- ============================================================================
 
@@ -92,6 +169,23 @@ function M.on_attach(_, bufnr)
   map("n", "<leader>gd", vim.lsp.buf.definition, opts("Go to definition"))
   map("n", "<leader>gi", vim.lsp.buf.implementation, opts("Go to implementation"))
   map("n", "<leader>k", vim.lsp.buf.code_action, opts("Code action"))
+
+  map("n", "gpd", function()
+    require("goto-preview").goto_preview_definition()
+  end, opts("Peek definition"))
+  map("n", "gpi", function()
+    require("goto-preview").goto_preview_implementation()
+  end, opts("Peek implementation"))
+  map("n", "gpr", function()
+    require("goto-preview").goto_preview_references()
+  end, opts("Peek references"))
+  map("n", "gP", function()
+    require("goto-preview").close_all_win()
+  end, opts("Close all previews"))
+
+  map("n", "<leader>rn", function()
+    return ":IncRename " .. vim.fn.expand("<cword>")
+  end, { buffer = bufnr, desc = "Rename symbol", expr = true })
 
   vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
     vim.lsp.buf.format()
