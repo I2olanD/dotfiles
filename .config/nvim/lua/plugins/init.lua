@@ -7,7 +7,7 @@ vim.api.nvim_create_autocmd("PackChanged", {
       if not ev.data.active then
         vim.cmd.packadd("nvim-treesitter")
       end
-      vim.cmd("TSUpdate")
+      require("nvim-treesitter").update()
     end
 
     if name == "nvim-pretty-ts-errors" and kind == "install" then
@@ -39,8 +39,7 @@ vim.pack.add({
   "https://github.com/saadparwaiz1/cmp_luasnip",
   "https://github.com/L3MON4D3/LuaSnip",
 
-  "https://github.com/nvim-treesitter/nvim-treesitter",
-  "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
   "https://github.com/jlcrochet/vim-razor",
 
   "https://github.com/stevearc/conform.nvim",
@@ -50,7 +49,8 @@ vim.pack.add({
   "https://github.com/akinsho/bufferline.nvim",
   "https://github.com/folke/noice.nvim",
   "https://github.com/MunifTanjim/nui.nvim",
-  "https://github.com/norcalli/nvim-colorizer.lua",
+  "https://github.com/rcarriga/nvim-notify",
+  "https://github.com/catgoose/nvim-colorizer.lua",
   "https://github.com/lukas-reineke/indent-blankline.nvim",
   "https://github.com/kosayoda/nvim-lightbulb",
 
@@ -78,12 +78,12 @@ vim.pack.add({
   "https://github.com/nvim-neotest/nvim-nio",
   "https://github.com/jay-babu/mason-nvim-dap.nvim",
 
-
   "https://github.com/SmiteshP/nvim-navic",
   "https://github.com/utilyre/barbecue.nvim",
 
   "https://github.com/stevearc/aerial.nvim",
   "https://github.com/rmagatti/goto-preview",
+  "https://github.com/rmagatti/logger.nvim",
   "https://github.com/VidocqH/lsp-lens.nvim",
   "https://github.com/smjonas/inc-rename.nvim",
 })

@@ -18,6 +18,7 @@ local js_filetypes = {
   javascriptreact = true,
   typescriptreact = true,
   svelte = true,
+  vue = true,
 }
 
 local lint = require("lint")

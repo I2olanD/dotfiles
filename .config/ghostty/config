@@ -1,14 +1,20 @@
-copy-on-select = clipboard
-
-font-family = Iosevka
-font-size = 13
-
-macos-titlebar-style = hidden
 window-padding-balance = true
 window-padding-color = extend
-window-padding-x = 0
-window-padding-y = 0
+
+macos-titlebar-style = hidden
+copy-on-select = clipboard
 
 confirm-close-surface = false
 
-theme = Catppuccin mocha
+font-family = "JetBrainsMono Nerd Font"
+font-size = 14
+font-thicken = true
+background-opacity = 0.92
+background-blur-radius = 20
+theme = Catppuccin Mocha
+cursor-style = block
+background-opacity = 0.85
+background-blur-radius = 20
+
+font-thicken-strength=1
+adjust-cell-height=1

@@ -61,7 +61,7 @@
       "src": "https://github.com/sindrets/diffview.nvim"
     },
     "fzf-lua": {
-      "rev": "1e866cce085cc6df3d3e4fb59f00105fa84cef6c",
+      "rev": "834246377489f9a1e6d4df570a7874a48c644b56",
       "src": "https://github.com/ibhagwan/fzf-lua"
     },
     "gitsigns.nvim": {
@@ -79,6 +79,10 @@
     "indent-blankline.nvim": {
       "rev": "d28a3f70721c79e3c5f6693057ae929f3d9c0a03",
       "src": "https://github.com/lukas-reineke/indent-blankline.nvim"
+    },
+    "logger.nvim": {
+      "rev": "63dd10c9b9a159fd6cfe08435d9606384ff103c5",
+      "src": "https://github.com/rmagatti/logger.nvim"
     },
     "lsp-lens.nvim": {
       "rev": "48bb1a7e271424c15f3d588d54adc9b7c319d977",
@@ -113,7 +117,7 @@
       "src": "https://github.com/anuvyklack/middleclass"
     },
     "mini.icons": {
-      "rev": "7fdae2443a0e2910015ca39ad74b50524ee682d3",
+      "rev": "bac6317300e205335df425296570d84322730067",
       "src": "https://github.com/nvim-mini/mini.icons"
     },
     "neotest": {
@@ -149,8 +153,8 @@
       "src": "https://github.com/hrsh7th/nvim-cmp"
     },
     "nvim-colorizer.lua": {
-      "rev": "a065833f35a3a7cc3ef137ac88b5381da2ba302e",
-      "src": "https://github.com/norcalli/nvim-colorizer.lua"
+      "rev": "5cfe7fffbd01e17b3c1e14af85d5febdef88bd8c",
+      "src": "https://github.com/catgoose/nvim-colorizer.lua"
     },
     "nvim-dap": {
       "rev": "45a69eba683a2c448dd9ecfc4de89511f0646b5f",
@@ -169,7 +173,7 @@
       "src": "https://github.com/mfussenegger/nvim-lint"
     },
     "nvim-lspconfig": {
-      "rev": "8a9378a822719346a0288fa004dab302ca3c0a8f",
+      "rev": "4b7fbaa239c5db6b36f424a4521ca9f1a401be33",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-navic": {
@@ -179,6 +183,10 @@
     "nvim-nio": {
       "rev": "21f5324bfac14e22ba26553caf69ec76ae8a7662",
       "src": "https://github.com/nvim-neotest/nvim-nio"
+    },
+    "nvim-notify": {
+      "rev": "8701bece920b38ea289b457f902e2ad184131a5d",
+      "src": "https://github.com/rcarriga/nvim-notify"
     },
     "nvim-pretty-ts-errors": {
       "rev": "b5d8e0798884323ebbf587c54ebfa128c87f9c19",
@@ -190,7 +198,8 @@
     },
     "nvim-treesitter": {
       "rev": "4916d6592ede8c07973490d9322f187e07dfefac",
-      "src": "https://github.com/nvim-treesitter/nvim-treesitter"
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter",
+      "version": "'main'"
     },
     "nvim-treesitter-textobjects": {
       "rev": "851e865342e5a4cb1ae23d31caf6e991e1c99f1e",

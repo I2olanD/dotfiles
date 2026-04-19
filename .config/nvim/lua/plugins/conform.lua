@@ -17,9 +17,10 @@ require("conform").setup({
     jsonc = js_formatter,
     css = js_formatter,
 
-    scss = { "prettier" },
-    sass = { "prettier" },
-    html = { "prettier" },
+    vue = js_formatter,
+    scss = js_formatter,
+    sass = js_formatter,
+    html = js_formatter,
     markdown = { "prettier" },
 
     lua = { "stylua" },

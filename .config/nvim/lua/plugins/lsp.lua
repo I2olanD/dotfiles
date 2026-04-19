@@ -13,10 +13,24 @@ local servers = {
     filetypes = {
       "javascript",
       "javascriptreact",
-      "javascript.jsx",
       "typescript",
       "typescriptreact",
-      "typescript.tsx",
+      "vue",
+    },
+    init_options = {
+      plugins = {
+        {
+          name = "@vue/typescript-plugin",
+          location = vim.fn.stdpath("data") .. "/mason/packages/vue-language-server/node_modules/@vue/typescript-plugin",
+          languages = { "vue" },
+        },
+      },
+    },
+  },
+
+  vue_ls = {
+    filetypes = {
+      "vue",
     },
   },
 
@@ -44,16 +58,19 @@ local function on_attach(client, bufnr)
     require("nvim-navic").attach(client, bufnr)
   end
 
-  if client.supports_method("textDocument/inlayHint") then
+  if client:supports_method("textDocument/inlayHint") then
     vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
   end
 end
 
 for server_name, server_config in pairs(servers) do
-  vim.lsp.config(server_name, vim.tbl_deep_extend("force", {
-    on_attach = on_attach,
-    capabilities = capabilities,
-  }, server_config))
+  vim.lsp.config(
+    server_name,
+    vim.tbl_deep_extend("force", {
+      on_attach = on_attach,
+      capabilities = capabilities,
+    }, server_config)
+  )
 end
 
 require("mason").setup()

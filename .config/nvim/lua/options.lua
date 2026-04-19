@@ -7,6 +7,10 @@ vim.g.loaded_tarPlugin = 1
 vim.g.loaded_tohtml = 1
 vim.g.loaded_tutor = 1
 vim.g.loaded_zipPlugin = 1
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_python3_provider = 0
 
 -- leader
 vim.g.mapleader = " "
@@ -53,3 +57,14 @@ vim.opt.expandtab = true -- always use spaces instead of tabs
 
 -- cmd window
 vim.o.cmdheight = 0
+
+-- filetypes
+vim.filetype.add({
+  extension = {
+    gowork = "gowork",
+    gotmpl = "gotmpl",
+  },
+  pattern = {
+    ["go%.work"] = "gowork",
+  },
+})
