@@ -40,12 +40,11 @@ vim.pack.add({
 
   "https://github.com/nvim-lualine/lualine.nvim",
   "https://github.com/akinsho/bufferline.nvim",
-  -- "https://github.com/folke/noice.nvim",
+
   "https://github.com/MunifTanjim/nui.nvim",
   "https://github.com/rcarriga/nvim-notify",
   "https://github.com/catgoose/nvim-colorizer.lua",
   "https://github.com/lukas-reineke/indent-blankline.nvim",
-  "https://github.com/kosayoda/nvim-lightbulb",
 
   "https://github.com/ibhagwan/fzf-lua",
   "https://github.com/stevearc/oil.nvim",
@@ -66,15 +65,9 @@ vim.pack.add({
   "https://github.com/lewis6991/gitsigns.nvim",
   "https://github.com/sindrets/diffview.nvim",
 
-  "https://github.com/mfussenegger/nvim-dap",
-  "https://github.com/rcarriga/nvim-dap-ui",
-  "https://github.com/nvim-neotest/nvim-nio",
-  "https://github.com/jay-babu/mason-nvim-dap.nvim",
-
   "https://github.com/SmiteshP/nvim-navic",
   "https://github.com/utilyre/barbecue.nvim",
 
-  "https://github.com/stevearc/aerial.nvim",
   "https://github.com/rmagatti/goto-preview",
   "https://github.com/rmagatti/logger.nvim",
   "https://github.com/VidocqH/lsp-lens.nvim",
@@ -92,23 +85,20 @@ vim.schedule(function()
   require("plugins.indent-blankline")
   require("plugins.conform")
   require("plugins.lint")
-  -- require("plugins.noice")
   require("plugins.windows")
   require("which-key").setup()
   require("nvim-surround").setup()
   require("fzf-lua").setup()
+  require("fzf-lua").register_ui_select()
   require("trouble").setup()
   require("colorizer").setup()
   require("plugins.git")
-  require("plugins.aerial")
-  require("plugins.dap")
   require("barbecue").setup()
 end)
 
 vim.api.nvim_create_autocmd("LspAttach", {
   once = true,
   callback = function()
-    require("plugins.lightbulb")
     require("lsp-lens").setup()
     require("goto-preview").setup()
     require("inc_rename").setup()
