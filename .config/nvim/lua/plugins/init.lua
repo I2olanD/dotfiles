@@ -41,6 +41,8 @@ vim.pack.add({
 
   { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
   { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.*") },
+  "https://github.com/saghen/blink.download",
+  { src = "https://github.com/saghen/blink.pairs", version = vim.version.range("0.*") },
   "https://github.com/windwp/nvim-ts-autotag",
   "https://github.com/jlcrochet/vim-razor",
 
@@ -61,7 +63,6 @@ vim.pack.add({
   "https://github.com/folke/trouble.nvim",
 
   "https://github.com/kylechui/nvim-surround",
-  "https://github.com/windwp/nvim-autopairs",
   "https://github.com/mg979/vim-visual-multi",
 
   "https://github.com/anuvyklack/windows.nvim",
@@ -128,6 +129,9 @@ vim.api.nvim_create_autocmd("InsertEnter", {
   once = true,
   callback = function()
     require("plugins.blink")
-    require("nvim-autopairs").setup()
+    require("blink.pairs").setup({
+      mappings = { enabled = true },
+      highlights = { enabled = true, matchparen = { enabled = true } },
+    })
   end,
 })
