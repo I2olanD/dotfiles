@@ -28,15 +28,6 @@ vim.pack.add({
   "https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
   "https://github.com/neovim/nvim-lspconfig",
 
-  "https://github.com/hrsh7th/nvim-cmp",
-  "https://github.com/onsails/lspkind.nvim",
-  "https://github.com/hrsh7th/cmp-nvim-lsp",
-  "https://github.com/hrsh7th/cmp-buffer",
-  "https://github.com/hrsh7th/cmp-path",
-  "https://github.com/hrsh7th/cmp-cmdline",
-  "https://github.com/hrsh7th/cmp-nvim-lua",
-  "https://github.com/hrsh7th/cmp-nvim-lsp-signature-help",
-  "https://github.com/saadparwaiz1/cmp_luasnip",
   "https://github.com/L3MON4D3/LuaSnip",
 
   { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
