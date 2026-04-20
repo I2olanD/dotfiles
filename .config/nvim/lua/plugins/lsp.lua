@@ -13,10 +13,24 @@ local servers = {
     filetypes = {
       "javascript",
       "javascriptreact",
-      "javascript.jsx",
       "typescript",
       "typescriptreact",
-      "typescript.tsx",
+      "vue",
+    },
+    init_options = {
+      plugins = {
+        {
+          name = "@vue/typescript-plugin",
+          location = vim.fn.stdpath("data") .. "/mason/packages/vue-language-server/node_modules/@vue/typescript-plugin",
+          languages = { "vue" },
+        },
+      },
+    },
+  },
+
+  vue_ls = {
+    filetypes = {
+      "vue",
     },
   },
 
@@ -28,55 +42,50 @@ local servers = {
         telemetry = { enable = false },
         diagnostics = { globals = { "vim" } },
       },
-    }
-  },
-
-  gopls = {}
-}
-
-return {
-  {
-    "mason-org/mason.nvim",
-    -- event = { "BufReadPre", "BufNewFile" },
-    dependencies = {
-      "mason-org/mason-lspconfig.nvim",
-      "WhoIsSethDaniel/mason-tool-installer.nvim",
-      "neovim/nvim-lspconfig",
-      "hrsh7th/cmp-nvim-lsp",
     },
-    config = function()
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
-
-      for server_name, server_config in pairs(servers) do
-        local config = vim.tbl_deep_extend("force", {
-          on_attach = keymaps.on_attach,
-          capabilities = capabilities,
-          settings = servers[server_name].settings or {},
-          filetypes = servers[server_name].filetypes or {},
-          init_options = servers[server_name].init_options or {},
-        }, server_config)
-
-        vim.lsp.config(server_name, config)
-      end
-
-      require("mason").setup()
-      require("mason-lspconfig").setup({
-        ensure_installed = vim.tbl_keys(servers),
-      })
-      require("mason-tool-installer").setup({
-        ensure_installed = {
-          "biome",
-          "prettier",
-          "jsonlint",
-          "sqlfluff",
-          "luacheck",
-          "gofumpt",
-          "goimports",
-          "htmlhint",
-          "stylua",
-        },
-      })
-    end,
   },
+
+  gopls = {},
 }
+
+local capabilities = require("blink.cmp").get_lsp_capabilities()
+
+local function on_attach(client, bufnr)
+  keymaps.on_attach(client, bufnr)
+
+  if client.server_capabilities.documentSymbolProvider then
+    require("nvim-navic").attach(client, bufnr)
+  end
+
+  if client:supports_method("textDocument/inlayHint") then
+    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+  end
+end
+
+for server_name, server_config in pairs(servers) do
+  vim.lsp.config(
+    server_name,
+    vim.tbl_deep_extend("force", {
+      on_attach = on_attach,
+      capabilities = capabilities,
+    }, server_config)
+  )
+end
+
+require("mason").setup()
+require("mason-lspconfig").setup({
+  ensure_installed = vim.tbl_keys(servers),
+})
+require("mason-tool-installer").setup({
+  ensure_installed = {
+    "biome",
+    "prettier",
+    "jsonlint",
+    "sqlfluff",
+    "luacheck",
+    "gofumpt",
+    "goimports",
+    "htmlhint",
+    "stylua",
+  },
+})

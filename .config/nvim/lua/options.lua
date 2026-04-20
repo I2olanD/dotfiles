@@ -1,3 +1,17 @@
+-- disable built-in plugins
+vim.g.loaded_gzip = 1
+vim.g.loaded_matchit = 1
+vim.g.loaded_matchparen = 1
+vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_tarPlugin = 1
+vim.g.loaded_tohtml = 1
+vim.g.loaded_tutor = 1
+vim.g.loaded_zipPlugin = 1
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_python3_provider = 0
+
 -- leader
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -30,7 +44,6 @@ vim.opt.smartcase = true
 vim.opt.autowrite = true
 vim.opt.updatetime = 500
 
--- turn of swapfiles
 vim.opt.backup = false
 vim.opt.swapfile = false
 vim.opt.writebackup = false
@@ -44,3 +57,14 @@ vim.opt.expandtab = true -- always use spaces instead of tabs
 
 -- cmd window
 vim.o.cmdheight = 0
+
+-- filetypes
+vim.filetype.add({
+  extension = {
+    gowork = "gowork",
+    gotmpl = "gotmpl",
+  },
+  pattern = {
+    ["go%.work"] = "gowork",
+  },
+})

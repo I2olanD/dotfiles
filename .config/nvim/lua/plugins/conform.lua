@@ -1,78 +1,47 @@
-local function find_config_dir(bufnr, config_files)
-  local filepath = vim.api.nvim_buf_get_name(bufnr)
-  if filepath == "" then
-    return nil
-  end
-
-  local dir = vim.fn.fnamemodify(filepath, ":h")
-
-  while dir ~= "/" and dir ~= "" do
-    for _, config_file in ipairs(config_files) do
-      if vim.fn.filereadable(dir .. "/" .. config_file) == 1 then
-        return dir
-      end
-    end
-    local parent = vim.fn.fnamemodify(dir, ":h")
-    if parent == dir then
-      break
-    end
-    dir = parent
-  end
-  return nil
-end
-
-local biome_configs = { "biome.json", "biome.jsonc" }
+local config = require("utils.config")
 
 local function js_formatter(bufnr)
-  local biome_root = find_config_dir(bufnr, biome_configs)
-  if biome_root then
+  if config.find_config_dir(bufnr, config.biome_configs) then
     return { "biome" }
   end
   return { "prettier" }
 end
 
-return {
-  "stevearc/conform.nvim",
-  event = { "BufReadPre", "BufNewFile" },
-  config = function()
-    local conform = require("conform")
+require("conform").setup({
+  formatters_by_ft = {
+    javascript = js_formatter,
+    typescript = js_formatter,
+    javascriptreact = js_formatter,
+    typescriptreact = js_formatter,
+    json = js_formatter,
+    jsonc = js_formatter,
+    css = js_formatter,
 
-    conform.setup({
-      formatters_by_ft = {
-        javascript = js_formatter,
-        typescript = js_formatter,
-        javascriptreact = js_formatter,
-        typescriptreact = js_formatter,
-        json = js_formatter,
-        jsonc = js_formatter,
-        css = js_formatter,
+    vue = js_formatter,
+    scss = js_formatter,
+    sass = js_formatter,
+    html = js_formatter,
+    markdown = { "prettier" },
 
-        scss = { "prettier" },
-        sass = { "prettier" },
-        html = { "prettier" },
-        markdown = { "prettier" },
+    lua = { "stylua" },
 
-        lua = { "stylua" },
+    go = { "goimports", "gofumpt" },
 
-        go = { "goimports", "gofumpt" },
+    yaml = { "yamlfmt" },
 
-        yaml = { "yamlfmt" },
+    sql = { "sqlfmt" },
+  },
 
-        sql = { "sqlfmt" },
-      },
+  formatters = {
+    biome = {
+      cwd = function(_, ctx)
+        return config.find_config_dir(ctx.buf, config.biome_configs) or vim.fn.getcwd()
+      end,
+    },
+  },
 
-      formatters = {
-        biome = {
-          cwd = function(_, ctx)
-            return find_config_dir(ctx.buf, biome_configs) or vim.fn.getcwd()
-          end,
-        },
-      },
-
-      format_on_save = {
-        lsp_fallback = true,
-        timeout_ms = 500,
-      },
-    })
-  end,
-}
+  format_on_save = {
+    lsp_fallback = true,
+    timeout_ms = 500,
+  },
+})

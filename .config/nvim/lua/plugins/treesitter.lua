@@ -1,42 +1,46 @@
-return {
-  {
-    "nvim-treesitter/nvim-treesitter",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter-textobjects",
-      "jlcrochet/vim-razor",
-    },
-    build = ":TSUpdate",
-    event = { "VeryLazy" },
-    config = function()
-      vim.treesitter.language.register("typescript", "javascript")
-      require("nvim-treesitter.configs").setup({
-        auto_install = true,
-        highlight = { enable = true },
-        indent = { enable = true },
-        ensure_installed = {
-          "bash",
-          "html",
-          "lua",
-          "markdown",
-          "markdown_inline",
-          "regex",
-          "svelte",
-          "toml",
-          "tsx",
-          "typescript",
-        },
-        ignore_install = { "javascript" },
-        incremental_selection = {
-          enable = true,
-          keymaps = {
-            init_selection = "<C-space>",
-            node_incremental = "<C-space>",
-            scope_selection = false,
-            node_decremental = "<bs>",
-          },
-        },
-        additional_vim_regex_highlighting = false,
-      })
-    end,
-  },
+vim.treesitter.language.register("typescript", "javascript")
+
+local ensure_installed = {
+  "bash",
+  "html",
+  "lua",
+  "markdown",
+  "markdown_inline",
+  "regex",
+  "svelte",
+  "toml",
+  "vue",
+  "tsx",
+  "typescript",
 }
+
+local installed = require("nvim-treesitter.config").get_installed()
+local missing = vim.iter(ensure_installed)
+  :filter(function(parser)
+    return not vim.tbl_contains(installed, parser)
+  end)
+  :totable()
+
+if #missing > 0 then
+  require("nvim-treesitter").install(missing)
+end
+
+vim.api.nvim_create_autocmd("FileType", {
+  callback = function()
+    pcall(vim.treesitter.start)
+    vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+  end,
+})
+
+require("nvim-ts-autotag").setup({
+  opts = {
+    enable_close = true,
+    enable_rename = true,
+    enable_close_on_slash = false,
+  },
+  per_filetype = {
+    ["html"] = {
+      enable_close = false,
+    },
+  },
+})
