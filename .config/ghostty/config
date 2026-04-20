@@ -14,7 +14,7 @@ background-blur-radius = 20
 theme = Catppuccin Mocha
 cursor-style = block
 background-opacity = 0.85
-background-blur-radius = 20
+background-blur-radius = 16
 
 font-thicken-strength=1
 adjust-cell-height=1

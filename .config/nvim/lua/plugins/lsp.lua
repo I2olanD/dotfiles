@@ -48,8 +48,7 @@ local servers = {
   gopls = {},
 }
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+local capabilities = require("blink.cmp").get_lsp_capabilities()
 
 local function on_attach(client, bufnr)
   keymaps.on_attach(client, bufnr)
