@@ -1,9 +1,11 @@
 local M = {}
 
+function M.set_linters(bufnr, linters)
+  vim.b[bufnr].active_linters = linters
+end
+
 function M.current_linters()
-  local lint = require("lint")
-  local filetype = vim.bo.filetype
-  local linters = lint.linters_by_ft[filetype]
+  local linters = vim.b.active_linters
 
   if linters and #linters > 0 then
     return "󰁨 " .. table.concat(linters, ", ")
