@@ -54,6 +54,7 @@ local function on_attach(client, bufnr)
   keymaps.on_attach(client, bufnr)
 
   if client.server_capabilities.documentSymbolProvider then
+    vim.g.navic_silence = true
     require("nvim-navic").attach(client, bufnr)
   end
 

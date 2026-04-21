@@ -176,7 +176,7 @@ function M.on_attach(_, bufnr)
     })
   end, opts("Code action"))
 
-  map("n", "gpd", function()
+  map("n", "gpt", function()
     require("goto-preview").goto_preview_definition()
   end, opts("Peek definition"))
   map("n", "gpi", function()
