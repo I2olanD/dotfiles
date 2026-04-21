@@ -170,7 +170,9 @@ function M.on_attach(_, bufnr)
   map("n", "<leader>gi", vim.lsp.buf.implementation, opts("Go to implementation"))
   map({ "n", "v" }, "<leader>k", function()
     vim.lsp.buf.code_action({
-      filter = function(a) return not a.disabled end,
+      filter = function(a)
+        return not a.disabled
+      end,
     })
   end, opts("Code action"))
 

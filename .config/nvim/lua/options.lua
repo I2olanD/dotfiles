@@ -58,13 +58,9 @@ vim.opt.expandtab = true -- always use spaces instead of tabs
 -- cmd window
 vim.o.cmdheight = 0
 
--- filetypes
-vim.filetype.add({
-  extension = {
-    gowork = "gowork",
-    gotmpl = "gotmpl",
-  },
-  pattern = {
-    ["go%.work"] = "gowork",
-  },
-})
+-- folding
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldtext = "..."
+vim.opt.fillchars:append("fold: ")
+vim.opt.foldlevelstart = 99

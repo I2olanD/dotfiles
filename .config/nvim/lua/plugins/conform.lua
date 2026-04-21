@@ -16,11 +16,11 @@ require("conform").setup({
     json = js_formatter,
     jsonc = js_formatter,
     css = js_formatter,
-
     vue = js_formatter,
     scss = js_formatter,
     sass = js_formatter,
     html = js_formatter,
+
     markdown = { "prettier" },
 
     lua = { "stylua" },
