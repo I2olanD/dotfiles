@@ -2,6 +2,18 @@ local M = {}
 
 M.biome_configs = { "biome.json", "biome.jsonc" }
 
+M.eslint_configs = {
+  ".eslintrc",
+  ".eslintrc.js",
+  ".eslintrc.cjs",
+  ".eslintrc.json",
+  ".eslintrc.yaml",
+  ".eslintrc.yml",
+  "eslint.config.js",
+  "eslint.config.mjs",
+  "eslint.config.cjs",
+}
+
 function M.find_config_dir(bufnr, config_files)
   local filepath = vim.api.nvim_buf_get_name(bufnr)
   if filepath == "" then
