@@ -168,7 +168,11 @@ function M.on_attach(_, bufnr)
   map("n", "<leader>gD", vim.lsp.buf.declaration, opts("Go to declaration"))
   map("n", "<leader>gd", vim.lsp.buf.definition, opts("Go to definition"))
   map("n", "<leader>gi", vim.lsp.buf.implementation, opts("Go to implementation"))
-  map("n", "<leader>k", vim.lsp.buf.code_action, opts("Code action"))
+  map({ "n", "v" }, "<leader>k", function()
+    vim.lsp.buf.code_action({
+      filter = function(a) return not a.disabled end,
+    })
+  end, opts("Code action"))
 
   map("n", "gpd", function()
     require("goto-preview").goto_preview_definition()
