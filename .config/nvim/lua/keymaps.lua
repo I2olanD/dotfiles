@@ -194,8 +194,8 @@ function M.on_attach(_, bufnr)
   end, { buffer = bufnr, desc = "Rename symbol", expr = true })
 
   vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
-    vim.lsp.buf.format()
-  end, { desc = "Format current buffer with LSP" })
+    require("conform").format({ lsp_fallback = true, async = true, timeout = 500 })
+  end, { desc = "Format current buffer" })
 end
 
 return M

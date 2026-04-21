@@ -9,12 +9,9 @@ confirm-close-surface = false
 font-family = "JetBrainsMono Nerd Font"
 font-size = 14
 font-thicken = true
-background-opacity = 0.92
-background-blur-radius = 20
-theme = Catppuccin Mocha
-cursor-style = block
+font-thicken-strength = 1
+adjust-cell-height = 1
 background-opacity = 0.85
 background-blur-radius = 16
-
-font-thicken-strength=1
-adjust-cell-height=1
+theme = Catppuccin Mocha
+cursor-style = block

@@ -8,9 +8,6 @@ require("catppuccin").setup({
   integrations = {
     treesitter = true,
     native_lsp = { enabled = true },
-    telescope = true,
-    nvimtree = true,
-    cmp = true,
   },
 })
 

@@ -16,11 +16,8 @@ setopt appendhistory
 setopt sharehistory
 setopt hist_ignore_space
 setopt hist_ignore_all_dups
-setopt hist_save_no_dups
-setopt hist_ignore_dups
 setopt hist_find_no_dups
 
-# History settings
 HISTSIZE=10000
 SAVEHIST=10000
 HISTFILE=~/.zsh_history
@@ -29,14 +26,11 @@ HISTFILE=~/.zsh_history
 # Zinit Setup
 # ============================================================================
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
-[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+[[ ! -d "$ZINIT_HOME" ]] && mkdir -p "$(dirname "$ZINIT_HOME")"
+[[ ! -d "$ZINIT_HOME/.git" ]] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 
 source "${ZINIT_HOME}/zinit.zsh"
 
-# # ============================================================================
-# # Plugins (optimized loading with turbo mode)
-# # ============================================================================
 # Load compinit early for plugins that need compdef
 autoload -Uz compinit && compinit
 
@@ -101,28 +95,19 @@ else
   alias v=vim
 fi
 
-# Better ls
 if [[ $+commands[lsd] == "1" ]]; then
   alias ls="lsd --group-dirs=first"
-  alias l="ls -1"
-  alias ll="l -l"
-  alias la="l -a"
-  alias lla="ll -a"
-  alias lt="l --tree -I .git -I node_modules"
+  alias lt="ls -1 --tree -I .git -I node_modules"
 elif [[ $+commands[eza] == "1" ]]; then
   alias ls="eza --group-directories-first"
-  alias l="ls -1"
-  alias ll="l -l"
-  alias la="l -a"
-  alias lla="ll -a"
   alias lt="eza --tree --git-ignore --ignore-glob='node_modules|.git'"
 else
   alias ls="ls -G"
-  alias l="ls"
-  alias ll="ls -lh"
-  alias la="ls -a"
-  alias lla="ll -a"
 fi
+alias l="ls -1"
+alias ll="l -l"
+alias la="l -a"
+alias lla="ll -a"
 
 if [[ $+commands[rg] == "1" ]]; then
   alias grep=rg
@@ -143,7 +128,7 @@ fi
 # ============================================================================
 # Prompt
 # ============================================================================
-if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
+if [[ "$TERM_PROGRAM" != "Apple_Terminal" ]]; then
   eval "$(oh-my-posh init zsh --config $HOME/.config/oh-my-posh/catppuccin.json)"
 fi
 
@@ -165,7 +150,7 @@ fi
 [[ -f "${HOME}/.zshrc.user.zsh" ]] && source "${HOME}/.zshrc.user.zsh"
 
 # pnpm
-export PNPM_HOME="/Users/rolandolah/Library/pnpm"
+export PNPM_HOME="$HOME/Library/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
