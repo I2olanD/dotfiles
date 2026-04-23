@@ -9,11 +9,6 @@ vim.api.nvim_create_autocmd("PackChanged", {
       end
       require("nvim-treesitter").update()
     end
-
-    if name == "nvim-pretty-ts-errors" and kind == "install" then
-      local dir = vim.fn.stdpath("data") .. "/site/pack/core/opt/" .. name
-      vim.fn.jobstart({ "npm", "install" }, { cwd = dir })
-    end
   end,
 })
 
@@ -47,7 +42,6 @@ vim.pack.add({
 
   "https://github.com/anuvyklack/windows.nvim",
 
-  "https://github.com/nvim-tree/nvim-web-devicons",
   "https://github.com/nvim-mini/mini.icons",
 
   "https://github.com/L3MON4D3/LuaSnip",
@@ -55,8 +49,6 @@ vim.pack.add({
   "https://github.com/windwp/nvim-ts-autotag",
   "https://github.com/jlcrochet/vim-razor",
 
-  "https://github.com/MunifTanjim/nui.nvim",
-  "https://github.com/rcarriga/nvim-notify",
   "https://github.com/catgoose/nvim-colorizer.lua",
 
   "https://github.com/ibhagwan/fzf-lua",
@@ -71,8 +63,6 @@ vim.pack.add({
   "https://github.com/christoomey/vim-tmux-navigator",
   "https://github.com/folke/which-key.nvim",
 
-  "https://github.com/enochchau/nvim-pretty-ts-errors",
-
   "https://github.com/SmiteshP/nvim-navic",
   "https://github.com/utilyre/barbecue.nvim",
 
@@ -80,6 +70,8 @@ vim.pack.add({
   "https://github.com/rmagatti/logger.nvim",
   "https://github.com/VidocqH/lsp-lens.nvim",
   "https://github.com/smjonas/inc-rename.nvim",
+
+  "https://github.com/mbbill/undotree",
 })
 
 require("plugins.colorscheme")
