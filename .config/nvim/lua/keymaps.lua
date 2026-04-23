@@ -3,6 +3,14 @@ local M = {}
 local map = vim.keymap.set
 
 -- ============================================================================
+-- HELP (Which-key)
+-- ============================================================================
+
+map("n", "<leader>?", function()
+  require("which-key").show({ global = false })
+end, { desc = "Show buffer local keymaps" })
+
+-- ============================================================================
 -- VIM CORE
 -- ============================================================================
 
@@ -111,35 +119,6 @@ map("n", "<leader>hq", "<cmd>DiffviewClose<cr>", { desc = "Diffview close" })
 map("n", "<leader>hf", "<cmd>DiffviewFileHistory %<cr>", { desc = "Diffview file history" })
 
 -- ============================================================================
--- DEBUG (DAP)
--- ============================================================================
-
-map("n", "<leader>db", function()
-  require("dap").toggle_breakpoint()
-end, { desc = "Toggle breakpoint" })
-map("n", "<leader>dB", function()
-  require("dap").set_breakpoint(vim.fn.input("Condition: "))
-end, { desc = "Conditional breakpoint" })
-map("n", "<leader>dc", function()
-  require("dap").continue()
-end, { desc = "Continue / Start" })
-map("n", "<leader>di", function()
-  require("dap").step_into()
-end, { desc = "Step into" })
-map("n", "<leader>do", function()
-  require("dap").step_over()
-end, { desc = "Step over" })
-map("n", "<leader>dO", function()
-  require("dap").step_out()
-end, { desc = "Step out" })
-map("n", "<leader>du", function()
-  require("dapui").toggle()
-end, { desc = "Toggle DAP UI" })
-map("n", "<leader>dt", function()
-  require("dap").terminate()
-end, { desc = "Terminate" })
-
--- ============================================================================
 -- SYMBOLS (Aerial)
 -- ============================================================================
 
@@ -147,14 +126,6 @@ map("n", "<leader>sa", "<cmd>AerialToggle<cr>", { desc = "Toggle symbol outline"
 map("n", "<leader>ss", function()
   require("fzf-lua").lsp_document_symbols()
 end, { desc = "Search symbols" })
-
--- ============================================================================
--- HELP (Which-key)
--- ============================================================================
-
-map("n", "<leader>?", function()
-  require("which-key").show({ global = false })
-end, { desc = "Show buffer local keymaps" })
 
 -- ============================================================================
 -- LSP (buffer-local keymaps)
@@ -197,5 +168,11 @@ function M.on_attach(_, bufnr)
     require("conform").format({ lsp_fallback = true, async = true, timeout = 500 })
   end, { desc = "Format current buffer" })
 end
+
+-- ============================================================================
+-- Undo Tree
+-- ============================================================================
+
+map("n", "<leader>U", vim.cmd.UndotreeToggle)
 
 return M
