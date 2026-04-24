@@ -72,6 +72,8 @@ vim.pack.add({
   "https://github.com/smjonas/inc-rename.nvim",
 
   "https://github.com/mbbill/undotree",
+
+  "https://github.com/stevearc/aerial.nvim",
 })
 
 require("plugins.colorscheme")
@@ -100,5 +102,6 @@ vim.schedule(function()
   })
   require("inc_rename").setup()
   require("lsp-lens").setup()
+  require("aerial").setup()
   require("plugins.git")
 end)

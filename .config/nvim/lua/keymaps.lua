@@ -68,6 +68,7 @@ map({ "n", "v" }, "<leader>mp", function()
     lsp_fallback = true,
     async = true,
     timeout = 500,
+    quiet = true,
   })
 end, { desc = "Format file" })
 
@@ -165,7 +166,7 @@ function M.on_attach(_, bufnr)
   end, { buffer = bufnr, desc = "Rename symbol", expr = true })
 
   vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
-    require("conform").format({ lsp_fallback = true, async = true, timeout = 500 })
+    require("conform").format({ lsp_fallback = true, async = true, timeout = 500, quiet = true })
   end, { desc = "Format current buffer" })
 end
 
