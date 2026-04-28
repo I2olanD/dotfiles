@@ -6,6 +6,7 @@ local ensure_installed = {
   "markdown",
   "markdown_inline",
   "regex",
+  "scala",
   "svelte",
   "toml",
   "vue",

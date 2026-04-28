@@ -21,7 +21,8 @@ local servers = {
       plugins = {
         {
           name = "@vue/typescript-plugin",
-          location = vim.fn.stdpath("data") .. "/mason/packages/vue-language-server/node_modules/@vue/typescript-plugin",
+          location = vim.fn.stdpath("data")
+            .. "/mason/packages/vue-language-server/node_modules/@vue/typescript-plugin",
           languages = { "vue" },
         },
       },
