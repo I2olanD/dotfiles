@@ -34,6 +34,9 @@ vim.pack.add({
   "https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
   "https://github.com/neovim/nvim-lspconfig",
 
+  "https://github.com/nvim-lua/plenary.nvim",
+  "https://github.com/scalameta/nvim-metals",
+
   "https://github.com/nvim-lualine/lualine.nvim",
 
   "https://github.com/stevearc/oil.nvim",
@@ -87,6 +90,7 @@ vim.schedule(function()
   require("plugins.indent-blankline")
   require("plugins.conform")
   require("plugins.lint")
+  require("plugins.metals")
   require("plugins.windows")
   require("which-key").setup()
   require("nvim-surround").setup()

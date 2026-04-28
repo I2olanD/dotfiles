@@ -30,6 +30,9 @@ require("conform").setup({
     yaml = { "yamlfmt" },
 
     sql = { "sqlfmt" },
+
+    scala = { "scalafmt" },
+    sbt = { "scalafmt" },
   },
 
   formatters = {
