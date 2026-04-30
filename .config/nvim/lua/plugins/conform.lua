@@ -1,10 +1,7 @@
-local config = require("utils.config")
+local toolchain = require("utils.js_toolchain")
 
 local function js_formatter(bufnr)
-  if config.find_config_dir(bufnr, config.biome_configs) then
-    return { "biome" }
-  end
-  return { "prettier" }
+  return { toolchain.resolve(bufnr, vim.bo[bufnr].filetype).formatter }
 end
 
 require("conform").setup({
@@ -38,7 +35,7 @@ require("conform").setup({
   formatters = {
     biome = {
       cwd = function(_, ctx)
-        return config.find_config_dir(ctx.buf, config.biome_configs) or vim.fn.getcwd()
+        return toolchain.biome_root(ctx.buf) or vim.fn.getcwd()
       end,
     },
   },
