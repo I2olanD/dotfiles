@@ -20,20 +20,3 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     vim.fn.setpos(".", save_cursor)
   end,
 })
-
-vim.api.nvim_create_autocmd("LspAttach", {
-  once = true,
-  callback = function()
-    require("lsp-lens").setup()
-    require("goto-preview").setup()
-    require("inc_rename").setup()
-  end,
-})
-
-vim.api.nvim_create_autocmd("InsertEnter", {
-  once = true,
-  callback = function()
-    require("plugins.blink")
-    require("nvim-autopairs").setup()
-  end,
-})

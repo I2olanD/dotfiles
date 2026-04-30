@@ -79,11 +79,13 @@ vim.pack.add({
   "https://github.com/stevearc/aerial.nvim",
 })
 
+-- Eager: needed at startup
 require("plugins.colorscheme")
 require("plugins.oil")
 require("plugins.lsp")
 require("plugins.lualine")
 
+-- Deferred to first idle tick
 vim.schedule(function()
   require("plugins.treesitter")
   require("plugins.bufferline")
@@ -92,20 +94,31 @@ vim.schedule(function()
   require("plugins.lint")
   require("plugins.metals")
   require("plugins.windows")
-  require("which-key").setup()
-  require("nvim-surround").setup()
-  require("fzf-lua").setup()
-  require("fzf-lua").register_ui_select()
-  require("trouble").setup()
-  require("colorizer").setup()
-  require("barbecue").setup()
-  require("goto-preview").setup({
-    post_open_hook = function(_, win)
-      vim.api.nvim_set_option_value("winhighlight", "Normal:Normal,FloatBorder:FloatBorder", { win = win })
-    end,
-  })
-  require("inc_rename").setup()
-  require("lsp-lens").setup()
-  require("aerial").setup()
+  require("plugins.which-key")
+  require("plugins.nvim-surround")
+  require("plugins.fzf-lua")
+  require("plugins.trouble")
+  require("plugins.colorizer")
+  require("plugins.barbecue")
+  require("plugins.aerial")
   require("plugins.git")
 end)
+
+-- Deferred to first LSP attach
+vim.api.nvim_create_autocmd("LspAttach", {
+  once = true,
+  callback = function()
+    require("plugins.lsp-lens")
+    require("plugins.goto-preview")
+    require("plugins.inc-rename")
+  end,
+})
+
+-- Deferred to first insert mode entry
+vim.api.nvim_create_autocmd("InsertEnter", {
+  once = true,
+  callback = function()
+    require("plugins.blink")
+    require("plugins.autopairs")
+  end,
+})

@@ -1,15 +1,6 @@
-local config = require("utils.config")
+local toolchain = require("utils.js_toolchain")
 local linter_utils = require("utils.linter")
 local lint = require("lint")
-
-local js_filetypes = {
-  javascript = true,
-  typescript = true,
-  javascriptreact = true,
-  typescriptreact = true,
-  svelte = true,
-  vue = true,
-}
 
 lint.linters_by_ft = {
   lua = { "luacheck" },
@@ -28,26 +19,19 @@ vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
       return
     end
 
-    if js_filetypes[ft] or ft == "json" or ft == "jsonc" then
-      local biome_root = config.find_config_dir(args.buf, config.biome_configs)
-      if biome_root then
-        lint.linters.biomejs.cwd = biome_root
-        run_linter(args.buf, { "biomejs" })
+    if toolchain.is_js(ft) or toolchain.is_json(ft) then
+      local resolved = toolchain.resolve(args.buf, ft)
+      if #resolved.linters == 0 then
         return
       end
-
-      if js_filetypes[ft] then
-        local eslint_root = config.find_config_dir(args.buf, config.eslint_configs)
-        if eslint_root then
-          lint.linters.eslint.cwd = eslint_root
-          run_linter(args.buf, { "eslint" })
-        end
-      else
-        run_linter(args.buf, { "jsonlint" })
+      if resolved.cwd then
+        lint.linters[resolved.linters[1]].cwd = resolved.cwd
       end
-    else
-      local linters = lint._resolve_linter_by_ft(ft)
-      run_linter(args.buf, linters)
+      run_linter(args.buf, resolved.linters)
+      return
     end
+
+    local linters = lint._resolve_linter_by_ft(ft)
+    run_linter(args.buf, linters)
   end,
 })

@@ -1,7 +1,9 @@
-local keymaps = require("keymaps")
+local on_attach = require("utils.lsp_attach")
 
 local servers = {
   html = {},
+
+  cssls = {},
 
   svelte = {
     filetypes = {
@@ -51,19 +53,6 @@ local servers = {
 
 local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-local function on_attach(client, bufnr)
-  keymaps.on_attach(client, bufnr)
-
-  if client.server_capabilities.documentSymbolProvider then
-    vim.g.navic_silence = true
-    require("nvim-navic").attach(client, bufnr)
-  end
-
-  if client:supports_method("textDocument/inlayHint") then
-    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-  end
-end
-
 for server_name, server_config in pairs(servers) do
   vim.lsp.config(
     server_name,
@@ -89,5 +78,6 @@ require("mason-tool-installer").setup({
     "goimports",
     "htmlhint",
     "stylua",
+    "yamlfmt",
   },
 })
