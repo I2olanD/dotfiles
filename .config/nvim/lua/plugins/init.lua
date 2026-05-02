@@ -19,6 +19,8 @@ vim.pack.add({
 
   { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
 
+  "https://github.com/folke/tokyonight.nvim",
+
   "https://github.com/stevearc/conform.nvim",
 
   "https://github.com/lewis6991/gitsigns.nvim",
