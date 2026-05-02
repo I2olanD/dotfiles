@@ -15,7 +15,7 @@ adjust-cell-height = 1
 background-opacity = 0.85
 background-blur-radius = 16
 
-theme = Catppuccin Mocha
+ theme = TokyoNight
 
 cursor-style = block
 
