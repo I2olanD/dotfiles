@@ -51,14 +51,9 @@ Session.vim
 # ----------------------------------------------------------------------------------------------
 .vimspector.json
 
-.claude/*.local.*
-
 # Editors
 .idea/
 .vscode/
-
-# Mise
-mise.toml
 
 # NPM
 .npmrc
@@ -93,7 +88,10 @@ mise.toml
 **/*secret*
 **/*.pem
 **/*.key
-!**/*.pub
+**/*.pub
 
-# Opencode
-.config/opencode/memory
+# Draw IO
+**/*.bkp
+
+# Headroom
+**/.serena

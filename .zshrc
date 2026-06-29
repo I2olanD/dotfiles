@@ -64,6 +64,11 @@ zinit cdreplay -q
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 
+# editable cmd line
+autoload -z edit-command-line
+zle -N edit-command-line
+bindkey "^X^E" edit-command-line
+
 # ============================================================================
 # Completion Styling
 # ============================================================================
@@ -80,6 +85,15 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 if [[ $+commands[git] == "0" ]]; then
   print "zsh: git command not found. Install git to load zsh correctly." >&2
   return 1
+fi
+
+# AI
+if [[ $+commands[claude] == "1" &&  $+commands[headroom] ]]; then
+  alias ccd='headroom wrap claude'
+  alias ccdr='headroom wrap claude --remote-control'
+elif [[ $+commands[claude] ]]; then
+  alias ccd='claude'
+  alias ccdr='claude --remote-control'
 fi
 
 # Editor
@@ -119,11 +133,21 @@ fi
 [[ $+commands[mise] == "1" ]] && eval "$(mise activate zsh)"
 [[ $+commands[fzf] == "1" ]] && eval "$(fzf --zsh)"
 [[ $+commands[op] == "1" ]] && eval "$(op completion zsh)"
+[[ $+commands[direnv] == "1" ]] && eval "$(direnv hook zsh)"
+
+# Mole shell completion
+if output="$(mole completion zsh 2>/dev/null)"; then eval "$output"; fi
 
 # Lazygit
 if [[ $+commands[lazygit] == "1" ]]; then
   alias lg="lazygit"
 fi
+
+# yadm
+alias ycm="yadm checkout main"
+alias yst="yadm status"
+alias yco="yadm checkout"
+alias yypush='yadm push origin "$(yadm rev-parse --abbrev-ref HEAD)"'
 
 # ============================================================================
 # Prompt
@@ -148,25 +172,3 @@ fi
 # User Config
 # ============================================================================
 [[ -f "${HOME}/.zshrc.user.zsh" ]] && source "${HOME}/.zshrc.user.zsh"
-
-# pnpm
-export PNPM_HOME="$HOME/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
-
-# Mole shell completion
-if output="$(mole completion zsh 2>/dev/null)"; then eval "$output"; fi
-
-# yadm
-alias ycm="yadm checkout main"
-alias yst="yadm status"
-alias yco="yadm checkout"
-alias yypush='yadm push origin "$(yadm rev-parse --abbrev-ref HEAD)"'
-
-# editable cmd line
-autoload -z edit-command-line
-zle -N edit-command-line
-bindkey "^X^E" edit-command-line
