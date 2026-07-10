@@ -32,7 +32,9 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 source "${ZINIT_HOME}/zinit.zsh"
 
 # Load compinit early for plugins that need compdef
-autoload -Uz compinit && compinit
+# -C skips the security audit; run plain `compinit` once after adding new completions
+fpath=(~/.zfunc $fpath)
+autoload -Uz compinit && compinit -C
 
 # # Load immediately (required for prompt)
 zinit light-mode for \
@@ -132,11 +134,10 @@ fi
 [[ $+commands[zoxide] == "1" ]] && eval "$(zoxide init zsh)"
 [[ $+commands[mise] == "1" ]] && eval "$(mise activate zsh)"
 [[ $+commands[fzf] == "1" ]] && eval "$(fzf --zsh)"
-[[ $+commands[op] == "1" ]] && eval "$(op completion zsh)"
 [[ $+commands[direnv] == "1" ]] && eval "$(direnv hook zsh)"
 
-# Mole shell completion
-if output="$(mole completion zsh 2>/dev/null)"; then eval "$output"; fi
+# op/mole completions are static files in ~/.zfunc (regenerate after upgrades):
+#   op completion zsh > ~/.zfunc/_op; mole completion zsh > ~/.zfunc/_mole; compinit
 
 # Lazygit
 if [[ $+commands[lazygit] == "1" ]]; then
