@@ -95,3 +95,6 @@ Session.vim
 
 # Headroom
 **/.serena
+
+# Agent skills (managed outside dotfiles)
+.agents/
