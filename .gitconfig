@@ -40,3 +40,9 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[gpg]
+	format = ssh
+[user]
+	signingkey = key::ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBizbPlgoO40RlFvvwOnPivDcR/LxFqRTimV7oTZm7Ao rolandolah@icloud.com
+[commit]
+	gpgsign = true
