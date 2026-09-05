@@ -98,3 +98,5 @@ Session.vim
 
 # Agent skills (managed outside dotfiles)
 .agents/
+
+.opentrace/
