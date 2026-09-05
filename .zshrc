@@ -158,18 +158,6 @@ if [[ "$TERM_PROGRAM" != "Apple_Terminal" ]]; then
 fi
 
 # ============================================================================
-# Tmux Autostart
-# ============================================================================
-if [[ $+commands[tmux] == "1" ]]; then
-  : ${TMUX_AUTOSTART:=true}
-  : ${TMUX_AUTOQUIT:=false}
-  if [[ "$TMUX_AUTOSTART" == "true" && -z "$TMUX" && -z "$VIM" ]]; then
-    tmux new-session -A -s home 2>/dev/null
-    [[ "$TMUX_AUTOQUIT" == "true" ]] && exit
-  fi
-fi
-
-# ============================================================================
 # User Config
 # ============================================================================
 [[ -f "${HOME}/.zshrc.user.zsh" ]] && source "${HOME}/.zshrc.user.zsh"
